@@ -126,6 +126,12 @@ export function compareCase(expected: ConformanceCase, actual: Actual): AspectRe
     }
   }
 
+  if (actual.naive) {
+    aspects.push(actual.naive.pass
+      ? { aspect: "naive", status: "pass" }
+      : { aspect: "naive", status: "fail", detail: actual.naive.detail ?? "naive output lost or reordered content" });
+  }
+
   return aspects;
 }
 

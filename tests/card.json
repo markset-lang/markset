@@ -305,6 +305,97 @@
   },
   {
     "section": "card",
+    "name": "indented code directly after the fence warns",
+    "markset": ":::card\n    code\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "code",
+              "lang": null,
+              "meta": null,
+              "value": "code"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DEGRADATION_BLANK_LINE"
+    ]
+  },
+  {
+    "section": "card",
+    "name": "setext heading directly after the fence warns",
+    "markset": ":::card\nTitle\n=====\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "heading",
+              "depth": 1,
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Title"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DEGRADATION_BLANK_LINE"
+    ]
+  },
+  {
+    "section": "card",
+    "name": "a blank line after the fence avoids the warning",
+    "markset": ":::card\n\n    code\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "code",
+              "lang": null,
+              "meta": null,
+              "value": "code"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "card",
     "name": "unknown attribute warns and is dropped",
     "markset": ":::card{size=lg}\nx\n:::\n",
     "ast": {

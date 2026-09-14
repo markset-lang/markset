@@ -24,13 +24,18 @@ export interface Actual {
   ast?: unknown;
   html?: string;
   downgrade?: string;
+  /**
+   * Result of the §3 naive-output check (content blocks survive a stock
+   * CommonMark parse in order). Undefined when the driver did not run it.
+   */
+  naive?: { pass: boolean; detail?: string };
   /** Driver-level failures that are not tied to an expected field, e.g. unconsumed input. */
   problems?: string[];
 }
 
 export type Driver = (testCase: ConformanceCase) => Actual;
 
-export type Aspect = "valid" | "diagnostics" | "ast" | "html" | "downgrade" | "driver";
+export type Aspect = "valid" | "diagnostics" | "ast" | "html" | "downgrade" | "naive" | "driver";
 export type Status = "pass" | "fail" | "skip";
 
 export interface AspectResult {
