@@ -12,7 +12,7 @@
 .site-toc .toc-3 { padding-left: 1rem; }
 .site-toc a { color: var(--ms-fg-muted); text-decoration: none; }
 .site-toc a:hover { color: var(--ms-accent); }
-.site-footer { max-width: var(--ms-measure); margin: 0 auto; padding: calc(var(--ms-space) * 2) var(--ms-space); color: var(--ms-fg-muted); font-size: 0.875rem; border-top: 1px solid var(--ms-border); }
+.site-footer { max-width: var(--ms-measure-wide); margin: 0 auto; padding: calc(var(--ms-space) * 2) var(--ms-space); color: var(--ms-fg-muted); font-size: 0.875rem; border-top: 1px solid var(--ms-border); }
 .site-status { color: var(--ms-fg-muted); }
 .site-list li + li { margin-top: 0.4rem; }
 .site-table td, .site-table th { padding-right: 1.5rem; }
