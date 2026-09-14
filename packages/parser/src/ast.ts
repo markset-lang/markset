@@ -30,6 +30,10 @@ export interface Span extends Parent {
 }
 
 declare module "mdast" {
+  interface Root {
+    /** Parsed §6 frontmatter. Present only when the document has a frontmatter block. */
+    frontmatter?: import("./frontmatter.ts").Frontmatter;
+  }
   interface BlockContentMap {
     directive: Directive;
     separator: SeparatorNode;
