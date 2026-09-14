@@ -38,6 +38,10 @@ export const DirectiveCode = {
   UNKNOWN_NAME: "DIRECTIVE_UNKNOWN_NAME",
   UNTERMINATED_ARGUMENT: "DIRECTIVE_UNTERMINATED_ARGUMENT",
   TRAILING_CONTENT: "DIRECTIVE_TRAILING_CONTENT",
+  /** Document level (warning): no closing fence before the enclosing block ended. */
+  UNCLOSED: "DIRECTIVE_UNCLOSED",
+  /** Document level (warning): a line of colons that closes nothing. */
+  STRAY_FENCE: "DIRECTIVE_STRAY_FENCE",
 } as const;
 
 const IDENTIFIER = /^[A-Za-z][A-Za-z0-9_-]*$/;

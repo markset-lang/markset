@@ -1,0 +1,774 @@
+[
+  {
+    "section": "bracketed-span",
+    "name": "canonical",
+    "markset": "[Beta]{.badge tone=warn}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "badge"
+                ],
+                "attrs": {
+                  "tone": "warn"
+                }
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Beta"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "inline content inside the span",
+    "markset": "A [badge *x* `y`]{.small} b\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "A "
+            },
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "small"
+                ],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "badge "
+                },
+                {
+                  "type": "emphasis",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "x"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "value": " "
+                },
+                {
+                  "type": "inlineCode",
+                  "value": "y"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "value": " b"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "id and reserved classes",
+    "markset": "[Beta]{#rel .badge .warn}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": "rel",
+                "classes": [
+                  "badge",
+                  "warn"
+                ],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Beta"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "empty span",
+    "markset": "[]{.x}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "x"
+                ],
+                "attrs": {}
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "nested spans",
+    "markset": "[a [b]{.inner} c]{.outer}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "outer"
+                ],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "a "
+                },
+                {
+                  "type": "span",
+                  "attributes": {
+                    "type": "attributes",
+                    "id": null,
+                    "classes": [
+                      "inner"
+                    ],
+                    "attrs": {}
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "b"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "value": " c"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "nested brackets that are not a span are literal text",
+    "markset": "[a [b] c]{.x}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "x"
+                ],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "a [b] c"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "escaped closing bracket in the text",
+    "markset": "[a \\] b]{.x}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "x"
+                ],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "a ] b"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "span text may span lines",
+    "markset": "[one\ntwo]{.x}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "x"
+                ],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "one\ntwo"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "closing brace inside a quoted value",
+    "markset": "[x]{title=\"a}b\"}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {
+                  "title": "a}b"
+                }
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "a quote inside a bare value does not start a quoted value",
+    "markset": "[x]{k=a\"b c=d}\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_VALUE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {
+                  "c": "d"
+                }
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "bracketed-span",
+    "name": "span next to a link",
+    "markset": "[a]{.x}[b](u)\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "x"
+                ],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "a"
+                }
+              ]
+            },
+            {
+              "type": "link",
+              "title": null,
+              "url": "u",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "b"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "span inside link text",
+    "markset": "[a [b]{.x}](u)\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "link",
+              "title": null,
+              "url": "u",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "a "
+                },
+                {
+                  "type": "span",
+                  "attributes": {
+                    "type": "attributes",
+                    "id": null,
+                    "classes": [
+                      "x"
+                    ],
+                    "attrs": {}
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "span in a heading",
+    "markset": "# Title [Beta]{.badge}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "heading",
+          "depth": 1,
+          "children": [
+            {
+              "type": "text",
+              "value": "Title "
+            },
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "badge"
+                ],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Beta"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "link is not a span",
+    "markset": "[text](u)\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "link",
+              "title": null,
+              "url": "u",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "brackets without a specifier are ordinary text",
+    "markset": "[text] and [more] {.x}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "[text] and [more] {.x}"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "space before the specifier is not a span",
+    "markset": "[text] {.x}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "[text] {.x}"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "unterminated specifier is ordinary text",
+    "markset": "[text]{.x and more\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "[text]{.x and more"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "specifier may not span lines",
+    "markset": "[text]{.x\n.y}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "[text]{.x\n.y}"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "images take no attributes in v0",
+    "markset": "![alt]{.x}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "![alt]{.x}"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "inline code is not a span",
+    "markset": "`[a]{.x}`\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "inlineCode",
+              "value": "[a]{.x}"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "bracketed-span",
+    "name": "attribute errors carry through",
+    "markset": "[x]{#}\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "bracketed-span",
+    "name": "reserved key in a span",
+    "markset": "[x]{class=y}\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_RESERVED_KEY"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "bracketed-span",
+    "name": "two bad spans report twice",
+    "markset": "[a]{=} [b]{=}\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_UNEXPECTED_CHAR",
+      "ATTR_UNEXPECTED_CHAR"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "a"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "value": " "
+            },
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "b"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

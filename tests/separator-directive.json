@@ -284,5 +284,514 @@
         "attrs": {}
       }
     }
+  },
+  {
+    "section": "separator-directive",
+    "name": "document: two columns",
+    "markset": ":::columns\nLeft.\n\n::col\n\nRight.\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "columns",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Left."
+                }
+              ]
+            },
+            {
+              "type": "separator",
+              "name": "col",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              }
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Right."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "document: three columns with attributes on a separator",
+    "markset": ":::columns\nA\n\n::col{.wide}\n\nB\n\n::col\n\nC\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "columns",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "A"
+                }
+              ]
+            },
+            {
+              "type": "separator",
+              "name": "col",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "wide"
+                ],
+                "attrs": {}
+              }
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "B"
+                }
+              ]
+            },
+            {
+              "type": "separator",
+              "name": "col",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              }
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "C"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "document: separator interrupts a paragraph",
+    "markset": ":::columns\nLeft.\n::col\nRight.\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "columns",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Left."
+                }
+              ]
+            },
+            {
+              "type": "separator",
+              "name": "col",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              }
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Right."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "document: nested directive after a separator",
+    "markset": "::::columns\nMain.\n\n::col\n\n:::card\nSide.\n:::\n::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "columns",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Main."
+                }
+              ]
+            },
+            {
+              "type": "separator",
+              "name": "col",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              }
+            },
+            {
+              "type": "directive",
+              "name": "card",
+              "argument": null,
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Side."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "document: two colons alone are paragraph text",
+    "markset": "::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "::"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "document: two colons and a space are paragraph text",
+    "markset": ":: col\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": ":: col"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "document: separator at top level",
+    "markset": "::col\n",
+    "valid": false,
+    "diagnostics": [
+      "SEPARATOR_OUTSIDE_PARENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "separator",
+          "name": "col",
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "section": "separator-directive",
+    "name": "document: separator inside a card",
+    "markset": ":::card\n::col\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "SEPARATOR_OUTSIDE_PARENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "separator",
+              "name": "col",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "separator-directive",
+    "name": "document: separator inside a card inside columns",
+    "markset": "::::columns\n:::card\n::col\n:::\n::::\n",
+    "valid": false,
+    "diagnostics": [
+      "SEPARATOR_OUTSIDE_PARENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "columns",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "directive",
+              "name": "card",
+              "argument": null,
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "separator",
+                  "name": "col",
+                  "attributes": {
+                    "type": "attributes",
+                    "id": null,
+                    "classes": [],
+                    "attrs": {}
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "separator-directive",
+    "name": "document: separator inside a list inside columns",
+    "markset": ":::columns\n- a\n  ::col\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "SEPARATOR_OUTSIDE_PARENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "columns",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "separator",
+                      "name": "col",
+                      "attributes": {
+                        "type": "attributes",
+                        "id": null,
+                        "classes": [],
+                        "attrs": {}
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "separator-directive",
+    "name": "document: unknown separator name inside columns",
+    "markset": ":::columns\nA\n\n::tab\n\nB\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_NAME"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "columns",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "A"
+                }
+              ]
+            },
+            {
+              "type": "separator",
+              "name": "tab",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              }
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "B"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 ]
