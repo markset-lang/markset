@@ -98,8 +98,13 @@ export function marksetHandlers(): Handlers {
       });
       const labels = node.children.map((tab, index) =>
         el("label", { className: ["ms-tab"], htmlFor: [`${name}-${index + 1}`] }, inline(state, tab.label)));
-      const panels = node.children.map((tab, index) =>
-        block("div", { className: ["ms-tabpanel"], dataIndex: String(index + 1) }, state.all(tab)));
+      const panels = node.children.map((tab, index) => {
+        const panel: Properties = { className: classes("ms-tabpanel", tab.attributes?.classes ?? []) };
+        if (tab.attributes?.id) panel.id = tab.attributes.id;
+        panel.dataIndex = String(index + 1);
+        for (const [key, value] of Object.entries(tab.attributes?.attrs ?? {})) panel[`data-${key}`] = value;
+        return block("div", panel, state.all(tab));
+      });
       const tablist = block("div", { className: ["ms-tablist"] }, labels);
       return finish(state, node, block("div", props, [...inputs, tablist, ...panels]));
     },

@@ -28,6 +28,8 @@ export const ConstructCode = {
   TABS_NO_HEADINGS: "TABS_NO_HEADINGS",
   TABS_CONTENT_BEFORE_HEADING: "TABS_CONTENT_BEFORE_HEADING",
   TABS_MIXED_LEVELS: "TABS_MIXED_LEVELS",
+  /** An attribute line on the single required content block of grid, steps, metrics, or figure. */
+  ATTR_LINE_ON_CONTENT: "ATTR_LINE_ON_CONTENT",
 } as const;
 
 const TONES: readonly Tone[] = ["neutral", "info", "success", "warn", "danger"];
@@ -131,6 +133,15 @@ export function normalizeConstructs(tree: Root, source: string, diagnostics: Dia
     fallback,
   });
 
+  /** grid, steps, metrics, and figure replace their one content block in HTML, so attributes on it have nowhere to go. */
+  function rejectContentAttributes(content: Nodes, owner: string): void {
+    const carrier = content as { attributes?: Attributes };
+    if (!carrier.attributes) return;
+    report(ConstructCode.ATTR_LINE_ON_CONTENT, "error",
+      `an attribute line on the content of ${owner} has no effect; put the attributes in the ${owner} specifier instead`, wholeSpan(content));
+    delete carrier.attributes;
+  }
+
   function base(node: Directive) {
     return { id: node.attributes.id, classes: node.attributes.classes, position: node.position };
   }
@@ -155,6 +166,7 @@ export function normalizeConstructs(tree: Root, source: string, diagnostics: Dia
       report(ConstructCode.GRID_CONTENT, "error", "grid content must be exactly one list", wholeSpan(node));
       return node;
     }
+    rejectContentAttributes(only, "grid");
     return { type: "grid", cols: a.cols, gap: a.gap, ...base(node), children: [only] };
   }
 
@@ -165,6 +177,7 @@ export function normalizeConstructs(tree: Root, source: string, diagnostics: Dia
       report(ConstructCode.STEPS_CONTENT, "error", "steps content must be exactly one ordered list", wholeSpan(node));
       return node;
     }
+    rejectContentAttributes(only, "steps");
     return { type: "steps", ...base(node), children: [only] };
   }
 
@@ -177,6 +190,7 @@ export function normalizeConstructs(tree: Root, source: string, diagnostics: Dia
       report(ConstructCode.METRICS_CONTENT, "error", "metrics content must be exactly one table with at least two columns", wholeSpan(node));
       return node;
     }
+    rejectContentAttributes(only, "metrics");
     return { type: "metrics", direction: a.direction, ...base(node), children: [only] };
   }
 
@@ -199,6 +213,7 @@ export function normalizeConstructs(tree: Root, source: string, diagnostics: Dia
       report(ConstructCode.FIGURE_CONTENT, "error", "figure content must be exactly one block: an image, a table, or a code block", wholeSpan(node));
       return node;
     }
+    rejectContentAttributes(only, "figure");
     return { type: "figure", caption: node.argument, width: a.width, ...base(node), children: node.children };
   }
 
@@ -263,7 +278,9 @@ export function normalizeConstructs(tree: Root, source: string, diagnostics: Dia
     const tabList: Tab[] = [];
     for (const child of node.children) {
       if (child.type === "heading" && child.depth === depth) {
-        tabList.push({ type: "tab", depth, label: child.children, children: [], position: child.position });
+        const tab: Tab = { type: "tab", depth, label: child.children, children: [], position: child.position };
+        if (child.attributes) tab.attributes = child.attributes;
+        tabList.push(tab);
       } else {
         tabList[tabList.length - 1].children.push(child);
       }

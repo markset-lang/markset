@@ -789,6 +789,295 @@
   },
   {
     "section": "attribute-line",
+    "name": "inside tabs, a heading's attributes move to the tab",
+    "markset": ":::tabs\n{#mac .primary}\n### macOS\nx\n### Windows\ny\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "tabs",
+          "active": 1,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "tab",
+              "attributes": {
+                "type": "attributes",
+                "id": "mac",
+                "classes": [
+                  "primary"
+                ],
+                "attrs": {}
+              },
+              "depth": 3,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "macOS"
+                }
+              ],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "x"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tab",
+              "depth": 3,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "Windows"
+                }
+              ],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "y"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<div class=\"ms-tabs\">\n<input class=\"ms-tab-input\" type=\"radio\" name=\"ms-tabs-1\" id=\"ms-tabs-1-1\" checked>\n<input class=\"ms-tab-input\" type=\"radio\" name=\"ms-tabs-1\" id=\"ms-tabs-1-2\">\n<div class=\"ms-tablist\">\n<label class=\"ms-tab\" for=\"ms-tabs-1-1\">macOS</label>\n<label class=\"ms-tab\" for=\"ms-tabs-1-2\">Windows</label>\n</div>\n<div class=\"ms-tabpanel primary\" id=\"mac\" data-index=\"1\">\n<p>x</p>\n</div>\n<div class=\"ms-tabpanel\" data-index=\"2\">\n<p>y</p>\n</div>\n</div>\n",
+    "downgrade": "### macOS\n\nx\n\n### Windows\n\ny\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "inside a card the block keeps its attributes",
+    "markset": ":::card\n{.small}\nfine print\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "fine print"
+                }
+              ],
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "small"
+                ],
+                "attrs": {}
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-line",
+    "name": "inside grid, attributes on the list are an error and are dropped",
+    "markset": ":::grid\n{.x}\n- a\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_LINE_ON_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "grid",
+          "cols": 2,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "attribute-line",
+    "name": "inside steps, attributes on the list are an error",
+    "markset": ":::steps\n{#s}\n1. a\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_LINE_ON_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "steps",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": true,
+              "start": 1,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "attribute-line",
+    "name": "inside metrics, attributes on the table are an error",
+    "markset": ":::metrics\n{.x}\n| a | b |\n|---|---|\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_LINE_ON_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "metrics",
+          "direction": "normal",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "attribute-line",
+    "name": "inside figure, attributes on the image paragraph are an error",
+    "markset": ":::figure\n{.x}\n![](a.svg)\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_LINE_ON_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": null,
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "a.svg",
+                  "alt": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "attribute-line",
     "name": "orphan at end of document",
     "markset": "Para\n\n{.x}\n",
     "valid": false,

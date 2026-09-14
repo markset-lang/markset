@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" width="640" height="200" role="img" aria-label="Markset constructs and the CommonMark blocks they wrap">
+  <style>
+    text { font: 14px ui-sans-serif, system-ui, sans-serif; fill: #1f2328; }
+    .k { font-weight: 600; }
+    rect { fill: #f6f8fa; stroke: #d0d7de; rx: 8; }
+    .arrow { stroke: #59636e; stroke-width: 1.5; fill: none; marker-end: url(#m); }
+  </style>
+  <defs><marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#59636e"/></marker></defs>
+  <g transform="translate(20 20)">
+    <rect width="140" height="44"/><text x="70" y="27" text-anchor="middle" class="k">:::grid</text>
+    <rect y="60" width="140" height="44"/><text x="70" y="87" text-anchor="middle" class="k">:::steps</text>
+    <rect y="120" width="140" height="44"/><text x="70" y="147" text-anchor="middle" class="k">:::metrics</text>
+  </g>
+  <g transform="translate(340 20)">
+    <rect width="260" height="44"/><text x="130" y="27" text-anchor="middle">bullet list</text>
+    <rect y="60" width="260" height="44"/><text x="130" y="87" text-anchor="middle">ordered list</text>
+    <rect y="120" width="260" height="44"/><text x="130" y="147" text-anchor="middle">table</text>
+  </g>
+  <path class="arrow" d="M165 42H330"/><path class="arrow" d="M165 102H330"/><path class="arrow" d="M165 162H330"/>
+</svg>

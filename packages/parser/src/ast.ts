@@ -148,6 +148,8 @@ export interface Tabs extends ConstructBase {
 
 export interface Tab extends Parent {
   type: "tab";
+  /** Present when an attribute line (§2.5) preceded the tab's heading. */
+  attributes?: Attributes;
   depth: 1 | 2 | 3 | 4 | 5 | 6;
   label: PhrasingContent[];
   children: Array<BlockContent | DefinitionContent>;

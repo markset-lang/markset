@@ -14,8 +14,8 @@ theme:
 
 This document uses every v0 construct once. Paste it into any Markdown viewer and it still reads top to bottom.
 
-> [!NOTE] What you are looking at
-> The same source renders as rich HTML with `markset html`, as plain CommonMark with `markset downgrade`, and as itself in a GitHub comment.
+> [!NOTE]
+> **What you are looking at.** The same source renders as rich HTML with `markset html`, as plain CommonMark with `markset downgrade`, and as itself in a GitHub comment.
 
 ## Metrics
 
@@ -25,6 +25,7 @@ This document uses every v0 construct once. Paste it into any Markdown viewer an
 | Revenue  | $4.2M | +12%  |
 | Churn    | 2.1%  | -0.4% |
 | Latency  | 48 ms | -6 ms |
+
 :::
 
 ## Why a vocabulary
@@ -33,6 +34,7 @@ This document uses every v0 construct once. Paste it into any Markdown viewer an
 - **Semantic** — authors name intent; themes decide appearance.
 - **Degrades** — every construct has a defined CommonMark fallback.
 - **Closed** — unknown directives are errors, so documents are checkable.
+
 :::
 
 ::::columns{ratio="2:1"}
@@ -64,10 +66,11 @@ Run `markset check examples/showcase.md` and then change a directive name to see
 1. Add `markset: 0` to the frontmatter.
 2. Wrap a list in `:::grid` and a table in `:::metrics`.
 3. Run `markset html` and open the page.
+
 :::
 
 :::figure[Every construct wraps a CommonMark primitive]{#fig-degrade width=80%}
-![](degrade.svg)
+![Four boxes, each Markset construct pointing at the CommonMark block it wraps](degrade.svg)
 :::
 
 > [!TIP]- Collapsed by default
