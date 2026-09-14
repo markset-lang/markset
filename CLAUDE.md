@@ -43,6 +43,7 @@ packages/
   render-html/      AST -> HTML
   conformance/      harness: validates tests/*.json against the schema, runs each section's driver
   cli/
+site/       static site generator (build.ts) and content; every page is Markset rendered by the packages above
 docs/       background analysis, prior art, design rationale
 ```
 
@@ -52,6 +53,7 @@ docs/       background analysis, prior art, design rationale
 - The CommonMark base is **micromark + mdast** (`micromark`, `mdast-util-from-markdown`, the GFM table pair, and the `micromark-util-*` helpers), chosen 2026-09-13. Markset's three grammar constructs are a micromark syntax extension in `packages/parser/src/syntax.ts` and an mdast compiler extension in `from-markdown.ts`. The Markset AST is mdast plus `directive`, `separator`, and `span` nodes (`ast.ts`), so any unified tooling can consume it. Tokenizers find boundaries only; fence lines and attribute specifiers are parsed by the line grammar, so there is one grammar to keep in sync with the spec.
 - `npm install` once, to link the workspace packages. Then `npm test` (unit tests plus the full conformance suite) and `npm run conformance` for the per-section report (`--section <name>`, `--verbose`).
 - `npm run typecheck` runs `tsc --noEmit`. `typescript` and `@types/node` are the only dev dependencies (approved 2026-09-14); there is still no build step.
+- `npm run site` builds the documentation site into `dist/` (ignored by git). The guide and conformance pages are generated from `tests/*.json`, so they never drift from the suite. `.github/workflows/pages.yml` deploys `dist/` to GitHub Pages on push to `main`; Pages must be enabled once in the repository settings with "GitHub Actions" as the source.
 - Adding a section to `tests/` without a driver in `packages/conformance/src/drivers.ts` is fine: the harness reports it as skipped, not failed. Same for `html`/`downgrade` fields before those renderers exist. Register a driver once the code exists so the cases start counting.
 
 ## Prior art worth knowing
@@ -83,5 +85,7 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] Attribute lines (§2.5, djot-style `{.lead}` line before a block; `packages/parser/src/attribute-lines.ts`, `tests/attribute-line.json`)
 - [x] §9 open questions closed with decisions (spec §9)
 - [x] Release candidate `0.0.0-rc.1` tagged 2026-09-14; change policy in spec §0; `CHANGELOG.md` started
+- [x] Documentation site (`site/`): home, guide per construct, spec with TOC, conformance browser, showcase; deployed by `pages.yml`
+- [ ] Playground page (needs a bundler such as esbuild, not yet approved)
 - [ ] Declare v0 after real documents have been written against the candidate without changes to §2 or §4
 - [ ] Publish: keep `@markset/*` private until the suite is frozen; add a `dist/` build (JS + declarations) when publishing becomes a goal
