@@ -3,15 +3,17 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "site"
   ],
   "engines": {
     "node": ">=22.18"
   },
   "scripts": {
-    "test": "node --test packages/*/test/*.test.ts",
+    "test": "node --test packages/*/test/*.test.ts site/test/*.test.ts",
     "conformance": "node packages/conformance/src/cli.ts",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "site": "node site/build.ts"
   },
   "devDependencies": {
     "@types/node": "^26.5.1",

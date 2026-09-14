@@ -1,0 +1,37 @@
+/* Site chrome on top of markset.css. Documents keep their own look; this only adds navigation, TOC, and case panes. */
+.site-header { display: flex; align-items: center; justify-content: space-between; gap: var(--ms-space); padding: 0.75rem var(--ms-space); border-bottom: 1px solid var(--ms-border); background: var(--ms-surface); }
+.site-brand { font-family: var(--ms-font-heading); font-weight: 700; font-size: 1.1rem; color: var(--ms-fg); text-decoration: none; letter-spacing: -0.01em; }
+.site-nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
+.site-nav a { color: var(--ms-fg-muted); text-decoration: none; font-family: var(--ms-font-heading); font-size: 0.95rem; }
+.site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--ms-accent); }
+.site-layout { max-width: 76rem; margin: 0 auto; }
+.site-layout.has-toc { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: var(--ms-space); }
+.site-toc { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; padding: calc(var(--ms-space) * 2) var(--ms-space); font-size: 0.875rem; border-right: 1px solid var(--ms-border); }
+.site-toc ul { list-style: none; margin: 0; padding: 0; }
+.site-toc li { margin: 0.25rem 0; }
+.site-toc .toc-3 { padding-left: 1rem; }
+.site-toc a { color: var(--ms-fg-muted); text-decoration: none; }
+.site-toc a:hover { color: var(--ms-accent); }
+.site-layout .ms-document { max-width: var(--ms-measure); }
+.site-footer { max-width: var(--ms-measure); margin: 0 auto; padding: calc(var(--ms-space) * 2) var(--ms-space); color: var(--ms-fg-muted); font-size: 0.875rem; border-top: 1px solid var(--ms-border); }
+.site-status { color: var(--ms-fg-muted); }
+.site-list li + li { margin-top: 0.4rem; }
+.site-table td, .site-table th { padding-right: 1.5rem; }
+.site-more { color: var(--ms-fg-muted); }
+
+/* conformance and guide case cards */
+.site-case { border: 1px solid var(--ms-border); border-radius: var(--ms-radius); padding: var(--ms-space); }
+.site-case + .site-case { margin-top: var(--ms-space); }
+.site-case-title { font-size: 1rem; margin: 0 0 0.75rem; }
+.site-case-index { color: var(--ms-fg-muted); font-weight: 400; }
+.site-panes { display: grid; gap: var(--ms-space); grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+.site-pane > h4 { margin: 0 0 0.4rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ms-fg-muted); }
+.site-pane pre { margin: 0; font-size: 0.8rem; white-space: pre-wrap; word-break: break-word; }
+.site-preview { border: 1px dashed var(--ms-border); border-radius: var(--ms-radius); padding: var(--ms-space); background: var(--ms-bg); }
+.site-preview > * + * { margin-top: var(--ms-space); }
+.site-preview > *:first-child { margin-top: 0; }
+.site-diagnostics { margin-top: 0.75rem; font-size: 0.875rem; color: var(--ms-fg-muted); }
+@media (max-width: 60rem) {
+  .site-layout.has-toc { grid-template-columns: 1fr; }
+  .site-toc { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--ms-border); }
+}

@@ -28,6 +28,10 @@ npm test                # unit tests plus the conformance suite
 npm run conformance     # per-section conformance report
 ```
 
+## Documentation
+
+The site at <https://gxclarke.github.io/markset/> is generated from this repository: a guide with one page per construct, the specification with a table of contents, and a conformance browser that renders every case live. Build it locally with `npm run site` and open `dist/index.html`.
+
 ## Layout
 
 | Path | What |
@@ -40,6 +44,7 @@ npm run conformance     # per-section conformance report
 | `packages/render-html` | Markset AST to HTML, plus the default stylesheet. |
 | `packages/conformance` | Harness that runs `tests/*.json` against the packages above. |
 | `packages/cli` | `markset check | html | downgrade | ast`. |
+| `site/` | Documentation site, written in Markset and built by the packages above (`npm run site`). |
 | `docs/` | Background analysis and design rationale. |
 
 ## Status
