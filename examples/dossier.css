@@ -1,0 +1,137 @@
+/* Dossier — a theme stylesheet for analysis documents (spec §6).
+ *
+ *   markset html examples/notification-routing.md --theme examples/dossier.css
+ *
+ * A theme is chosen where a document is rendered, never named by the document
+ * itself, so a Markset file stays portable. This one styles the author classes
+ * an analysis document tends to use — .eyebrow, .chip, .layer, .pipe, .phases —
+ * and brings its own typography. The constructs keep the shapes the default
+ * stylesheet gives them; without this file the document still reads, it just
+ * loses the categorical color and the dense rail.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
+body {
+  --ms-font-body: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ms-font-heading: Bitter, Charter, Georgia, "Times New Roman", serif;
+  --ms-font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --dossier-good: #1c6349;    --dossier-good-soft: #e4f1eb;
+  --dossier-amber: #8c5a16;   --dossier-amber-soft: #faf0df;
+  --dossier-crimson: #97303e; --dossier-crimson-soft: #faeaec;
+  --dossier-accent-soft: #e8f0f9;
+  line-height: 1.62;
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    --dossier-good: #72c7a0;    --dossier-good-soft: #142a20;
+    --dossier-amber: #dba662;   --dossier-amber-soft: #2a2114;
+    --dossier-crimson: #eb929e; --dossier-crimson-soft: #331a1e;
+    --dossier-accent-soft: #16283a;
+  }
+}
+
+h1 { letter-spacing: -0.018em; line-height: 1.08; }
+h2 { letter-spacing: -0.012em; }
+.eyebrow { color: var(--ms-accent); letter-spacing: 0.12em; }
+.lead { color: var(--ms-fg-muted); max-width: 62ch; }
+.lead strong { color: var(--ms-fg); }
+
+/* Ruler-edge divider between major sections. */
+.ms-document > hr.tick {
+  max-width: none;
+  height: 13px;
+  border-top: 1px solid var(--ms-border);
+  background-image: repeating-linear-gradient(to right, var(--ms-border) 0 1px, transparent 1px 12px);
+  background-size: 100% 5px;
+  background-repeat: no-repeat;
+  margin-top: calc(var(--ms-space) * 3);
+}
+
+/* Dossier: the metrics construct as a dense key and value strip. */
+.dossier { gap: 1px; background: var(--ms-border); border: 1px solid var(--ms-border); border-radius: 5px; overflow: hidden; }
+.dossier .ms-metric { border: 0; border-radius: 0; padding: 0.75rem 1rem; }
+.dossier .ms-metric-value { font-size: 0.9rem; font-weight: 500; }
+
+/* The opening verdict card and the rule statement. */
+.verdict { border-left: 3px solid var(--ms-accent); max-width: 76ch; box-shadow: 0 1px 2px rgba(22, 32, 43, .06), 0 8px 24px -16px rgba(22, 32, 43, .18); }
+.verdict .ms-card-title { font-family: var(--ms-font-body); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ms-fg-muted); }
+.verdict p { color: var(--ms-fg-muted); }
+.verdict p strong { color: var(--ms-fg); }
+.statement { background: var(--dossier-accent-soft); border-color: var(--ms-accent); }
+.statement .rule { font-family: var(--ms-font-heading); font-size: 1.3rem; font-weight: 600; line-height: 1.35; }
+.statement .prec { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.statement .prec code { background: var(--ms-bg); border: 1px solid var(--ms-border); border-radius: 3px; padding: 3px 9px; }
+.statement p:last-child { font-size: 0.9rem; color: var(--ms-fg-muted); }
+
+/* Categorical chips, carried by bracketed spans. */
+.op, .chip, .call {
+  display: inline-block; font-size: 0.69rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 3px; white-space: nowrap; line-height: 1.6; vertical-align: middle;
+}
+.add, .keep { background: var(--dossier-good-soft); color: var(--dossier-good); }
+.sub, .addit, .model { background: var(--dossier-amber-soft); color: var(--dossier-amber); }
+.freeze, .defect { background: var(--dossier-crimson-soft); color: var(--dossier-crimson); }
+.render, .narrow { background: var(--dossier-accent-soft); color: var(--ms-accent); }
+.dead, .out { background: var(--ms-surface); color: var(--ms-fg-muted); }
+
+/* Layer rail: consecutive columns blocks fuse into one bordered stack. */
+.layer { border: 1px solid var(--ms-border); background: var(--ms-surface); padding: 1.25rem 1.375rem; border-radius: 5px 5px 0 0; }
+.layer + .layer { margin-top: -1px; border-radius: 0; }
+.layer:not(:has(+ .layer)) { border-radius: 0 0 5px 5px; }
+.layer:not(:has(+ .layer)):not(.layer + .layer) { border-radius: 5px; }
+.layer .ord { font-family: var(--ms-font-mono); font-size: 0.8rem; color: var(--ms-fg-muted); }
+.layer .ord strong { display: block; color: var(--ms-accent); font-weight: 500; font-size: 1.05rem; }
+.layer h3 { font-size: 1.06rem; font-weight: 600; letter-spacing: -0.006em; }
+.layer .ms-column > * + h3 { margin-top: 0.5rem; }
+.layer .ms-column > h3 + * { margin-top: 0.5rem; }
+.layer p { font-size: 0.93rem; color: var(--ms-fg-muted); }
+.layer p strong { color: var(--ms-fg); }
+.layer .tbl { font-size: 0.8rem; word-break: break-word; }
+.layer .tbl code { background: none; padding: 0; }
+.layer .facts { list-style: none; padding: 0; margin: 0; font-size: 0.8rem; }
+.layer .facts li + li { margin-top: 0.35rem; }
+.layer .facts strong { display: inline-block; min-width: 4rem; font-weight: 400; color: var(--ms-fg-muted); }
+
+/* Pipeline: stages in one box, the critical one tinted. */
+.pipe { gap: 0; border: 1px solid var(--ms-border); border-radius: 5px; background: var(--ms-surface); overflow: hidden; }
+.pipe > .ms-column { display: flex; flex-direction: column; padding: 1rem 1.125rem; border-right: 1px solid var(--ms-border); }
+.pipe > .ms-column:last-child { border-right: 0; }
+.pipe > .ms-column > * + * { margin-top: 0.45rem; }
+.pipe > .hot { background: var(--dossier-crimson-soft); }
+.pipe .sn { font-family: var(--ms-font-mono); font-size: 0.7rem; color: var(--ms-fg-muted); }
+.pipe p { font-size: 0.8rem; color: var(--ms-fg-muted); line-height: 1.45; }
+.pipe p strong { color: var(--ms-fg); }
+.pipe .hot p { color: var(--ms-fg); }
+.pipe .sw { margin-top: auto; padding-top: 0.5rem; font-size: 0.7rem; word-break: break-word; }
+.pipe .sw code { background: none; padding: 0; color: var(--ms-fg-muted); }
+
+/* Findings and verdict tables. */
+.findings, .verdicts { font-size: 0.9rem; border: 1px solid var(--ms-border); border-radius: 5px; border-collapse: separate; border-spacing: 0; background: var(--ms-surface); }
+.findings th, .verdicts th { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ms-fg-muted); white-space: nowrap; padding: 1rem 0.875rem 0.6rem; }
+.findings td, .verdicts td { padding: 0.875rem; vertical-align: top; line-height: 1.5; }
+.findings tr:last-child td, .verdicts tr:last-child td { border-bottom: 0; }
+.findings td:first-child { font-weight: 600; }
+.findings td:nth-child(2), .verdicts td:nth-child(3) { color: var(--ms-fg-muted); }
+.findings td:nth-child(4) code { background: none; padding: 0; font-size: 0.76rem; color: var(--ms-fg-muted); }
+.verdicts th:nth-child(1) { width: 12rem; } .verdicts th:nth-child(2) { width: 9rem; }
+
+/* Paired questions and phase cards: grid items with a footer line. */
+.split .ms-grid-item, .phases .ms-grid-item { display: flex; flex-direction: column; }
+.split h3 { font-family: var(--ms-font-heading); font-size: 1.02rem; font-weight: 600; line-height: 1.3; }
+.split p { font-size: 0.91rem; color: var(--ms-fg-muted); }
+.split .who, .phases .out { margin-top: auto; padding-top: 0.6rem; border-top: 1px solid var(--ms-border); font-size: 0.78rem; color: var(--ms-fg-muted); }
+.split .who strong { color: var(--ms-fg); }
+.phases .ms-grid-item { border-top: 2px solid var(--ms-accent); }
+.phases .ms-grid-item > p:first-child code { background: none; padding: 0; font-size: 0.72rem; color: var(--ms-fg-muted); }
+.phases h3 { font-size: 1rem; line-height: 1.28; }
+.phases p { font-size: 0.87rem; color: var(--ms-fg-muted); }
+.phases .out { color: var(--ms-fg); }
+.phases .out strong { color: var(--ms-accent); }
+
+/* Lettered steps. */
+.moves .ms-step::before { content: counter(list-item, upper-alpha); }
+.moves h3 { font-size: 1.06rem; }
+.moves p, .moves li { font-size: 0.93rem; color: var(--ms-fg-muted); }
+.moves strong { color: var(--ms-fg); }
+
+.colophon { margin-top: calc(var(--ms-space) * 4); padding-top: 1.375rem; border-top: 1px solid var(--ms-border); font-size: 0.82rem; }

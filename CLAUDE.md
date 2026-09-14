@@ -88,7 +88,8 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] Documentation site (`site/`): home, guide per construct, spec with TOC, conformance browser, showcase; deployed by `pages.yml`
 - [x] Attributes on one list item (§2.5, `- {.hot}` opens the item) so a single grid item or step can be styled; theme stylesheet hook (`markset html --theme <file>`, `renderPage({ theme })`, §6)
 - [x] Default stylesheet layout: two lanes with one left edge (prose at `--ms-measure`, constructs and tables at `--ms-measure-wide`); chosen by screenshot 2026-09-14 after a centered two-lane version was rejected
-- [x] First real document written against the candidate: `examples/ola-tool-access.md` with `examples/ola-theme.css` (internal content; kept out of the site). It forced §2.5 list-item attributes and the theme hook, nothing in §4.
+- [x] First real documents written against the candidate. The private original is untracked and stays out of the repository; the published twin is `examples/notification-routing.md` with `examples/dossier.css`, describing an invented system. Writing them forced §2.5 list-item attributes and the theme hook, and nothing in §4.
+- [x] Site: per-page theme stylesheets. `EXAMPLES` in `site/build.ts` lists each example document and the theme it is read with; the shell links it after `site.css` so it can override. Adding an example is one entry in that array.
 - [ ] Playground page (needs a bundler such as esbuild, not yet approved)
 - [ ] Declare v0 after more real documents have been written against the candidate without further changes to §2 or §4
 - [ ] Publish: keep `@markset/*` private until the suite is frozen; add a `dist/` build (JS + declarations) when publishing becomes a goal

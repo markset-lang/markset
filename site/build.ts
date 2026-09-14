@@ -24,13 +24,21 @@ interface Page {
   /** Optional table of contents HTML. */
   toc?: string;
   themeAttributes?: string;
+  /** Extra stylesheet for this page, as a path inside dist/ (spec §6 theme stylesheets). */
+  themeCss?: string;
 }
 
 interface ConformanceCase {
   section: string; name?: string; markset: string; html?: string; downgrade?: string; ast?: unknown; valid: boolean; diagnostics?: string[];
 }
 
-const NAV: Array<[string, string]> = [["Home", "index.html"], ["Guide", "guide/index.html"], ["Spec", "spec/index.html"], ["Conformance", "conformance/index.html"], ["Examples", "examples/showcase/index.html"]];
+const NAV: Array<[string, string]> = [["Home", "index.html"], ["Guide", "guide/index.html"], ["Spec", "spec/index.html"], ["Conformance", "conformance/index.html"], ["Examples", "examples/index.html"]];
+
+/** Documents rendered as their own pages, with the theme stylesheet each one is meant to be read with (spec §6). */
+const EXAMPLES: Array<{ slug: string; file: string; theme?: string; blurb: string }> = [
+  { slug: "showcase", file: "showcase.md", blurb: "Every v0 construct once, on the default stylesheet. The reference for what the vocabulary looks like with no theme of its own." },
+  { slug: "notification-routing", file: "notification-routing.md", theme: "dossier.css", blurb: "A long analysis document with a theme stylesheet: status chips, a layer rail, a tinted pipeline stage, lettered steps. The system it describes is invented." },
+];
 
 const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
 const SECTION_ORDER = ["attribute-specifier", "bracketed-span", "block-directive", "separator-directive", "attribute-line", ...CONSTRUCTS, "frontmatter"];
@@ -42,6 +50,9 @@ export async function build(): Promise<string[]> {
   await cp(join(root, "site", "site.css"), join(out, "css", "site.css"));
   await mkdir(join(out, "examples", "showcase"), { recursive: true });
   await cp(join(root, "examples", "degrade.svg"), join(out, "examples", "showcase", "degrade.svg"));
+  for (const example of EXAMPLES) {
+    if (example.theme) await cp(join(root, "examples", example.theme), join(out, "css", example.theme));
+  }
 
   const cases = await loadCases();
   const pages: Page[] = [
@@ -51,7 +62,9 @@ export async function build(): Promise<string[]> {
     ...(await Promise.all(CONSTRUCTS.map((name) => guidePage(name, cases[name] ?? [])))),
     conformanceIndex(cases),
     ...SECTION_ORDER.filter((s) => cases[s]).map((s) => conformancePage(s, cases[s])),
-    await markdownPage("examples/showcase/index.html", join(root, "examples", "showcase.md")),
+    await examplesIndex(),
+    ...(await Promise.all(EXAMPLES.map((e) =>
+      markdownPage(`examples/${e.slug}/index.html`, join(root, "examples", e.file), e.theme && `css/${e.theme}`)))),
   ];
 
   const written: string[] = [];
@@ -66,12 +79,29 @@ export async function build(): Promise<string[]> {
 
 // ---------------------------------------------------------------------------
 
-async function markdownPage(path: string, file: string): Promise<Page> {
+async function markdownPage(path: string, file: string, themeCss?: string | false): Promise<Page> {
   const source = await readFile(file, "utf8");
   const { ast, diagnostics } = parseDocument(source);
   failOnErrors(diagnostics, file);
   addHeadingIds(ast);
-  return { path, title: firstHeading(ast) ?? basename(file, ".md"), body: renderHtml(ast), themeAttributes: bodyAttributes(ast.frontmatter ?? null) };
+  return {
+    path,
+    title: firstHeading(ast) ?? basename(file, ".md"),
+    body: renderHtml(ast),
+    themeAttributes: bodyAttributes(ast.frontmatter ?? null),
+    ...(themeCss ? { themeCss } : {}),
+  };
+}
+
+async function examplesIndex(): Promise<Page> {
+  const intro = await readFile(join(root, "site", "content", "examples", "index.md"), "utf8");
+  const { ast, diagnostics } = parseDocument(intro);
+  failOnErrors(diagnostics, "examples/index.md");
+  const list = EXAMPLES.map((e) => {
+    const theme = e.theme ? ` Rendered with <code>--theme examples/${esc(e.theme)}</code>.` : "";
+    return `<li><a href="${e.slug}/index.html"><code>examples/${esc(e.file)}</code></a> — ${esc(e.blurb)}${theme}</li>`;
+  }).join("\n");
+  return { path: "examples/index.html", title: "Examples", body: renderHtml(ast) + `<ul class="site-list">\n${list}\n</ul>\n` };
 }
 
 async function specPage(): Promise<Page> {
@@ -194,7 +224,7 @@ function shell(page: Page): string {
 <title>${esc(page.title)} · Markset</title>
 <link rel="stylesheet" href="${rel}css/markset.css">
 <link rel="stylesheet" href="${rel}css/site.css">
-</head>
+${page.themeCss ? `<link rel="stylesheet" href="${rel}${page.themeCss}">\n` : ""}</head>
 <body${attrs}>
 <header class="site-header">
 <a class="site-brand" href="${rel}index.html">Markset</a>
