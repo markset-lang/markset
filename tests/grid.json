@@ -108,7 +108,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "- **Fast** — sub-50 ms cold start\n- **Small** — 4 kB gzipped\n- **Typed** — no `any` in the public API\n"
   },
   {
     "section": "grid",
@@ -168,7 +169,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "- a\n- b\n"
   },
   {
     "section": "grid",
@@ -305,7 +307,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "1. a\n2. b\n"
   },
   {
     "section": "grid",
@@ -389,7 +392,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "- a\n  - inner\n- b\n"
   },
   {
     "section": "grid",
@@ -443,7 +447,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "- a\n"
   },
   {
     "section": "grid",
@@ -583,7 +588,8 @@
     "valid": true,
     "diagnostics": [
       "DIRECTIVE_UNCLOSED"
-    ]
+    ],
+    "downgrade": "- a\n"
   },
   {
     "section": "grid",
@@ -609,7 +615,8 @@
           "children": []
         }
       ]
-    }
+    },
+    "downgrade": ""
   },
   {
     "section": "grid",
@@ -645,7 +652,8 @@
           ]
         }
       ]
-    }
+    },
+    "downgrade": "not a list\n"
   },
   {
     "section": "grid",
@@ -720,7 +728,8 @@
           ]
         }
       ]
-    }
+    },
+    "downgrade": "- a\n\n* b\n"
   },
   {
     "section": "grid",

@@ -87,7 +87,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "1. Install the CLI.\n2. Run `markset init`.\n3. Edit `markset.toml`.\n"
   },
   {
     "section": "steps",
@@ -169,7 +170,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "1. a\n   - x\n2. b\n"
   },
   {
     "section": "steps",
@@ -227,7 +229,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "3. a\n4. b\n"
   },
   {
     "section": "steps",
@@ -340,7 +343,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "1. a\n\n   x\n"
   },
   {
     "section": "steps",
@@ -500,7 +504,8 @@
           "children": []
         }
       ]
-    }
+    },
+    "downgrade": ""
   },
   {
     "section": "steps",
@@ -551,7 +556,8 @@
           ]
         }
       ]
-    }
+    },
+    "downgrade": "- a\n"
   },
   {
     "section": "steps",
