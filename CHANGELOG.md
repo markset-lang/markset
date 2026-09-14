@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- §2.5: attribute lines that open a list item attach to the item, so one grid item or step can carry an id, classes, or data attributes.
+- §6: theme stylesheets are chosen by the renderer; `markset html --theme <file>` appends one after the default stylesheet, and `renderPage` takes a `theme` option.
+- Default stylesheet: two lanes with one left edge. Prose blocks stop at the reading measure; grid, columns, metrics, tabs, figure, and tables run to the wide measure.
+
 ## 0.0.0-rc.1 — 2026-09-14
 
 First release candidate of the v0 specification and reference implementation.

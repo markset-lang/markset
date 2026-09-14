@@ -55,6 +55,8 @@ declare module "mdast" {
   interface Paragraph { attributes?: Attributes }
   interface Heading { attributes?: Attributes }
   interface List { attributes?: Attributes }
+  /** A list item gains `attributes` from attribute lines that open it (§2.5). */
+  interface ListItem { attributes?: Attributes }
   interface Table { attributes?: Attributes }
   interface Code { attributes?: Attributes }
   interface Blockquote { attributes?: Attributes }

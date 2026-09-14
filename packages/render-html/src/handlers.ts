@@ -7,6 +7,7 @@ import type { Element, ElementContent, Properties } from "hast";
 import type { ListItem, PhrasingContent, TableCell } from "mdast";
 import { defaultHandlers, type Handlers, type State } from "mdast-util-to-hast";
 import type {
+  Attributes,
   Callout, CalloutKind, Card, Columns, Directive, Figure, Grid, Metrics, Span, Steps, Tabs,
 } from "@markset/parser";
 
@@ -69,7 +70,7 @@ export function marksetHandlers(): Handlers {
       props.dataCols = String(node.cols);
       props.dataGap = node.gap;
       const items = node.children[0].children.map((item: ListItem) =>
-        block("div", { className: ["ms-grid-item"] }, state.all(item)));
+        block("div", withAttributes({ className: ["ms-grid-item"] }, item.attributes), state.all(item)));
       return finish(state, node, block("div", props, items));
     },
 
@@ -116,7 +117,8 @@ export function marksetHandlers(): Handlers {
       if (typeof list.start === "number" && list.start !== 1) props.start = list.start;
       const items = list.children.map((item) => {
         const li = defaultHandlers.listItem(state, item, list) as Element;
-        li.properties = { className: ["ms-step"], ...li.properties };
+        const { className, ...rest } = li.properties;
+        li.properties = { className: ["ms-step", ...(Array.isArray(className) ? className.map(String) : [])], ...rest };
         return li;
       });
       return finish(state, node, block("ol", props, items));
@@ -176,6 +178,16 @@ export function marksetHandlers(): Handlers {
   function cellContent(state: State, cell: TableCell | undefined): ElementContent[] {
     return cell ? state.all(cell) : [];
   }
+}
+
+/** Merge an attribute node (id, author classes, data-*) into element properties; the ms- class stays first. */
+function withAttributes(props: Properties, attributes: Attributes | undefined): Properties {
+  if (!attributes) return props;
+  const out: Properties = { ...props };
+  if (attributes.id) out.id = attributes.id;
+  if (attributes.classes.length) out.className = [...((props.className as string[]) ?? []), ...attributes.classes];
+  for (const [key, value] of Object.entries(attributes.attrs)) out[`data-${key}`] = value;
+  return out;
 }
 
 function cellText(cell: TableCell): string {
