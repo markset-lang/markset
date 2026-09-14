@@ -13,4 +13,12 @@ export const drivers: Record<string, Driver> = {
   "block-directive": directiveLineDriver,
   "separator-directive": directiveLineDriver,
   "bracketed-span": documentDriver,
+  callout: documentDriver,
+  card: documentDriver,
+  grid: documentDriver,
+  columns: documentDriver,
+  tabs: documentDriver,
+  steps: documentDriver,
+  metrics: documentDriver,
+  figure: documentDriver,
 };

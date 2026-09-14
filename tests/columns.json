@@ -1,0 +1,789 @@
+[
+  {
+    "section": "columns",
+    "name": "canonical",
+    "markset": "::::columns{ratio=\"2:1\"}\nThe main argument, at full paragraph length.\n\n::col\n\n:::card{tone=neutral}\nA supporting sidebar.\n:::\n::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": [
+            2,
+            1
+          ],
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "The main argument, at full paragraph length."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "card",
+                  "title": null,
+                  "tone": "neutral",
+                  "compact": false,
+                  "id": null,
+                  "classes": [],
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "A supporting sidebar."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "columns",
+    "name": "three equal columns",
+    "markset": ":::columns\nA\n\n::col\n\nB\n\n::col\n\nC\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "B"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "C"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "columns",
+    "name": "three-term ratio and gap",
+    "markset": ":::columns{ratio=1:2:1 gap=sm}\nA\n\n::col\n\nB\n\n::col\n\nC\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": [
+            1,
+            2,
+            1
+          ],
+          "gap": "sm",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "B"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "C"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "columns",
+    "name": "id and classes on the separator",
+    "markset": ":::columns\nA\n\n::col{#side .narrow}\n\nB\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": "side",
+              "classes": [
+                "narrow"
+              ],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "B"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "columns",
+    "name": "empty columns",
+    "markset": ":::columns\nA\n\n::col\n\n::col\n\nC\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": []
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "C"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "columns",
+    "name": "nested inside a card",
+    "markset": ":::::card\n::::columns\nA\n\n::col\n\n:::card\nB\n:::\n::::\n:::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "columns",
+              "ratio": null,
+              "gap": "md",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "column",
+                  "id": null,
+                  "classes": [],
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "A"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "column",
+                  "id": null,
+                  "classes": [],
+                  "children": [
+                    {
+                      "type": "card",
+                      "title": null,
+                      "tone": "neutral",
+                      "compact": false,
+                      "id": null,
+                      "classes": [],
+                      "children": [
+                        {
+                          "type": "paragraph",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "B"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "columns",
+    "name": "empty content is a single empty column",
+    "markset": ":::columns\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "COLUMNS_SINGLE"
+    ]
+  },
+  {
+    "section": "columns",
+    "name": "single column warns",
+    "markset": ":::columns\nA\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "COLUMNS_SINGLE"
+    ]
+  },
+  {
+    "section": "columns",
+    "name": "unknown attribute on a separator warns",
+    "markset": ":::columns\nA\n\n::col{width=50}\n\nB\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "B"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_ATTRIBUTE"
+    ]
+  },
+  {
+    "section": "columns",
+    "name": "unclosed fence",
+    "markset": ":::columns\nA\n\n::col\n\nB\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "B"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNCLOSED"
+    ]
+  },
+  {
+    "section": "columns",
+    "name": "ratio term count must match the columns",
+    "markset": ":::columns{ratio=1:1:1}\nA\n\n::col\n\nB\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "COLUMNS_RATIO_MISMATCH"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "B"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "columns",
+    "name": "malformed ratio",
+    "markset": ":::columns{ratio=2/1}\nA\n\n::col\n\nB\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "B"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "columns",
+    "name": "ratio terms must be positive",
+    "markset": ":::columns{ratio=0:1}\nA\n\n::col\n\nB\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "B"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "columns",
+    "name": "invalid gap",
+    "markset": ":::columns{gap=huge}\nA\n\n::col\n\nB\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "B"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

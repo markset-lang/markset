@@ -76,6 +76,6 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] Parser: CommonMark base on micromark/mdast with directive containers, separators, spans, GFM tables; `parseDocument()` in `document.ts`. Generic `directive` nodes only; no construct normalization yet.
 - [ ] Frontmatter and the `markset: 0` activation trigger (spec §6, §9.3)
 - [ ] Downgrade renderer
-- [ ] Constructs: callout, card, grid, columns, tabs, steps, metrics, figure
+- [x] Constructs: callout, card, grid, columns, tabs, steps, metrics, figure (`packages/parser/src/constructs.ts`, one `tests/<name>.json` each; AST aspect only until the renderers exist)
 - [ ] HTML renderer
 - [ ] Default stylesheet

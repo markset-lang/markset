@@ -1,0 +1,445 @@
+[
+  {
+    "section": "card",
+    "name": "canonical",
+    "markset": ":::card[Pricing tiers]{tone=info}\nContent here.\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": [
+            {
+              "type": "text",
+              "value": "Pricing tiers"
+            }
+          ],
+          "tone": "info",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Content here."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "card",
+    "name": "defaults without a title",
+    "markset": ":::card\nx\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "card",
+    "name": "compact with id and classes",
+    "markset": ":::card{#plans .wide .muted compact=true}\nx\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": true,
+          "id": "plans",
+          "classes": [
+            "wide",
+            "muted"
+          ],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "card",
+    "name": "every tone",
+    "markset": ":::card{tone=danger}\n:::\n\n:::card{tone=success}\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "danger",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": []
+        },
+        {
+          "type": "card",
+          "title": null,
+          "tone": "success",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": []
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "card",
+    "name": "title with inline markup",
+    "markset": ":::card[*Beta* plan]\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": [
+            {
+              "type": "emphasis",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Beta"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "value": " plan"
+            }
+          ],
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": []
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "card",
+    "name": "nested cards use a longer outer fence",
+    "markset": "::::card[Outer]\n:::card[Inner]\nx\n:::\n::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": [
+            {
+              "type": "text",
+              "value": "Outer"
+            }
+          ],
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "card",
+              "title": [
+                {
+                  "type": "text",
+                  "value": "Inner"
+                }
+              ],
+              "tone": "neutral",
+              "compact": false,
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "card",
+    "name": "empty content",
+    "markset": ":::card\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": []
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "card",
+    "name": "mixed block content",
+    "markset": ":::card\n# H\n\n- a\n\n```\ncode\n```\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "heading",
+              "depth": 1,
+              "children": [
+                {
+                  "type": "text",
+                  "value": "H"
+                }
+              ]
+            },
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "code",
+              "lang": null,
+              "meta": null,
+              "value": "code"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "card",
+    "name": "unknown attribute warns and is dropped",
+    "markset": ":::card{size=lg}\nx\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_ATTRIBUTE"
+    ]
+  },
+  {
+    "section": "card",
+    "name": "unclosed fence",
+    "markset": ":::card[T]\nx\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": [
+            {
+              "type": "text",
+              "value": "T"
+            }
+          ],
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNCLOSED"
+    ]
+  },
+  {
+    "section": "card",
+    "name": "invalid tone falls back to neutral",
+    "markset": ":::card{tone=purple}\nx\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "card",
+    "name": "compact must be true or false",
+    "markset": ":::card{compact=yes}\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": []
+        }
+      ]
+    }
+  },
+  {
+    "section": "card",
+    "name": "invalid and unknown attributes are both reported",
+    "markset": ":::card{tone=x size=y}\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE",
+      "DIRECTIVE_UNKNOWN_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": []
+        }
+      ]
+    }
+  }
+]

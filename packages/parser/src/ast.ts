@@ -1,4 +1,4 @@
-import type { BlockContent, DefinitionContent, Node, Parent, PhrasingContent } from "mdast";
+import type { BlockContent, DefinitionContent, List, Node, Parent, PhrasingContent, Table } from "mdast";
 import type { Attributes } from "./attributes.ts";
 
 /**
@@ -61,5 +61,120 @@ declare module "micromark-util-types" {
     marksetSpan: "marksetSpan";
     marksetSpanMarker: "marksetSpanMarker";
     marksetSpanAttributes: "marksetSpanAttributes";
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Normalized constructs (spec §4)
+// ---------------------------------------------------------------------------
+
+export type Tone = "neutral" | "info" | "success" | "warn" | "danger";
+export type Gap = "sm" | "md" | "lg";
+export type CalloutKind = "NOTE" | "TIP" | "IMPORTANT" | "WARNING" | "CAUTION";
+
+/** Fields every directive-based construct carries from its attribute specifier. */
+export interface ConstructBase extends Parent {
+  id: string | null;
+  classes: string[];
+}
+
+export interface Callout extends Parent {
+  type: "callout";
+  kind: CalloutKind;
+  title: PhrasingContent[] | null;
+  /** `-` after the marker is "closed", `+` is "open", absent is null. */
+  fold: "closed" | "open" | null;
+  children: Array<BlockContent | DefinitionContent>;
+}
+
+export interface Card extends ConstructBase {
+  type: "card";
+  title: PhrasingContent[] | null;
+  tone: Tone;
+  compact: boolean;
+  children: Array<BlockContent | DefinitionContent>;
+}
+
+export interface Grid extends ConstructBase {
+  type: "grid";
+  cols: number;
+  gap: Gap;
+  /** Exactly one list. */
+  children: [List];
+}
+
+export interface Columns extends ConstructBase {
+  type: "columns";
+  ratio: number[] | null;
+  gap: Gap;
+  children: Column[];
+}
+
+export interface Column extends ConstructBase {
+  type: "column";
+  children: Array<BlockContent | DefinitionContent>;
+}
+
+export interface Tabs extends ConstructBase {
+  type: "tabs";
+  /** 1-based index of the initially active tab. */
+  active: number;
+  children: Tab[];
+}
+
+export interface Tab extends Parent {
+  type: "tab";
+  depth: 1 | 2 | 3 | 4 | 5 | 6;
+  label: PhrasingContent[];
+  children: Array<BlockContent | DefinitionContent>;
+}
+
+export interface Steps extends ConstructBase {
+  type: "steps";
+  /** Exactly one ordered list. */
+  children: [List];
+}
+
+export interface Metrics extends ConstructBase {
+  type: "metrics";
+  direction: "normal" | "inverse";
+  /** Exactly one table. */
+  children: [Table];
+}
+
+export interface Figure extends ConstructBase {
+  type: "figure";
+  caption: PhrasingContent[] | null;
+  /** Percentage, 1-100, or null. */
+  width: number | null;
+  children: Array<BlockContent | DefinitionContent>;
+}
+
+export type Construct = Callout | Card | Grid | Columns | Tabs | Steps | Metrics | Figure;
+
+declare module "mdast" {
+  interface BlockContentMap {
+    callout: Callout;
+    card: Card;
+    grid: Grid;
+    columns: Columns;
+    column: Column;
+    tabs: Tabs;
+    tab: Tab;
+    steps: Steps;
+    metrics: Metrics;
+    figure: Figure;
+  }
+  interface RootContentMap {
+    callout: Callout;
+    card: Card;
+    grid: Grid;
+    columns: Columns;
+    column: Column;
+    tabs: Tabs;
+    tab: Tab;
+    steps: Steps;
+    metrics: Metrics;
+    figure: Figure;
   }
 }

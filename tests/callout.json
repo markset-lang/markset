@@ -1,0 +1,524 @@
+[
+  {
+    "section": "callout",
+    "name": "canonical",
+    "markset": "> [!WARNING] Breaking change in v3\n> The `render()` signature changed.\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "callout",
+          "kind": "WARNING",
+          "title": [
+            {
+              "type": "text",
+              "value": "Breaking change in v3"
+            }
+          ],
+          "fold": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "The "
+                },
+                {
+                  "type": "inlineCode",
+                  "value": "render()"
+                },
+                {
+                  "type": "text",
+                  "value": " signature changed."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "collapsed by default, no title",
+    "markset": "> [!NOTE]-\n> Collapsed by default.\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "callout",
+          "kind": "NOTE",
+          "title": null,
+          "fold": "closed",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Collapsed by default."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "expanded with a title",
+    "markset": "> [!TIP]+ Handy\n> Body.\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "callout",
+          "kind": "TIP",
+          "title": [
+            {
+              "type": "text",
+              "value": "Handy"
+            }
+          ],
+          "fold": "open",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Body."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "type is case-insensitive and normalized to uppercase",
+    "markset": "> [!note] Heads up\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "callout",
+          "kind": "NOTE",
+          "title": [
+            {
+              "type": "text",
+              "value": "Heads up"
+            }
+          ],
+          "fold": null,
+          "children": []
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "marker alone",
+    "markset": "> [!IMPORTANT]\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "callout",
+          "kind": "IMPORTANT",
+          "title": null,
+          "fold": null,
+          "children": []
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "title with inline markup",
+    "markset": "> [!CAUTION] Use *care* here\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "callout",
+          "kind": "CAUTION",
+          "title": [
+            {
+              "type": "text",
+              "value": "Use "
+            },
+            {
+              "type": "emphasis",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "care"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "value": " here"
+            }
+          ],
+          "fold": null,
+          "children": []
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "body with several blocks",
+    "markset": "> [!NOTE] T\n> one\n>\n> - a\n> - b\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "callout",
+          "kind": "NOTE",
+          "title": [
+            {
+              "type": "text",
+              "value": "T"
+            }
+          ],
+          "fold": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "one"
+                }
+              ]
+            },
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "body starting on the next line without a title",
+    "markset": "> [!TIP]\n> First line\n> second line\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "callout",
+          "kind": "TIP",
+          "title": null,
+          "fold": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "First line\nsecond line"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "nested: callout containing a card",
+    "markset": "> [!NOTE] T\n> :::card\n> x\n> :::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "callout",
+          "kind": "NOTE",
+          "title": [
+            {
+              "type": "text",
+              "value": "T"
+            }
+          ],
+          "fold": null,
+          "children": [
+            {
+              "type": "card",
+              "title": null,
+              "tone": "neutral",
+              "compact": false,
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "nested: callout inside a card",
+    "markset": ":::card\n> [!TIP] t\n> b\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "callout",
+              "kind": "TIP",
+              "title": [
+                {
+                  "type": "text",
+                  "value": "t"
+                }
+              ],
+              "fold": null,
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "lazy continuation line joins the body",
+    "markset": "> [!NOTE] T\nlazy\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "callout",
+          "kind": "NOTE",
+          "title": [
+            {
+              "type": "text",
+              "value": "T"
+            }
+          ],
+          "fold": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "lazy"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "plain blockquote is unchanged",
+    "markset": "> quote\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "quote"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "marker not at the start is text",
+    "markset": "> Note [!NOTE] x\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Note [!NOTE] x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "marker glued to text is not a marker",
+    "markset": "> [!NOTE]Title\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "[!NOTE]Title"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "marker outside a blockquote is text",
+    "markset": "[!NOTE] x\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "[!NOTE] x"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "callout",
+    "name": "unknown type stays a blockquote",
+    "markset": "> [!FOO] x\n",
+    "valid": false,
+    "diagnostics": [
+      "CALLOUT_UNKNOWN_TYPE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "[!FOO] x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]
