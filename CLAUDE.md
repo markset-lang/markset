@@ -51,7 +51,7 @@ docs/       background analysis, prior art, design rationale
 - Node ≥ 22.18, npm workspaces. Source is TypeScript run directly by Node's type stripping, so use erasable syntax only (no enums, namespaces, or parameter properties) and import with explicit `.ts` extensions.
 - The CommonMark base is **micromark + mdast** (`micromark`, `mdast-util-from-markdown`, the GFM table pair, and the `micromark-util-*` helpers), chosen 2026-09-13. Markset's three grammar constructs are a micromark syntax extension in `packages/parser/src/syntax.ts` and an mdast compiler extension in `from-markdown.ts`. The Markset AST is mdast plus `directive`, `separator`, and `span` nodes (`ast.ts`), so any unified tooling can consume it. Tokenizers find boundaries only; fence lines and attribute specifiers are parsed by the line grammar, so there is one grammar to keep in sync with the spec.
 - `npm install` once, to link the workspace packages. Then `npm test` (unit tests plus the full conformance suite) and `npm run conformance` for the per-section report (`--section <name>`, `--verbose`).
-- `tsconfig.json` is for editors and for `tsc --noEmit`; `typescript` is deliberately not a dependency.
+- `npm run typecheck` runs `tsc --noEmit`. `typescript` and `@types/node` are the only dev dependencies (approved 2026-09-14); there is still no build step.
 - Adding a section to `tests/` without a driver in `packages/conformance/src/drivers.ts` is fine: the harness reports it as skipped, not failed. Same for `html`/`downgrade` fields before those renderers exist. Register a driver once the code exists so the cases start counting.
 
 ## Prior art worth knowing
@@ -81,4 +81,4 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] Default stylesheet (`packages/render-html/css/markset.css`: tokens, presets, density, radius, dark mode, print; tabs via radio inputs; grid and columns via CSS grid)
 - [x] CLI (`packages/cli`: `check`, `html`, `downgrade`, `ast`; `examples/showcase.md` exercises every construct)
 - [ ] Block attributes for paragraphs (`.lead`, `.eyebrow` in §5 need a syntax; see §9.5)
-- [ ] Publish: package names, versions, build/typecheck in CI once `typescript` is approved as a dev dependency
+- [ ] Publish: keep `@markset/*` private until the suite is frozen; add a `dist/` build (JS + declarations) when publishing becomes a goal

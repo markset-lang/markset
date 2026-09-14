@@ -2,10 +2,19 @@
   "name": "markset",
   "private": true,
   "type": "module",
-  "workspaces": ["packages/*"],
-  "engines": { "node": ">=22.18" },
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
   "scripts": {
     "test": "node --test packages/*/test/*.test.ts",
-    "conformance": "node packages/conformance/src/cli.ts"
+    "conformance": "node packages/conformance/src/cli.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "^26.5.1",
+    "typescript": "^7.0.2"
   }
 }
