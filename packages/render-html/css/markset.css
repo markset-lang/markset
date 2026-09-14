@@ -312,10 +312,9 @@ summary.ms-callout-title { cursor: pointer; }
 .ms-metric[data-direction="down"] .ms-metric-delta { color: var(--ms-tone-danger); }
 
 /* ---- figure (§4.8) ---------------------------------------------------------- */
-.ms-figure { margin: 0 auto; width: var(--ms-width, 100%); max-width: 100%; text-align: center; }
-.ms-figure > img { display: block; margin: 0 auto; border-radius: var(--ms-radius); }
-.ms-figure > table { text-align: left; }
-.ms-figure > pre { text-align: left; }
+/* A narrowed figure keeps the document's left edge rather than centering itself. */
+.ms-figure { margin-inline: 0; width: var(--ms-width, 100%); max-width: 100%; }
+.ms-figure > img { display: block; border-radius: var(--ms-radius); }
 .ms-figure > figcaption { margin-top: calc(var(--ms-space) / 2); font-size: 0.9em; color: var(--ms-fg-muted); font-style: italic; }
 
 /* ---- print -------------------------------------------------------------------- */
