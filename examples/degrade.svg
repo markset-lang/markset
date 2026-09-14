@@ -4,8 +4,18 @@
     .k { font-weight: 600; }
     rect { fill: #f6f8fa; stroke: #d0d7de; rx: 8; }
     .arrow { stroke: #59636e; stroke-width: 1.5; fill: none; marker-end: url(#m); }
+    .head { fill: #59636e; }
+    /* The page follows the reader's color scheme, so this diagram does too. An
+     * SVG loaded as an image cannot read the page's tokens, but it can read the
+     * same preference. Note: this is XML, so no angle brackets in comments. */
+    @media (prefers-color-scheme: dark) {
+      text { fill: #e6edf3; }
+      rect { fill: #161b22; stroke: #30363d; }
+      .arrow { stroke: #8b949e; }
+      .head { fill: #8b949e; }
+    }
   </style>
-  <defs><marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#59636e"/></marker></defs>
+  <defs><marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path class="head" d="M0 0L10 5L0 10z"/></marker></defs>
   <g transform="translate(20 20)">
     <rect width="140" height="44"/><text x="70" y="27" text-anchor="middle" class="k">:::grid</text>
     <rect y="60" width="140" height="44"/><text x="70" y="87" text-anchor="middle" class="k">:::steps</text>

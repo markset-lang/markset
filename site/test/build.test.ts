@@ -40,3 +40,13 @@ test("an example can carry a theme stylesheet, linked after the site's own", asy
   assert.match(index, /showcase\/index\.html/);
   assert.match(index, /notification-routing\/index\.html/);
 });
+
+test("copied SVG assets stay valid XML", async () => {
+  // SVG is XML, so a `<` inside <style> is parsed as markup and the whole file
+  // fails to render, silently, as a broken image. That happened once.
+  const svg = await readFile(join(dist, "examples", "showcase", "degrade.svg"), "utf8");
+  const style = /<style>([\s\S]*?)<\/style>/.exec(svg);
+  assert.ok(style, "the diagram carries its own styles");
+  assert.doesNotMatch(style[1], /[<&]/, "no raw < or & inside an SVG <style> element");
+  assert.match(svg, /prefers-color-scheme: dark/, "the diagram follows the reader's color scheme");
+});

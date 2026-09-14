@@ -35,9 +35,9 @@ interface ConformanceCase {
 const NAV: Array<[string, string]> = [["Home", "index.html"], ["Guide", "guide/index.html"], ["Spec", "spec/index.html"], ["Conformance", "conformance/index.html"], ["Examples", "examples/index.html"]];
 
 /** Documents rendered as their own pages, with the theme stylesheet each one is meant to be read with (spec §6). */
-const EXAMPLES: Array<{ slug: string; file: string; theme?: string; blurb: string }> = [
-  { slug: "showcase", file: "showcase.md", blurb: "Every v0 construct once, on the default stylesheet. The reference for what the vocabulary looks like with no theme of its own." },
-  { slug: "notification-routing", file: "notification-routing.md", theme: "dossier.css", blurb: "A long analysis document with a theme stylesheet: status chips, a layer rail, a tinted pipeline stage, lettered steps. The system it describes is invented." },
+const EXAMPLES: Array<{ slug: string; file: string; title: string; theme?: string; blurb: string }> = [
+  { slug: "showcase", file: "showcase.md", title: "Showcase", blurb: "Every v0 construct once, on the default stylesheet. The reference for what the vocabulary looks like with no theme of its own." },
+  { slug: "notification-routing", file: "notification-routing.md", title: "Analysis document", theme: "dossier.css", blurb: "A long analysis document with a theme stylesheet: status chips, a layer rail, a tinted pipeline stage, lettered steps. The system it describes is invented." },
 ];
 
 const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
@@ -63,8 +63,7 @@ export async function build(): Promise<string[]> {
     conformanceIndex(cases),
     ...SECTION_ORDER.filter((s) => cases[s]).map((s) => conformancePage(s, cases[s])),
     await examplesIndex(),
-    ...(await Promise.all(EXAMPLES.map((e) =>
-      markdownPage(`examples/${e.slug}/index.html`, join(root, "examples", e.file), e.theme && `css/${e.theme}`)))),
+    ...(await Promise.all(EXAMPLES.map(examplePage))),
   ];
 
   const written: string[] = [];
@@ -93,13 +92,23 @@ async function markdownPage(path: string, file: string, themeCss?: string | fals
   };
 }
 
+/** One example document, with links to the index and to the other examples so no page is a dead end. */
+async function examplePage(example: (typeof EXAMPLES)[number]): Promise<Page> {
+  const page = await markdownPage(`examples/${example.slug}/index.html`, join(root, "examples", example.file), example.theme && `css/${example.theme}`);
+  const others = EXAMPLES.filter((e) => e.slug !== example.slug)
+    .map((e) => `<a href="../${e.slug}/index.html">${esc(e.title)}</a>`);
+  const source = `<a href="${REPO}/blob/main/examples/${esc(example.file)}">source</a>`;
+  page.body += `<p class="site-more">Examples: <a href="../index.html">all</a>${others.length ? " · " + others.join(" · ") : ""} · ${source}</p>\n`;
+  return page;
+}
+
 async function examplesIndex(): Promise<Page> {
   const intro = await readFile(join(root, "site", "content", "examples", "index.md"), "utf8");
   const { ast, diagnostics } = parseDocument(intro);
   failOnErrors(diagnostics, "examples/index.md");
   const list = EXAMPLES.map((e) => {
     const theme = e.theme ? ` Rendered with <code>--theme examples/${esc(e.theme)}</code>.` : "";
-    return `<li><a href="${e.slug}/index.html"><code>examples/${esc(e.file)}</code></a> — ${esc(e.blurb)}${theme}</li>`;
+    return `<li><a href="${e.slug}/index.html">${esc(e.title)}</a> — ${esc(e.blurb)}${theme} <a href="${REPO}/blob/main/examples/${esc(e.file)}"><code>examples/${esc(e.file)}</code></a></li>`;
   }).join("\n");
   return { path: "examples/index.html", title: "Examples", body: renderHtml(ast) + `<ul class="site-list">\n${list}\n</ul>\n` };
 }
