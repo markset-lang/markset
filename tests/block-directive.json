@@ -1,0 +1,903 @@
+[
+  {
+    "section": "block-directive",
+    "name": "canonical",
+    "markset": ":::card[Pricing tiers]{tone=info}",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": "Pricing tiers",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {
+          "tone": "info"
+        }
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "name only",
+    "markset": ":::steps",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "steps",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "name and attributes",
+    "markset": ":::grid{cols=3 gap=md}",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "grid",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {
+          "cols": "3",
+          "gap": "md"
+        }
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "name and argument",
+    "markset": ":::card[Title]",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": "Title",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "every vocabulary name",
+    "markset": ":::figure",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "figure",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "columns",
+    "markset": ":::columns{ratio=\"2:1\"}",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "columns",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {
+          "ratio": "2:1"
+        }
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "tabs",
+    "markset": ":::tabs{active=2}",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "tabs",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {
+          "active": "2"
+        }
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "metrics",
+    "markset": ":::metrics{direction=inverse}",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "metrics",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {
+          "direction": "inverse"
+        }
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "longer fence for nesting",
+    "markset": "::::card",
+    "ast": {
+      "type": "directive-open",
+      "fence": 4,
+      "name": "card",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "much longer fence",
+    "markset": ":::::::columns",
+    "ast": {
+      "type": "directive-open",
+      "fence": 7,
+      "name": "columns",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "empty argument",
+    "markset": ":::card[]",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": "",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "empty attribute specifier",
+    "markset": ":::card{}",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "argument with nested brackets is kept raw",
+    "markset": ":::card[See [the docs](https://x.y)]",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": "See [the docs](https://x.y)",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "argument with escaped bracket is kept raw",
+    "markset": ":::card[a \\] b]",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": "a \\] b",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "argument may contain braces",
+    "markset": ":::card[a {b} c]{#x}",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": "a {b} c",
+      "attributes": {
+        "type": "attributes",
+        "id": "x",
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "id and classes on a directive",
+    "markset": ":::figure[Lifecycle]{#fig-lifecycle .wide width=60%}",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "figure",
+      "argument": "Lifecycle",
+      "attributes": {
+        "type": "attributes",
+        "id": "fig-lifecycle",
+        "classes": [
+          "wide"
+        ],
+        "attrs": {
+          "width": "60%"
+        }
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "trailing whitespace is allowed",
+    "markset": ":::card  \t",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "one space of indentation",
+    "markset": " :::card",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "three spaces of indentation",
+    "markset": "   :::card",
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "closing fence",
+    "markset": ":::",
+    "ast": {
+      "type": "directive-close",
+      "fence": 3
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "longer closing fence",
+    "markset": ":::::",
+    "ast": {
+      "type": "directive-close",
+      "fence": 5
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "closing fence with trailing whitespace",
+    "markset": ":::  ",
+    "ast": {
+      "type": "directive-close",
+      "fence": 3
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "indented closing fence",
+    "markset": "  :::",
+    "ast": {
+      "type": "directive-close",
+      "fence": 3
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "four spaces of indentation is not a fence",
+    "markset": "    :::card",
+    "ast": null,
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "tab indentation is not a fence",
+    "markset": "\t:::card",
+    "ast": null,
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "single colon is text",
+    "markset": ": not a fence",
+    "ast": null,
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "colons mid-line are text",
+    "markset": "use std::vector here",
+    "ast": null,
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "empty line is text",
+    "markset": "",
+    "ast": null,
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "anonymous div",
+    "markset": "::: {.foo}",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_MISSING_NAME",
+      "DIRECTIVE_TRAILING_CONTENT"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": null,
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "attributes with no name",
+    "markset": ":::{.foo}",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_MISSING_NAME"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": null,
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [
+          "foo"
+        ],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "argument with no name",
+    "markset": ":::[Title]",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_MISSING_NAME"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": null,
+      "argument": "Title",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "name starting with a digit",
+    "markset": ":::9card",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_BAD_NAME"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": null,
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "name starting with a hyphen",
+    "markset": ":::-card",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_BAD_NAME"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": null,
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "unknown name",
+    "markset": ":::panel",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_NAME"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "panel",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "callout is not a directive",
+    "markset": ":::callout",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_NAME"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "callout",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "deferred construct is unknown in v0",
+    "markset": ":::timeline",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_NAME"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "timeline",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "separator name used as a block",
+    "markset": ":::col",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_NAME"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "col",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "names are case-sensitive",
+    "markset": ":::Card",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_NAME"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "Card",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "space before the argument",
+    "markset": ":::card [Title]",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_TRAILING_CONTENT"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "space before the attributes",
+    "markset": ":::card {tone=info}",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_TRAILING_CONTENT"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "space between argument and attributes",
+    "markset": ":::card[T] {tone=info}",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_TRAILING_CONTENT"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": "T",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "attributes before argument",
+    "markset": ":::card{#x}[T]",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_TRAILING_CONTENT"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": "x",
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "free text after the name",
+    "markset": ":::card and more",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_TRAILING_CONTENT"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "text after a closing fence is an unnamed opening fence",
+    "markset": "::: done",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_MISSING_NAME",
+      "DIRECTIVE_TRAILING_CONTENT"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": null,
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "unterminated argument",
+    "markset": ":::card[Title",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNTERMINATED_ARGUMENT"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": "Title",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "unbalanced nested bracket keeps the rest of the line",
+    "markset": ":::card[a [b]",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNTERMINATED_ARGUMENT"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": "a [b]",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "escaped closing bracket leaves the argument open",
+    "markset": ":::card[a\\]",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNTERMINATED_ARGUMENT"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": "a\\]",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "bad attribute specifier propagates ATTR codes",
+    "markset": ":::card{#}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "unterminated attribute specifier",
+    "markset": ":::card{tone=info",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_UNTERMINATED"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "card",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {
+          "tone": "info"
+        }
+      }
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "unknown name and bad attributes are both reported",
+    "markset": ":::panel{=x}",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_NAME",
+      "ATTR_UNEXPECTED_CHAR"
+    ],
+    "ast": {
+      "type": "directive-open",
+      "fence": 3,
+      "name": "panel",
+      "argument": null,
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  }
+]

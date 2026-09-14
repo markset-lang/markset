@@ -1,0 +1,288 @@
+[
+  {
+    "section": "separator-directive",
+    "name": "canonical",
+    "markset": "::col",
+    "ast": {
+      "type": "separator",
+      "name": "col",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "with attributes",
+    "markset": "::col{.wide}",
+    "ast": {
+      "type": "separator",
+      "name": "col",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [
+          "wide"
+        ],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "with id",
+    "markset": "::col{#sidebar}",
+    "ast": {
+      "type": "separator",
+      "name": "col",
+      "attributes": {
+        "type": "attributes",
+        "id": "sidebar",
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "empty attributes",
+    "markset": "::col{}",
+    "ast": {
+      "type": "separator",
+      "name": "col",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "trailing whitespace",
+    "markset": "::col \t",
+    "ast": {
+      "type": "separator",
+      "name": "col",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "indented up to three spaces",
+    "markset": "   ::col",
+    "ast": {
+      "type": "separator",
+      "name": "col",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "two colons alone are text",
+    "markset": "::",
+    "ast": null,
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "two colons and a space are text",
+    "markset": ":: col",
+    "ast": null,
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "two colons and a digit are text",
+    "markset": "::1",
+    "ast": null,
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "four spaces of indentation is text",
+    "markset": "    ::col",
+    "ast": null,
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "colons mid-line are text",
+    "markset": "a::b",
+    "ast": null,
+    "valid": true
+  },
+  {
+    "section": "separator-directive",
+    "name": "unknown separator name",
+    "markset": "::tab",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_NAME"
+    ],
+    "ast": {
+      "type": "separator",
+      "name": "tab",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "separator-directive",
+    "name": "block directive name used as a separator",
+    "markset": "::card",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_NAME"
+    ],
+    "ast": {
+      "type": "separator",
+      "name": "card",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "separator-directive",
+    "name": "case-sensitive",
+    "markset": "::Col",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_NAME"
+    ],
+    "ast": {
+      "type": "separator",
+      "name": "Col",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "separator-directive",
+    "name": "separators take no argument",
+    "markset": "::col[Sidebar]",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_TRAILING_CONTENT"
+    ],
+    "ast": {
+      "type": "separator",
+      "name": "col",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "separator-directive",
+    "name": "space before attributes",
+    "markset": "::col {.wide}",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_TRAILING_CONTENT"
+    ],
+    "ast": {
+      "type": "separator",
+      "name": "col",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "separator-directive",
+    "name": "free text after the name",
+    "markset": "::col here",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_TRAILING_CONTENT"
+    ],
+    "ast": {
+      "type": "separator",
+      "name": "col",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "separator-directive",
+    "name": "bad attributes propagate",
+    "markset": "::col{key=}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_EMPTY_VALUE"
+    ],
+    "ast": {
+      "type": "separator",
+      "name": "col",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  },
+  {
+    "section": "separator-directive",
+    "name": "unknown name and trailing content",
+    "markset": "::tab x",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_NAME",
+      "DIRECTIVE_TRAILING_CONTENT"
+    ],
+    "ast": {
+      "type": "separator",
+      "name": "tab",
+      "attributes": {
+        "type": "attributes",
+        "id": null,
+        "classes": [],
+        "attrs": {}
+      }
+    }
+  }
+]

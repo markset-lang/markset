@@ -69,9 +69,10 @@ Read these before proposing syntax changes — most ideas have been tried.
 <!-- Keep current. This is the first thing to read after the invariants. -->
 
 - [x] Conformance schema (`spec/conformance.schema.json`) and harness (`packages/conformance`)
-- [x] Grammar: attribute specifier (§2.1, `packages/parser/src/attributes.ts`, 56 cases in `tests/attribute-specifier.json`)
-- [ ] Grammar: bracketed span, block directive, separator directive
-- [ ] Parser: CommonMark base
+- [x] Grammar: attribute specifier (§2.1, `packages/parser/src/attributes.ts`, 56 cases)
+- [x] Grammar: block directive and separator fence lines (§2.3, §2.4, `packages/parser/src/directives.ts`, 69 cases). Line-level only: fence matching, nesting, and implicit close belong to the document parser.
+- [ ] Grammar: bracketed span (§2.2). Needs the inline parser, so it waits on the CommonMark base.
+- [ ] Parser: CommonMark base. **Blocked on a dependency decision**: adopt a CommonMark parser (micromark, markdown-it, commonmark.js) or write one. The directive fences must become a container block inside it.
 - [ ] Downgrade renderer
 - [ ] Constructs: callout, card, grid, columns, tabs, steps, metrics, figure
 - [ ] HTML renderer
