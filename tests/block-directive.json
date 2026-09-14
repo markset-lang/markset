@@ -934,7 +934,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "# Pricing tiers\n\nContent here.\n"
+    "downgrade": "# Pricing tiers\n\nContent here.\n",
+    "html": "<section class=\"ms-card\" data-tone=\"info\">\n<h3 class=\"ms-card-title\">Pricing tiers</h3>\n<p>Content here.</p>\n</section>\n"
   },
   {
     "section": "block-directive",
@@ -998,7 +999,8 @@
       ]
     },
     "valid": true,
-    "downgrade": ""
+    "downgrade": "",
+    "html": "<section class=\"ms-card\" data-tone=\"neutral\"></section>\n"
   },
   {
     "section": "block-directive",
@@ -1138,7 +1140,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "# Outer\n\nMain.\n\n## Inner\n\nSide.\n"
+    "downgrade": "# Outer\n\nMain.\n\n## Inner\n\nSide.\n",
+    "html": "<section class=\"ms-card\" data-tone=\"neutral\">\n<h3 class=\"ms-card-title\">Outer</h3>\n<p>Main.</p>\n<section class=\"ms-card\" data-tone=\"neutral\">\n<h3 class=\"ms-card-title\">Inner</h3>\n<p>Side.</p>\n</section>\n</section>\n"
   },
   {
     "section": "block-directive",
@@ -1392,7 +1395,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "> hi\n"
+    "downgrade": "> hi\n",
+    "html": "<blockquote>\n<section class=\"ms-card\" data-tone=\"neutral\">\n<p>hi</p>\n</section>\n</blockquote>\n"
   },
   {
     "section": "block-directive",
@@ -1541,7 +1545,8 @@
     "diagnostics": [
       "DIRECTIVE_STRAY_FENCE"
     ],
-    "downgrade": "Para\n\n:::\n"
+    "downgrade": "Para\n\n:::\n",
+    "html": "<p>Para</p>\n<p>:::</p>\n"
   },
   {
     "section": "block-directive",
@@ -1740,7 +1745,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "# H\n\nPara with `code` and ::: mid.\n"
+    "downgrade": "# H\n\nPara with `code` and ::: mid.\n",
+    "html": "<h1>H</h1>\n<p>Para with <code>code</code> and ::: mid.</p>\n"
   },
   {
     "section": "block-directive",
@@ -1809,7 +1815,8 @@
         }
       ]
     },
-    "downgrade": "x\n"
+    "downgrade": "x\n",
+    "html": "<p>x</p>\n"
   },
   {
     "section": "block-directive",

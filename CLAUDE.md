@@ -77,5 +77,5 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] Frontmatter and theme tokens (§6, `packages/parser/src/frontmatter.ts`, YAML subset reader in `yaml-subset.ts`, `tests/frontmatter.json`). The parser always parses Markset; `markset: 0` is declared, not required (§9.3 still open).
 - [x] Downgrade renderer (`packages/render-downgrade`, mdast-util-to-markdown; `downgrade` aspect pinned on 98 cases)
 - [x] Constructs: callout, card, grid, columns, tabs, steps, metrics, figure (`packages/parser/src/constructs.ts`, one `tests/<name>.json` each; AST aspect only until the renderers exist)
-- [ ] HTML renderer
+- [x] HTML renderer (`packages/render-html`, mdast-util-to-hast + hast-util-to-html; `renderHtml` fragment and `renderPage` full page with theme tokens on `<body>`; `html` aspect pinned on 59 cases)
 - [ ] Default stylesheet

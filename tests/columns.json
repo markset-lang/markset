@@ -63,7 +63,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "The main argument, at full paragraph length.\n\nA supporting sidebar.\n"
+    "downgrade": "The main argument, at full paragraph length.\n\nA supporting sidebar.\n",
+    "html": "<div class=\"ms-columns\" data-gap=\"md\" style=\"--ms-ratio: 2 1\">\n<div class=\"ms-column\">\n<p>The main argument, at full paragraph length.</p>\n</div>\n<div class=\"ms-column\">\n<section class=\"ms-card\" data-tone=\"neutral\">\n<p>A supporting sidebar.</p>\n</section>\n</div>\n</div>\n"
   },
   {
     "section": "columns",
@@ -258,7 +259,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "html": "<div class=\"ms-columns\" data-gap=\"md\">\n<div class=\"ms-column\">\n<p>A</p>\n</div>\n<div class=\"ms-column narrow\" id=\"side\">\n<p>B</p>\n</div>\n</div>\n"
   },
   {
     "section": "columns",
@@ -317,7 +319,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "A\n\nC\n"
+    "downgrade": "A\n\nC\n",
+    "html": "<div class=\"ms-columns\" data-gap=\"md\">\n<div class=\"ms-column\">\n<p>A</p>\n</div>\n<div class=\"ms-column\"></div>\n<div class=\"ms-column\">\n<p>C</p>\n</div>\n</div>\n"
   },
   {
     "section": "columns",
@@ -626,7 +629,8 @@
         }
       ]
     },
-    "downgrade": "A\n\nB\n"
+    "downgrade": "A\n\nB\n",
+    "html": "<div class=\"ms-columns\" data-gap=\"md\">\n<div class=\"ms-column\">\n<p>A</p>\n</div>\n<div class=\"ms-column\">\n<p>B</p>\n</div>\n</div>\n"
   },
   {
     "section": "columns",

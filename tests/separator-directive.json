@@ -336,7 +336,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "Left.\n\nRight.\n"
+    "downgrade": "Left.\n\nRight.\n",
+    "html": "<div class=\"ms-columns\" data-gap=\"md\">\n<div class=\"ms-column\">\n<p>Left.</p>\n</div>\n<div class=\"ms-column\">\n<p>Right.</p>\n</div>\n</div>\n"
   },
   {
     "section": "separator-directive",
@@ -587,7 +588,8 @@
         }
       ]
     },
-    "downgrade": ""
+    "downgrade": "",
+    "html": ""
   },
   {
     "section": "separator-directive",

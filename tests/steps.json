@@ -88,7 +88,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "1. Install the CLI.\n2. Run `markset init`.\n3. Edit `markset.toml`.\n"
+    "downgrade": "1. Install the CLI.\n2. Run `markset init`.\n3. Edit `markset.toml`.\n",
+    "html": "<ol class=\"ms-steps\">\n<li class=\"ms-step\">Install the CLI.</li>\n<li class=\"ms-step\">Run <code>markset init</code>.</li>\n<li class=\"ms-step\">Edit <code>markset.toml</code>.</li>\n</ol>\n"
   },
   {
     "section": "steps",
@@ -171,7 +172,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "1. a\n   - x\n2. b\n"
+    "downgrade": "1. a\n   - x\n2. b\n",
+    "html": "<ol class=\"ms-steps\">\n<li class=\"ms-step\">a\n<ul>\n<li>x</li>\n</ul>\n</li>\n<li class=\"ms-step\">b</li>\n</ol>\n"
   },
   {
     "section": "steps",
@@ -230,7 +232,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "3. a\n4. b\n"
+    "downgrade": "3. a\n4. b\n",
+    "html": "<ol class=\"ms-steps\" start=\"3\">\n<li class=\"ms-step\">a</li>\n<li class=\"ms-step\">b</li>\n</ol>\n"
   },
   {
     "section": "steps",
@@ -557,7 +560,8 @@
         }
       ]
     },
-    "downgrade": "- a\n"
+    "downgrade": "- a\n",
+    "html": "<ul>\n<li>a</li>\n</ul>\n"
   },
   {
     "section": "steps",
