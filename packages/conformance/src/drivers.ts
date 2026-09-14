@@ -1,5 +1,6 @@
 import type { Driver } from "./types.ts";
 import { attributeSpecifierDriver } from "./drivers/attribute-specifier.ts";
+import { directiveLineDriver } from "./drivers/directive-line.ts";
 
 /**
  * Section name -> driver. A section listed in tests/ but absent here is
@@ -8,4 +9,6 @@ import { attributeSpecifierDriver } from "./drivers/attribute-specifier.ts";
  */
 export const drivers: Record<string, Driver> = {
   "attribute-specifier": attributeSpecifierDriver,
+  "block-directive": directiveLineDriver,
+  "separator-directive": directiveLineDriver,
 };
