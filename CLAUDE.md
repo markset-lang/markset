@@ -35,14 +35,23 @@ These are non-negotiable. If a proposed feature conflicts with one, the feature 
 
 ```
 spec/       v0.md — the specification
+            conformance.schema.json — normative schema for tests/*.json (spec §7)
 tests/      conformance JSON, one file per section
 packages/
   parser/           CommonMark base + Markset extensions -> AST
   render-downgrade/ AST -> plain CommonMark
   render-html/      AST -> HTML
+  conformance/      harness: validates tests/*.json against the schema, runs each section's driver
   cli/
 docs/       background analysis, prior art, design rationale
 ```
+
+## Toolchain
+
+- Node ≥ 22.18, npm workspaces, zero runtime or dev dependencies. Source is TypeScript run directly by Node's type stripping, so use erasable syntax only (no enums, namespaces, or parameter properties) and import with explicit `.ts` extensions.
+- `npm install` once, to link the workspace packages. Then `npm test` (unit tests plus the full conformance suite) and `npm run conformance` for the per-section report (`--section <name>`, `--verbose`).
+- `tsconfig.json` is for editors and for `tsc --noEmit`; `typescript` is deliberately not a dependency.
+- Adding a section to `tests/` without a driver in `packages/conformance/src/drivers.ts` is fine: the harness reports it as skipped, not failed. Same for `html`/`downgrade` fields before those renderers exist. Register a driver once the code exists so the cases start counting.
 
 ## Prior art worth knowing
 
@@ -59,10 +68,11 @@ Read these before proposing syntax changes — most ideas have been tried.
 
 <!-- Keep current. This is the first thing to read after the invariants. -->
 
-- [ ] Grammar: attribute specifier, block directive, separator directive
+- [x] Conformance schema (`spec/conformance.schema.json`) and harness (`packages/conformance`)
+- [x] Grammar: attribute specifier (§2.1, `packages/parser/src/attributes.ts`, 56 cases in `tests/attribute-specifier.json`)
+- [ ] Grammar: bracketed span, block directive, separator directive
 - [ ] Parser: CommonMark base
 - [ ] Downgrade renderer
-- [ ] Conformance harness
 - [ ] Constructs: callout, card, grid, columns, tabs, steps, metrics, figure
 - [ ] HTML renderer
 - [ ] Default stylesheet

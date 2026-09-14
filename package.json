@@ -1,0 +1,11 @@
+{
+  "name": "markset",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/*"],
+  "engines": { "node": ">=22.18" },
+  "scripts": {
+    "test": "node --test packages/*/test/*.test.ts",
+    "conformance": "node packages/conformance/src/cli.ts"
+  }
+}
