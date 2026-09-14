@@ -50,3 +50,26 @@ test("copied SVG assets stay valid XML", async () => {
   assert.doesNotMatch(style[1], /[<&]/, "no raw < or & inside an SVG <style> element");
   assert.match(svg, /prefers-color-scheme: dark/, "the diagram follows the reader's color scheme");
 });
+
+test("every link to the repository matches package.json, which matches the remote", async () => {
+  const root = resolve(import.meta.dirname, "..", "..");
+  const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as { repository: { url: string }; homepage: string };
+  const repo = pkg.repository.url.replace(/\.git$/, "");
+  assert.match(repo, /^https:\/\/github\.com\/[^/]+\/[^/]+$/, "repository.url must be a GitHub project URL");
+
+  const pages = await build();
+  for (const page of pages) {
+    const html = await readFile(join(dist, page), "utf8");
+    for (const url of html.match(/https:\/\/github\.com\/[^"< ]+/g) ?? []) {
+      assert.ok(url.startsWith(repo), `${page} links ${url}, not ${repo}`);
+    }
+  }
+  // The README is not built, so it is checked directly.
+  const readme = await readFile(join(root, "README.md"), "utf8");
+  for (const url of readme.match(/https:\/\/[a-z0-9-]+\.github\.io\/[^\s>)]+/g) ?? []) {
+    assert.ok(pkg.homepage.startsWith(url) || url.startsWith(pkg.homepage), `README links ${url}, not ${pkg.homepage}`);
+  }
+  for (const url of readme.match(/https:\/\/github\.com\/[^\s>)]+/g) ?? []) {
+    assert.ok(url.startsWith(repo), `README links ${url}, not ${repo}`);
+  }
+});
