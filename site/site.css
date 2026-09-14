@@ -4,7 +4,7 @@
 .site-nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
 .site-nav a { color: var(--ms-fg-muted); text-decoration: none; font-family: var(--ms-font-heading); font-size: 0.95rem; }
 .site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--ms-accent); }
-.site-layout { max-width: 76rem; margin: 0 auto; }
+.site-layout { max-width: 100rem; margin: 0 auto; }
 .site-layout.has-toc { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: var(--ms-space); }
 .site-toc { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; padding: calc(var(--ms-space) * 2) var(--ms-space); font-size: 0.875rem; border-right: 1px solid var(--ms-border); }
 .site-toc ul { list-style: none; margin: 0; padding: 0; }
@@ -12,7 +12,8 @@
 .site-toc .toc-3 { padding-left: 1rem; }
 .site-toc a { color: var(--ms-fg-muted); text-decoration: none; }
 .site-toc a:hover { color: var(--ms-accent); }
-.site-layout .ms-document { max-width: var(--ms-measure); }
+/* Generated case cards and tables use the document's wide lane. */
+.ms-document > .site-case, .ms-document > .site-table { grid-column: wide; }
 .site-footer { max-width: var(--ms-measure); margin: 0 auto; padding: calc(var(--ms-space) * 2) var(--ms-space); color: var(--ms-fg-muted); font-size: 0.875rem; border-top: 1px solid var(--ms-border); }
 .site-status { color: var(--ms-fg-muted); }
 .site-list li + li { margin-top: 0.4rem; }
