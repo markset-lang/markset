@@ -142,7 +142,7 @@ code { background: var(--ms-surface); padding: 0.1em 0.3em; border-radius: calc(
 pre { background: var(--ms-surface); padding: var(--ms-space); border-radius: var(--ms-radius); overflow-x: auto; }
 pre code { background: none; padding: 0; font-size: inherit; }
 blockquote { border-left: 3px solid var(--ms-border); padding-left: var(--ms-space); color: var(--ms-fg-muted); }
-hr { border: 0; border-top: 1px solid var(--ms-border); }
+hr { border: 0; border-top: 1px solid var(--ms-border); margin-inline: 0; } /* no auto centering inside the wide box */
 img { max-width: 100%; height: auto; }
 table { border-collapse: collapse; width: 100%; }
 th, td { text-align: left; padding: 0.4em 0.75em; border-bottom: 1px solid var(--ms-border); }
@@ -152,6 +152,9 @@ th { font-weight: 600; }
 .lead { font-size: calc(var(--ms-base) * 1.2); line-height: 1.5; }
 .small { font-size: 0.875em; }
 .eyebrow { font-family: var(--ms-font-heading); font-size: 0.75em; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ms-fg-muted); }
+/* An eyebrow labels the heading below it: it takes the heading's top margin and the heading closes up to it. */
+.ms-document > * + .eyebrow { margin-top: calc(var(--ms-space) * 3); }
+.ms-document > .eyebrow + :is(h1, h2, h3, h4, h5, h6) { margin-top: 0.3em; }
 .muted { color: var(--ms-fg-muted); }
 .badge {
   display: inline-block;

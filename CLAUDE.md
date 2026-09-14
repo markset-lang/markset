@@ -86,6 +86,9 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] §9 open questions closed with decisions (spec §9)
 - [x] Release candidate `0.0.0-rc.1` tagged 2026-09-14; change policy in spec §0; `CHANGELOG.md` started
 - [x] Documentation site (`site/`): home, guide per construct, spec with TOC, conformance browser, showcase; deployed by `pages.yml`
+- [x] Attributes on one list item (§2.5, `- {.hot}` opens the item) so a single grid item or step can be styled; theme stylesheet hook (`markset html --theme <file>`, `renderPage({ theme })`, §6)
+- [x] Default stylesheet layout: two lanes with one left edge (prose at `--ms-measure`, constructs and tables at `--ms-measure-wide`); chosen by screenshot 2026-09-14 after a centered two-lane version was rejected
+- [x] First real document written against the candidate: `examples/ola-tool-access.md` with `examples/ola-theme.css` (internal content; kept out of the site). It forced §2.5 list-item attributes and the theme hook, nothing in §4.
 - [ ] Playground page (needs a bundler such as esbuild, not yet approved)
-- [ ] Declare v0 after real documents have been written against the candidate without changes to §2 or §4
+- [ ] Declare v0 after more real documents have been written against the candidate without further changes to §2 or §4
 - [ ] Publish: keep `@markset/*` private until the suite is frozen; add a `dist/` build (JS + declarations) when publishing becomes a goal
