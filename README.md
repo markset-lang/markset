@@ -44,4 +44,4 @@ npm run conformance     # per-section conformance report
 
 ## Status
 
-Draft. The v0 spec is implemented end to end (parser, both renderers, stylesheet, CLI) and the conformance suite passes, but nothing is frozen. See the status list in `CLAUDE.md` and the open questions in spec §9.
+Release candidate `0.0.0-rc.1`. The v0 spec is implemented end to end (parser, both renderers, stylesheet, CLI), the conformance suite passes, and the §9 questions are decided. The candidate period is for writing real documents against the spec before it is declared v0. See `CHANGELOG.md`, the status list in `CLAUDE.md`, and the change policy in spec §0.

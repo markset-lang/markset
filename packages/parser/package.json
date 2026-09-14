@@ -1,6 +1,6 @@
 {
   "name": "@markset/parser",
-  "version": "0.0.0",
+  "version": "0.0.0-rc.1",
   "private": true,
   "type": "module",
   "description": "Markset parser: CommonMark base plus the Markset grammar extensions, producing an AST.",

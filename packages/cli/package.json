@@ -1,10 +1,12 @@
 {
   "name": "@markset/cli",
-  "version": "0.0.0",
+  "version": "0.0.0-rc.1",
   "private": true,
   "type": "module",
   "description": "markset command line: check, html, downgrade, ast.",
-  "bin": { "markset": "./src/markset.ts" },
+  "bin": {
+    "markset": "./src/markset.ts"
+  },
   "dependencies": {
     "@markset/parser": "*",
     "@markset/render-downgrade": "*",
