@@ -335,7 +335,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "Left.\n\nRight.\n"
   },
   {
     "section": "separator-directive",
@@ -405,7 +406,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "A\n\nB\n\nC\n"
   },
   {
     "section": "separator-directive",
@@ -519,7 +521,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "Main.\n\nSide.\n"
   },
   {
     "section": "separator-directive",
@@ -583,7 +586,8 @@
           }
         }
       ]
-    }
+    },
+    "downgrade": ""
   },
   {
     "section": "separator-directive",
@@ -617,7 +621,8 @@
           ]
         }
       ]
-    }
+    },
+    "downgrade": ""
   },
   {
     "section": "separator-directive",

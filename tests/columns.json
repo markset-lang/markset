@@ -62,7 +62,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "The main argument, at full paragraph length.\n\nA supporting sidebar.\n"
   },
   {
     "section": "columns",
@@ -130,7 +131,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "A\n\nB\n\nC\n"
   },
   {
     "section": "columns",
@@ -314,7 +316,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "A\n\nC\n"
   },
   {
     "section": "columns",
@@ -386,7 +389,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "A\n\nB\n"
   },
   {
     "section": "columns",
@@ -415,7 +419,8 @@
     "valid": true,
     "diagnostics": [
       "COLUMNS_SINGLE"
-    ]
+    ],
+    "downgrade": ""
   },
   {
     "section": "columns",
@@ -564,7 +569,8 @@
     "valid": true,
     "diagnostics": [
       "DIRECTIVE_UNCLOSED"
-    ]
+    ],
+    "downgrade": "A\n\nB\n"
   },
   {
     "section": "columns",
@@ -619,7 +625,8 @@
           ]
         }
       ]
-    }
+    },
+    "downgrade": "A\n\nB\n"
   },
   {
     "section": "columns",

@@ -1,4 +1,5 @@
 import { parseDocument } from "@markset/parser";
+import { renderDowngrade } from "@markset/render-downgrade";
 import type { Driver } from "../types.ts";
 import { stripPositions } from "../strip.ts";
 
@@ -9,5 +10,6 @@ export const documentDriver: Driver = (testCase) => {
     valid: !diagnostics.some((d) => d.severity === "error"),
     diagnostics: diagnostics.map((d) => d.code),
     ast: stripPositions(ast),
+    downgrade: renderDowngrade(ast),
   };
 };

@@ -933,7 +933,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "# Pricing tiers\n\nContent here.\n"
   },
   {
     "section": "block-directive",
@@ -975,7 +976,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "# Pricing *tiers* `now`\n"
   },
   {
     "section": "block-directive",
@@ -995,7 +997,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": ""
   },
   {
     "section": "block-directive",
@@ -1074,7 +1077,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "One.\n\nTwo.\n\n- a\n- b\n"
   },
   {
     "section": "block-directive",
@@ -1133,7 +1137,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "# Outer\n\nMain.\n\n## Inner\n\nSide.\n"
   },
   {
     "section": "block-directive",
@@ -1186,7 +1191,8 @@
     "diagnostics": [
       "DIRECTIVE_UNCLOSED",
       "DIRECTIVE_STRAY_FENCE"
-    ]
+    ],
+    "downgrade": "inner\n\n:::\n"
   },
   {
     "section": "block-directive",
@@ -1279,7 +1285,8 @@
     "valid": true,
     "diagnostics": [
       "DIRECTIVE_UNCLOSED"
-    ]
+    ],
+    "downgrade": "Text\n"
   },
   {
     "section": "block-directive",
@@ -1384,7 +1391,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "> hi\n"
   },
   {
     "section": "block-directive",
@@ -1438,7 +1446,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "- item\n\n  inner\n"
   },
   {
     "section": "block-directive",
@@ -1498,7 +1507,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "text\n\n1. a\n\nmore\n"
   },
   {
     "section": "block-directive",
@@ -1530,7 +1540,8 @@
     "valid": true,
     "diagnostics": [
       "DIRECTIVE_STRAY_FENCE"
-    ]
+    ],
+    "downgrade": "Para\n\n:::\n"
   },
   {
     "section": "block-directive",
@@ -1597,7 +1608,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "```\n:::\n```\n"
   },
   {
     "section": "block-directive",
@@ -1671,7 +1683,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "| a | b |\n| - | - |\n| 1 | 2 |\n"
   },
   {
     "section": "block-directive",
@@ -1726,7 +1739,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "# H\n\nPara with `code` and ::: mid.\n"
   },
   {
     "section": "block-directive",
@@ -1756,7 +1770,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "x\n"
   },
   {
     "section": "block-directive",
@@ -1793,7 +1808,8 @@
           ]
         }
       ]
-    }
+    },
+    "downgrade": "x\n"
   },
   {
     "section": "block-directive",
@@ -1829,7 +1845,8 @@
           ]
         }
       ]
-    }
+    },
+    "downgrade": "x\n"
   },
   {
     "section": "block-directive",

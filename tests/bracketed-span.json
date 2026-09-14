@@ -32,7 +32,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "Beta\n"
   },
   {
     "section": "bracketed-span",
@@ -90,7 +91,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "A badge *x* `y` b\n"
   },
   {
     "section": "bracketed-span",
@@ -206,7 +208,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "a b c\n"
   },
   {
     "section": "bracketed-span",
@@ -305,7 +308,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "one\ntwo\n"
   },
   {
     "section": "bracketed-span",
@@ -418,7 +422,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "a[b](u)\n"
   },
   {
     "section": "bracketed-span",
@@ -500,7 +505,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "# Title Beta\n"
   },
   {
     "section": "bracketed-span",
@@ -527,7 +533,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "[text](u)\n"
   },
   {
     "section": "bracketed-span",
@@ -681,7 +688,8 @@
           ]
         }
       ]
-    }
+    },
+    "downgrade": "x\n"
   },
   {
     "section": "bracketed-span",

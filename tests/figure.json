@@ -33,7 +33,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "![](lifecycle.svg)\n\n*Request lifecycle from ingress to response*\n"
   },
   {
     "section": "figure",
@@ -64,7 +65,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "![Alt text](a.png \"T\")\n"
   },
   {
     "section": "figure",
@@ -144,7 +146,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "| a | b |\n| - | - |\n| 1 | 2 |\n\n*Sizes*\n"
   },
   {
     "section": "figure",
@@ -175,7 +178,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "```js\nlet x = 1;\n```\n\n*Listing*\n"
   },
   {
     "section": "figure",
@@ -224,7 +228,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "![](f.svg)\n\n*The *fast* path*\n"
   },
   {
     "section": "figure",
@@ -321,7 +326,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "![](x.svg)\n\n*C*\n"
   },
   {
     "section": "figure",
@@ -393,7 +399,8 @@
     "valid": true,
     "diagnostics": [
       "DIRECTIVE_UNCLOSED"
-    ]
+    ],
+    "downgrade": "![](x.svg)\n\n*C*\n"
   },
   {
     "section": "figure",
@@ -419,7 +426,8 @@
           "children": []
         }
       ]
-    }
+    },
+    "downgrade": ""
   },
   {
     "section": "figure",
@@ -455,7 +463,8 @@
           ]
         }
       ]
-    }
+    },
+    "downgrade": "some text\n"
   },
   {
     "section": "figure",

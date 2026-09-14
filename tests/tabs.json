@@ -58,7 +58,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "### macOS\n\n`brew install markset`\n\n### Windows\n\n`winget install markset`\n"
   },
   {
     "section": "tabs",
@@ -119,7 +120,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "## A\n\na\n\n## B\n\nb\n"
   },
   {
     "section": "tabs",
@@ -180,7 +182,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "## A\n\n### Sub\n\ntext\n\n## B\n"
   },
   {
     "section": "tabs",
@@ -331,7 +334,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "### A\n\nx\n\n### B\n\ny\n"
   },
   {
     "section": "tabs",
@@ -381,7 +385,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "### A\n\nx\n"
   },
   {
     "section": "tabs",
@@ -492,7 +497,8 @@
           "children": []
         }
       ]
-    }
+    },
+    "downgrade": ""
   },
   {
     "section": "tabs",
@@ -583,7 +589,8 @@
           ]
         }
       ]
-    }
+    },
+    "downgrade": "intro\n\n### A\n\nx\n"
   },
   {
     "section": "tabs",

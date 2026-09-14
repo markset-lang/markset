@@ -38,7 +38,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "> **Warning:** Breaking change in v3\n>\n> The `render()` signature changed.\n"
   },
   {
     "section": "callout",
@@ -66,7 +67,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "> **Note:**\n>\n> Collapsed by default.\n"
   },
   {
     "section": "callout",
@@ -99,7 +101,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "> **Tip:** Handy\n>\n> Body.\n"
   },
   {
     "section": "callout",
@@ -122,7 +125,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "> **Note:** Heads up\n"
   },
   {
     "section": "callout",
@@ -140,7 +144,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "> **Important:**\n"
   },
   {
     "section": "callout",
@@ -176,7 +181,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "> **Caution:** Use *care* here\n"
   },
   {
     "section": "callout",
@@ -249,7 +255,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "> **Note:** T\n>\n> one\n>\n> - a\n> - b\n"
   },
   {
     "section": "callout",
@@ -277,7 +284,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "> **Tip:**\n>\n> First line\n> second line\n"
   },
   {
     "section": "callout",
@@ -320,7 +328,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "> **Note:** T\n>\n> x\n"
   },
   {
     "section": "callout",
@@ -363,7 +372,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "> **Tip:** t\n>\n> b\n"
   },
   {
     "section": "callout",
@@ -421,7 +431,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "> quote\n"
   },
   {
     "section": "callout",
@@ -519,6 +530,7 @@
           ]
         }
       ]
-    }
+    },
+    "downgrade": "> \\[!FOO] x\n"
   }
 ]

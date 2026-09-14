@@ -32,7 +32,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "# Pricing tiers\n\nContent here.\n"
   },
   {
     "section": "card",
@@ -62,7 +63,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "x\n"
   },
   {
     "section": "card",
@@ -95,7 +97,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "x\n"
   },
   {
     "section": "card",
@@ -158,7 +161,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "# *Beta* plan\n"
   },
   {
     "section": "card",
@@ -208,7 +212,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "# Outer\n\n## Inner\n\nx\n"
   },
   {
     "section": "card",
@@ -228,7 +233,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": ""
   },
   {
     "section": "card",
@@ -289,7 +295,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "# H\n\n- a\n\n```\ncode\n```\n"
   },
   {
     "section": "card",
@@ -360,7 +367,8 @@
     "valid": true,
     "diagnostics": [
       "DIRECTIVE_UNCLOSED"
-    ]
+    ],
+    "downgrade": "# T\n\nx\n"
   },
   {
     "section": "card",
@@ -393,7 +401,8 @@
           ]
         }
       ]
-    }
+    },
+    "downgrade": "x\n"
   },
   {
     "section": "card",

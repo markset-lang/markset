@@ -122,7 +122,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "| Metric  | Value | Δ     |\n| ------- | ----- | ----- |\n| Revenue | $4.2M | +12%  |\n| Churn   | 2.1%  | -0.4% |\n"
   },
   {
     "section": "metrics",
@@ -344,7 +345,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "| a  |  b |\n| :- | -: |\n| 1  |  2 |\n"
   },
   {
     "section": "metrics",
@@ -428,7 +430,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "downgrade": "| a | b |\n| - | - |\n| 1 | 2 |\n"
   },
   {
     "section": "metrics",
@@ -558,7 +561,8 @@
     "valid": true,
     "diagnostics": [
       "DIRECTIVE_UNCLOSED"
-    ]
+    ],
+    "downgrade": "| a | b |\n| - | - |\n| 1 | 2 |\n"
   },
   {
     "section": "metrics",
@@ -584,7 +588,8 @@
           "children": []
         }
       ]
-    }
+    },
+    "downgrade": ""
   },
   {
     "section": "metrics",
@@ -698,7 +703,8 @@
           ]
         }
       ]
-    }
+    },
+    "downgrade": "| a |\n| - |\n| 1 |\n"
   },
   {
     "section": "metrics",
