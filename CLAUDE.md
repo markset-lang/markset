@@ -82,4 +82,6 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] CLI (`packages/cli`: `check`, `html`, `downgrade`, `ast`; `examples/showcase.md` exercises every construct)
 - [x] Attribute lines (§2.5, djot-style `{.lead}` line before a block; `packages/parser/src/attribute-lines.ts`, `tests/attribute-line.json`)
 - [x] §9 open questions closed with decisions (spec §9)
+- [x] Release candidate `0.0.0-rc.1` tagged 2026-09-14; change policy in spec §0; `CHANGELOG.md` started
+- [ ] Declare v0 after real documents have been written against the candidate without changes to §2 or §4
 - [ ] Publish: keep `@markset/*` private until the suite is frozen; add a `dist/` build (JS + declarations) when publishing becomes a goal
