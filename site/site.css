@@ -1,8 +1,49 @@
-/* Site chrome on top of markset.css. Documents keep their own look; this only adds navigation, TOC, and case panes. */
+/* The site's own theme, layered over markset.css exactly as a theme stylesheet
+ * is layered over a document (spec §6). Two jobs: the chrome (header, TOC, case
+ * panes) and the handful of author classes the site's pages use, which are the
+ * reserved ones from §5 plus .tick, .stats and .compare. */
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap");
+
+/* ---- identity ------------------------------------------------------------ */
+body { --ms-font-heading: "Source Serif 4", Charter, Georgia, "Times New Roman", serif; }
+.ms-document > h1 { font-size: clamp(2.1rem, 4.2vw, 2.9rem); line-height: 1.06; letter-spacing: -0.022em; text-wrap: balance; }
+.ms-document > h2 { font-size: clamp(1.4rem, 2.4vw, 1.75rem); letter-spacing: -0.015em; text-wrap: balance; }
+.ms-document > .lead { max-width: 60ch; color: var(--ms-fg-muted); }
+.ms-document > .lead strong { color: var(--ms-fg); }
+.eyebrow { font-family: var(--ms-font-body); color: var(--ms-accent); letter-spacing: 0.12em; }
+.badge { font-family: var(--ms-font-body); }
+/* A run of badges under the title reads as one status line, not four blocks. */
+.ms-document > p > .ms-span.badge + .ms-span.badge { margin-left: 0.3rem; }
+
+/* Ruler-edge divider between major sections: {.tick} on a thematic break. */
+.ms-document > hr.tick {
+  max-width: none;
+  height: 13px;
+  border-top: 1px solid var(--ms-border);
+  background-image: repeating-linear-gradient(to right, var(--ms-border) 0 1px, transparent 1px 12px);
+  background-size: 100% 5px;
+  background-repeat: no-repeat;
+  margin-top: calc(var(--ms-space) * 3);
+}
+
+/* A metrics block as a dense fact strip: {.stats}. */
+.stats { gap: 1px; background: var(--ms-border); border: 1px solid var(--ms-border); border-radius: var(--ms-radius); overflow: hidden; }
+.stats .ms-metric { border: 0; border-radius: 0; padding: 0.9rem 1.1rem; }
+.stats .ms-metric-value { font-family: var(--ms-font-heading); }
+
+/* A comparison table: {.compare}. */
+.compare { font-size: 0.9rem; border: 1px solid var(--ms-border); border-radius: var(--ms-radius); border-collapse: separate; border-spacing: 0; background: var(--ms-surface); }
+.compare th { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ms-fg-muted); padding: 1rem 0.75rem 0.55rem; }
+.compare td { padding: 0.7rem 0.75rem; vertical-align: middle; }
+.compare tr:last-child td { border-bottom: 0; }
+.compare td:first-child { font-weight: 600; white-space: nowrap; }
+.compare tr:last-child { background: var(--ms-bg); }
+
+/* ---- chrome -------------------------------------------------------------- */
 .site-header { display: flex; align-items: center; justify-content: space-between; gap: var(--ms-space); padding: 0.75rem var(--ms-space); border-bottom: 1px solid var(--ms-border); background: var(--ms-surface); }
 .site-brand { font-family: var(--ms-font-heading); font-weight: 700; font-size: 1.1rem; color: var(--ms-fg); text-decoration: none; letter-spacing: -0.01em; }
 .site-nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
-.site-nav a { color: var(--ms-fg-muted); text-decoration: none; font-family: var(--ms-font-heading); font-size: 0.95rem; }
+.site-nav a { color: var(--ms-fg-muted); text-decoration: none; font-family: var(--ms-font-body); font-size: 0.9rem; }
 .site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--ms-accent); }
 .site-layout { max-width: 75rem; margin: 0 auto; }
 .site-layout.has-toc { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: var(--ms-space); }
@@ -16,7 +57,7 @@
 .site-status { color: var(--ms-fg-muted); }
 .site-list li + li { margin-top: 0.4rem; }
 .site-table td, .site-table th { padding-right: 1.5rem; }
-.site-more { color: var(--ms-fg-muted); }
+.site-more { color: var(--ms-fg-muted); font-size: 0.875rem; margin-top: calc(var(--ms-space) * 2) !important; padding-top: var(--ms-space); border-top: 1px solid var(--ms-border); }
 
 /* conformance and guide case cards */
 .site-case { border: 1px solid var(--ms-border); border-radius: var(--ms-radius); padding: var(--ms-space); }

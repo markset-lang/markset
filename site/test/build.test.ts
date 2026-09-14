@@ -1,13 +1,20 @@
-import { test } from "node:test";
+import { after, test } from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { build } from "../build.ts";
 
-const dist = resolve(import.meta.dirname, "..", "..", "dist");
+/**
+ * Build once, into a temporary directory. Tests used to build into dist/ three
+ * times over, which races anything else touching it: a dev server rebuilding,
+ * a browser reading it, another test run.
+ */
+const dist = await mkdtemp(join(tmpdir(), "markset-site-"));
+const pages = await build(dist);
+after(async () => { await rm(dist, { recursive: true, force: true }); });
 
 test("the site builds, every page has the shell, and links stay relative", async () => {
-  const pages = await build();
   assert.ok(pages.includes("index.html"));
   assert.ok(pages.includes("spec/index.html"));
   assert.ok(pages.includes("guide/card/index.html"));
@@ -28,7 +35,6 @@ test("the site builds, every page has the shell, and links stay relative", async
 });
 
 test("an example can carry a theme stylesheet, linked after the site's own", async () => {
-  await build();
   const page = await readFile(join(dist, "examples", "notification-routing", "index.html"), "utf8");
   const site = page.indexOf("css/site.css");
   const theme = page.indexOf("css/dossier.css");
@@ -57,7 +63,6 @@ test("every link to the repository matches package.json, which matches the remot
   const repo = pkg.repository.url.replace(/\.git$/, "");
   assert.match(repo, /^https:\/\/github\.com\/[^/]+\/[^/]+$/, "repository.url must be a GitHub project URL");
 
-  const pages = await build();
   for (const page of pages) {
     const html = await readFile(join(dist, page), "utf8");
     for (const url of html.match(/https:\/\/github\.com\/[^"< ]+/g) ?? []) {

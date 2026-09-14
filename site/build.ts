@@ -12,7 +12,8 @@ import type { Heading, Root } from "mdast";
 import { parseDocument, renderDowngrade, renderHtml, bodyAttributes, defaultStylesheetPath, type Diagnostic } from "./deps.ts";
 
 const root = resolve(import.meta.dirname, "..");
-const out = join(root, "dist");
+/** Output directory. `build()` may be pointed elsewhere, which is how tests avoid racing dist/ against a dev server. */
+let out = join(root, "dist");
 /** Repository and site URLs come from package.json so they cannot drift from the remote. */
 const pkg = JSON.parse(await readFile(join(resolve(import.meta.dirname, ".."), "package.json"), "utf8")) as { repository: { url: string } };
 const REPO = pkg.repository.url.replace(/\.git$/, "");
@@ -38,14 +39,15 @@ const NAV: Array<[string, string]> = [["Home", "index.html"], ["Guide", "guide/i
 
 /** Documents rendered as their own pages, with the theme stylesheet each one is meant to be read with (spec §6). */
 const EXAMPLES: Array<{ slug: string; file: string; title: string; theme?: string; blurb: string }> = [
-  { slug: "showcase", file: "showcase.md", title: "Showcase", blurb: "Every v0 construct once, on the default stylesheet. The reference for what the vocabulary looks like with no theme of its own." },
+  { slug: "showcase", file: "showcase.md", title: "Showcase", blurb: "Every v0 construct once, at the length of a real document. It declares no theme stylesheet, so it shows what the vocabulary looks like on whatever stylesheet renders it." },
   { slug: "notification-routing", file: "notification-routing.md", title: "Analysis document", theme: "dossier.css", blurb: "A long analysis document with a theme stylesheet: status chips, a layer rail, a tinted pipeline stage, lettered steps. The system it describes is invented." },
 ];
 
 const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
 const SECTION_ORDER = ["attribute-specifier", "bracketed-span", "block-directive", "separator-directive", "attribute-line", ...CONSTRUCTS, "frontmatter"];
 
-export async function build(): Promise<string[]> {
+export async function build(outDir: string = join(root, "dist")): Promise<string[]> {
+  out = outDir;
   await rm(out, { recursive: true, force: true });
   await mkdir(join(out, "css"), { recursive: true });
   await cp(defaultStylesheetPath, join(out, "css", "markset.css"));
