@@ -57,7 +57,7 @@ The syntax is the convergent one: attribute specifiers `{#id .class key=value}`,
 
 :::card[Try it locally]{tone=info}
 ```sh
-git clone https://github.com/gxclarke/markset && cd markset
+git clone https://github.com/markset-lang/markset && cd markset
 npm install
 node packages/cli/src/markset.ts html examples/showcase.md -o showcase.html
 ```

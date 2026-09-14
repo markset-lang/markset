@@ -13,7 +13,9 @@ import { parseDocument, renderDowngrade, renderHtml, bodyAttributes, defaultStyl
 
 const root = resolve(import.meta.dirname, "..");
 const out = join(root, "dist");
-const REPO = "https://github.com/gxclarke/markset";
+/** Repository and site URLs come from package.json so they cannot drift from the remote. */
+const pkg = JSON.parse(await readFile(join(resolve(import.meta.dirname, ".."), "package.json"), "utf8")) as { repository: { url: string } };
+const REPO = pkg.repository.url.replace(/\.git$/, "");
 
 interface Page {
   /** Output path relative to dist/, e.g. "guide/card/index.html". */
