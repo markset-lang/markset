@@ -8,16 +8,19 @@ import { DirectiveCode } from "./directives.ts";
 
 export const StructureCode = {
   SEPARATOR_OUTSIDE_PARENT: "SEPARATOR_OUTSIDE_PARENT",
+  /** Warning: the first content block would merge into the fence line under a stock CommonMark parser (§3). */
+  DEGRADATION_BLANK_LINE: "DEGRADATION_BLANK_LINE",
 } as const;
 
 const STRAY_FENCE = /^[ \t]*:{3,}[ \t]*$/m;
 
-export function validateStructure(tree: Root): Diagnostic[] {
+export function validateStructure(tree: Root, source: string): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
   walk(tree, null);
   return diagnostics;
 
   function walk(node: Nodes, parent: Nodes | null): void {
+    if (node.type === "directive") checkNaiveDegradation(node);
     if (node.type === "separator") {
       const inColumns = parent?.type === "directive" && parent.name === "columns";
       if (!inColumns) {
@@ -43,6 +46,34 @@ export function validateStructure(tree: Root): Diagnostic[] {
     }
     if ("children" in node) {
       for (const child of node.children) walk(child as Nodes, node);
+    }
+  }
+
+  /**
+   * A stock CommonMark parser reads the opening fence as a paragraph. Blocks
+   * that can interrupt a paragraph (bullet lists, lists starting at 1, fenced
+   * code, ATX headings, tables, blockquotes) survive; these three do not.
+   */
+  function checkNaiveDegradation(node: Nodes & { children: Nodes[] }): void {
+    const first = node.children[0];
+    if (!first?.position || !node.position) return;
+    if (first.position.start.line !== node.position.start.line + 1) return;
+    const text = source.slice(first.position.start.offset, first.position.end.offset);
+    let what: string | null = null;
+    if (first.type === "list" && first.ordered && first.start !== null && first.start !== 1) {
+      what = `an ordered list starting at ${first.start}`;
+    } else if (first.type === "code" && !/^[`~]/.test(text)) {
+      what = "an indented code block";
+    } else if (first.type === "heading" && !text.startsWith("#")) {
+      what = "a setext heading";
+    }
+    if (what) {
+      diagnostics.push({
+        code: StructureCode.DEGRADATION_BLANK_LINE,
+        severity: "warning",
+        message: `${what} directly after the opening fence is swallowed by plain CommonMark renderers; add a blank line after the fence`,
+        ...span(first),
+      });
     }
   }
 }

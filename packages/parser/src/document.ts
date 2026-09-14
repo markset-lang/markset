@@ -35,7 +35,7 @@ export function parseDocument(source: string): ParsedDocument {
   const first = ast.children[0];
   const meta = first?.type === "yaml" ? readFrontmatter(first, diagnostics) : null;
   if (meta) ast.frontmatter = meta;
-  diagnostics.push(...validateStructure(ast));
+  diagnostics.push(...validateStructure(ast, source));
   normalizeConstructs(ast, source, diagnostics);
   diagnostics.sort((a, b) => a.start - b.start || a.end - b.end);
   return { ast, frontmatter: meta, diagnostics };

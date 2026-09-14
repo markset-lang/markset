@@ -10,6 +10,11 @@
   "dependencies": {
     "@markset/parser": "*",
     "@markset/render-downgrade": "*",
-    "@markset/render-html": "*"
+    "@markset/render-html": "*",
+    "mdast-util-from-markdown": "*",
+    "micromark-extension-gfm-table": "*",
+    "mdast-util-gfm-table": "*",
+    "micromark-extension-frontmatter": "*",
+    "mdast-util-frontmatter": "*"
   }
 }

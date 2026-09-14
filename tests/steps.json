@@ -178,7 +178,7 @@
   {
     "section": "steps",
     "name": "start number is preserved",
-    "markset": ":::steps\n3. a\n4. b\n:::\n",
+    "markset": ":::steps\n\n3. a\n4. b\n:::\n",
     "ast": {
       "type": "root",
       "children": [
@@ -234,6 +234,51 @@
     "valid": true,
     "downgrade": "3. a\n4. b\n",
     "html": "<ol class=\"ms-steps\" start=\"3\">\n<li class=\"ms-step\">a</li>\n<li class=\"ms-step\">b</li>\n</ol>\n"
+  },
+  {
+    "section": "steps",
+    "name": "a list not starting at 1 directly after the fence degrades badly and warns",
+    "markset": ":::steps\n3. a\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "steps",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": true,
+              "start": 3,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DEGRADATION_BLANK_LINE"
+    ]
   },
   {
     "section": "steps",
