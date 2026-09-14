@@ -52,10 +52,10 @@ test("diagnostics are sorted by offset across parser and structure passes", () =
   for (let i = 1; i < diagnostics.length; i++) assert.ok(diagnostics[i - 1].start <= diagnostics[i].start);
 });
 
-test("directive nodes carry positions like other mdast nodes", () => {
+test("construct nodes carry positions like other mdast nodes", () => {
   const { ast } = parseDocument("para\n\n:::card\nx\n:::\n");
   const directive = ast.children[1];
-  assert.equal(directive.type, "directive");
+  assert.equal(directive.type, "card");
   assert.deepEqual(directive.position?.start, { line: 3, column: 1, offset: 6 });
   assert.deepEqual(directive.position?.end, { line: 5, column: 4, offset: 19 });
 });

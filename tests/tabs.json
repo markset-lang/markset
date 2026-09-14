@@ -1,0 +1,730 @@
+[
+  {
+    "section": "tabs",
+    "name": "canonical",
+    "markset": ":::tabs\n### macOS\n`brew install markset`\n\n### Windows\n`winget install markset`\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "tabs",
+          "active": 1,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "tab",
+              "depth": 3,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "macOS"
+                }
+              ],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "inlineCode",
+                      "value": "brew install markset"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tab",
+              "depth": 3,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "Windows"
+                }
+              ],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "inlineCode",
+                      "value": "winget install markset"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "tabs",
+    "name": "active tab override",
+    "markset": ":::tabs{active=2}\n## A\na\n## B\nb\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "tabs",
+          "active": 2,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "tab",
+              "depth": 2,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "A"
+                }
+              ],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "a"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tab",
+              "depth": 2,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "B"
+                }
+              ],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "tabs",
+    "name": "deeper headings are tab content",
+    "markset": ":::tabs\n## A\n### Sub\ntext\n## B\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "tabs",
+          "active": 1,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "tab",
+              "depth": 2,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "A"
+                }
+              ],
+              "children": [
+                {
+                  "type": "heading",
+                  "depth": 3,
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Sub"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "text"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tab",
+              "depth": 2,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "B"
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "tabs",
+    "name": "label with inline markup",
+    "markset": ":::tabs\n### `npm`\nx\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "tabs",
+          "active": 1,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "tab",
+              "depth": 3,
+              "label": [
+                {
+                  "type": "inlineCode",
+                  "value": "npm"
+                }
+              ],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "tabs",
+    "name": "single tab",
+    "markset": ":::tabs\n### Only\nx\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "tabs",
+          "active": 1,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "tab",
+              "depth": 3,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "Only"
+                }
+              ],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "tabs",
+    "name": "nested: a card inside a tab",
+    "markset": "::::tabs\n### A\n:::card\nx\n:::\n### B\ny\n::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "tabs",
+          "active": 1,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "tab",
+              "depth": 3,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "A"
+                }
+              ],
+              "children": [
+                {
+                  "type": "card",
+                  "title": null,
+                  "tone": "neutral",
+                  "compact": false,
+                  "id": null,
+                  "classes": [],
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tab",
+              "depth": 3,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "B"
+                }
+              ],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "y"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "tabs",
+    "name": "nested: tabs inside a card",
+    "markset": "::::card\n:::tabs\n### A\nx\n:::\n::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "tabs",
+              "active": 1,
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "tab",
+                  "depth": 3,
+                  "label": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "x"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "tabs",
+    "name": "id and classes",
+    "markset": ":::tabs{#install .compact}\n### A\nx\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "tabs",
+          "active": 1,
+          "id": "install",
+          "classes": [
+            "compact"
+          ],
+          "children": [
+            {
+              "type": "tab",
+              "depth": 3,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "A"
+                }
+              ],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "tabs",
+    "name": "unclosed fence",
+    "markset": ":::tabs\n### A\nx\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "tabs",
+          "active": 1,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "tab",
+              "depth": 3,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "A"
+                }
+              ],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNCLOSED"
+    ]
+  },
+  {
+    "section": "tabs",
+    "name": "empty content",
+    "markset": ":::tabs\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "TABS_NO_HEADINGS"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "tabs",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": []
+        }
+      ]
+    }
+  },
+  {
+    "section": "tabs",
+    "name": "wrong content type: no headings",
+    "markset": ":::tabs\njust text\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "TABS_NO_HEADINGS"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "tabs",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "just text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "tabs",
+    "name": "content before the first heading",
+    "markset": ":::tabs\nintro\n### A\nx\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "TABS_CONTENT_BEFORE_HEADING"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "tabs",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "intro"
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "depth": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "value": "A"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "tabs",
+    "name": "shallower heading is a mixed level",
+    "markset": ":::tabs\n### A\nx\n## B\ny\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "TABS_MIXED_LEVELS"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "tabs",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "heading",
+              "depth": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "value": "A"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "depth": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "value": "B"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "y"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "tabs",
+    "name": "active out of range",
+    "markset": ":::tabs{active=3}\n### A\n### B\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "tabs",
+          "active": 1,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "tab",
+              "depth": 3,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "A"
+                }
+              ],
+              "children": []
+            },
+            {
+              "type": "tab",
+              "depth": 3,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "B"
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "tabs",
+    "name": "active must be a positive integer",
+    "markset": ":::tabs{active=0}\n### A\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "tabs",
+          "active": 1,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "tab",
+              "depth": 3,
+              "label": [
+                {
+                  "type": "text",
+                  "value": "A"
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

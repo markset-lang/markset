@@ -1,0 +1,825 @@
+[
+  {
+    "section": "metrics",
+    "name": "canonical",
+    "markset": ":::metrics\n| Metric  | Value | Δ     |\n|---------|-------|-------|\n| Revenue | $4.2M | +12%  |\n| Churn   | 2.1%  | -0.4% |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "metrics",
+          "direction": "normal",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Metric"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Value"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Δ"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Revenue"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "$4.2M"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "+12%"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Churn"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "2.1%"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "-0.4%"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "metrics",
+    "name": "inverse direction",
+    "markset": ":::metrics{direction=inverse}\n| a | b |\n|---|---|\n| 1 | 2 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "metrics",
+          "direction": "inverse",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "2"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "metrics",
+    "name": "two columns without a delta",
+    "markset": ":::metrics\n| a | b |\n|---|---|\n| 1 | 2 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "metrics",
+          "direction": "normal",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "2"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "metrics",
+    "name": "alignment is kept",
+    "markset": ":::metrics\n| a | b |\n|:--|--:|\n| 1 | 2 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "metrics",
+          "direction": "normal",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                "left",
+                "right"
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "2"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "metrics",
+    "name": "nested inside a card",
+    "markset": "::::card\n:::metrics\n| a | b |\n|---|---|\n| 1 | 2 |\n:::\n::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "metrics",
+              "direction": "normal",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "table",
+                  "align": [
+                    null,
+                    null
+                  ],
+                  "children": [
+                    {
+                      "type": "tableRow",
+                      "children": [
+                        {
+                          "type": "tableCell",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "a"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "tableCell",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "b"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableRow",
+                      "children": [
+                        {
+                          "type": "tableCell",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "1"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "tableCell",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "2"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "metrics",
+    "name": "id and classes",
+    "markset": ":::metrics{#kpis .wide}\n| a | b |\n|---|---|\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "metrics",
+          "direction": "normal",
+          "id": "kpis",
+          "classes": [
+            "wide"
+          ],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "metrics",
+    "name": "unclosed fence",
+    "markset": ":::metrics\n| a | b |\n|---|---|\n| 1 | 2 |\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "metrics",
+          "direction": "normal",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "2"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNCLOSED"
+    ]
+  },
+  {
+    "section": "metrics",
+    "name": "empty content",
+    "markset": ":::metrics\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "METRICS_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "metrics",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": []
+        }
+      ]
+    }
+  },
+  {
+    "section": "metrics",
+    "name": "wrong content type: list",
+    "markset": ":::metrics\n- a\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "METRICS_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "metrics",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "metrics",
+    "name": "wrong content type: one-column table",
+    "markset": ":::metrics\n| a |\n|---|\n| 1 |\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "METRICS_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "metrics",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "1"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "metrics",
+    "name": "wrong content type: table plus paragraph",
+    "markset": ":::metrics\n| a | b |\n|---|---|\n\nnote\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "METRICS_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "metrics",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "note"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "metrics",
+    "name": "invalid direction",
+    "markset": ":::metrics{direction=up}\n| a | b |\n|---|---|\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "metrics",
+          "direction": "normal",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

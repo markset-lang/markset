@@ -1,0 +1,652 @@
+[
+  {
+    "section": "steps",
+    "name": "canonical",
+    "markset": ":::steps\n1. Install the CLI.\n2. Run `markset init`.\n3. Edit `markset.toml`.\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "steps",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": true,
+              "start": 1,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Install the CLI."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Run "
+                        },
+                        {
+                          "type": "inlineCode",
+                          "value": "markset init"
+                        },
+                        {
+                          "type": "text",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Edit "
+                        },
+                        {
+                          "type": "inlineCode",
+                          "value": "markset.toml"
+                        },
+                        {
+                          "type": "text",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "steps",
+    "name": "items with nested blocks",
+    "markset": ":::steps\n1. a\n   - x\n2. b\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "steps",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": true,
+              "start": 1,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "list",
+                      "ordered": false,
+                      "start": null,
+                      "spread": false,
+                      "children": [
+                        {
+                          "type": "listItem",
+                          "spread": false,
+                          "checked": null,
+                          "children": [
+                            {
+                              "type": "paragraph",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "value": "x"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "steps",
+    "name": "start number is preserved",
+    "markset": ":::steps\n3. a\n4. b\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "steps",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": true,
+              "start": 3,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "steps",
+    "name": "nested inside a card",
+    "markset": "::::card\n:::steps\n1. a\n:::\n::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "steps",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "list",
+                  "ordered": true,
+                  "start": 1,
+                  "spread": false,
+                  "children": [
+                    {
+                      "type": "listItem",
+                      "spread": false,
+                      "checked": null,
+                      "children": [
+                        {
+                          "type": "paragraph",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "a"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "steps",
+    "name": "nested: a card inside a step",
+    "markset": "::::steps\n1. a\n   :::card\n   x\n   :::\n::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "steps",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": true,
+              "start": 1,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "card",
+                      "title": null,
+                      "tone": "neutral",
+                      "compact": false,
+                      "id": null,
+                      "classes": [],
+                      "children": [
+                        {
+                          "type": "paragraph",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "x"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "steps",
+    "name": "id and classes",
+    "markset": ":::steps{#setup .numbered}\n1. a\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "steps",
+          "id": "setup",
+          "classes": [
+            "numbered"
+          ],
+          "children": [
+            {
+              "type": "list",
+              "ordered": true,
+              "start": 1,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "steps",
+    "name": "unknown attribute warns",
+    "markset": ":::steps{start=3}\n1. a\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "steps",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": true,
+              "start": 1,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_ATTRIBUTE"
+    ]
+  },
+  {
+    "section": "steps",
+    "name": "unclosed fence",
+    "markset": ":::steps\n1. a\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "steps",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": true,
+              "start": 1,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNCLOSED"
+    ]
+  },
+  {
+    "section": "steps",
+    "name": "empty content",
+    "markset": ":::steps\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "STEPS_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "steps",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": []
+        }
+      ]
+    }
+  },
+  {
+    "section": "steps",
+    "name": "wrong content type: unordered list",
+    "markset": ":::steps\n- a\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "STEPS_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "steps",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "steps",
+    "name": "wrong content type: paragraph",
+    "markset": ":::steps\ntext\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "STEPS_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "steps",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "steps",
+    "name": "wrong content type: list plus paragraph",
+    "markset": ":::steps\n1. a\n\nafter\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "STEPS_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "steps",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "list",
+              "ordered": true,
+              "start": 1,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "after"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

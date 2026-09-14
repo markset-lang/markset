@@ -908,22 +908,17 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": [
+          "type": "card",
+          "title": [
             {
               "type": "text",
               "value": "Pricing tiers"
             }
           ],
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {
-              "tone": "info"
-            }
-          },
+          "tone": "info",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": [
             {
               "type": "paragraph",
@@ -948,9 +943,8 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": [
+          "type": "card",
+          "title": [
             {
               "type": "text",
               "value": "Pricing "
@@ -973,12 +967,10 @@
               "value": "now"
             }
           ],
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": []
         }
       ]
@@ -993,15 +985,12 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": []
         }
       ]
@@ -1016,15 +1005,12 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": [
             {
               "type": "paragraph",
@@ -1093,20 +1079,22 @@
   {
     "section": "block-directive",
     "name": "document: nesting with a longer outer fence",
-    "markset": "::::columns\nMain.\n\n:::card\nSide.\n:::\n::::\n",
+    "markset": "::::card[Outer]\nMain.\n\n:::card[Inner]\nSide.\n:::\n::::\n",
     "ast": {
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "columns",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": [
+            {
+              "type": "text",
+              "value": "Outer"
+            }
+          ],
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": [
             {
               "type": "paragraph",
@@ -1118,15 +1106,17 @@
               ]
             },
             {
-              "type": "directive",
-              "name": "card",
-              "argument": null,
-              "attributes": {
-                "type": "attributes",
-                "id": null,
-                "classes": [],
-                "attrs": {}
-              },
+              "type": "card",
+              "title": [
+                {
+                  "type": "text",
+                  "value": "Inner"
+                }
+              ],
+              "tone": "neutral",
+              "compact": false,
+              "id": null,
+              "classes": [],
               "children": [
                 {
                   "type": "paragraph",
@@ -1153,26 +1143,20 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": [
             {
-              "type": "directive",
-              "name": "card",
-              "argument": null,
-              "attributes": {
-                "type": "attributes",
-                "id": null,
-                "classes": [],
-                "attrs": {}
-              },
+              "type": "card",
+              "title": null,
+              "tone": "neutral",
+              "compact": false,
+              "id": null,
+              "classes": [],
               "children": [
                 {
                   "type": "paragraph",
@@ -1212,15 +1196,12 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": [
             {
               "type": "paragraph",
@@ -1245,15 +1226,12 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": [
             {
               "type": "paragraph",
@@ -1278,15 +1256,12 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": [
             {
               "type": "paragraph",
@@ -1314,15 +1289,12 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": []
         }
       ]
@@ -1343,15 +1315,12 @@
           "type": "blockquote",
           "children": [
             {
-              "type": "directive",
-              "name": "card",
-              "argument": null,
-              "attributes": {
-                "type": "attributes",
-                "id": null,
-                "classes": [],
-                "attrs": {}
-              },
+              "type": "card",
+              "title": null,
+              "tone": "neutral",
+              "compact": false,
+              "id": null,
+              "classes": [],
               "children": [
                 {
                   "type": "paragraph",
@@ -1393,15 +1362,12 @@
           "type": "blockquote",
           "children": [
             {
-              "type": "directive",
-              "name": "card",
-              "argument": null,
-              "attributes": {
-                "type": "attributes",
-                "id": null,
-                "classes": [],
-                "attrs": {}
-              },
+              "type": "card",
+              "title": null,
+              "tone": "neutral",
+              "compact": false,
+              "id": null,
+              "classes": [],
               "children": [
                 {
                   "type": "paragraph",
@@ -1448,15 +1414,12 @@
                   ]
                 },
                 {
-                  "type": "directive",
-                  "name": "card",
-                  "argument": null,
-                  "attributes": {
-                    "type": "attributes",
-                    "id": null,
-                    "classes": [],
-                    "attrs": {}
-                  },
+                  "type": "card",
+                  "title": null,
+                  "tone": "neutral",
+                  "compact": false,
+                  "id": null,
+                  "classes": [],
                   "children": [
                     {
                       "type": "paragraph",
@@ -1494,15 +1457,9 @@
           ]
         },
         {
-          "type": "directive",
-          "name": "steps",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "steps",
+          "id": null,
+          "classes": [],
           "children": [
             {
               "type": "list",
@@ -1623,15 +1580,12 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": [
             {
               "type": "code",
@@ -1653,15 +1607,10 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "metrics",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "metrics",
+          "direction": "normal",
+          "id": null,
+          "classes": [],
           "children": [
             {
               "type": "table",
@@ -1787,15 +1736,12 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": [
             {
               "type": "paragraph",
@@ -1897,15 +1843,12 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": []
         }
       ]
@@ -1923,15 +1866,12 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": [
             {
               "type": "paragraph",
@@ -1962,15 +1902,12 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": [
             {
               "type": "paragraph",

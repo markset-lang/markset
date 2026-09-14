@@ -1,0 +1,926 @@
+[
+  {
+    "section": "grid",
+    "name": "canonical",
+    "markset": ":::grid{cols=3 gap=md}\n- **Fast** — sub-50 ms cold start\n- **Small** — 4 kB gzipped\n- **Typed** — no `any` in the public API\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "grid",
+          "cols": 3,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "strong",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Fast"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — sub-50 ms cold start"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "strong",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Small"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — 4 kB gzipped"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "strong",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Typed"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — no "
+                        },
+                        {
+                          "type": "inlineCode",
+                          "value": "any"
+                        },
+                        {
+                          "type": "text",
+                          "value": " in the public API"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "grid",
+    "name": "defaults",
+    "markset": ":::grid\n- a\n- b\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "grid",
+          "cols": 2,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "grid",
+    "name": "every cols value",
+    "markset": ":::grid{cols=1}\n- a\n:::\n\n:::grid{cols=4 gap=lg}\n- a\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "grid",
+          "cols": 1,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cols": 4,
+          "gap": "lg",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "grid",
+    "name": "ordered list is allowed",
+    "markset": ":::grid\n1. a\n2. b\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "grid",
+          "cols": 2,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": true,
+              "start": 1,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "grid",
+    "name": "items with nested blocks",
+    "markset": ":::grid\n- a\n  - inner\n- b\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "grid",
+          "cols": 2,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "list",
+                      "ordered": false,
+                      "start": null,
+                      "spread": false,
+                      "children": [
+                        {
+                          "type": "listItem",
+                          "spread": false,
+                          "checked": null,
+                          "children": [
+                            {
+                              "type": "paragraph",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "value": "inner"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "grid",
+    "name": "nested inside a card",
+    "markset": "::::card\n:::grid\n- a\n:::\n::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "grid",
+              "cols": 2,
+              "gap": "md",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "list",
+                  "ordered": false,
+                  "start": null,
+                  "spread": false,
+                  "children": [
+                    {
+                      "type": "listItem",
+                      "spread": false,
+                      "checked": null,
+                      "children": [
+                        {
+                          "type": "paragraph",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "a"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "grid",
+    "name": "id and classes",
+    "markset": ":::grid{#features .tight}\n- a\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "grid",
+          "cols": 2,
+          "gap": "md",
+          "id": "features",
+          "classes": [
+            "tight"
+          ],
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "grid",
+    "name": "unknown attribute warns",
+    "markset": ":::grid{rows=2}\n- a\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "grid",
+          "cols": 2,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_ATTRIBUTE"
+    ]
+  },
+  {
+    "section": "grid",
+    "name": "unclosed fence",
+    "markset": ":::grid\n- a\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "grid",
+          "cols": 2,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNCLOSED"
+    ]
+  },
+  {
+    "section": "grid",
+    "name": "empty content",
+    "markset": ":::grid\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "GRID_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "grid",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": []
+        }
+      ]
+    }
+  },
+  {
+    "section": "grid",
+    "name": "wrong content type: paragraph",
+    "markset": ":::grid\nnot a list\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "GRID_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "grid",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "not a list"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "grid",
+    "name": "wrong content type: two lists",
+    "markset": ":::grid\n- a\n\n* b\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "GRID_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "grid",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "grid",
+    "name": "wrong content type: list plus paragraph",
+    "markset": ":::grid\n- a\n\ntrailing\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "GRID_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "grid",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "trailing"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "grid",
+    "name": "cols out of range",
+    "markset": ":::grid{cols=5}\n- a\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "grid",
+          "cols": 2,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "grid",
+    "name": "cols must be an integer",
+    "markset": ":::grid{cols=two}\n- a\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "grid",
+          "cols": 2,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "grid",
+    "name": "invalid gap",
+    "markset": ":::grid{gap=xl}\n- a\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "grid",
+          "cols": 2,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

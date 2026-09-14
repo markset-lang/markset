@@ -293,41 +293,41 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "columns",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
           "children": [
             {
-              "type": "paragraph",
+              "type": "column",
+              "id": null,
+              "classes": [],
               "children": [
                 {
-                  "type": "text",
-                  "value": "Left."
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Left."
+                    }
+                  ]
                 }
               ]
             },
             {
-              "type": "separator",
-              "name": "col",
-              "attributes": {
-                "type": "attributes",
-                "id": null,
-                "classes": [],
-                "attrs": {}
-              }
-            },
-            {
-              "type": "paragraph",
+              "type": "column",
+              "id": null,
+              "classes": [],
               "children": [
                 {
-                  "type": "text",
-                  "value": "Right."
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Right."
+                    }
+                  ]
                 }
               ]
             }
@@ -345,62 +345,59 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "columns",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
           "children": [
             {
-              "type": "paragraph",
+              "type": "column",
+              "id": null,
+              "classes": [],
               "children": [
                 {
-                  "type": "text",
-                  "value": "A"
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
                 }
               ]
             },
             {
-              "type": "separator",
-              "name": "col",
-              "attributes": {
-                "type": "attributes",
-                "id": null,
-                "classes": [
-                  "wide"
-                ],
-                "attrs": {}
-              }
-            },
-            {
-              "type": "paragraph",
+              "type": "column",
+              "id": null,
+              "classes": [
+                "wide"
+              ],
               "children": [
                 {
-                  "type": "text",
-                  "value": "B"
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "B"
+                    }
+                  ]
                 }
               ]
             },
             {
-              "type": "separator",
-              "name": "col",
-              "attributes": {
-                "type": "attributes",
-                "id": null,
-                "classes": [],
-                "attrs": {}
-              }
-            },
-            {
-              "type": "paragraph",
+              "type": "column",
+              "id": null,
+              "classes": [],
               "children": [
                 {
-                  "type": "text",
-                  "value": "C"
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "C"
+                    }
+                  ]
                 }
               ]
             }
@@ -418,41 +415,41 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "columns",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
           "children": [
             {
-              "type": "paragraph",
+              "type": "column",
+              "id": null,
+              "classes": [],
               "children": [
                 {
-                  "type": "text",
-                  "value": "Left."
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Left."
+                    }
+                  ]
                 }
               ]
             },
             {
-              "type": "separator",
-              "name": "col",
-              "attributes": {
-                "type": "attributes",
-                "id": null,
-                "classes": [],
-                "attrs": {}
-              }
-            },
-            {
-              "type": "paragraph",
+              "type": "column",
+              "id": null,
+              "classes": [],
               "children": [
                 {
-                  "type": "text",
-                  "value": "Right."
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Right."
+                    }
+                  ]
                 }
               ]
             }
@@ -470,52 +467,49 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "columns",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
           "children": [
             {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "Main."
-                }
-              ]
-            },
-            {
-              "type": "separator",
-              "name": "col",
-              "attributes": {
-                "type": "attributes",
-                "id": null,
-                "classes": [],
-                "attrs": {}
-              }
-            },
-            {
-              "type": "directive",
-              "name": "card",
-              "argument": null,
-              "attributes": {
-                "type": "attributes",
-                "id": null,
-                "classes": [],
-                "attrs": {}
-              },
+              "type": "column",
+              "id": null,
+              "classes": [],
               "children": [
                 {
                   "type": "paragraph",
                   "children": [
                     {
                       "type": "text",
-                      "value": "Side."
+                      "value": "Main."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "card",
+                  "title": null,
+                  "tone": "neutral",
+                  "compact": false,
+                  "id": null,
+                  "classes": [],
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Side."
+                        }
+                      ]
                     }
                   ]
                 }
@@ -603,15 +597,12 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "card",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
           "children": [
             {
               "type": "separator",
@@ -631,7 +622,7 @@
   {
     "section": "separator-directive",
     "name": "document: separator inside a card inside columns",
-    "markset": "::::columns\n:::card\n::col\n:::\n::::\n",
+    "markset": "::::columns\nA\n\n::col\n\n:::card\n::col\n:::\n::::\n",
     "valid": false,
     "diagnostics": [
       "SEPARATOR_OUTSIDE_PARENT"
@@ -640,86 +631,41 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "columns",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
           "children": [
             {
-              "type": "directive",
-              "name": "card",
-              "argument": null,
-              "attributes": {
-                "type": "attributes",
-                "id": null,
-                "classes": [],
-                "attrs": {}
-              },
+              "type": "column",
+              "id": null,
+              "classes": [],
               "children": [
                 {
-                  "type": "separator",
-                  "name": "col",
-                  "attributes": {
-                    "type": "attributes",
-                    "id": null,
-                    "classes": [],
-                    "attrs": {}
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "section": "separator-directive",
-    "name": "document: separator inside a list inside columns",
-    "markset": ":::columns\n- a\n  ::col\n:::\n",
-    "valid": false,
-    "diagnostics": [
-      "SEPARATOR_OUTSIDE_PARENT"
-    ],
-    "ast": {
-      "type": "root",
-      "children": [
-        {
-          "type": "directive",
-          "name": "columns",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
-          "children": [
-            {
-              "type": "list",
-              "ordered": false,
-              "start": null,
-              "spread": false,
-              "children": [
-                {
-                  "type": "listItem",
-                  "spread": false,
-                  "checked": null,
+                  "type": "paragraph",
                   "children": [
                     {
-                      "type": "paragraph",
-                      "children": [
-                        {
-                          "type": "text",
-                          "value": "a"
-                        }
-                      ]
-                    },
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "card",
+                  "title": null,
+                  "tone": "neutral",
+                  "compact": false,
+                  "id": null,
+                  "classes": [],
+                  "children": [
                     {
                       "type": "separator",
                       "name": "col",
@@ -741,7 +687,87 @@
   },
   {
     "section": "separator-directive",
-    "name": "document: unknown separator name inside columns",
+    "name": "document: separator inside a list inside columns",
+    "markset": ":::columns\nA\n\n::col\n\n- a\n  ::col\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "SEPARATOR_OUTSIDE_PARENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "list",
+                  "ordered": false,
+                  "start": null,
+                  "spread": false,
+                  "children": [
+                    {
+                      "type": "listItem",
+                      "spread": false,
+                      "checked": null,
+                      "children": [
+                        {
+                          "type": "paragraph",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "a"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "separator",
+                          "name": "col",
+                          "attributes": {
+                            "type": "attributes",
+                            "id": null,
+                            "classes": [],
+                            "attrs": {}
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "separator-directive",
+    "name": "document: unknown separator name inside columns still separates",
     "markset": ":::columns\nA\n\n::tab\n\nB\n:::\n",
     "valid": false,
     "diagnostics": [
@@ -751,41 +777,41 @@
       "type": "root",
       "children": [
         {
-          "type": "directive",
-          "name": "columns",
-          "argument": null,
-          "attributes": {
-            "type": "attributes",
-            "id": null,
-            "classes": [],
-            "attrs": {}
-          },
+          "type": "columns",
+          "ratio": null,
+          "gap": "md",
+          "id": null,
+          "classes": [],
           "children": [
             {
-              "type": "paragraph",
+              "type": "column",
+              "id": null,
+              "classes": [],
               "children": [
                 {
-                  "type": "text",
-                  "value": "A"
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "A"
+                    }
+                  ]
                 }
               ]
             },
             {
-              "type": "separator",
-              "name": "tab",
-              "attributes": {
-                "type": "attributes",
-                "id": null,
-                "classes": [],
-                "attrs": {}
-              }
-            },
-            {
-              "type": "paragraph",
+              "type": "column",
+              "id": null,
+              "classes": [],
               "children": [
                 {
-                  "type": "text",
-                  "value": "B"
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "B"
+                    }
+                  ]
                 }
               ]
             }

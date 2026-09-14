@@ -1,0 +1,653 @@
+[
+  {
+    "section": "figure",
+    "name": "canonical",
+    "markset": ":::figure[Request lifecycle from ingress to response]{#fig-lifecycle width=60%}\n![](lifecycle.svg)\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "Request lifecycle from ingress to response"
+            }
+          ],
+          "width": 60,
+          "id": "fig-lifecycle",
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "lifecycle.svg",
+                  "alt": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "figure",
+    "name": "image with alt and title, no caption",
+    "markset": ":::figure\n![Alt text](a.png \"T\")\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": null,
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": "T",
+                  "url": "a.png",
+                  "alt": "Alt text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "figure",
+    "name": "table as content",
+    "markset": ":::figure[Sizes]\n| a | b |\n|---|---|\n| 1 | 2 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "Sizes"
+            }
+          ],
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "2"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "figure",
+    "name": "code block as content",
+    "markset": ":::figure[Listing]\n```js\nlet x = 1;\n```\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "Listing"
+            }
+          ],
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "code",
+              "lang": "js",
+              "meta": null,
+              "value": "let x = 1;"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "figure",
+    "name": "caption with inline markup",
+    "markset": ":::figure[The *fast* path]\n![](f.svg)\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "The "
+            },
+            {
+              "type": "emphasis",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "fast"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "value": " path"
+            }
+          ],
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "f.svg",
+                  "alt": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "figure",
+    "name": "width bounds",
+    "markset": ":::figure{width=1%}\n![](a.svg)\n:::\n\n:::figure{width=100%}\n![](b.svg)\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": null,
+          "width": 1,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "a.svg",
+                  "alt": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "figure",
+          "caption": null,
+          "width": 100,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "b.svg",
+                  "alt": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "figure",
+    "name": "nested inside a card",
+    "markset": "::::card\n:::figure[C]\n![](x.svg)\n:::\n::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "figure",
+              "caption": [
+                {
+                  "type": "text",
+                  "value": "C"
+                }
+              ],
+              "width": null,
+              "id": null,
+              "classes": [],
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "image",
+                      "title": null,
+                      "url": "x.svg",
+                      "alt": ""
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "figure",
+    "name": "classes",
+    "markset": ":::figure{.wide}\n![](a.svg)\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": null,
+          "width": null,
+          "id": null,
+          "classes": [
+            "wide"
+          ],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "a.svg",
+                  "alt": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "figure",
+    "name": "unclosed fence",
+    "markset": ":::figure[C]\n![](x.svg)\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "C"
+            }
+          ],
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "x.svg",
+                  "alt": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNCLOSED"
+    ]
+  },
+  {
+    "section": "figure",
+    "name": "empty content",
+    "markset": ":::figure\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "FIGURE_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "figure",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": []
+        }
+      ]
+    }
+  },
+  {
+    "section": "figure",
+    "name": "wrong content type: text paragraph",
+    "markset": ":::figure\nsome text\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "FIGURE_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "figure",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "some text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "figure",
+    "name": "wrong content type: image with trailing text",
+    "markset": ":::figure\n![](a.svg) caption here\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "FIGURE_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "figure",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "a.svg",
+                  "alt": ""
+                },
+                {
+                  "type": "text",
+                  "value": " caption here"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "figure",
+    "name": "wrong content type: two blocks",
+    "markset": ":::figure\n![](a.svg)\n\n![](b.svg)\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "FIGURE_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "figure",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "a.svg",
+                  "alt": ""
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "b.svg",
+                  "alt": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "figure",
+    "name": "width must be a percentage",
+    "markset": ":::figure{width=300px}\n![](a.svg)\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": null,
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "a.svg",
+                  "alt": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "figure",
+    "name": "width out of range",
+    "markset": ":::figure{width=150%}\n![](a.svg)\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": null,
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "a.svg",
+                  "alt": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "figure",
+    "name": "width of zero",
+    "markset": ":::figure{width=0%}\n![](a.svg)\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": null,
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "a.svg",
+                  "alt": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]
