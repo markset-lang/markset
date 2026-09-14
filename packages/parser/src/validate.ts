@@ -10,7 +10,17 @@ export const StructureCode = {
   SEPARATOR_OUTSIDE_PARENT: "SEPARATOR_OUTSIDE_PARENT",
   /** Warning: the first content block would merge into the fence line under a stock CommonMark parser (§3). */
   DEGRADATION_BLANK_LINE: "DEGRADATION_BLANK_LINE",
+  /** Warning: a reserved class (§5) used on a node type outside its "Applies to" column. */
+  CLASS_MISAPPLIED: "CLASS_MISAPPLIED",
 } as const;
+
+/** Reserved classes with restricted placement (§5). Classes absent here apply anywhere. */
+const RESERVED_PLACEMENT: Record<string, ReadonlySet<string>> = {
+  lead: new Set(["paragraph"]),
+  eyebrow: new Set(["paragraph"]),
+  small: new Set(["paragraph", "span"]),
+  badge: new Set(["span"]),
+};
 
 const STRAY_FENCE = /^[ \t]*:{3,}[ \t]*$/m;
 
@@ -21,6 +31,7 @@ export function validateStructure(tree: Root, source: string): Diagnostic[] {
 
   function walk(node: Nodes, parent: Nodes | null): void {
     if (node.type === "directive") checkNaiveDegradation(node);
+    checkReservedClasses(node);
     if (node.type === "separator") {
       const inColumns = parent?.type === "directive" && parent.name === "columns";
       if (!inColumns) {
@@ -46,6 +57,24 @@ export function validateStructure(tree: Root, source: string): Diagnostic[] {
     }
     if ("children" in node) {
       for (const child of node.children) walk(child as Nodes, node);
+    }
+  }
+
+  function checkReservedClasses(node: Nodes): void {
+    const attributes = (node as { attributes?: { classes: string[] } }).attributes;
+    if (!attributes) return;
+    // Blockquote-syntax callouts and directives carry attributes too, but §5 restricts by rendered element.
+    const kind = node.type === "blockquote" || node.type === "callout" ? "blockquote" : node.type;
+    for (const name of attributes.classes) {
+      const allowed = RESERVED_PLACEMENT[name];
+      if (allowed && !allowed.has(kind)) {
+        diagnostics.push({
+          code: StructureCode.CLASS_MISAPPLIED,
+          severity: "warning",
+          message: `.${name} applies to ${[...allowed].join(" or ")}, not to a ${kind}; it is kept but themes may ignore it`,
+          ...span(node),
+        });
+      }
     }
   }
 

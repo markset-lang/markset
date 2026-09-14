@@ -9,7 +9,7 @@ import type { CompileContext, Extension, Token } from "mdast-util-from-markdown"
 import { parseAttributeSpecifier, type Attributes } from "./attributes.ts";
 import { parseDirectiveLine, DirectiveCode } from "./directives.ts";
 import type { Diagnostic } from "./diagnostics.ts";
-import type { Directive, SeparatorNode, Span } from "./ast.ts";
+import type { AttributeLine, Directive, SeparatorNode, Span } from "./ast.ts";
 
 function emptyAttributes(): Attributes {
   return { type: "attributes", id: null, classes: [], attrs: {} };
@@ -107,6 +107,20 @@ export function marksetFromMarkdown(diagnostics: Diagnostic[]): Extension {
     this.exit(token);
   }
 
+  function enterAttributeLine(this: CompileContext, token: Token): undefined {
+    const node: AttributeLine = { type: "attributeLine", attributes: emptyAttributes() };
+    this.enter(node, token);
+  }
+
+  function exitAttributeLine(this: CompileContext, token: Token): undefined {
+    const node = top<AttributeLine>(this);
+    const result = parseAttributeSpecifier(this.sliceSerialize(token), 0);
+    if (!result) throw new Error("attribute line token did not begin with `{`");
+    node.attributes = result.attributes;
+    diagnostics.push(...shifted(result.diagnostics, token));
+    this.exit(token);
+  }
+
   return {
     canContainEols: ["span"],
     enter: {
@@ -115,6 +129,7 @@ export function marksetFromMarkdown(diagnostics: Diagnostic[]): Extension {
       marksetDirectiveClosingFence: enterClosingFence,
       marksetSeparator: enterSeparator,
       marksetSpan: enterSpan,
+      marksetAttributeLine: enterAttributeLine,
     },
     exit: {
       marksetDirective: exitDirective,
@@ -123,6 +138,7 @@ export function marksetFromMarkdown(diagnostics: Diagnostic[]): Extension {
       marksetSeparator: exitSeparator,
       marksetSpan: exitSpan,
       marksetSpanAttributes: exitSpanAttributes,
+      marksetAttributeLine: exitAttributeLine,
     },
   };
 }

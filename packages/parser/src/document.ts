@@ -8,6 +8,7 @@ import { markset } from "./syntax.ts";
 import { marksetFromMarkdown } from "./from-markdown.ts";
 import { validateStructure } from "./validate.ts";
 import { normalizeConstructs } from "./constructs.ts";
+import { attachAttributeLines } from "./attribute-lines.ts";
 import { readFrontmatter, type Frontmatter } from "./frontmatter.ts";
 import type { Diagnostic } from "./diagnostics.ts";
 
@@ -35,6 +36,7 @@ export function parseDocument(source: string): ParsedDocument {
   const first = ast.children[0];
   const meta = first?.type === "yaml" ? readFrontmatter(first, diagnostics) : null;
   if (meta) ast.frontmatter = meta;
+  attachAttributeLines(ast, source, diagnostics);
   diagnostics.push(...validateStructure(ast, source));
   normalizeConstructs(ast, source, diagnostics);
   diagnostics.sort((a, b) => a.start - b.start || a.end - b.end);

@@ -1,14 +1,14 @@
-import type { Root } from "mdast";
+import type { Nodes, Root } from "mdast";
 import { toHast } from "mdast-util-to-hast";
 import { toHtml } from "hast-util-to-html";
-import { parseDocument, type Diagnostic, type Frontmatter } from "@markset/parser";
+import { parseDocument, type Attributes, type Diagnostic, type Frontmatter } from "@markset/parser";
 import { marksetHandlers } from "./handlers.ts";
 
 export { marksetHandlers };
 
 /** Render a parsed tree as an HTML fragment. Non-empty output ends with a newline, as in the CommonMark suite. */
 export function renderHtml(tree: Root): string {
-  const hast = toHast(tree, { handlers: marksetHandlers() });
+  const hast = toHast(withBlockAttributes(tree), { handlers: marksetHandlers() });
   const html = toHtml(hast);
   return html === "" ? "" : `${html}\n`;
 }
@@ -55,6 +55,31 @@ export function html(source: string): { html: string; diagnostics: Diagnostic[] 
   const { ast, diagnostics } = parseDocument(source);
   return { html: renderHtml(ast), diagnostics };
 }
+
+/**
+ * Attribute lines (§2.5) leave an `attributes` field on ordinary mdast blocks.
+ * mdast-util-to-hast applies `data.hProperties` to the element it creates, so
+ * copy them there on a clone; the caller's tree is not modified.
+ */
+function withBlockAttributes(tree: Root): Root {
+  const clone = structuredClone(tree);
+  const visit = (node: Nodes): void => {
+    const attributes = (node as { attributes?: Attributes }).attributes;
+    if (attributes && !MARKSET_HANDLED.has(node.type)) {
+      const properties: Record<string, string | string[]> = {};
+      if (attributes.id) properties.id = attributes.id;
+      if (attributes.classes.length) properties.className = attributes.classes;
+      for (const [key, value] of Object.entries(attributes.attrs)) properties[`data-${key}`] = value;
+      node.data = { ...node.data, hProperties: { ...(node.data as { hProperties?: object } | undefined)?.hProperties, ...properties } };
+    }
+    if ("children" in node) for (const child of node.children) visit(child as Nodes);
+  };
+  visit(clone);
+  return clone;
+}
+
+/** Node types whose handlers in handlers.ts already read `attributes` or `id`/`classes` themselves. */
+const MARKSET_HANDLED = new Set(["callout", "card", "grid", "columns", "column", "tabs", "tab", "steps", "metrics", "figure", "span", "directive", "separator"]);
 
 function firstHeading(tree: Root): string | null {
   const heading = tree.children.find((n) => n.type === "heading" && n.depth === 1);

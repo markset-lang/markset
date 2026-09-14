@@ -19,7 +19,7 @@ import "./ast.ts";
 
 export function markset(): Extension {
   return {
-    flow: { [codes.colon]: [directiveContainer, separator] },
+    flow: { [codes.colon]: [directiveContainer, separator], [codes.leftCurlyBrace]: attributeLine },
     text: { [codes.leftSquareBracket]: span },
   };
 }
@@ -513,5 +513,66 @@ function tokenizeSpanLookahead(effects: Effects, ok: State, nok: State): State {
     if (code === codes.eof || markdownLineEnding(code)) return nok(code);
     effects.consume(code);
     return attributes;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Attribute line (§2.5): a line holding only an attribute specifier
+// ---------------------------------------------------------------------------
+
+const attributeLine: Construct = { name: "marksetAttributeLine", tokenize: tokenizeAttributeLine };
+
+function tokenizeAttributeLine(this: TokenizeContext, effects: Effects, ok: State, nok: State): State {
+  const self = this;
+  let quoted = false;
+  let previousCode: Code = null;
+  return start;
+
+  function start(code: Code): State | undefined {
+    // Inside a paragraph such a line is text: it never interrupts.
+    if (self.interrupt) return nok(code);
+    effects.enter("marksetAttributeLine");
+    effects.consume(code);
+    return inside;
+  }
+
+  /** Same end-finding rule as spans: a quoted value starts only with `"` right after `=`. */
+  function inside(code: Code): State | undefined {
+    if (code === codes.eof || markdownLineEnding(code)) return nok(code);
+    if (quoted) {
+      if (code === codes.backslash) {
+        effects.consume(code);
+        return insideEscape;
+      }
+      if (code === codes.quotationMark) quoted = false;
+      effects.consume(code);
+      return inside;
+    }
+    if (code === codes.rightCurlyBrace) {
+      effects.consume(code);
+      return after;
+    }
+    if (code === codes.quotationMark && previousCode === codes.equalsTo) quoted = true;
+    previousCode = code;
+    effects.consume(code);
+    return inside;
+  }
+
+  function insideEscape(code: Code): State | undefined {
+    if (code === codes.eof || markdownLineEnding(code)) return nok(code);
+    effects.consume(code);
+    return inside;
+  }
+
+  function after(code: Code): State | undefined {
+    if (code === codes.eof || markdownLineEnding(code)) {
+      effects.exit("marksetAttributeLine");
+      return ok(code);
+    }
+    if (markdownSpace(code)) {
+      effects.consume(code);
+      return after;
+    }
+    return nok(code);
   }
 }
