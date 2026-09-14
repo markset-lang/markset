@@ -112,7 +112,18 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
   letter-spacing: -0.01em;
 }
-* + h1, * + h2, * + h3, * + h4, * + h5, * + h6 { margin-top: calc(var(--ms-space) * 2); }
+/* Heading rhythm, in the heading's own em so it scales with the type scale:
+ * more space above than below, and consecutive headings close up.
+ * Selectors carry the .ms-document class so they beat the generic sibling gap. */
+.ms-document > * + h1, .ms-document > * + h2 { margin-top: 2em; }
+.ms-document > * + h3, .ms-document > * + h4, .ms-document > * + h5, .ms-document > * + h6 { margin-top: 1.5em; }
+.ms-document > :is(h1, h2, h3, h4, h5, h6) + * { margin-top: calc(var(--ms-space) * 0.6); }
+.ms-document > :is(h1, h2, h3, h4, h5, h6) + :is(h1, h2, h3, h4, h5, h6) { margin-top: 0.5em; }
+/* The same rhythm inside constructs, which hold their own block sequences. */
+.ms-card > * + :is(h1, h2, h3, h4, h5, h6):not(.ms-card-title), .ms-column > * + :is(h1, h2, h3, h4, h5, h6),
+.ms-tabpanel > * + :is(h1, h2, h3, h4, h5, h6), .ms-callout-body > * + :is(h1, h2, h3, h4, h5, h6) { margin-top: 1.5em; }
+.ms-card > :is(h1, h2, h3, h4, h5, h6) + *, .ms-column > :is(h1, h2, h3, h4, h5, h6) + *,
+.ms-tabpanel > :is(h1, h2, h3, h4, h5, h6) + *, .ms-callout-body > :is(h1, h2, h3, h4, h5, h6) + * { margin-top: calc(var(--ms-space) * 0.6); }
 h1 { font-size: var(--ms-h1); } h2 { font-size: var(--ms-h2); } h3 { font-size: var(--ms-h3); }
 h4 { font-size: var(--ms-h4); } h5 { font-size: var(--ms-h5); } h6 { font-size: var(--ms-h6); }
 
