@@ -2,7 +2,7 @@
 markset: 0
 title: Markset showcase
 theme:
-  preset: editorial
+  preset: technical
   accent: "#2563eb"
   density: comfortable
   radius: md
