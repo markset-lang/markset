@@ -1,0 +1,851 @@
+[
+  {
+    "section": "attribute-specifier",
+    "name": "canonical",
+    "markset": "{#id .class .other key=value key2=\"quoted value\"}",
+    "ast": {
+      "type": "attributes",
+      "id": "id",
+      "classes": [
+        "class",
+        "other"
+      ],
+      "attrs": {
+        "key": "value",
+        "key2": "quoted value"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "empty specifier",
+    "markset": "{}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "id only",
+    "markset": "{#main}",
+    "ast": {
+      "type": "attributes",
+      "id": "main",
+      "classes": [],
+      "attrs": {}
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "class only",
+    "markset": "{.lead}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [
+        "lead"
+      ],
+      "attrs": {}
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "several classes keep source order",
+    "markset": "{.badge .warn .small}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [
+        "badge",
+        "warn",
+        "small"
+      ],
+      "attrs": {}
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "repeated class is kept, not deduplicated",
+    "markset": "{.a .a}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [
+        "a",
+        "a"
+      ],
+      "attrs": {}
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "bare value",
+    "markset": "{tone=info}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {
+        "tone": "info"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "quoted value with whitespace",
+    "markset": "{title=\"Pricing tiers\"}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {
+        "title": "Pricing tiers"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "quoted value with escapes",
+    "markset": "{title=\"say \\\"hi\\\" \\\\ done\"}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {
+        "title": "say \"hi\" \\ done"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "quoted empty string",
+    "markset": "{alt=\"\"}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {
+        "alt": ""
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "quoted value may contain braces, hashes, dots, and equals",
+    "markset": "{q=\"a } b { #c .d e=f\"}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {
+        "q": "a } b { #c .d e=f"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "quoted value may contain a single quote",
+    "markset": "{q=\"it's\"}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {
+        "q": "it's"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "repeated id, last wins",
+    "markset": "{#a #b}",
+    "ast": {
+      "type": "attributes",
+      "id": "b",
+      "classes": [],
+      "attrs": {}
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "repeated key, last wins",
+    "markset": "{k=1 k=2}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {
+        "k": "2"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "leading, trailing, and repeated whitespace",
+    "markset": "{  #a \t .b\t\tk=v  }",
+    "ast": {
+      "type": "attributes",
+      "id": "a",
+      "classes": [
+        "b"
+      ],
+      "attrs": {
+        "k": "v"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "tab as the only separator",
+    "markset": "{#a\t.b\tk=v}",
+    "ast": {
+      "type": "attributes",
+      "id": "a",
+      "classes": [
+        "b"
+      ],
+      "attrs": {
+        "k": "v"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "identifiers with digits, underscore, and hyphen",
+    "markset": "{#h2-intro .col_3 data-x=y}",
+    "ast": {
+      "type": "attributes",
+      "id": "h2-intro",
+      "classes": [
+        "col_3"
+      ],
+      "attrs": {
+        "data-x": "y"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "single-character identifiers",
+    "markset": "{#a .b c=d}",
+    "ast": {
+      "type": "attributes",
+      "id": "a",
+      "classes": [
+        "b"
+      ],
+      "attrs": {
+        "c": "d"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "bare values with punctuation",
+    "markset": "{ratio=2:1 width=60% path=/a/b.c eq=a=b hash=#x dot=.y}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {
+        "ratio": "2:1",
+        "width": "60%",
+        "path": "/a/b.c",
+        "eq": "a=b",
+        "hash": "#x",
+        "dot": ".y"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "bare value with a backslash is literal",
+    "markset": "{path=C:\\dir}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {
+        "path": "C:\\dir"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "non-ASCII in values",
+    "markset": "{label=Δ title=\"Δ revenue\"}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {
+        "label": "Δ",
+        "title": "Δ revenue"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "reserved classes alongside a tone key",
+    "markset": "{.info .badge tone=warn}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [
+        "info",
+        "badge"
+      ],
+      "attrs": {
+        "tone": "warn"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "key that looks like a reserved word but is not",
+    "markset": "{ids=1 classes=2 identity=3}",
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {
+        "ids": "1",
+        "classes": "2",
+        "identity": "3"
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "unterminated after items",
+    "markset": "{#a .b",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_UNTERMINATED"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": "a",
+      "classes": [
+        "b"
+      ],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "unterminated, empty",
+    "markset": "{",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_UNTERMINATED"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "unterminated quoted value swallows the rest, reported once",
+    "markset": "{k=\"abc",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_UNTERMINATED_QUOTE"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "unterminated quoted value even when a brace follows",
+    "markset": "{k=\"abc}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_UNTERMINATED_QUOTE"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "empty id",
+    "markset": "{#}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "empty class",
+    "markset": "{.}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "id starting with a digit",
+    "markset": "{#1abc}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "class starting with a hyphen",
+    "markset": "{.-x}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "id containing a dot is one bad item, not two",
+    "markset": "{#a.b}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "class containing an equals sign",
+    "markset": "{.a=b}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "key starting with a digit",
+    "markset": "{9lives=1}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "key with an illegal character",
+    "markset": "{ke$y=1}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_EXPECTED_EQUALS"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "non-ASCII letter in an identifier",
+    "markset": "{#über}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "bare word without a value",
+    "markset": "{foo}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_EXPECTED_EQUALS"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "empty bare value",
+    "markset": "{key=}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_EMPTY_VALUE"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "space after equals splits into an empty value and a bare word",
+    "markset": "{key= value}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_EMPTY_VALUE",
+      "ATTR_EXPECTED_EQUALS"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "space before equals",
+    "markset": "{key =value}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_EXPECTED_EQUALS",
+      "ATTR_UNEXPECTED_CHAR"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "bare value containing a double quote",
+    "markset": "{key=a\"b}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_VALUE"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "bare value containing a single quote",
+    "markset": "{key=it's}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_VALUE"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "single-quoted value is not a quoting form",
+    "markset": "{key='v'}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_VALUE"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "text after the closing quote",
+    "markset": "{key=\"a\"b}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_VALUE"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "unknown escape in a quoted value",
+    "markset": "{key=\"a\\nb\"}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_ESCAPE"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "escaped brace is not a defined escape",
+    "markset": "{key=\"a\\}b\"}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_ESCAPE"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "two unknown escapes report twice",
+    "markset": "{key=\"\\a\\b\"}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_ESCAPE",
+      "ATTR_BAD_ESCAPE"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "item starting with equals",
+    "markset": "{=x}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_UNEXPECTED_CHAR"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "item starting with a quote",
+    "markset": "{\"x\"}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_UNEXPECTED_CHAR"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "item starting with punctuation",
+    "markset": "{@x}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_UNEXPECTED_CHAR"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "reserved key id",
+    "markset": "{id=x}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_RESERVED_KEY"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "reserved key class",
+    "markset": "{class=x}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_RESERVED_KEY"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "reserved key does not shadow the id item",
+    "markset": "{#real id=fake}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_RESERVED_KEY"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": "real",
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "several bad items are each reported and the good ones survive",
+    "markset": "{# .b bad key= .c}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER",
+      "ATTR_EXPECTED_EQUALS",
+      "ATTR_EMPTY_VALUE"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [
+        "b",
+        "c"
+      ],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "newline is not whitespace, so it glues items into one bad identifier",
+    "markset": "{#a\n.b}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {}
+    }
+  },
+  {
+    "section": "attribute-specifier",
+    "name": "bad item followed by good quoted value",
+    "markset": "{=x k=\"a b\"}",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_UNEXPECTED_CHAR"
+    ],
+    "ast": {
+      "type": "attributes",
+      "id": null,
+      "classes": [],
+      "attrs": {
+        "k": "a b"
+      }
+    }
+  }
+]

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Markset conformance test file",
+  "description": "One file per spec section. The file is an array of cases. See spec/v0.md §7.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/case" },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["section", "markset", "valid"],
+      "properties": {
+        "section": {
+          "description": "Section identifier. Must equal the file's basename without .json.",
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "name": {
+          "description": "Optional human-readable label used in harness reports.",
+          "type": "string"
+        },
+        "markset": {
+          "description": "Input source. A full document for construct sections; the bare fragment for grammar sections.",
+          "type": "string"
+        },
+        "html": {
+          "description": "Expected output of the HTML renderer. Omitted in grammar sections.",
+          "type": "string"
+        },
+        "downgrade": {
+          "description": "Expected output of the downgrade renderer, as CommonMark. Omitted in grammar sections.",
+          "type": "string"
+        },
+        "ast": {
+          "description": "Expected AST. Compared structurally, ignoring object key order. Required when valid is true."
+        },
+        "valid": {
+          "description": "False when the parser must emit at least one error-severity diagnostic.",
+          "type": "boolean"
+        },
+        "diagnostics": {
+          "description": "Every diagnostic code the parser must emit, errors and warnings alike, in any order. Absent means none.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/code" }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "valid": { "const": true } } },
+          "then": { "required": ["ast"] }
+        },
+        {
+          "if": { "properties": { "valid": { "const": false } } },
+          "then": {
+            "required": ["diagnostics"],
+            "properties": { "diagnostics": { "minItems": 1 } }
+          }
+        }
+      ]
+    },
+    "code": {
+      "description": "Diagnostic code: an UPPER_SNAKE identifier whose first segment names the spec area.",
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*(_[A-Z0-9]+)+$"
+    }
+  }
+}
