@@ -74,7 +74,7 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] Grammar: block directive and separator fence lines (§2.3, §2.4, `packages/parser/src/directives.ts`)
 - [x] Grammar: bracketed span (§2.2, `syntax.ts` + `from-markdown.ts`, `tests/bracketed-span.json`)
 - [x] Parser: CommonMark base on micromark/mdast with directive containers, separators, spans, GFM tables; `parseDocument()` in `document.ts`. Generic `directive` nodes only; no construct normalization yet.
-- [ ] Frontmatter and the `markset: 0` activation trigger (spec §6, §9.3)
+- [x] Frontmatter and theme tokens (§6, `packages/parser/src/frontmatter.ts`, YAML subset reader in `yaml-subset.ts`, `tests/frontmatter.json`). The parser always parses Markset; `markset: 0` is declared, not required (§9.3 still open).
 - [ ] Downgrade renderer
 - [x] Constructs: callout, card, grid, columns, tabs, steps, metrics, figure (`packages/parser/src/constructs.ts`, one `tests/<name>.json` each; AST aspect only until the renderers exist)
 - [ ] HTML renderer

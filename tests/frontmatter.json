@@ -1,0 +1,462 @@
+[
+  {
+    "section": "frontmatter",
+    "name": "canonical theme block from the spec",
+    "markset": "---\nmarkset: 0\ntheme:\n  preset: editorial       # editorial | technical | deck | report\n  accent: \"#2563eb\"\n  density: comfortable    # compact | comfortable | spacious\n  radius: md              # none | sm | md | lg\n  type:\n    body: \"Source Serif 4\"\n    heading: \"Inter\"\n    scale: 1.25\n---\n\n# Title\n",
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": 0,
+        "theme": {
+          "preset": "editorial",
+          "accent": "#2563eb",
+          "density": "comfortable",
+          "radius": "md",
+          "type": {
+            "body": "Source Serif 4",
+            "heading": "Inter",
+            "scale": 1.25
+          }
+        }
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "markset: 0\ntheme:\n  preset: editorial       # editorial | technical | deck | report\n  accent: \"#2563eb\"\n  density: comfortable    # compact | comfortable | spacious\n  radius: md              # none | sm | md | lg\n  type:\n    body: \"Source Serif 4\"\n    heading: \"Inter\"\n    scale: 1.25"
+        },
+        {
+          "type": "heading",
+          "depth": 1,
+          "children": [
+            {
+              "type": "text",
+              "value": "Title"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "frontmatter",
+    "name": "version only",
+    "markset": "---\nmarkset: 0\n---\ntext\n",
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": 0,
+        "theme": null
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "markset: 0"
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "text"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "frontmatter",
+    "name": "theme without a version",
+    "markset": "---\ntheme:\n  preset: deck\n---\n",
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": null,
+        "theme": {
+          "preset": "deck",
+          "accent": null,
+          "density": null,
+          "radius": null,
+          "type": {
+            "body": null,
+            "heading": null,
+            "scale": null
+          }
+        }
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "theme:\n  preset: deck"
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "frontmatter",
+    "name": "other keys are the document's business",
+    "markset": "---\ntitle: Notes\ntags: [a, b]\nauthors:\n  - name: X\n    role: y\n---\n",
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": null,
+        "theme": null
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "title: Notes\ntags: [a, b]\nauthors:\n  - name: X\n    role: y"
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "frontmatter",
+    "name": "short hex accent",
+    "markset": "---\ntheme:\n  accent: \"#fff\"\n---\n",
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": null,
+        "theme": {
+          "preset": null,
+          "accent": "#fff",
+          "density": null,
+          "radius": null,
+          "type": {
+            "body": null,
+            "heading": null,
+            "scale": null
+          }
+        }
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "theme:\n  accent: \"#fff\""
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "frontmatter",
+    "name": "no frontmatter leaves the root bare",
+    "markset": "# Title\n\n---\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "heading",
+          "depth": 1,
+          "children": [
+            {
+              "type": "text",
+              "value": "Title"
+            }
+          ]
+        },
+        {
+          "type": "thematicBreak"
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "frontmatter",
+    "name": "a later --- pair is not frontmatter but a thematic break and a setext heading",
+    "markset": "text\n\n---\nmarkset: 0\n---\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "text"
+            }
+          ]
+        },
+        {
+          "type": "thematicBreak"
+        },
+        {
+          "type": "heading",
+          "depth": 2,
+          "children": [
+            {
+              "type": "text",
+              "value": "markset: 0"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "frontmatter",
+    "name": "unknown theme token warns",
+    "markset": "---\ntheme:\n  color: red\n  type:\n    weight: 700\n---\n",
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": null,
+        "theme": {
+          "preset": null,
+          "accent": null,
+          "density": null,
+          "radius": null,
+          "type": {
+            "body": null,
+            "heading": null,
+            "scale": null
+          }
+        }
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "theme:\n  color: red\n  type:\n    weight: 700"
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "THEME_UNKNOWN_TOKEN",
+      "THEME_UNKNOWN_TOKEN"
+    ]
+  },
+  {
+    "section": "frontmatter",
+    "name": "unreadable frontmatter warns and is ignored",
+    "markset": "---\nok: 1\n  stray: 2\n---\n",
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": null,
+        "theme": null
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "ok: 1\n  stray: 2"
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "FRONTMATTER_UNPARSEABLE"
+    ]
+  },
+  {
+    "section": "frontmatter",
+    "name": "unsupported version",
+    "markset": "---\nmarkset: 1\n---\n",
+    "valid": false,
+    "diagnostics": [
+      "DOCUMENT_VERSION_UNSUPPORTED"
+    ],
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": null,
+        "theme": null
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "markset: 1"
+        }
+      ]
+    }
+  },
+  {
+    "section": "frontmatter",
+    "name": "version must be a number",
+    "markset": "---\nmarkset: \"0\"\n---\n",
+    "valid": false,
+    "diagnostics": [
+      "DOCUMENT_VERSION_UNSUPPORTED"
+    ],
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": null,
+        "theme": null
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "markset: \"0\""
+        }
+      ]
+    }
+  },
+  {
+    "section": "frontmatter",
+    "name": "invalid preset",
+    "markset": "---\ntheme:\n  preset: fancy\n---\n",
+    "valid": false,
+    "diagnostics": [
+      "THEME_INVALID_TOKEN"
+    ],
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": null,
+        "theme": {
+          "preset": null,
+          "accent": null,
+          "density": null,
+          "radius": null,
+          "type": {
+            "body": null,
+            "heading": null,
+            "scale": null
+          }
+        }
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "theme:\n  preset: fancy"
+        }
+      ]
+    }
+  },
+  {
+    "section": "frontmatter",
+    "name": "accent must be a hex color",
+    "markset": "---\ntheme:\n  accent: blue\n---\n",
+    "valid": false,
+    "diagnostics": [
+      "THEME_INVALID_TOKEN"
+    ],
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": null,
+        "theme": {
+          "preset": null,
+          "accent": null,
+          "density": null,
+          "radius": null,
+          "type": {
+            "body": null,
+            "heading": null,
+            "scale": null
+          }
+        }
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "theme:\n  accent: blue"
+        }
+      ]
+    }
+  },
+  {
+    "section": "frontmatter",
+    "name": "scale out of range",
+    "markset": "---\ntheme:\n  type:\n    scale: 3\n---\n",
+    "valid": false,
+    "diagnostics": [
+      "THEME_INVALID_TOKEN"
+    ],
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": null,
+        "theme": {
+          "preset": null,
+          "accent": null,
+          "density": null,
+          "radius": null,
+          "type": {
+            "body": null,
+            "heading": null,
+            "scale": null
+          }
+        }
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "theme:\n  type:\n    scale: 3"
+        }
+      ]
+    }
+  },
+  {
+    "section": "frontmatter",
+    "name": "theme must be a mapping",
+    "markset": "---\ntheme: dark\n---\n",
+    "valid": false,
+    "diagnostics": [
+      "THEME_INVALID_TOKEN"
+    ],
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": null,
+        "theme": {
+          "preset": null,
+          "accent": null,
+          "density": null,
+          "radius": null,
+          "type": {
+            "body": null,
+            "heading": null,
+            "scale": null
+          }
+        }
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "theme: dark"
+        }
+      ]
+    }
+  },
+  {
+    "section": "frontmatter",
+    "name": "valid tokens survive next to invalid ones",
+    "markset": "---\ntheme:\n  preset: report\n  density: loose\n  radius: lg\n---\n",
+    "valid": false,
+    "diagnostics": [
+      "THEME_INVALID_TOKEN"
+    ],
+    "ast": {
+      "type": "root",
+      "frontmatter": {
+        "markset": null,
+        "theme": {
+          "preset": "report",
+          "accent": null,
+          "density": null,
+          "radius": "lg",
+          "type": {
+            "body": null,
+            "heading": null,
+            "scale": null
+          }
+        }
+      },
+      "children": [
+        {
+          "type": "yaml",
+          "value": "theme:\n  preset: report\n  density: loose\n  radius: lg"
+        }
+      ]
+    }
+  }
+]

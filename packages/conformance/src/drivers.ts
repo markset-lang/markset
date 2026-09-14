@@ -13,6 +13,7 @@ export const drivers: Record<string, Driver> = {
   "block-directive": directiveLineDriver,
   "separator-directive": directiveLineDriver,
   "bracketed-span": documentDriver,
+  frontmatter: documentDriver,
   callout: documentDriver,
   card: documentDriver,
   grid: documentDriver,

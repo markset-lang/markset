@@ -9,6 +9,9 @@ export type {
   Directive, SeparatorNode, Span, Construct, Callout, Card, Grid, Columns, Column, Tabs, Tab, Steps, Metrics, Figure, Tone, Gap, CalloutKind,
 } from "./ast.ts";
 export { normalizeConstructs, ConstructCode } from "./constructs.ts";
+export { readFrontmatter, FrontmatterCode } from "./frontmatter.ts";
+export type { Frontmatter, Theme, Preset, Density, Radius } from "./frontmatter.ts";
+export { parseYamlSubset } from "./yaml-subset.ts";
 export { markset } from "./syntax.ts";
 export { marksetFromMarkdown } from "./from-markdown.ts";
 export { BLOCK_DIRECTIVE_NAMES, SEPARATOR_NAMES } from "./vocabulary.ts";
