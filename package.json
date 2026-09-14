@@ -13,7 +13,8 @@
     "test": "node --test packages/*/test/*.test.ts site/test/*.test.ts",
     "conformance": "node packages/conformance/src/cli.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "site": "node site/build.ts"
+    "site": "node site/build.ts",
+    "site:watch": "node site/serve.ts"
   },
   "devDependencies": {
     "@types/node": "^26.5.1",
