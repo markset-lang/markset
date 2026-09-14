@@ -1,0 +1,16 @@
+{
+  "name": "@markset/render-html",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "HTML renderer: Markset AST -> HTML with the ms- class vocabulary (spec §4).",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@markset/parser": "*",
+    "mdast-util-to-hast": "^13.2.0",
+    "hast-util-to-html": "^9.0.5"
+  },
+  "devDependencies": {
+    "@types/hast": "^3.0.4"
+  }
+}

@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@markset/parser": "*",
-    "@markset/render-downgrade": "*"
+    "@markset/render-downgrade": "*",
+    "@markset/render-html": "*"
   }
 }

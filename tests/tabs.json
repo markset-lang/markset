@@ -59,7 +59,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "### macOS\n\n`brew install markset`\n\n### Windows\n\n`winget install markset`\n"
+    "downgrade": "### macOS\n\n`brew install markset`\n\n### Windows\n\n`winget install markset`\n",
+    "html": "<div class=\"ms-tabs\">\n<input class=\"ms-tab-input\" type=\"radio\" name=\"ms-tabs-1\" id=\"ms-tabs-1-1\" checked>\n<input class=\"ms-tab-input\" type=\"radio\" name=\"ms-tabs-1\" id=\"ms-tabs-1-2\">\n<div class=\"ms-tablist\">\n<label class=\"ms-tab\" for=\"ms-tabs-1-1\">macOS</label>\n<label class=\"ms-tab\" for=\"ms-tabs-1-2\">Windows</label>\n</div>\n<div class=\"ms-tabpanel\" data-index=\"1\">\n<p><code>brew install markset</code></p>\n</div>\n<div class=\"ms-tabpanel\" data-index=\"2\">\n<p><code>winget install markset</code></p>\n</div>\n</div>\n"
   },
   {
     "section": "tabs",
@@ -121,7 +122,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "## A\n\na\n\n## B\n\nb\n"
+    "downgrade": "## A\n\na\n\n## B\n\nb\n",
+    "html": "<div class=\"ms-tabs\">\n<input class=\"ms-tab-input\" type=\"radio\" name=\"ms-tabs-1\" id=\"ms-tabs-1-1\">\n<input class=\"ms-tab-input\" type=\"radio\" name=\"ms-tabs-1\" id=\"ms-tabs-1-2\" checked>\n<div class=\"ms-tablist\">\n<label class=\"ms-tab\" for=\"ms-tabs-1-1\">A</label>\n<label class=\"ms-tab\" for=\"ms-tabs-1-2\">B</label>\n</div>\n<div class=\"ms-tabpanel\" data-index=\"1\">\n<p>a</p>\n</div>\n<div class=\"ms-tabpanel\" data-index=\"2\">\n<p>b</p>\n</div>\n</div>\n"
   },
   {
     "section": "tabs",
@@ -428,7 +430,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "html": "<div class=\"ms-tabs compact\" id=\"install\">\n<input class=\"ms-tab-input\" type=\"radio\" name=\"install\" id=\"install-1\" checked>\n<div class=\"ms-tablist\">\n<label class=\"ms-tab\" for=\"install-1\">A</label>\n</div>\n<div class=\"ms-tabpanel\" data-index=\"1\">\n<p>x</p>\n</div>\n</div>\n"
   },
   {
     "section": "tabs",
@@ -590,7 +593,8 @@
         }
       ]
     },
-    "downgrade": "intro\n\n### A\n\nx\n"
+    "downgrade": "intro\n\n### A\n\nx\n",
+    "html": "<p>intro</p>\n<h3>A</h3>\n<p>x</p>\n"
   },
   {
     "section": "tabs",

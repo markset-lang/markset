@@ -33,7 +33,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "Beta\n"
+    "downgrade": "Beta\n",
+    "html": "<p><span class=\"ms-span badge\" data-tone=\"warn\">Beta</span></p>\n"
   },
   {
     "section": "bracketed-span",
@@ -92,7 +93,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "A badge *x* `y` b\n"
+    "downgrade": "A badge *x* `y` b\n",
+    "html": "<p>A <span class=\"ms-span small\">badge <em>x</em> <code>y</code></span> b</p>\n"
   },
   {
     "section": "bracketed-span",
@@ -126,7 +128,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "html": "<p><span class=\"ms-span badge warn\" id=\"rel\">Beta</span></p>\n"
   },
   {
     "section": "bracketed-span",
@@ -154,7 +157,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "html": "<p><span class=\"ms-span x\"></span></p>\n"
   },
   {
     "section": "bracketed-span",
@@ -209,7 +213,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "a b c\n"
+    "downgrade": "a b c\n",
+    "html": "<p><span class=\"ms-span outer\">a <span class=\"ms-span inner\">b</span> c</span></p>\n"
   },
   {
     "section": "bracketed-span",
@@ -342,7 +347,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "html": "<p><span class=\"ms-span\" data-title=\"a}b\">x</span></p>\n"
   },
   {
     "section": "bracketed-span",
@@ -506,7 +512,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "# Title Beta\n"
+    "downgrade": "# Title Beta\n",
+    "html": "<h1>Title <span class=\"ms-span badge\">Beta</span></h1>\n"
   },
   {
     "section": "bracketed-span",
@@ -689,7 +696,8 @@
         }
       ]
     },
-    "downgrade": "x\n"
+    "downgrade": "x\n",
+    "html": "<p><span class=\"ms-span\">x</span></p>\n"
   },
   {
     "section": "bracketed-span",

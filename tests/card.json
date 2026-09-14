@@ -33,7 +33,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "# Pricing tiers\n\nContent here.\n"
+    "downgrade": "# Pricing tiers\n\nContent here.\n",
+    "html": "<section class=\"ms-card\" data-tone=\"info\">\n<h3 class=\"ms-card-title\">Pricing tiers</h3>\n<p>Content here.</p>\n</section>\n"
   },
   {
     "section": "card",
@@ -64,7 +65,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "x\n"
+    "downgrade": "x\n",
+    "html": "<section class=\"ms-card\" data-tone=\"neutral\">\n<p>x</p>\n</section>\n"
   },
   {
     "section": "card",
@@ -98,7 +100,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "x\n"
+    "downgrade": "x\n",
+    "html": "<section class=\"ms-card wide muted\" id=\"plans\" data-tone=\"neutral\" data-compact>\n<p>x</p>\n</section>\n"
   },
   {
     "section": "card",
@@ -162,7 +165,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "# *Beta* plan\n"
+    "downgrade": "# *Beta* plan\n",
+    "html": "<section class=\"ms-card\" data-tone=\"neutral\">\n<h3 class=\"ms-card-title\"><em>Beta</em> plan</h3>\n</section>\n"
   },
   {
     "section": "card",
@@ -234,7 +238,8 @@
       ]
     },
     "valid": true,
-    "downgrade": ""
+    "downgrade": "",
+    "html": "<section class=\"ms-card\" data-tone=\"neutral\"></section>\n"
   },
   {
     "section": "card",
@@ -402,7 +407,8 @@
         }
       ]
     },
-    "downgrade": "x\n"
+    "downgrade": "x\n",
+    "html": "<section class=\"ms-card\" data-tone=\"neutral\">\n<p>x</p>\n</section>\n"
   },
   {
     "section": "card",

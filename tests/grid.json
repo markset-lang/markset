@@ -170,7 +170,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "- a\n- b\n"
+    "downgrade": "- a\n- b\n",
+    "html": "<div class=\"ms-grid\" data-cols=\"2\" data-gap=\"md\">\n<div class=\"ms-grid-item\">\n<p>a</p>\n</div>\n<div class=\"ms-grid-item\">\n<p>b</p>\n</div>\n</div>\n"
   },
   {
     "section": "grid",
@@ -393,7 +394,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "- a\n  - inner\n- b\n"
+    "downgrade": "- a\n  - inner\n- b\n",
+    "html": "<div class=\"ms-grid\" data-cols=\"2\" data-gap=\"md\">\n<div class=\"ms-grid-item\">\n<p>a</p>\n<ul>\n<li>inner</li>\n</ul>\n</div>\n<div class=\"ms-grid-item\">\n<p>b</p>\n</div>\n</div>\n"
   },
   {
     "section": "grid",
@@ -494,7 +496,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "html": "<div class=\"ms-grid tight\" id=\"features\" data-cols=\"2\" data-gap=\"md\">\n<div class=\"ms-grid-item\">\n<p>a</p>\n</div>\n</div>\n"
   },
   {
     "section": "grid",
@@ -616,7 +619,8 @@
         }
       ]
     },
-    "downgrade": ""
+    "downgrade": "",
+    "html": ""
   },
   {
     "section": "grid",
@@ -653,7 +657,8 @@
         }
       ]
     },
-    "downgrade": "not a list\n"
+    "downgrade": "not a list\n",
+    "html": "<p>not a list</p>\n"
   },
   {
     "section": "grid",

@@ -34,7 +34,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "![](lifecycle.svg)\n\n*Request lifecycle from ingress to response*\n"
+    "downgrade": "![](lifecycle.svg)\n\n*Request lifecycle from ingress to response*\n",
+    "html": "<figure class=\"ms-figure\" id=\"fig-lifecycle\" style=\"--ms-width: 60%\">\n<img src=\"lifecycle.svg\" alt=\"\">\n<figcaption>Request lifecycle from ingress to response</figcaption>\n</figure>\n"
   },
   {
     "section": "figure",
@@ -66,7 +67,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "![Alt text](a.png \"T\")\n"
+    "downgrade": "![Alt text](a.png \"T\")\n",
+    "html": "<figure class=\"ms-figure\">\n<img src=\"a.png\" alt=\"Alt text\" title=\"T\">\n</figure>\n"
   },
   {
     "section": "figure",
@@ -147,7 +149,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "| a | b |\n| - | - |\n| 1 | 2 |\n\n*Sizes*\n"
+    "downgrade": "| a | b |\n| - | - |\n| 1 | 2 |\n\n*Sizes*\n",
+    "html": "<figure class=\"ms-figure\">\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n</tbody>\n</table>\n<figcaption>Sizes</figcaption>\n</figure>\n"
   },
   {
     "section": "figure",
@@ -179,7 +182,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "```js\nlet x = 1;\n```\n\n*Listing*\n"
+    "downgrade": "```js\nlet x = 1;\n```\n\n*Listing*\n",
+    "html": "<figure class=\"ms-figure\">\n<pre><code class=\"language-js\">let x = 1;\n</code></pre>\n<figcaption>Listing</figcaption>\n</figure>\n"
   },
   {
     "section": "figure",
@@ -360,7 +364,8 @@
         }
       ]
     },
-    "valid": true
+    "valid": true,
+    "html": "<figure class=\"ms-figure wide\">\n<img src=\"a.svg\" alt=\"\">\n</figure>\n"
   },
   {
     "section": "figure",
@@ -464,7 +469,8 @@
         }
       ]
     },
-    "downgrade": "some text\n"
+    "downgrade": "some text\n",
+    "html": "<p>some text</p>\n"
   },
   {
     "section": "figure",

@@ -39,7 +39,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "> **Warning:** Breaking change in v3\n>\n> The `render()` signature changed.\n"
+    "downgrade": "> **Warning:** Breaking change in v3\n>\n> The `render()` signature changed.\n",
+    "html": "<div class=\"ms-callout\" data-type=\"warning\">\n<div class=\"ms-callout-title\">Breaking change in v3</div>\n<div class=\"ms-callout-body\">\n<p>The <code>render()</code> signature changed.</p>\n</div>\n</div>\n"
   },
   {
     "section": "callout",
@@ -68,7 +69,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "> **Note:**\n>\n> Collapsed by default.\n"
+    "downgrade": "> **Note:**\n>\n> Collapsed by default.\n",
+    "html": "<details class=\"ms-callout\" data-type=\"note\">\n<summary class=\"ms-callout-title\">Note</summary>\n<div class=\"ms-callout-body\">\n<p>Collapsed by default.</p>\n</div>\n</details>\n"
   },
   {
     "section": "callout",
@@ -102,7 +104,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "> **Tip:** Handy\n>\n> Body.\n"
+    "downgrade": "> **Tip:** Handy\n>\n> Body.\n",
+    "html": "<details class=\"ms-callout\" data-type=\"tip\" open>\n<summary class=\"ms-callout-title\">Handy</summary>\n<div class=\"ms-callout-body\">\n<p>Body.</p>\n</div>\n</details>\n"
   },
   {
     "section": "callout",
@@ -145,7 +148,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "> **Important:**\n"
+    "downgrade": "> **Important:**\n",
+    "html": "<div class=\"ms-callout\" data-type=\"important\">\n<div class=\"ms-callout-title\">Important</div>\n<div class=\"ms-callout-body\"></div>\n</div>\n"
   },
   {
     "section": "callout",
@@ -182,7 +186,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "> **Caution:** Use *care* here\n"
+    "downgrade": "> **Caution:** Use *care* here\n",
+    "html": "<div class=\"ms-callout\" data-type=\"caution\">\n<div class=\"ms-callout-title\">Use <em>care</em> here</div>\n<div class=\"ms-callout-body\"></div>\n</div>\n"
   },
   {
     "section": "callout",
@@ -432,7 +437,8 @@
       ]
     },
     "valid": true,
-    "downgrade": "> quote\n"
+    "downgrade": "> quote\n",
+    "html": "<blockquote>\n<p>quote</p>\n</blockquote>\n"
   },
   {
     "section": "callout",
@@ -531,6 +537,7 @@
         }
       ]
     },
-    "downgrade": "> \\[!FOO] x\n"
+    "downgrade": "> \\[!FOO] x\n",
+    "html": "<blockquote>\n<p>[!FOO] x</p>\n</blockquote>\n"
   }
 ]
