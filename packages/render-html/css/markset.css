@@ -11,8 +11,7 @@ body {
   --ms-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --ms-type-scale: 1.2;
   --ms-base: 1rem;
-  --ms-measure: 56rem;       /* prose column; presets adjust it */
-  --ms-measure-wide: 75rem;  /* layout constructs may use this much */
+  --ms-measure: 56rem;       /* document column width; presets adjust it */
   --ms-space: 1rem;
   --ms-radius: 0.5rem;
 
@@ -96,29 +95,13 @@ body {
   line-height: 1.55;
   -webkit-text-size-adjust: 100%;
 }
-/* Two lanes: prose sits in a centered column at the reading measure; layout
- * constructs (grid, columns, metrics, tabs, figure, card) span the wide lane
- * between the gutters. On narrow screens the lanes coincide. */
+/* One column: prose and layout constructs share the document measure. */
 .ms-document {
-  display: grid;
-  grid-template-columns:
-    [full-start] var(--ms-space)
-    [wide-start] minmax(0, 1fr)
-    [prose-start] minmax(0, var(--ms-measure))
-    [prose-end] minmax(0, 1fr)
-    [wide-end] var(--ms-space)
-    [full-end];
-  max-width: var(--ms-measure-wide);
+  max-width: var(--ms-measure);
   margin: 0 auto;
-  padding-block: calc(var(--ms-space) * 2);
+  padding: calc(var(--ms-space) * 2) var(--ms-space);
 }
-.ms-document > * { grid-column: prose; min-width: 0; }
-.ms-document > .ms-grid,
-.ms-document > .ms-columns,
-.ms-document > .ms-metrics,
-.ms-document > .ms-tabs,
-.ms-document > .ms-figure,
-.ms-document > .ms-card { grid-column: wide; }
+.ms-document > * { min-width: 0; }
 .ms-document > * + * { margin-top: var(--ms-space); }
 .ms-document p, .ms-document ul, .ms-document ol, .ms-document blockquote, .ms-document pre, .ms-document table { margin: 0; }
 .ms-document * + p, .ms-document * + ul, .ms-document * + ol, .ms-document * + pre, .ms-document * + table, .ms-document * + blockquote { margin-top: var(--ms-space); }
@@ -304,7 +287,7 @@ summary.ms-callout-title { cursor: pointer; }
 /* ---- print -------------------------------------------------------------------- */
 @media print {
   body { --ms-bg: #fff; --ms-fg: #000; }
-  .ms-document { display: block; max-width: none; padding: 0; }
+  .ms-document { max-width: none; padding: 0; }
   .ms-tabpanel { display: block !important; padding-top: 0; }
   .ms-tablist { display: none; }
   .ms-tabpanel::before { content: attr(data-index) ". "; font-weight: 600; }
