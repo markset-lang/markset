@@ -13,8 +13,6 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm run typecheck
       - run: npm test
       - run: npm run conformance
-      # typescript is deliberately not a project dependency; --no-save fetches it for this check only.
-      - run: npm install --no-save typescript @types/node
-      - run: npx tsc --noEmit -p tsconfig.json
