@@ -48,7 +48,8 @@ docs/       background analysis, prior art, design rationale
 
 ## Toolchain
 
-- Node ≥ 22.18, npm workspaces, zero runtime or dev dependencies. Source is TypeScript run directly by Node's type stripping, so use erasable syntax only (no enums, namespaces, or parameter properties) and import with explicit `.ts` extensions.
+- Node ≥ 22.18, npm workspaces. Source is TypeScript run directly by Node's type stripping, so use erasable syntax only (no enums, namespaces, or parameter properties) and import with explicit `.ts` extensions.
+- The CommonMark base is **micromark + mdast** (`micromark`, `mdast-util-from-markdown`, the GFM table pair, and the `micromark-util-*` helpers), chosen 2026-09-13. Markset's three grammar constructs are a micromark syntax extension in `packages/parser/src/syntax.ts` and an mdast compiler extension in `from-markdown.ts`. The Markset AST is mdast plus `directive`, `separator`, and `span` nodes (`ast.ts`), so any unified tooling can consume it. Tokenizers find boundaries only; fence lines and attribute specifiers are parsed by the line grammar, so there is one grammar to keep in sync with the spec.
 - `npm install` once, to link the workspace packages. Then `npm test` (unit tests plus the full conformance suite) and `npm run conformance` for the per-section report (`--section <name>`, `--verbose`).
 - `tsconfig.json` is for editors and for `tsc --noEmit`; `typescript` is deliberately not a dependency.
 - Adding a section to `tests/` without a driver in `packages/conformance/src/drivers.ts` is fine: the harness reports it as skipped, not failed. Same for `html`/`downgrade` fields before those renderers exist. Register a driver once the code exists so the cases start counting.
@@ -70,9 +71,10 @@ Read these before proposing syntax changes — most ideas have been tried.
 
 - [x] Conformance schema (`spec/conformance.schema.json`) and harness (`packages/conformance`)
 - [x] Grammar: attribute specifier (§2.1, `packages/parser/src/attributes.ts`, 56 cases)
-- [x] Grammar: block directive and separator fence lines (§2.3, §2.4, `packages/parser/src/directives.ts`, 69 cases). Line-level only: fence matching, nesting, and implicit close belong to the document parser.
-- [ ] Grammar: bracketed span (§2.2). Needs the inline parser, so it waits on the CommonMark base.
-- [ ] Parser: CommonMark base. **Blocked on a dependency decision**: adopt a CommonMark parser (micromark, markdown-it, commonmark.js) or write one. The directive fences must become a container block inside it.
+- [x] Grammar: block directive and separator fence lines (§2.3, §2.4, `packages/parser/src/directives.ts`)
+- [x] Grammar: bracketed span (§2.2, `syntax.ts` + `from-markdown.ts`, `tests/bracketed-span.json`)
+- [x] Parser: CommonMark base on micromark/mdast with directive containers, separators, spans, GFM tables; `parseDocument()` in `document.ts`. Generic `directive` nodes only; no construct normalization yet.
+- [ ] Frontmatter and the `markset: 0` activation trigger (spec §6, §9.3)
 - [ ] Downgrade renderer
 - [ ] Constructs: callout, card, grid, columns, tabs, steps, metrics, figure
 - [ ] HTML renderer

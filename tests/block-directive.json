@@ -899,5 +899,1103 @@
         "attrs": {}
       }
     }
+  },
+  {
+    "section": "block-directive",
+    "name": "document: canonical block",
+    "markset": ":::card[Pricing tiers]{tone=info}\nContent here.\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": [
+            {
+              "type": "text",
+              "value": "Pricing tiers"
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {
+              "tone": "info"
+            }
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Content here."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: argument is inline content",
+    "markset": ":::card[Pricing *tiers* `now`]\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": [
+            {
+              "type": "text",
+              "value": "Pricing "
+            },
+            {
+              "type": "emphasis",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "tiers"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "value": " "
+            },
+            {
+              "type": "inlineCode",
+              "value": "now"
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": []
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: empty content",
+    "markset": ":::card\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": []
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: several blocks and blank lines inside",
+    "markset": ":::card\nOne.\n\nTwo.\n\n- a\n- b\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "One."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Two."
+                }
+              ]
+            },
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: nesting with a longer outer fence",
+    "markset": "::::columns\nMain.\n\n:::card\nSide.\n:::\n::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "columns",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Main."
+                }
+              ]
+            },
+            {
+              "type": "directive",
+              "name": "card",
+              "argument": null,
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "Side."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: same-length fences close the outer, then the inner is unclosed and the last fence is stray",
+    "markset": ":::card\n:::card\ninner\n:::\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "directive",
+              "name": "card",
+              "argument": null,
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "inner"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": ":::"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNCLOSED",
+      "DIRECTIVE_STRAY_FENCE"
+    ]
+  },
+  {
+    "section": "block-directive",
+    "name": "document: closing fence may be longer than the opening",
+    "markset": ":::card\nx\n:::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: closing fence may be indented up to three spaces",
+    "markset": ":::card\nx\n   :::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: unclosed at end of document is a warning",
+    "markset": ":::card\nText\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNCLOSED"
+    ]
+  },
+  {
+    "section": "block-directive",
+    "name": "document: opening fence and nothing else",
+    "markset": ":::card\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": []
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNCLOSED"
+    ]
+  },
+  {
+    "section": "block-directive",
+    "name": "document: unclosed inside a blockquote ends with the blockquote",
+    "markset": "> :::card\n> hi\n\nafter\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "type": "directive",
+              "name": "card",
+              "argument": null,
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "hi"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "after"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNCLOSED"
+    ]
+  },
+  {
+    "section": "block-directive",
+    "name": "document: directive inside a blockquote",
+    "markset": "> :::card\n> hi\n> :::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "type": "directive",
+              "name": "card",
+              "argument": null,
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "hi"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: directive inside a list item",
+    "markset": "- item\n  :::card\n  inner\n  :::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "start": null,
+          "spread": false,
+          "children": [
+            {
+              "type": "listItem",
+              "spread": false,
+              "checked": null,
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "item"
+                    }
+                  ]
+                },
+                {
+                  "type": "directive",
+                  "name": "card",
+                  "argument": null,
+                  "attributes": {
+                    "type": "attributes",
+                    "id": null,
+                    "classes": [],
+                    "attrs": {}
+                  },
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "inner"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: directive interrupts a paragraph",
+    "markset": "text\n:::steps\n1. a\n:::\nmore\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "text"
+            }
+          ]
+        },
+        {
+          "type": "directive",
+          "name": "steps",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "list",
+              "ordered": true,
+              "start": 1,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "more"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: stray closing fence is paragraph text",
+    "markset": "Para\n\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Para"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": ":::"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_STRAY_FENCE"
+    ]
+  },
+  {
+    "section": "block-directive",
+    "name": "document: stray fence as a lazy paragraph line",
+    "markset": "Para\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Para\n:::"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_STRAY_FENCE"
+    ]
+  },
+  {
+    "section": "block-directive",
+    "name": "document: colons inside a code fence are code",
+    "markset": "```\n:::card\n:::\n```\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "code",
+          "lang": null,
+          "meta": null,
+          "value": ":::card\n:::"
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: code block containing a fence line needs a longer outer fence",
+    "markset": "::::card\n```\n:::\n```\n::::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "code",
+              "lang": null,
+              "meta": null,
+              "value": ":::"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: table content",
+    "markset": ":::metrics\n| a | b |\n|---|---|\n| 1 | 2 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "metrics",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "2"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: four-space indented fence is indented code",
+    "markset": "    :::card\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "code",
+          "lang": null,
+          "meta": null,
+          "value": ":::card"
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: plain CommonMark passes through",
+    "markset": "# H\n\nPara with `code` and ::: mid.\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "heading",
+          "depth": 1,
+          "children": [
+            {
+              "type": "text",
+              "value": "H"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Para with "
+            },
+            {
+              "type": "inlineCode",
+              "value": "code"
+            },
+            {
+              "type": "text",
+              "value": " and ::: mid."
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: CRLF line endings",
+    "markset": ":::card\r\nx\r\n:::\r\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "block-directive",
+    "name": "document: malformed opening fence still forms a block",
+    "markset": "::: {.foo}\nx\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_MISSING_NAME",
+      "DIRECTIVE_TRAILING_CONTENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": null,
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "document: unknown name still forms a block",
+    "markset": ":::panel\nx\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNKNOWN_NAME"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "panel",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "document: attribute errors carry through",
+    "markset": ":::card{#}\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": []
+        }
+      ]
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "document: unterminated argument yields a null argument",
+    "markset": ":::card[oops\nx\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_UNTERMINATED_ARGUMENT"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "block-directive",
+    "name": "document: closing fence with trailing text is a malformed opening fence",
+    "markset": ":::card\nx\n::: done\n",
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_MISSING_NAME",
+      "DIRECTIVE_TRAILING_CONTENT",
+      "DIRECTIVE_UNCLOSED",
+      "DIRECTIVE_UNCLOSED"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "directive",
+          "name": "card",
+          "argument": null,
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          },
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            },
+            {
+              "type": "directive",
+              "name": null,
+              "argument": null,
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [],
+                "attrs": {}
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
   }
 ]
