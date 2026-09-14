@@ -26,3 +26,17 @@ test("the site builds, every page has the shell, and links stay relative", async
   assert.match(home, /<div class="ms-metrics">/, "home renders a live metrics block");
   assert.match(home, /<p class="lead">/, "attribute line applied on the home page");
 });
+
+test("an example can carry a theme stylesheet, linked after the site's own", async () => {
+  await build();
+  const page = await readFile(join(dist, "examples", "notification-routing", "index.html"), "utf8");
+  const site = page.indexOf("css/site.css");
+  const theme = page.indexOf("css/dossier.css");
+  assert.ok(site > 0 && theme > site, "the theme stylesheet must come last so it can override");
+  assert.match(page, /<span class="ms-span chip model">/, "author classes reach the HTML");
+  assert.match(page, /<div class="ms-column hot">/, "a separator's own attributes reach the column");
+  await readFile(join(dist, "css", "dossier.css"), "utf8");
+  const index = await readFile(join(dist, "examples", "index.html"), "utf8");
+  assert.match(index, /showcase\/index\.html/);
+  assert.match(index, /notification-routing\/index\.html/);
+});
