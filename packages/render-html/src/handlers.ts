@@ -74,7 +74,7 @@ export function marksetHandlers(): Handlers {
       const props: Properties = { className: classes("ms-columns", node.classes) };
       if (node.id) props.id = node.id;
       props.dataGap = node.gap;
-      if (node.ratio) props.style = `--ms-ratio: ${node.ratio.join(" ")}`;
+      if (node.ratio) props.style = `--ms-ratio: ${node.ratio.map((n) => `${n}fr`).join(" ")}`;
       const cols = node.children.map((column) => {
         const colProps: Properties = { className: classes("ms-column", column.classes) };
         if (column.id) colProps.id = column.id;

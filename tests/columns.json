@@ -64,7 +64,7 @@
     },
     "valid": true,
     "downgrade": "The main argument, at full paragraph length.\n\nA supporting sidebar.\n",
-    "html": "<div class=\"ms-columns\" data-gap=\"md\" style=\"--ms-ratio: 2 1\">\n<div class=\"ms-column\">\n<p>The main argument, at full paragraph length.</p>\n</div>\n<div class=\"ms-column\">\n<section class=\"ms-card\" data-tone=\"neutral\">\n<p>A supporting sidebar.</p>\n</section>\n</div>\n</div>\n"
+    "html": "<div class=\"ms-columns\" data-gap=\"md\" style=\"--ms-ratio: 2fr 1fr\">\n<div class=\"ms-column\">\n<p>The main argument, at full paragraph length.</p>\n</div>\n<div class=\"ms-column\">\n<section class=\"ms-card\" data-tone=\"neutral\">\n<p>A supporting sidebar.</p>\n</section>\n</div>\n</div>\n"
   },
   {
     "section": "columns",

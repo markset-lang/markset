@@ -78,4 +78,7 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] Downgrade renderer (`packages/render-downgrade`, mdast-util-to-markdown; `downgrade` aspect pinned on 98 cases)
 - [x] Constructs: callout, card, grid, columns, tabs, steps, metrics, figure (`packages/parser/src/constructs.ts`, one `tests/<name>.json` each; AST aspect only until the renderers exist)
 - [x] HTML renderer (`packages/render-html`, mdast-util-to-hast + hast-util-to-html; `renderHtml` fragment and `renderPage` full page with theme tokens on `<body>`; `html` aspect pinned on 59 cases)
-- [ ] Default stylesheet
+- [x] Default stylesheet (`packages/render-html/css/markset.css`: tokens, presets, density, radius, dark mode, print; tabs via radio inputs; grid and columns via CSS grid)
+- [x] CLI (`packages/cli`: `check`, `html`, `downgrade`, `ast`; `examples/showcase.md` exercises every construct)
+- [ ] Block attributes for paragraphs (`.lead`, `.eyebrow` in §5 need a syntax; see §9.5)
+- [ ] Publish: package names, versions, build/typecheck in CI once `typescript` is approved as a dev dependency
