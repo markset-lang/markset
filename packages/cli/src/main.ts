@@ -16,6 +16,7 @@ options
   -o, --out <path>       write output to a file instead of stdout
   --fragment             html: emit only the body fragment
   --css <mode>           html: inline (default) | none | <href to link>
+  --theme <file>         html: append a theme stylesheet after the default (spec §6)
   --title <text>         html: page title (default: first level-one heading)
   --json                 check: emit diagnostics as JSON
   --positions            ast: keep position fields
@@ -31,6 +32,7 @@ export async function main(argv: string[], io: { stdout: (s: string) => void; st
       out: { type: "string", short: "o" },
       fragment: { type: "boolean", default: false },
       css: { type: "string", default: "inline" },
+      theme: { type: "string" },
       title: { type: "string" },
       json: { type: "boolean", default: false },
       positions: { type: "boolean", default: false },
@@ -84,7 +86,8 @@ export async function main(argv: string[], io: { stdout: (s: string) => void; st
         const stylesheet = values.css === "none" ? undefined
           : values.css === "inline" ? { inline: await readFile(defaultStylesheetPath, "utf8") }
             : { href: values.css };
-        await emit(renderPage(ast, { title: values.title, stylesheet }));
+        const theme = values.theme ? { inline: await readFile(values.theme, "utf8") } : undefined;
+        await emit(renderPage(ast, { title: values.title, stylesheet, theme }));
       }
       return 0;
     }

@@ -26,6 +26,15 @@ test("renderPage wraps the fragment and carries theme tokens onto body", () => {
   assert.ok(page.includes('<main class="ms-document">\n<h1>Hello &#x26; World</h1>\n</main>'), page);
 });
 
+test("renderPage emits the theme stylesheet after the default one", () => {
+  const { ast } = parseDocument("# T\n");
+  const page = renderPage(ast, { stylesheet: { inline: ".ms-document{}" }, theme: { inline: ".chip{color:red}" } });
+  const base = page.indexOf(".ms-document{}");
+  const theme = page.indexOf(".chip{color:red}");
+  assert.ok(base > 0 && theme > base, page);
+  assert.ok(page.includes("</style>\n<style>\n.chip{color:red}\n</style>\n</head>"), page);
+});
+
 test("body attributes are empty without a theme", () => {
   assert.equal(bodyAttributes(null), "");
   assert.equal(bodyAttributes({ markset: 0, theme: null }), "");

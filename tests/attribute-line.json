@@ -898,6 +898,347 @@
   },
   {
     "section": "attribute-line",
+    "name": "list item: leading attribute lines attribute the item",
+    "markset": "- {.hot}\n  a\n- b\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "start": null,
+          "spread": false,
+          "children": [
+            {
+              "type": "listItem",
+              "spread": false,
+              "checked": null,
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "hot"
+                ],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "a"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "spread": false,
+              "checked": null,
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<ul>\n<li class=\"hot\">a</li>\n<li>b</li>\n</ul>\n",
+    "downgrade": "- a\n- b\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "list item: consecutive leading lines combine on the item",
+    "markset": "- {.one}\n  {.two k=v}\n  c\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "start": null,
+          "spread": false,
+          "children": [
+            {
+              "type": "listItem",
+              "spread": false,
+              "checked": null,
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "one",
+                  "two"
+                ],
+                "attrs": {
+                  "k": "v"
+                }
+              },
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "c"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<ul>\n<li class=\"one two\" data-k=\"v\">c</li>\n</ul>\n",
+    "downgrade": "- c\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "list item: a blank line after the leading lines does not orphan them",
+    "markset": "- {.hot}\n\n  a\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "start": null,
+          "spread": false,
+          "children": [
+            {
+              "type": "listItem",
+              "spread": true,
+              "checked": null,
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "hot"
+                ],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "a"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<ul>\n<li class=\"hot\">\n<p>a</p>\n</li>\n</ul>\n",
+    "downgrade": "- a\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "list item: an item holding only an attribute line is empty",
+    "markset": "- {.only}\n- b\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "start": null,
+          "spread": false,
+          "children": [
+            {
+              "type": "listItem",
+              "spread": false,
+              "checked": null,
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "only"
+                ],
+                "attrs": {}
+              },
+              "children": []
+            },
+            {
+              "type": "listItem",
+              "spread": false,
+              "checked": null,
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<ul>\n<li class=\"only\"></li>\n<li>b</li>\n</ul>\n",
+    "downgrade": "-\n- b\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "inside grid, item attributes land on the grid item",
+    "markset": ":::grid\n- {.hot}\n  a\n- b\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "grid",
+          "cols": 2,
+          "gap": "md",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "attributes": {
+                    "type": "attributes",
+                    "id": null,
+                    "classes": [
+                      "hot"
+                    ],
+                    "attrs": {}
+                  },
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<div class=\"ms-grid\" data-cols=\"2\" data-gap=\"md\">\n<div class=\"ms-grid-item hot\">\n<p>a</p>\n</div>\n<div class=\"ms-grid-item\">\n<p>b</p>\n</div>\n</div>\n",
+    "downgrade": "- a\n- b\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "inside steps, item attributes land on the step",
+    "markset": ":::steps\n1. {#first}\n   a\n2. b\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "steps",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "list",
+              "ordered": true,
+              "start": 1,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "attributes": {
+                    "type": "attributes",
+                    "id": "first",
+                    "classes": [],
+                    "attrs": {}
+                  },
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<ol class=\"ms-steps\">\n<li class=\"ms-step\" id=\"first\">a</li>\n<li class=\"ms-step\">b</li>\n</ol>\n",
+    "downgrade": "1. a\n2. b\n"
+  },
+  {
+    "section": "attribute-line",
     "name": "inside grid, attributes on the list are an error and are dropped",
     "markset": ":::grid\n{.x}\n- a\n:::\n",
     "valid": false,

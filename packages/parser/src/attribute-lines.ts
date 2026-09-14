@@ -25,8 +25,20 @@ export function attachAttributeLines(tree: Root, source: string, diagnostics: Di
     const parent = node as { children: Nodes[] };
     const out: Nodes[] = [];
     let pending: AttributeLine[] = [];
+    let children = parent.children;
 
-    for (const child of parent.children) {
+    // A list item has no line of its own before its content, so attribute
+    // lines that open the item describe the item itself (§2.5).
+    if (node.type === "listItem") {
+      let lead = 0;
+      while (lead < children.length && children[lead].type === "attributeLine") lead++;
+      if (lead > 0) {
+        (node as Attributable).attributes = merge(children.slice(0, lead) as AttributeLine[]);
+        children = children.slice(lead);
+      }
+    }
+
+    for (const child of children) {
       if (child.type === "attributeLine") {
         pending.push(child);
         continue;
@@ -69,13 +81,17 @@ export function attachAttributeLines(tree: Root, source: string, diagnostics: Di
         ...span(target),
       });
     }
+    (target as Attributable).attributes = merge(lines);
+  }
+
+  function merge(lines: AttributeLine[]): Attributes {
     const merged: Attributes = { type: "attributes", id: null, classes: [], attrs: {} };
     for (const line of lines) {
       if (line.attributes.id !== null) merged.id = line.attributes.id;
       merged.classes.push(...line.attributes.classes);
       Object.assign(merged.attrs, line.attributes.attrs);
     }
-    (target as Attributable).attributes = merged;
+    return merged;
   }
 
   function orphan(line: AttributeLine): void {

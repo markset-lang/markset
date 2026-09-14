@@ -18,6 +18,8 @@ export interface PageOptions {
   title?: string;
   /** Inline stylesheet text, or a URL to link. */
   stylesheet?: { inline: string } | { href: string };
+  /** A theme stylesheet (spec §6), emitted after `stylesheet` so it can style author classes and override tokens. */
+  theme?: { inline: string } | { href: string };
   lang?: string;
 }
 
@@ -25,14 +27,15 @@ export interface PageOptions {
 export function renderPage(tree: Root, options: PageOptions = {}): string {
   const meta = tree.frontmatter ?? null;
   const title = escapeHtml(options.title ?? firstHeading(tree) ?? "Document");
-  const style = options.stylesheet && "inline" in options.stylesheet
-    ? `<style>\n${options.stylesheet.inline}\n</style>\n`
-    : options.stylesheet && "href" in options.stylesheet
-      ? `<link rel="stylesheet" href="${escapeHtml(options.stylesheet.href)}">\n`
-      : "";
+  const style = styleTag(options.stylesheet) + styleTag(options.theme);
   return `<!doctype html>\n<html lang="${escapeHtml(options.lang ?? "en")}">\n<head>\n<meta charset="utf-8">\n`
     + `<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${title}</title>\n${style}</head>\n`
     + `<body${bodyAttributes(meta)}>\n<main class="ms-document">\n${renderHtml(tree)}</main>\n</body>\n</html>\n`;
+}
+
+function styleTag(sheet: { inline: string } | { href: string } | undefined): string {
+  if (!sheet) return "";
+  return "inline" in sheet ? `<style>\n${sheet.inline}\n</style>\n` : `<link rel="stylesheet" href="${escapeHtml(sheet.href)}">\n`;
 }
 
 export function bodyAttributes(meta: Frontmatter | null): string {
