@@ -1,0 +1,295 @@
+/* Markset default stylesheet (spec §4, §5, §6).
+ * Theme tokens arrive as data attributes and custom properties on <body>
+ * (see renderPage); everything below reads them with fallbacks, so a page
+ * with no theme block still renders well. */
+
+/* ---- tokens -------------------------------------------------------------- */
+body {
+  --ms-accent: #2563eb;
+  --ms-font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ms-font-heading: var(--ms-font-body);
+  --ms-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ms-type-scale: 1.2;
+  --ms-base: 1rem;
+  --ms-measure: 68ch;
+  --ms-space: 1rem;
+  --ms-radius: 0.5rem;
+
+  --ms-fg: #1f2328;
+  --ms-fg-muted: #59636e;
+  --ms-bg: #ffffff;
+  --ms-surface: #f6f8fa;
+  --ms-border: #d0d7de;
+
+  --ms-tone-neutral: #59636e;
+  --ms-tone-info: #0969da;
+  --ms-tone-success: #1a7f37;
+  --ms-tone-warn: #9a6700;
+  --ms-tone-danger: #cf222e;
+
+  /* Derived type scale: h6 .. h1 step up from the base. */
+  --ms-h6: var(--ms-base);
+  --ms-h5: calc(var(--ms-base) * var(--ms-type-scale));
+  --ms-h4: calc(var(--ms-h5) * var(--ms-type-scale));
+  --ms-h3: calc(var(--ms-h4) * var(--ms-type-scale));
+  --ms-h2: calc(var(--ms-h3) * var(--ms-type-scale));
+  --ms-h1: calc(var(--ms-h2) * var(--ms-type-scale));
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    --ms-fg: #e6edf3;
+    --ms-fg-muted: #9198a1;
+    --ms-bg: #0d1117;
+    --ms-surface: #161b22;
+    --ms-border: #30363d;
+    --ms-tone-neutral: #9198a1;
+    --ms-tone-info: #4493f8;
+    --ms-tone-success: #3fb950;
+    --ms-tone-warn: #d29922;
+    --ms-tone-danger: #f85149;
+  }
+}
+
+/* density */
+body[data-density="compact"] { --ms-space: 0.625rem; --ms-base: 0.9375rem; }
+body[data-density="spacious"] { --ms-space: 1.5rem; --ms-base: 1.0625rem; }
+
+/* radius */
+body[data-radius="none"] { --ms-radius: 0; }
+body[data-radius="sm"] { --ms-radius: 0.25rem; }
+body[data-radius="lg"] { --ms-radius: 1rem; }
+
+/* presets: each sets what the token model leaves open. */
+body[data-preset="editorial"] {
+  --ms-font-body: "Source Serif 4", Charter, Georgia, "Times New Roman", serif;
+  --ms-font-heading: Inter, ui-sans-serif, system-ui, sans-serif;
+  --ms-type-scale: 1.25;
+  --ms-measure: 64ch;
+}
+body[data-preset="technical"] {
+  --ms-type-scale: 1.15;
+  --ms-measure: 76ch;
+  --ms-radius: 0.375rem;
+}
+body[data-preset="deck"] {
+  --ms-base: 1.25rem;
+  --ms-type-scale: 1.3;
+  --ms-space: 1.5rem;
+  --ms-measure: 80ch;
+}
+body[data-preset="report"] {
+  --ms-type-scale: 1.15;
+  --ms-space: 0.875rem;
+  --ms-measure: 72ch;
+  --ms-radius: 0.25rem;
+}
+
+/* ---- document ------------------------------------------------------------ */
+body {
+  margin: 0;
+  color: var(--ms-fg);
+  background: var(--ms-bg);
+  font-family: var(--ms-font-body);
+  font-size: var(--ms-base);
+  line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+}
+.ms-document {
+  max-width: var(--ms-measure);
+  margin: 0 auto;
+  padding: calc(var(--ms-space) * 2) var(--ms-space);
+}
+.ms-document > * + * { margin-top: var(--ms-space); }
+.ms-document p, .ms-document ul, .ms-document ol, .ms-document blockquote, .ms-document pre, .ms-document table { margin: 0; }
+.ms-document * + p, .ms-document * + ul, .ms-document * + ol, .ms-document * + pre, .ms-document * + table, .ms-document * + blockquote { margin-top: var(--ms-space); }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ms-font-heading);
+  line-height: 1.2;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+* + h1, * + h2, * + h3, * + h4, * + h5, * + h6 { margin-top: calc(var(--ms-space) * 2); }
+h1 { font-size: var(--ms-h1); } h2 { font-size: var(--ms-h2); } h3 { font-size: var(--ms-h3); }
+h4 { font-size: var(--ms-h4); } h5 { font-size: var(--ms-h5); } h6 { font-size: var(--ms-h6); }
+
+a { color: var(--ms-accent); }
+code, pre { font-family: var(--ms-font-mono); font-size: 0.9em; }
+code { background: var(--ms-surface); padding: 0.1em 0.3em; border-radius: calc(var(--ms-radius) / 2); }
+pre { background: var(--ms-surface); padding: var(--ms-space); border-radius: var(--ms-radius); overflow-x: auto; }
+pre code { background: none; padding: 0; font-size: inherit; }
+blockquote { border-left: 3px solid var(--ms-border); padding-left: var(--ms-space); color: var(--ms-fg-muted); }
+hr { border: 0; border-top: 1px solid var(--ms-border); }
+img { max-width: 100%; height: auto; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.4em 0.75em; border-bottom: 1px solid var(--ms-border); }
+th { font-weight: 600; }
+
+/* ---- reserved classes (§5) -------------------------------------------------- */
+.lead { font-size: calc(var(--ms-base) * 1.2); line-height: 1.5; }
+.small { font-size: 0.875em; }
+.eyebrow { font-family: var(--ms-font-heading); font-size: 0.75em; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ms-fg-muted); }
+.muted { color: var(--ms-fg-muted); }
+.badge {
+  display: inline-block;
+  font-family: var(--ms-font-heading);
+  font-size: 0.75em;
+  font-weight: 600;
+  line-height: 1.4;
+  padding: 0.05em 0.55em;
+  border-radius: 999px;
+  border: 1px solid var(--ms-tone, var(--ms-border));
+  color: var(--ms-tone, var(--ms-fg-muted));
+  vertical-align: 0.1em;
+}
+/* Tone classes and data-tone set one variable that the rest reads. */
+.neutral, [data-tone="neutral"] { --ms-tone: var(--ms-tone-neutral); }
+.info, [data-tone="info"] { --ms-tone: var(--ms-tone-info); }
+.success, [data-tone="success"] { --ms-tone: var(--ms-tone-success); }
+.warn, [data-tone="warn"] { --ms-tone: var(--ms-tone-warn); }
+.danger, [data-tone="danger"] { --ms-tone: var(--ms-tone-danger); }
+
+/* ---- callout (§4.1) --------------------------------------------------------- */
+.ms-callout {
+  border: 1px solid var(--ms-border);
+  border-left: 4px solid var(--ms-tone, var(--ms-tone-neutral));
+  border-radius: var(--ms-radius);
+  background: var(--ms-surface);
+  padding: calc(var(--ms-space) * 0.75) var(--ms-space);
+}
+.ms-callout[data-type="note"] { --ms-tone: var(--ms-tone-info); }
+.ms-callout[data-type="tip"] { --ms-tone: var(--ms-tone-success); }
+.ms-callout[data-type="important"] { --ms-tone: #8250df; }
+.ms-callout[data-type="warning"] { --ms-tone: var(--ms-tone-warn); }
+.ms-callout[data-type="caution"] { --ms-tone: var(--ms-tone-danger); }
+.ms-callout-title { font-family: var(--ms-font-heading); font-weight: 600; color: var(--ms-tone); }
+summary.ms-callout-title { cursor: pointer; }
+.ms-callout-body:not(:empty) { margin-top: calc(var(--ms-space) / 2); }
+.ms-callout-body > * + * { margin-top: calc(var(--ms-space) / 2); }
+
+/* ---- card (§4.2) ------------------------------------------------------------ */
+.ms-card {
+  border: 1px solid var(--ms-border);
+  border-top: 3px solid var(--ms-tone, var(--ms-border));
+  border-radius: var(--ms-radius);
+  background: var(--ms-surface);
+  padding: var(--ms-space);
+}
+.ms-card[data-tone="neutral"] { border-top-color: var(--ms-border); }
+.ms-card[data-compact] { padding: calc(var(--ms-space) / 2) calc(var(--ms-space) * 0.75); }
+.ms-card > * + * { margin-top: calc(var(--ms-space) * 0.75); }
+.ms-card-title { font-size: var(--ms-h5); color: var(--ms-tone, inherit); }
+.ms-card[data-tone="neutral"] .ms-card-title { color: inherit; }
+
+/* ---- grid (§4.3) ------------------------------------------------------------ */
+.ms-grid { display: grid; gap: var(--ms-gap, var(--ms-space)); grid-template-columns: repeat(var(--ms-cols, 2), minmax(0, 1fr)); }
+.ms-grid[data-cols="1"] { --ms-cols: 1; } .ms-grid[data-cols="2"] { --ms-cols: 2; }
+.ms-grid[data-cols="3"] { --ms-cols: 3; } .ms-grid[data-cols="4"] { --ms-cols: 4; }
+[data-gap="sm"] { --ms-gap: calc(var(--ms-space) / 2); }
+[data-gap="md"] { --ms-gap: var(--ms-space); }
+[data-gap="lg"] { --ms-gap: calc(var(--ms-space) * 2); }
+.ms-grid-item {
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  background: var(--ms-surface);
+  padding: var(--ms-space);
+}
+.ms-grid-item > * + * { margin-top: calc(var(--ms-space) / 2); }
+@media (max-width: 60rem) { .ms-grid[data-cols="4"] { --ms-cols: 2; } .ms-grid[data-cols="3"] { --ms-cols: 2; } }
+@media (max-width: 36rem) { .ms-grid { --ms-cols: 1 !important; } }
+
+/* ---- columns (§4.4) --------------------------------------------------------- */
+.ms-columns { display: grid; gap: var(--ms-gap, var(--ms-space)); grid-template-columns: var(--ms-ratio, repeat(auto-fit, minmax(0, 1fr))); align-items: start; }
+.ms-column > * + * { margin-top: var(--ms-space); }
+@media (max-width: 36rem) { .ms-columns { grid-template-columns: 1fr; } }
+
+/* ---- tabs (§4.5): radio inputs, no JavaScript ------------------------------- */
+.ms-tabs { border: 1px solid var(--ms-border); border-radius: var(--ms-radius); overflow: hidden; }
+.ms-tab-input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.ms-tablist { display: flex; flex-wrap: wrap; gap: 2px; background: var(--ms-surface); border-bottom: 1px solid var(--ms-border); padding: 0.25rem 0.25rem 0; }
+.ms-tab {
+  font-family: var(--ms-font-heading);
+  font-weight: 500;
+  padding: 0.45em 0.9em;
+  border-radius: var(--ms-radius) var(--ms-radius) 0 0;
+  color: var(--ms-fg-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+.ms-tab:hover { color: var(--ms-fg); }
+.ms-tab-input:focus-visible ~ .ms-tablist .ms-tab { outline: none; }
+.ms-tabpanel { display: none; padding: var(--ms-space); }
+.ms-tabpanel > * + * { margin-top: var(--ms-space); }
+.ms-tab-input:nth-of-type(1):checked ~ .ms-tabpanel[data-index="1"],
+.ms-tab-input:nth-of-type(2):checked ~ .ms-tabpanel[data-index="2"],
+.ms-tab-input:nth-of-type(3):checked ~ .ms-tabpanel[data-index="3"],
+.ms-tab-input:nth-of-type(4):checked ~ .ms-tabpanel[data-index="4"],
+.ms-tab-input:nth-of-type(5):checked ~ .ms-tabpanel[data-index="5"],
+.ms-tab-input:nth-of-type(6):checked ~ .ms-tabpanel[data-index="6"],
+.ms-tab-input:nth-of-type(7):checked ~ .ms-tabpanel[data-index="7"],
+.ms-tab-input:nth-of-type(8):checked ~ .ms-tabpanel[data-index="8"],
+.ms-tab-input:nth-of-type(9):checked ~ .ms-tabpanel[data-index="9"],
+.ms-tab-input:nth-of-type(10):checked ~ .ms-tabpanel[data-index="10"],
+.ms-tab-input:nth-of-type(11):checked ~ .ms-tabpanel[data-index="11"],
+.ms-tab-input:nth-of-type(12):checked ~ .ms-tabpanel[data-index="12"] { display: block; }
+.ms-tab-input:nth-of-type(1):checked ~ .ms-tablist .ms-tab:nth-child(1),
+.ms-tab-input:nth-of-type(2):checked ~ .ms-tablist .ms-tab:nth-child(2),
+.ms-tab-input:nth-of-type(3):checked ~ .ms-tablist .ms-tab:nth-child(3),
+.ms-tab-input:nth-of-type(4):checked ~ .ms-tablist .ms-tab:nth-child(4),
+.ms-tab-input:nth-of-type(5):checked ~ .ms-tablist .ms-tab:nth-child(5),
+.ms-tab-input:nth-of-type(6):checked ~ .ms-tablist .ms-tab:nth-child(6),
+.ms-tab-input:nth-of-type(7):checked ~ .ms-tablist .ms-tab:nth-child(7),
+.ms-tab-input:nth-of-type(8):checked ~ .ms-tablist .ms-tab:nth-child(8),
+.ms-tab-input:nth-of-type(9):checked ~ .ms-tablist .ms-tab:nth-child(9),
+.ms-tab-input:nth-of-type(10):checked ~ .ms-tablist .ms-tab:nth-child(10),
+.ms-tab-input:nth-of-type(11):checked ~ .ms-tablist .ms-tab:nth-child(11),
+.ms-tab-input:nth-of-type(12):checked ~ .ms-tablist .ms-tab:nth-child(12) { color: var(--ms-accent); border-bottom-color: var(--ms-accent); background: var(--ms-bg); }
+
+/* ---- steps (§4.6) ----------------------------------------------------------- */
+/* The built-in list-item counter honors <ol start>, so no manual counter is needed. */
+.ms-steps { list-style: none; padding: 0; margin: 0; }
+.ms-step { position: relative; padding-left: 3rem; min-height: 2.25rem; }
+.ms-step + .ms-step { margin-top: var(--ms-space); }
+.ms-step::before {
+  content: counter(list-item);
+  position: absolute; left: 0; top: 0;
+  width: 2rem; height: 2rem;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--ms-accent); color: #fff;
+  font-family: var(--ms-font-heading); font-weight: 600; font-size: 0.9em;
+}
+.ms-step:not(:last-child)::after {
+  content: ""; position: absolute; left: calc(1rem - 1px); top: 2.25rem; bottom: calc(var(--ms-space) * -1);
+  border-left: 2px solid var(--ms-border);
+}
+.ms-step > * + * { margin-top: calc(var(--ms-space) / 2); }
+
+/* ---- metrics (§4.7) --------------------------------------------------------- */
+.ms-metrics { display: grid; gap: var(--ms-space); grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+.ms-metric { border: 1px solid var(--ms-border); border-radius: var(--ms-radius); background: var(--ms-surface); padding: var(--ms-space); }
+.ms-metric-label { font-family: var(--ms-font-heading); font-size: 0.8em; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ms-fg-muted); }
+.ms-metric-value { font-family: var(--ms-font-heading); font-size: var(--ms-h2); font-weight: 700; line-height: 1.1; margin-top: 0.25em; letter-spacing: -0.02em; }
+.ms-metric-delta { margin-top: 0.35em; font-size: 0.9em; font-weight: 600; color: var(--ms-fg-muted); }
+.ms-metric[data-direction="up"] .ms-metric-delta { color: var(--ms-tone-success); }
+.ms-metric[data-direction="down"] .ms-metric-delta { color: var(--ms-tone-danger); }
+
+/* ---- figure (§4.8) ---------------------------------------------------------- */
+.ms-figure { margin: 0 auto; width: var(--ms-width, 100%); max-width: 100%; text-align: center; }
+.ms-figure > img { display: block; margin: 0 auto; border-radius: var(--ms-radius); }
+.ms-figure > table { text-align: left; }
+.ms-figure > pre { text-align: left; }
+.ms-figure > figcaption { margin-top: calc(var(--ms-space) / 2); font-size: 0.9em; color: var(--ms-fg-muted); font-style: italic; }
+
+/* ---- print -------------------------------------------------------------------- */
+@media print {
+  body { --ms-bg: #fff; --ms-fg: #000; }
+  .ms-document { max-width: none; padding: 0; }
+  .ms-tabpanel { display: block !important; padding-top: 0; }
+  .ms-tablist { display: none; }
+  .ms-tabpanel::before { content: attr(data-index) ". "; font-weight: 600; }
+  details.ms-callout { display: block; }
+  details.ms-callout > .ms-callout-body { display: block; }
+  a { color: inherit; }
+}

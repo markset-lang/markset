@@ -75,3 +75,6 @@ function cssString(value: string): string {
 function escapeHtml(value: string): string {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
+
+/** Absolute path of the default stylesheet shipped with this package. */
+export const defaultStylesheetPath: string = new URL("../css/markset.css", import.meta.url).pathname;
