@@ -22,6 +22,12 @@ export interface SeparatorNode extends Node {
   attributes: Attributes;
 }
 
+/** Attribute line (spec §2.5) as parsed; removed from the tree once attached to its block. */
+export interface AttributeLine extends Node {
+  type: "attributeLine";
+  attributes: Attributes;
+}
+
 /** Bracketed span (spec §2.2). */
 export interface Span extends Parent {
   type: "span";
@@ -37,12 +43,23 @@ declare module "mdast" {
   interface BlockContentMap {
     directive: Directive;
     separator: SeparatorNode;
+    attributeLine: AttributeLine;
   }
   interface RootContentMap {
     directive: Directive;
     separator: SeparatorNode;
+    attributeLine: AttributeLine;
     span: Span;
   }
+  /** Blocks an attribute line (§2.5) may attach to gain an `attributes` field. */
+  interface Paragraph { attributes?: Attributes }
+  interface Heading { attributes?: Attributes }
+  interface List { attributes?: Attributes }
+  interface Table { attributes?: Attributes }
+  interface Code { attributes?: Attributes }
+  interface Blockquote { attributes?: Attributes }
+  interface ThematicBreak { attributes?: Attributes }
+  interface Html { attributes?: Attributes }
   interface PhrasingContentMap {
     span: Span;
   }
@@ -65,6 +82,7 @@ declare module "micromark-util-types" {
     marksetSpan: "marksetSpan";
     marksetSpanMarker: "marksetSpanMarker";
     marksetSpanAttributes: "marksetSpanAttributes";
+    marksetAttributeLine: "marksetAttributeLine";
   }
 }
 
@@ -84,6 +102,8 @@ export interface ConstructBase extends Parent {
 
 export interface Callout extends Parent {
   type: "callout";
+  /** Present when an attribute line (§2.5) preceded the blockquote. */
+  attributes?: Attributes;
   kind: CalloutKind;
   title: PhrasingContent[] | null;
   /** `-` after the marker is "closed", `+` is "open", absent is null. */

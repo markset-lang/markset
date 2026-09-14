@@ -39,14 +39,17 @@ export function marksetHandlers(): Handlers {
     callout(state, node: Callout) {
       const label = node.title ? inline(state, node.title) : [{ type: "text", value: CALLOUT_LABEL[node.kind] } as ElementContent];
       const body = block("div", { className: ["ms-callout-body"] }, state.all(node));
+      const props: Properties = { className: classes("ms-callout", node.attributes?.classes ?? []) };
+      if (node.attributes?.id) props.id = node.attributes.id;
+      props.dataType = node.kind.toLowerCase();
+      for (const [key, value] of Object.entries(node.attributes?.attrs ?? {})) props[`data-${key}`] = value;
       if (node.fold) {
         const summary = el("summary", { className: ["ms-callout-title"] }, label);
-        const props: Properties = { className: ["ms-callout"], dataType: node.kind.toLowerCase() };
         if (node.fold === "open") props.open = true;
         return finish(state, node, block("details", props, [summary, body]));
       }
       const title = el("div", { className: ["ms-callout-title"] }, label);
-      return finish(state, node, block("div", { className: ["ms-callout"], dataType: node.kind.toLowerCase() }, [title, body]));
+      return finish(state, node, block("div", props, [title, body]));
     },
 
     card(state, node: Card) {

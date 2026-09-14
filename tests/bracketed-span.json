@@ -786,5 +786,41 @@
         }
       ]
     }
+  },
+  {
+    "section": "bracketed-span",
+    "name": "lead on a span warns",
+    "markset": "[x]{.lead}\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "lead"
+                ],
+                "attrs": {}
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "value": "x"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "CLASS_MISAPPLIED"
+    ]
   }
 ]

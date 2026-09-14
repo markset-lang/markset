@@ -26,7 +26,7 @@ export function downgradeTree(root: Root): Root {
     switch (node.type) {
       case "heading": {
         sectionDepth = node.depth;
-        return [{ ...node, children: lowerInline(node.children) }];
+        return [lowerGeneric(node)];
       }
       case "callout": {
         const label: PhrasingContent[] = [{ type: "strong", children: [{ type: "text", value: `${CALLOUT_LABEL[node.kind]}:` }] }];
@@ -68,6 +68,7 @@ export function downgradeTree(root: Root): Root {
         // Malformed or unknown: keep the content, drop the fence.
         return lowerBlocks(node.children);
       case "separator":
+      case "attributeLine":
       case "column":
       case "tab":
         // Only reachable when misplaced; nothing to show.
@@ -77,12 +78,13 @@ export function downgradeTree(root: Root): Root {
     }
   }
 
-  /** Recurse into an ordinary mdast node, lowering nested blocks and inline spans. */
+  /** Recurse into an ordinary mdast node, lowering nested blocks and inline spans and dropping block attributes (§2.5). */
   function lowerGeneric<T extends Nodes>(node: T): T {
-    if (!("children" in node)) return { ...node };
-    const kids = node.children as Nodes[];
+    const { attributes: _dropped, ...rest } = node as T & { attributes?: unknown };
+    if (!("children" in rest)) return rest as T;
+    const kids = rest.children as Nodes[];
     const lowered = isPhrasingParent(node) ? lowerInline(kids as PhrasingContent[]) : lowerBlocks(kids as RootContent[]);
-    return { ...node, children: lowered } as T;
+    return { ...rest, children: lowered } as T;
   }
 
   function lowerInline(nodes: PhrasingContent[]): PhrasingContent[] {
@@ -100,7 +102,7 @@ export function downgradeTree(root: Root): Root {
   }
 
   function isPhrasingParent(node: Nodes): boolean {
-    return node.type === "paragraph" || node.type === "tableCell" || node.type === "emphasis" || node.type === "strong"
+    return node.type === "paragraph" || node.type === "heading" || node.type === "tableCell" || node.type === "emphasis" || node.type === "strong"
       || node.type === "link" || node.type === "linkReference" || node.type === "delete";
   }
 

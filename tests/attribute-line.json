@@ -1,0 +1,915 @@
+[
+  {
+    "section": "attribute-line",
+    "name": "canonical: lead paragraph",
+    "markset": "{.lead}\nOpening paragraph, larger.\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Opening paragraph, larger."
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [
+              "lead"
+            ],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<p class=\"lead\">Opening paragraph, larger.</p>\n",
+    "downgrade": "Opening paragraph, larger.\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "heading with id and class",
+    "markset": "{#intro .x}\n## Heading\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "heading",
+          "depth": 2,
+          "children": [
+            {
+              "type": "text",
+              "value": "Heading"
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": "intro",
+            "classes": [
+              "x"
+            ],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<h2 id=\"intro\" class=\"x\">Heading</h2>\n",
+    "downgrade": "## Heading\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "setext heading",
+    "markset": "{.x}\nTitle\n===\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "heading",
+          "depth": 1,
+          "children": [
+            {
+              "type": "text",
+              "value": "Title"
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [
+              "x"
+            ],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<h1 class=\"x\">Title</h1>\n",
+    "downgrade": "# Title\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "list",
+    "markset": "{.tight}\n- a\n- b\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "start": null,
+          "spread": false,
+          "children": [
+            {
+              "type": "listItem",
+              "spread": false,
+              "checked": null,
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "a"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "spread": false,
+              "checked": null,
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "b"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [
+              "tight"
+            ],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<ul class=\"tight\">\n<li>a</li>\n<li>b</li>\n</ul>\n",
+    "downgrade": "- a\n- b\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "table",
+    "markset": "{#t}\n| a | b |\n|---|---|\n| 1 | 2 |\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "table",
+          "align": [
+            null,
+            null
+          ],
+          "children": [
+            {
+              "type": "tableRow",
+              "children": [
+                {
+                  "type": "tableCell",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "a"
+                    }
+                  ]
+                },
+                {
+                  "type": "tableCell",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "b"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableRow",
+              "children": [
+                {
+                  "type": "tableCell",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "1"
+                    }
+                  ]
+                },
+                {
+                  "type": "tableCell",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "2"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": "t",
+            "classes": [],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<table id=\"t\">\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n</tbody>\n</table>\n",
+    "downgrade": "| a | b |\n| - | - |\n| 1 | 2 |\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "fenced code: attributes land on the code element",
+    "markset": "{.wide}\n```js\nx\n```\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "code",
+          "lang": "js",
+          "meta": null,
+          "value": "x",
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [
+              "wide"
+            ],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<pre><code class=\"wide\">x\n</code></pre>\n",
+    "downgrade": "```js\nx\n```\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "blockquote",
+    "markset": "{.muted}\n> q\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "q"
+                }
+              ]
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [
+              "muted"
+            ],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<blockquote class=\"muted\">\n<p>q</p>\n</blockquote>\n",
+    "downgrade": "> q\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "thematic break",
+    "markset": "{.x}\n***\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "thematicBreak",
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [
+              "x"
+            ],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<hr class=\"x\">\n",
+    "downgrade": "---\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "a dashed rule after an attribute line degrades to a setext heading and warns",
+    "markset": "{.x}\n---\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "thematicBreak",
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [
+              "x"
+            ],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DEGRADATION_SETEXT_RULE"
+    ],
+    "html": "<hr class=\"x\">\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "callout keeps the attributes on the callout node",
+    "markset": "{#n1 .muted}\n> [!NOTE] T\n> b\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "callout",
+          "kind": "NOTE",
+          "title": [
+            {
+              "type": "text",
+              "value": "T"
+            }
+          ],
+          "fold": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "b"
+                }
+              ]
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": "n1",
+            "classes": [
+              "muted"
+            ],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<div class=\"ms-callout muted\" id=\"n1\" data-type=\"note\">\n<div class=\"ms-callout-title\">T</div>\n<div class=\"ms-callout-body\">\n<p>b</p>\n</div>\n</div>\n",
+    "downgrade": "> **Note:** T\n>\n> b\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "key=value becomes a data attribute",
+    "markset": "{k=v}\nPara\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Para"
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {
+              "k": "v"
+            }
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<p data-k=\"v\">Para</p>\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "consecutive lines combine; last id wins",
+    "markset": "{#a .one}\n{.two k=v}\n{#b}\nPara\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Para"
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": "b",
+            "classes": [
+              "one",
+              "two"
+            ],
+            "attrs": {
+              "k": "v"
+            }
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<p id=\"b\" class=\"one two\" data-k=\"v\">Para</p>\n",
+    "downgrade": "Para\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "empty specifier attaches empty attributes",
+    "markset": "{}\nPara\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Para"
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<p>Para</p>\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "quoted value may contain a brace",
+    "markset": "{title=\"a}b\"}\nPara\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Para"
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {
+              "title": "a}b"
+            }
+          }
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-line",
+    "name": "inside a directive",
+    "markset": ":::card\n{.lead}\nPara\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "Para"
+                }
+              ],
+              "attributes": {
+                "type": "attributes",
+                "id": null,
+                "classes": [
+                  "lead"
+                ],
+                "attrs": {}
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<section class=\"ms-card\" data-tone=\"neutral\">\n<p class=\"lead\">Para</p>\n</section>\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "up to three spaces of indentation",
+    "markset": "   {.x}\nPara\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Para"
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [
+              "x"
+            ],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-line",
+    "name": "four spaces is indented code",
+    "markset": "    {.x}\nPara\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "code",
+          "lang": null,
+          "meta": null,
+          "value": "{.x}"
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Para"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-line",
+    "name": "inside a paragraph it is text",
+    "markset": "Para\n{.x}\nmore\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Para\n{.x}\nmore"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "html": "<p>Para\n{.x}\nmore</p>\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "trailing content makes it a paragraph",
+    "markset": "{.x} text\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "{.x} text"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-line",
+    "name": "lazy continuation inside a list item is text",
+    "markset": "- item\n  {.lead}\n  para\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "start": null,
+          "spread": false,
+          "children": [
+            {
+              "type": "listItem",
+              "spread": false,
+              "checked": null,
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "item\n{.lead}\npara"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-line",
+    "name": "small on a paragraph is in place",
+    "markset": "{.small}\nfine print\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "fine print"
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [
+              "small"
+            ],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-line",
+    "name": "misapplied reserved classes warn but are kept",
+    "markset": "{.lead .badge}\n- a\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "start": null,
+          "spread": false,
+          "children": [
+            {
+              "type": "listItem",
+              "spread": false,
+              "checked": null,
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "a"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [
+              "lead",
+              "badge"
+            ],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "CLASS_MISAPPLIED",
+      "CLASS_MISAPPLIED"
+    ],
+    "html": "<ul class=\"lead badge\">\n<li>a</li>\n</ul>\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "tone classes apply anywhere",
+    "markset": "{.warn}\n- a\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "list",
+          "ordered": false,
+          "start": null,
+          "spread": false,
+          "children": [
+            {
+              "type": "listItem",
+              "spread": false,
+              "checked": null,
+              "children": [
+                {
+                  "type": "paragraph",
+                  "children": [
+                    {
+                      "type": "text",
+                      "value": "a"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [
+              "warn"
+            ],
+            "attrs": {}
+          }
+        }
+      ]
+    },
+    "valid": true
+  },
+  {
+    "section": "attribute-line",
+    "name": "orphan at end of document",
+    "markset": "Para\n\n{.x}\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_LINE_ORPHAN"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Para"
+            }
+          ]
+        }
+      ]
+    },
+    "html": "<p>Para</p>\n",
+    "downgrade": "Para\n"
+  },
+  {
+    "section": "attribute-line",
+    "name": "orphan before a blank line",
+    "markset": "{.x}\n\nPara\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_LINE_ORPHAN"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Para"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "attribute-line",
+    "name": "cannot apply to a directive",
+    "markset": "{.x}\n:::card\ny\n:::\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_LINE_ON_DIRECTIVE"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "card",
+          "title": null,
+          "tone": "neutral",
+          "compact": false,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "y"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "section": "attribute-line",
+    "name": "attribute errors carry through",
+    "markset": "{#}\nPara\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Para"
+            }
+          ],
+          "attributes": {
+            "type": "attributes",
+            "id": null,
+            "classes": [],
+            "attrs": {}
+          }
+        }
+      ]
+    }
+  },
+  {
+    "section": "attribute-line",
+    "name": "a bare JSON line is a malformed orphan attribute line",
+    "markset": "{ \"a\": 1 }\n",
+    "valid": false,
+    "diagnostics": [
+      "ATTR_LINE_ORPHAN",
+      "ATTR_UNEXPECTED_CHAR",
+      "ATTR_BAD_IDENTIFIER"
+    ],
+    "ast": {
+      "type": "root",
+      "children": []
+    }
+  }
+]

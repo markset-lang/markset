@@ -5,8 +5,9 @@ export type { Attributes, AttributeSpecifierResult } from "./attributes.ts";
 export { parseDirectiveLine, DirectiveCode } from "./directives.ts";
 export type { DirectiveLine, DirectiveOpen, DirectiveClose, Separator, DirectiveLineResult } from "./directives.ts";
 export { validateStructure, StructureCode } from "./validate.ts";
+export { attachAttributeLines, AttributeLineCode } from "./attribute-lines.ts";
 export type {
-  Directive, SeparatorNode, Span, Construct, Callout, Card, Grid, Columns, Column, Tabs, Tab, Steps, Metrics, Figure, Tone, Gap, CalloutKind,
+  Directive, SeparatorNode, Span, AttributeLine, Construct, Callout, Card, Grid, Columns, Column, Tabs, Tab, Steps, Metrics, Figure, Tone, Gap, CalloutKind,
 } from "./ast.ts";
 export { normalizeConstructs, ConstructCode } from "./constructs.ts";
 export { readFrontmatter, FrontmatterCode } from "./frontmatter.ts";

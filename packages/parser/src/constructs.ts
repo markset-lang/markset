@@ -295,7 +295,9 @@ export function normalizeConstructs(tree: Root, source: string, diagnostics: Dia
 
     const { title, body } = splitTitle(first, match[0].length);
     const children = body ? [body, ...node.children.slice(1)] : node.children.slice(1);
-    return { type: "callout", kind: kind as CalloutKind, title, fold, children, position: node.position };
+    const callout: Callout = { type: "callout", kind: kind as CalloutKind, title, fold, children, position: node.position };
+    if (node.attributes) callout.attributes = node.attributes;
+    return callout;
   }
 
   /** Split the first paragraph after the marker into same-line title content and the remaining body paragraph. */
