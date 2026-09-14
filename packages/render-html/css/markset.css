@@ -11,7 +11,8 @@ body {
   --ms-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --ms-type-scale: 1.2;
   --ms-base: 1rem;
-  --ms-measure: 56rem;       /* document column width; presets adjust it */
+  --ms-measure: 46rem;       /* reading measure for prose blocks; presets adjust it */
+  --ms-measure-wide: 72rem;  /* the document box; layout constructs and tables run to it */
   --ms-space: 1rem;
   --ms-radius: 0.5rem;
 
@@ -65,23 +66,27 @@ body[data-preset="editorial"] {
   --ms-font-body: "Source Serif 4", Charter, Georgia, "Times New Roman", serif;
   --ms-font-heading: Inter, ui-sans-serif, system-ui, sans-serif;
   --ms-type-scale: 1.25;
-  --ms-measure: 44rem;
+  --ms-measure: 42rem;
+  --ms-measure-wide: 64rem;
 }
 body[data-preset="technical"] {
   --ms-type-scale: 1.15;
-  --ms-measure: 60rem;
+  --ms-measure: 48rem;
+  --ms-measure-wide: 72rem;
   --ms-radius: 0.375rem;
 }
 body[data-preset="deck"] {
   --ms-base: 1.25rem;
   --ms-type-scale: 1.3;
   --ms-space: 1.5rem;
-  --ms-measure: 64rem;
+  --ms-measure: 52rem;
+  --ms-measure-wide: 80rem;
 }
 body[data-preset="report"] {
   --ms-type-scale: 1.15;
   --ms-space: 0.875rem;
-  --ms-measure: 56rem;
+  --ms-measure: 46rem;
+  --ms-measure-wide: 68rem;
   --ms-radius: 0.25rem;
 }
 
@@ -95,13 +100,17 @@ body {
   line-height: 1.55;
   -webkit-text-size-adjust: 100%;
 }
-/* One column: prose and layout constructs share the document measure. */
+/* Two lanes, one left edge. The document box is the wide measure; prose blocks
+ * stop at the reading measure, and layout constructs and tables run the full
+ * width. Everything starts at the same left edge, so the page reads as one
+ * column with some wide elements, not as two columns centered on each other. */
 .ms-document {
-  max-width: var(--ms-measure);
+  max-width: var(--ms-measure-wide);
   margin: 0 auto;
   padding: calc(var(--ms-space) * 2) var(--ms-space);
 }
-.ms-document > * { min-width: 0; }
+.ms-document > * { min-width: 0; max-width: var(--ms-measure); }
+.ms-document > :is(.ms-grid, .ms-columns, .ms-metrics, .ms-tabs, .ms-figure, table, .wide) { max-width: none; }
 .ms-document > * + * { margin-top: var(--ms-space); }
 .ms-document p, .ms-document ul, .ms-document ol, .ms-document blockquote, .ms-document pre, .ms-document table { margin: 0; }
 .ms-document * + p, .ms-document * + ul, .ms-document * + ol, .ms-document * + pre, .ms-document * + table, .ms-document * + blockquote { margin-top: var(--ms-space); }
