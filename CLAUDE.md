@@ -46,7 +46,9 @@ packages/
   conformance/      harness: validates tests/*.json against the schema, runs each section's driver
   cli/
 site/       static site generator (build.ts) and content; every page is Markset rendered by the packages above.
-            Nav lives in NAV and the page list in build(). content/start.md is the adoption page,
+            Nav lives in NAV and the page list in build(). The examples index generates Markset source and renders it,
+            rather than assembling HTML, so that page is a Markset document like every other one.
+            content/start.md is the adoption page,
             content/cli.md documents the command line tool, and content/reference/index.md teaches the
             shared grammar. An example with `toggles: true` in EXAMPLES gets every top-level construct
             wrapped in a Result/Markdown tabs pair, with the source sliced from the file by node

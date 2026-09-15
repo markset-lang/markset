@@ -74,6 +74,8 @@ export const EXAMPLES: Array<{
   title: string;
   theme?: string;
   toggles?: boolean;
+  /** Two or three words naming the genre, so the index can be scanned rather than read. */
+  kicker: string;
   blurb: string;
 }> = [
   {
@@ -81,55 +83,62 @@ export const EXAMPLES: Array<{
     file: "showcase.md",
     title: "Showcase",
     toggles: true,
+    kicker: "Construct tour",
     blurb:
-      "Every construct at the size it would really be used, each with a tab holding the source that produced it. It declares no theme stylesheet, so it shows the vocabulary on whatever stylesheet renders it.",
+      "Every construct at the size it would really be used, each carrying a tab that holds the exact source which produced it. It names no theme of its own, so it shows the vocabulary on whatever stylesheet renders it.",
   },
   {
     slug: "notification-routing",
     file: "notification-routing.md",
     title: "Analysis document",
     theme: "dossier.css",
+    kicker: "Analysis",
     blurb:
-      "A long analysis document with a theme stylesheet: status chips, a layer rail, a tinted pipeline stage, lettered steps. The system it describes is invented.",
+      "A long analysis whose source names no colors and no widths. The status chips, the layer rail and the tinted pipeline stage are all author classes that a theme stylesheet interprets, which is what keeps the document portable.",
   },
   {
     slug: "strategy-read",
     file: "strategy-read.md",
     title: "Strategy memo",
     theme: "memo.css",
+    kicker: "Memo",
     blurb:
-      "An argued memo in a newspaper register: a masthead, a captioned data table, marked sections in a two-lane grid, pull quotes and source citations. The company and every figure are invented.",
+      "An argued memo in a newspaper register: a masthead, a captioned data table, marked sections in a two-lane grid, pull quotes and source citations.",
   },
   {
     slug: "runbook",
     file: "runbook.md",
     title: "On-call runbook",
     theme: "runbook.css",
+    kicker: "Runbook",
     blurb:
-      "The shortest and densest genre there is: a page read under time pressure, where the first screen has to be the answer. Triage steps that rank themselves, a symptom grid, procedures in tabs, and an escalation table. Every service and threshold is invented.",
+      "The shortest and densest genre there is, read under time pressure, where the first screen has to be the answer. Triage steps that rank themselves, a symptom grid, procedures in tabs and an escalation table.",
   },
   {
     slug: "config-reference",
     file: "config-reference.md",
     title: "Configuration reference",
+    kicker: "Reference",
     blurb:
-      "Reference documentation, the genre that is mostly tables and code: resolution order, a table of keys per section, the same configuration in four formats, and a deprecation table. The only long example that names no theme of its own, so it is read on the site's stylesheet like every other page here. The tool is invented.",
+      "Mostly tables and code: resolution order, a table of keys per section, the same configuration in four formats, and a deprecation table. The one long example that names no theme, so it is read on the site's own stylesheet.",
   },
   {
     slug: "architecture",
     file: "architecture.md",
     title: "Architecture overview",
     theme: "tidewater.css",
+    kicker: "Architecture",
     blurb:
-      "The genre that is mostly diagrams: a system map, a state machine and a deployment topology, each an ASCII fence in the source rather than an image file anyone has to keep in step with the prose. It also shows the rule in action — one fence is left as a code block, because the characters are the content rather than a picture of it. The system is invented.",
+      "The genre that is mostly diagrams. A system map, a state machine and a deployment topology, each an ASCII fence in the source rather than an image file kept in step by hand — and one fence deliberately left as code.",
   },
   {
     slug: "incident-review",
     file: "incident-review.md",
     title: "Incident review",
     theme: "incident.css",
+    kicker: "Postmortem",
     blurb:
-      "A postmortem in the register of a printed report: an impact strip, a timeline on a rail, a factors table with a real caption, and an action list where the committed items mark themselves. Written to test whether steps carries a timeline; it does. The company and the outage are invented.",
+      "A postmortem in the register of a printed report: an impact strip, a timeline on a rail, a factors table with a real caption, and an action list where the committed items mark themselves.",
   },
 ];
 
@@ -301,15 +310,64 @@ async function examplesIndex(): Promise<Page> {
   const intro = await readFile(join(root, "site", "content", "examples", "index.md"), "utf8");
   const { ast, diagnostics } = parseDocument(intro);
   failOnErrors(diagnostics, "examples/index.md");
-  const list = EXAMPLES.map((e) => {
-    const theme = e.theme ? ` Rendered with <code>--theme examples/${esc(e.theme)}</code>.` : "";
-    return `<li><a href="${e.slug}/index.html">${esc(e.title)}</a> — ${esc(e.blurb)}${theme} <a href="${REPO}/blob/main/examples/${esc(e.file)}"><code>examples/${esc(e.file)}</code></a></li>`;
-  }).join("\n");
+
+  // The listing is generated as Markset source and rendered, rather than
+  // assembled as HTML. It costs nothing and it keeps the claim honest: every
+  // page on this site really is a Markset document, including the generated
+  // ones, and the index dogfoods `grid` on the page that advertises the
+  // vocabulary. A generation bug fails the build loudly rather than shipping
+  // broken markup.
+  const tour = EXAMPLES.find((e) => e.toggles) ?? EXAMPLES[0];
+  const documents = EXAMPLES.filter((e) => e !== tour);
+  const footer = (e: (typeof EXAMPLES)[number]): string =>
+    [e.kicker, e.theme ? `theme \`${e.theme}\`` : "no theme", `[source](${REPO}/blob/main/examples/${e.file})`].join(
+      " · ",
+    );
+
+  const source = [
+    `:::card[Start here]{tone=info}`,
+    `### [${tour.title}](${tour.slug}/index.html)`,
+    ``,
+    tour.blurb,
+    ``,
+    `{.small .muted}`,
+    footer(tour),
+    `:::`,
+    ``,
+    `## ${numberWord(documents.length)} complete documents`,
+    ``,
+    `{.small .muted}`,
+    `Every company, system and number in these is invented.`,
+    ``,
+    `:::grid{cols=2}`,
+    ...documents.map((e) =>
+      [
+        `- ### [${e.title}](${e.slug}/index.html)`,
+        ``,
+        `  ${e.blurb}`,
+        ``,
+        `  {.small .muted}`,
+        `  ${footer(e)}`,
+        ``,
+      ].join("\n"),
+    ),
+    `:::`,
+    ``,
+  ].join("\n");
+
+  const listing = parseDocument(source);
+  failOnErrors(listing.diagnostics, "examples/index.html (generated listing)");
+
   return {
     path: "examples/index.html",
     title: "Examples",
-    body: `${renderHtml(ast)}<ul class="site-list">\n${list}\n</ul>\n`,
+    body: renderHtml(ast) + renderHtml(listing.ast),
   };
+}
+
+/** Small numbers read better as words in a heading, and the count changes when an example is added. */
+function numberWord(n: number): string {
+  return ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"][n] ?? String(n);
 }
 
 async function specPage(): Promise<Page> {
