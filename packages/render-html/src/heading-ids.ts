@@ -11,12 +11,13 @@ import type { Attributes } from "@markset/parser";
  * "the id key" produce the same slug.
  */
 export function headingSlug(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[`*_~]/gu, "")
-    .replace(/[^\p{L}\p{N}]+/gu, "-")
-    .replace(/^-+|-+$/gu, "")
-    || "section";
+  return (
+    text
+      .toLowerCase()
+      .replace(/[`*_~]/gu, "")
+      .replace(/[^\p{L}\p{N}]+/gu, "-")
+      .replace(/^-+|-+$/gu, "") || "section"
+  );
 }
 
 /**

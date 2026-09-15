@@ -22,7 +22,9 @@ function formatFile(file: FileResult, options: ReportOptions): string[] {
   for (const testCase of file.cases) for (const aspect of testCase.aspects) counts[aspect.status]++;
 
   const location = relative(repoRoot, file.file);
-  lines.push(`${file.section}  (${location})  ${file.cases.length} case(s)  pass ${counts.pass}  fail ${counts.fail}  skip ${counts.skip}`);
+  lines.push(
+    `${file.section}  (${location})  ${file.cases.length} case(s)  pass ${counts.pass}  fail ${counts.fail}  skip ${counts.skip}`,
+  );
 
   for (const error of file.fileErrors) lines.push(`  ! ${error}`);
   for (const error of file.schemaErrors) lines.push(`  ! schema ${error.path}: ${error.message}`);

@@ -24,7 +24,10 @@ options
 
 "-" reads the document from stdin.`;
 
-export async function main(argv: string[], io: { stdout: (s: string) => void; stderr: (s: string) => void }): Promise<number> {
+export async function main(
+  argv: string[],
+  io: { stdout: (s: string) => void; stderr: (s: string) => void },
+): Promise<number> {
   const { values, positionals } = parseArgs({
     args: argv,
     allowPositionals: true,
@@ -83,9 +86,12 @@ export async function main(argv: string[], io: { stdout: (s: string) => void; st
       if (values.fragment) {
         await emit(renderHtml(ast));
       } else {
-        const stylesheet = values.css === "none" ? undefined
-          : values.css === "inline" ? { inline: await readFile(defaultStylesheetPath, "utf8") }
-            : { href: values.css };
+        const stylesheet =
+          values.css === "none"
+            ? undefined
+            : values.css === "inline"
+              ? { inline: await readFile(defaultStylesheetPath, "utf8") }
+              : { href: values.css };
         const theme = values.theme ? { inline: await readFile(values.theme, "utf8") } : undefined;
         await emit(renderPage(ast, { title: values.title, stylesheet, theme }));
       }
@@ -102,7 +108,9 @@ export async function main(argv: string[], io: { stdout: (s: string) => void; st
       const source = await read(files[0]);
       const { ast, diagnostics } = parseDocument(source);
       warn(diagnostics, source, files[0], io);
-      const tree = values.positions ? ast : JSON.parse(JSON.stringify(ast, (key, value) => (key === "position" ? undefined : value)));
+      const tree = values.positions
+        ? ast
+        : JSON.parse(JSON.stringify(ast, (key, value) => (key === "position" ? undefined : value)));
       await emit(`${JSON.stringify(tree, null, 2)}\n`);
       return 0;
     }

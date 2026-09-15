@@ -33,7 +33,10 @@ test("rejects a non-array file", () => {
 test("valid cases must carry an ast", () => {
   const { ast: _omitted, ...withoutAst } = validCase;
   const errors = validate(schema, [withoutAst]);
-  assert.deepEqual(errors.map((e) => e.message), ['missing required property "ast"']);
+  assert.deepEqual(
+    errors.map((e) => e.message),
+    ['missing required property "ast"'],
+  );
 });
 
 test("invalid cases must carry at least one diagnostic", () => {
@@ -74,6 +77,7 @@ test("validator handles the generic keywords it advertises", () => {
       tags: { type: "array", items: { type: "string" }, minItems: 1 },
     },
     if: { properties: { kind: { const: "a" } } },
+    // biome-ignore lint/suspicious/noThenProperty: `then` is a JSON Schema keyword here, not a thenable.
     then: { required: ["n"] },
     else: { not: { required: ["n"] } },
   };

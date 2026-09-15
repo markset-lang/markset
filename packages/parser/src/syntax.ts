@@ -12,9 +12,7 @@
 import { factorySpace } from "micromark-factory-space";
 import { asciiAlpha, markdownLineEnding, markdownSpace } from "micromark-util-character";
 import { codes, constants, types } from "micromark-util-symbol";
-import type {
-  Code, Construct, Effects, Extension, State, Token, TokenizeContext,
-} from "micromark-util-types";
+import type { Code, Construct, Effects, Extension, State, Token, TokenizeContext } from "micromark-util-types";
 import "./ast.ts";
 
 export function markset(): Extension {
@@ -28,26 +26,30 @@ export function markset(): Extension {
 // Block directive container
 // ---------------------------------------------------------------------------
 
-const directiveContainer: Construct = { name: "marksetDirective", tokenize: tokenizeDirectiveContainer, concrete: true };
+const directiveContainer: Construct = {
+  name: "marksetDirective",
+  tokenize: tokenizeDirectiveContainer,
+  concrete: true,
+};
 const restIsBlank: Construct = { tokenize: tokenizeRestIsBlank, partial: true };
 const argumentIsTerminated: Construct = { tokenize: tokenizeArgumentIsTerminated, partial: true };
 const nonLazyLine: Construct = { tokenize: tokenizeNonLazyLine, partial: true };
 
 function isNameCode(code: Code): boolean {
-  return code !== null && (
-    (code >= codes.digit0 && code <= codes.digit9)
-    || (code >= codes.uppercaseA && code <= codes.uppercaseZ)
-    || (code >= codes.lowercaseA && code <= codes.lowercaseZ)
-    || code === codes.underscore || code === codes.dash
+  return (
+    code !== null &&
+    ((code >= codes.digit0 && code <= codes.digit9) ||
+      (code >= codes.uppercaseA && code <= codes.uppercaseZ) ||
+      (code >= codes.lowercaseA && code <= codes.lowercaseZ) ||
+      code === codes.underscore ||
+      code === codes.dash)
   );
 }
 
 function tokenizeDirectiveContainer(this: TokenizeContext, effects: Effects, ok: State, nok: State): State {
   const self = this;
   const tail = self.events[self.events.length - 1];
-  const initialSize = tail && tail[1].type === types.linePrefix
-    ? tail[2].sliceSerialize(tail[1], true).length
-    : 0;
+  const initialSize = tail && tail[1].type === types.linePrefix ? tail[2].sliceSerialize(tail[1], true).length : 0;
   let sizeOpen = 0;
   let previous: Token | undefined;
   let argumentDepth = 0;
@@ -277,7 +279,7 @@ function tokenizeArgumentIsTerminated(effects: Effects, ok: State, nok: State): 
     if (code === codes.eof || markdownLineEnding(code)) return nok(code);
     if (code === codes.backslash) {
       effects.consume(code);
-      return escape;
+      return afterBackslash;
     }
     if (code === codes.leftSquareBracket) depth++;
     if (code === codes.rightSquareBracket && --depth === 0) {
@@ -287,7 +289,7 @@ function tokenizeArgumentIsTerminated(effects: Effects, ok: State, nok: State): 
     effects.consume(code);
     return inside;
   }
-  function escape(code: Code): State | undefined {
+  function afterBackslash(code: Code): State | undefined {
     if (code === codes.eof || markdownLineEnding(code)) return nok(code);
     effects.consume(code);
     return inside;
@@ -390,7 +392,7 @@ function tokenizeSpan(effects: Effects, ok: State, nok: State): State {
   function inside(code: Code): State | undefined {
     if (code === codes.backslash) {
       effects.consume(code);
-      return escape;
+      return afterBackslash;
     }
     if (markdownLineEnding(code)) {
       // Linked chunks must be adjacent, so the line ending belongs to this chunk.
@@ -407,7 +409,7 @@ function tokenizeSpan(effects: Effects, ok: State, nok: State): State {
     return inside;
   }
 
-  function escape(code: Code): State | undefined {
+  function afterBackslash(code: Code): State | undefined {
     if (code === codes.eof || markdownLineEnding(code)) return inside(code);
     effects.consume(code);
     return inside;

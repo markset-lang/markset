@@ -12,7 +12,9 @@ import { build, EXAMPLES } from "../build.ts";
  */
 const dist = await mkdtemp(join(tmpdir(), "markset-site-"));
 const pages = await build(dist);
-after(async () => { await rm(dist, { recursive: true, force: true }); });
+after(async () => {
+  await rm(dist, { recursive: true, force: true });
+});
 
 test("the site builds, every page has the shell, and links stay relative", async () => {
   assert.ok(pages.includes("index.html"));
@@ -67,7 +69,12 @@ test("two builds into one directory both finish, and the tree is whole", async (
   const shared = await mkdtemp(join(tmpdir(), "markset-race-"));
   try {
     await Promise.all([build(shared), build(shared), build(shared), build(shared)]);
-    for (const file of ["index.html", join("css", "markset.css"), join("css", "site.css"), join("spec", "index.html")]) {
+    for (const file of [
+      "index.html",
+      join("css", "markset.css"),
+      join("css", "site.css"),
+      join("spec", "index.html"),
+    ]) {
       const text = await readFile(join(shared, file), "utf8");
       assert.ok(text.length > 0, `${file} is empty after concurrent builds`);
     }
@@ -95,7 +102,11 @@ test("the reader can choose a color scheme, and no page gained a script for it",
   // control that would most obviously have needed one does not have it.
   const home = await readFile(join(dist, "index.html"), "utf8");
   assert.match(home, /<div class="site-scheme" role="group" aria-label="Color scheme">/);
-  assert.match(home, /id="ms-scheme-auto" class="site-scheme-input" checked/, "auto is the default, so a reader who ignores it keeps their system preference");
+  assert.match(
+    home,
+    /id="ms-scheme-auto" class="site-scheme-input" checked/,
+    "auto is the default, so a reader who ignores it keeps their system preference",
+  );
   assert.match(home, /id="ms-scheme-light"/);
   assert.match(home, /id="ms-scheme-dark"/);
   const css = await readFile(join(dist, "css", "site.css"), "utf8");
@@ -118,7 +129,10 @@ test("the app bar sticks, and everything that has to clear it uses one token", a
 
 test("every link to the repository matches package.json, which matches the remote", async () => {
   const root = resolve(import.meta.dirname, "..", "..");
-  const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as { repository: { url: string }; homepage: string };
+  const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as {
+    repository: { url: string };
+    homepage: string;
+  };
   const repo = pkg.repository.url.replace(/\.git$/, "");
   assert.match(repo, /^https:\/\/github\.com\/[^/]+\/[^/]+$/, "repository.url must be a GitHub project URL");
 

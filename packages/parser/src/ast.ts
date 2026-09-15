@@ -52,16 +52,34 @@ declare module "mdast" {
     span: Span;
   }
   /** Blocks an attribute line (§2.5) may attach to gain an `attributes` field. */
-  interface Paragraph { attributes?: Attributes }
-  interface Heading { attributes?: Attributes }
-  interface List { attributes?: Attributes }
+  interface Paragraph {
+    attributes?: Attributes;
+  }
+  interface Heading {
+    attributes?: Attributes;
+  }
+  interface List {
+    attributes?: Attributes;
+  }
   /** A list item gains `attributes` from attribute lines that open it (§2.5). */
-  interface ListItem { attributes?: Attributes }
-  interface Table { attributes?: Attributes }
-  interface Code { attributes?: Attributes }
-  interface Blockquote { attributes?: Attributes }
-  interface ThematicBreak { attributes?: Attributes }
-  interface Html { attributes?: Attributes }
+  interface ListItem {
+    attributes?: Attributes;
+  }
+  interface Table {
+    attributes?: Attributes;
+  }
+  interface Code {
+    attributes?: Attributes;
+  }
+  interface Blockquote {
+    attributes?: Attributes;
+  }
+  interface ThematicBreak {
+    attributes?: Attributes;
+  }
+  interface Html {
+    attributes?: Attributes;
+  }
   interface PhrasingContentMap {
     span: Span;
   }

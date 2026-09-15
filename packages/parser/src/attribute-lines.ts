@@ -77,7 +77,8 @@ export function attachAttributeLines(tree: Root, source: string, diagnostics: Di
       diagnostics.push({
         code: AttributeLineCode.DEGRADATION_SETEXT_RULE,
         severity: "warning",
-        message: "a `---` rule directly after an attribute line reads as a setext heading in plain CommonMark renderers; write the rule as `***`",
+        message:
+          "a `---` rule directly after an attribute line reads as a setext heading in plain CommonMark renderers; write the rule as `***`",
         ...span(target),
       });
     }

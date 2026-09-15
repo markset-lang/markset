@@ -4,11 +4,24 @@
  * modified. Card titles become headings one level below the current section
  * depth, tracked in document order across every heading the output contains.
  */
-import type { BlockContent, DefinitionContent, Heading, Nodes, Paragraph, PhrasingContent, Root, RootContent } from "mdast";
+import type {
+  BlockContent,
+  DefinitionContent,
+  Heading,
+  Nodes,
+  Paragraph,
+  PhrasingContent,
+  Root,
+  RootContent,
+} from "mdast";
 import type { CalloutKind } from "@markset/parser";
 
 const CALLOUT_LABEL: Record<CalloutKind, string> = {
-  NOTE: "Note", TIP: "Tip", IMPORTANT: "Important", WARNING: "Warning", CAUTION: "Caution",
+  NOTE: "Note",
+  TIP: "Tip",
+  IMPORTANT: "Important",
+  WARNING: "Warning",
+  CAUTION: "Caution",
 };
 
 export function downgradeTree(root: Root): Root {
@@ -29,10 +42,17 @@ export function downgradeTree(root: Root): Root {
         return [lowerGeneric(node)];
       }
       case "callout": {
-        const label: PhrasingContent[] = [{ type: "strong", children: [{ type: "text", value: `${CALLOUT_LABEL[node.kind]}:` }] }];
+        const label: PhrasingContent[] = [
+          { type: "strong", children: [{ type: "text", value: `${CALLOUT_LABEL[node.kind]}:` }] },
+        ];
         if (node.title) label.push({ type: "text", value: " " }, ...lowerInline(node.title));
         const first: Paragraph = { type: "paragraph", children: label };
-        return [{ type: "blockquote", children: [first, ...lowerBlocks(node.children) as Array<BlockContent | DefinitionContent>] }];
+        return [
+          {
+            type: "blockquote",
+            children: [first, ...(lowerBlocks(node.children) as Array<BlockContent | DefinitionContent>)],
+          },
+        ];
       }
       case "card": {
         const out: RootContent[] = [];
@@ -61,7 +81,8 @@ export function downgradeTree(root: Root): Root {
       }
       case "figure": {
         const out = lowerBlocks(node.children);
-        if (node.caption) out.push({ type: "paragraph", children: [{ type: "emphasis", children: lowerInline(node.caption) }] });
+        if (node.caption)
+          out.push({ type: "paragraph", children: [{ type: "emphasis", children: lowerInline(node.caption) }] });
         return out;
       }
       case "directive":
@@ -83,7 +104,9 @@ export function downgradeTree(root: Root): Root {
     const { attributes: _dropped, ...rest } = node as T & { attributes?: unknown };
     if (!("children" in rest)) return rest as T;
     const kids = rest.children as Nodes[];
-    const lowered = isPhrasingParent(node) ? lowerInline(kids as PhrasingContent[]) : lowerBlocks(kids as RootContent[]);
+    const lowered = isPhrasingParent(node)
+      ? lowerInline(kids as PhrasingContent[])
+      : lowerBlocks(kids as RootContent[]);
     return { ...rest, children: lowered } as T;
   }
 
@@ -102,8 +125,16 @@ export function downgradeTree(root: Root): Root {
   }
 
   function isPhrasingParent(node: Nodes): boolean {
-    return node.type === "paragraph" || node.type === "heading" || node.type === "tableCell" || node.type === "emphasis" || node.type === "strong"
-      || node.type === "link" || node.type === "linkReference" || node.type === "delete";
+    return (
+      node.type === "paragraph" ||
+      node.type === "heading" ||
+      node.type === "tableCell" ||
+      node.type === "emphasis" ||
+      node.type === "strong" ||
+      node.type === "link" ||
+      node.type === "linkReference" ||
+      node.type === "delete"
+    );
   }
 
   /** Adjacent text nodes left by span removal merge, so the output has the shape a fresh parse would. */

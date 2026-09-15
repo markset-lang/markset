@@ -8,7 +8,14 @@ import { main, position } from "../src/main.ts";
 function run(argv: string[]) {
   let out = "";
   let err = "";
-  return main(argv, { stdout: (s) => { out += s; }, stderr: (s) => { err += s; } }).then((code) => ({ code, out, err }));
+  return main(argv, {
+    stdout: (s) => {
+      out += s;
+    },
+    stderr: (s) => {
+      err += s;
+    },
+  }).then((code) => ({ code, out, err }));
 }
 
 test("position converts offsets to 1-based line and column", () => {
@@ -56,7 +63,10 @@ test("html writes a full page by default and a fragment on request", async () =>
   assert.match(written, /<section class="ms-card" data-tone="neutral">/);
 
   const fragment = await run(["html", "--fragment", file]);
-  assert.equal(fragment.out, '<h1 id="title">Title</h1>\n<section class="ms-card" data-tone="neutral">\n<p>x</p>\n</section>\n');
+  assert.equal(
+    fragment.out,
+    '<h1 id="title">Title</h1>\n<section class="ms-card" data-tone="neutral">\n<p>x</p>\n</section>\n',
+  );
 
   const linked = await run(["html", "--css", "theme.css", file]);
   assert.match(linked.out, /<link rel="stylesheet" href="theme.css">/);

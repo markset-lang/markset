@@ -37,7 +37,7 @@ test("prose is capped at the reading measure and layout constructs are not", asy
   assert.match(css, /\.ms-document \{[^}]*box-sizing: border-box/s);
   assert.match(css, /\.ms-document > \*[^{]*\{[^}]*max-width: var\(--ms-measure\)/);
   for (const construct of ["ms-grid", "ms-columns", "ms-metrics", "ms-tabs", "ms-figure"]) {
-    assert.ok(css.includes(construct + ","), `${construct} must be in the full-width list`);
+    assert.ok(css.includes(`${construct},`), `${construct} must be in the full-width list`);
   }
 });
 

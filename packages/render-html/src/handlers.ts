@@ -8,18 +8,36 @@ import type { ListItem, PhrasingContent, TableCell } from "mdast";
 import { defaultHandlers, type Handlers, type State } from "mdast-util-to-hast";
 import type {
   Attributes,
-  Callout, CalloutKind, Card, Columns, Directive, Figure, Grid, Metrics, Span, Steps, Tabs,
+  Callout,
+  CalloutKind,
+  Card,
+  Columns,
+  Directive,
+  Figure,
+  Grid,
+  Metrics,
+  Span,
+  Steps,
+  Tabs,
 } from "@markset/parser";
 
 const CALLOUT_LABEL: Record<CalloutKind, string> = {
-  NOTE: "Note", TIP: "Tip", IMPORTANT: "Important", WARNING: "Warning", CAUTION: "Caution",
+  NOTE: "Note",
+  TIP: "Tip",
+  IMPORTANT: "Important",
+  WARNING: "Warning",
+  CAUTION: "Caution",
 };
 
 export function marksetHandlers(): Handlers {
   let tabsCount = 0;
 
-  const el = (tagName: string, properties: Properties, children: ElementContent[]): Element =>
-    ({ type: "element", tagName, properties, children });
+  const el = (tagName: string, properties: Properties, children: ElementContent[]): Element => ({
+    type: "element",
+    tagName,
+    properties,
+    children,
+  });
   const block = (tagName: string, properties: Properties, children: ElementContent[]): Element =>
     el(tagName, properties, wrap(children));
   const wrap = (children: ElementContent[]): ElementContent[] => (children.length === 0 ? [] : loose(children));
@@ -38,7 +56,9 @@ export function marksetHandlers(): Handlers {
 
   return {
     callout(state, node: Callout) {
-      const label = node.title ? inline(state, node.title) : [{ type: "text", value: CALLOUT_LABEL[node.kind] } as ElementContent];
+      const label = node.title
+        ? inline(state, node.title)
+        : [{ type: "text", value: CALLOUT_LABEL[node.kind] } as ElementContent];
       const body = block("div", { className: ["ms-callout-body"] }, state.all(node));
       const props: Properties = { className: classes("ms-callout", node.attributes?.classes ?? []) };
       if (node.attributes?.id) props.id = node.attributes.id;
@@ -70,7 +90,8 @@ export function marksetHandlers(): Handlers {
       props.dataCols = String(node.cols);
       props.dataGap = node.gap;
       const items = node.children[0].children.map((item: ListItem) =>
-        block("div", withAttributes({ className: ["ms-grid-item"] }, item.attributes), state.all(item)));
+        block("div", withAttributes({ className: ["ms-grid-item"] }, item.attributes), state.all(item)),
+      );
       return finish(state, node, block("div", props, items));
     },
 
@@ -98,7 +119,8 @@ export function marksetHandlers(): Handlers {
         return el("input", input, []);
       });
       const labels = node.children.map((tab, index) =>
-        el("label", { className: ["ms-tab"], htmlFor: [`${name}-${index + 1}`] }, inline(state, tab.label)));
+        el("label", { className: ["ms-tab"], htmlFor: [`${name}-${index + 1}`] }, inline(state, tab.label)),
+      );
       const panels = node.children.map((tab, index) => {
         const panel: Properties = { className: classes("ms-tabpanel", tab.attributes?.classes ?? []) };
         if (tab.attributes?.id) panel.id = tab.attributes.id;
@@ -138,7 +160,8 @@ export function marksetHandlers(): Handlers {
         if (delta) {
           const sign = cellText(delta).trim()[0];
           const direction = sign === "+" ? "up" : sign === "-" ? "down" : null;
-          if (direction) metricProps.dataDirection = node.direction === "inverse" ? (direction === "up" ? "down" : "up") : direction;
+          if (direction)
+            metricProps.dataDirection = node.direction === "inverse" ? (direction === "up" ? "down" : "up") : direction;
           parts.push(el("div", { className: ["ms-metric-delta"] }, cellContent(state, delta)));
         }
         return block("div", metricProps, parts);
@@ -155,7 +178,10 @@ export function marksetHandlers(): Handlers {
       const children = [...body];
       // A table has its own caption element, and it is the table's accessible
       // name; a figcaption beside a table is not (§4.8). Put it inside instead.
-      const table = content.type === "table" ? children.find((c): c is Element => c.type === "element" && c.tagName === "table") : undefined;
+      const table =
+        content.type === "table"
+          ? children.find((c): c is Element => c.type === "element" && c.tagName === "table")
+          : undefined;
       if (node.caption && table) {
         table.children.unshift({ type: "text", value: "\n" }, el("caption", {}, inline(state, node.caption)));
       } else if (node.caption) {

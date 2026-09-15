@@ -96,7 +96,12 @@ export function parseAttributeSpecifier(source: string, start = 0): AttributeSpe
       const key = source.slice(pos, keyEnd);
 
       if (!IDENTIFIER.test(key)) {
-        error(AttrCode.BAD_IDENTIFIER, `key "${key}" is not an identifier; identifiers match [A-Za-z][A-Za-z0-9_-]*`, itemStart, keyEnd);
+        error(
+          AttrCode.BAD_IDENTIFIER,
+          `key "${key}" is not an identifier; identifiers match [A-Za-z][A-Za-z0-9_-]*`,
+          itemStart,
+          keyEnd,
+        );
         pos = skipItem(keyEnd);
         continue;
       }
@@ -108,7 +113,12 @@ export function parseAttributeSpecifier(source: string, start = 0): AttributeSpe
 
       const valueStart = keyEnd + 1;
       if (valueStart >= length || isSpace(source[valueStart]) || source[valueStart] === "}") {
-        error(AttrCode.EMPTY_VALUE, `key "${key}" has no value; write ${key}="" for an empty string`, itemStart, valueStart);
+        error(
+          AttrCode.EMPTY_VALUE,
+          `key "${key}" has no value; write ${key}="" for an empty string`,
+          itemStart,
+          valueStart,
+        );
         pos = valueStart;
         continue;
       }
@@ -119,12 +129,22 @@ export function parseAttributeSpecifier(source: string, start = 0): AttributeSpe
         pos = quoted.end;
         value = quoted.value;
         if (quoted.unterminated) {
-          error(AttrCode.UNTERMINATED_QUOTE, `quoted value for "${key}" is missing its closing quote`, valueStart, length);
+          error(
+            AttrCode.UNTERMINATED_QUOTE,
+            `quoted value for "${key}" is missing its closing quote`,
+            valueStart,
+            length,
+          );
           // The quote swallowed the rest of the input, so the missing `}` is the same defect.
           return { attributes, end: length, diagnostics };
         }
         for (const escapeAt of quoted.badEscapes) {
-          error(AttrCode.BAD_ESCAPE, `unknown escape in quoted value; only \\" and \\\\ are defined`, escapeAt, escapeAt + 2);
+          error(
+            AttrCode.BAD_ESCAPE,
+            `unknown escape in quoted value; only \\" and \\\\ are defined`,
+            escapeAt,
+            escapeAt + 2,
+          );
           value = null;
         }
         if (pos < length && !isSpace(source[pos]) && source[pos] !== "}") {
@@ -138,7 +158,12 @@ export function parseAttributeSpecifier(source: string, start = 0): AttributeSpe
         const raw = source.slice(valueStart, valueEnd);
         pos = valueEnd;
         if (raw.includes('"') || raw.includes("'")) {
-          error(AttrCode.BAD_VALUE, `bare value for "${key}" contains a quote; wrap the value in double quotes`, valueStart, valueEnd);
+          error(
+            AttrCode.BAD_VALUE,
+            `bare value for "${key}" contains a quote; wrap the value in double quotes`,
+            valueStart,
+            valueEnd,
+          );
           value = null;
         } else {
           value = raw;
@@ -146,7 +171,12 @@ export function parseAttributeSpecifier(source: string, start = 0): AttributeSpe
       }
 
       if (RESERVED_KEYS.has(key)) {
-        error(AttrCode.RESERVED_KEY, `"${key}" is reserved; use ${key === "id" ? "#name" : ".name"} instead`, itemStart, keyEnd);
+        error(
+          AttrCode.RESERVED_KEY,
+          `"${key}" is reserved; use ${key === "id" ? "#name" : ".name"} instead`,
+          itemStart,
+          keyEnd,
+        );
         continue;
       }
       if (value !== null) attributes.attrs[key] = value;

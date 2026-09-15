@@ -26,7 +26,13 @@ export function marksetFromMarkdown(diagnostics: Diagnostic[]): Extension {
   }
 
   function enterDirective(this: CompileContext, token: Token): undefined {
-    const node: Directive = { type: "directive", name: null, argument: null, attributes: emptyAttributes(), children: [] };
+    const node: Directive = {
+      type: "directive",
+      name: null,
+      argument: null,
+      attributes: emptyAttributes(),
+      children: [],
+    };
     this.enter(node, token);
   }
 
@@ -46,7 +52,7 @@ export function marksetFromMarkdown(diagnostics: Diagnostic[]): Extension {
   function exitFence(this: CompileContext, token: Token): undefined {
     const directive = top<Directive>(this);
     const result = parseDirectiveLine(this.sliceSerialize(token));
-    if (!result || result.line.type !== "directive-open") {
+    if (result?.line.type !== "directive-open") {
       throw new Error(`fence token did not parse as an opening fence: ${JSON.stringify(this.sliceSerialize(token))}`);
     }
     directive.name = result.line.name;
@@ -81,7 +87,7 @@ export function marksetFromMarkdown(diagnostics: Diagnostic[]): Extension {
   function exitSeparator(this: CompileContext, token: Token): undefined {
     const node = top<SeparatorNode>(this);
     const result = parseDirectiveLine(this.sliceSerialize(token));
-    if (!result || result.line.type !== "separator") {
+    if (result?.line.type !== "separator") {
       throw new Error(`separator token did not parse as a separator: ${JSON.stringify(this.sliceSerialize(token))}`);
     }
     node.name = result.line.name;

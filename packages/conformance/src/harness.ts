@@ -3,7 +3,14 @@ import { basename, join, resolve } from "node:path";
 import { validate, type Schema } from "./schema.ts";
 import { firstDifference, sameCodes } from "./compare.ts";
 import type {
-  Actual, AspectResult, CaseResult, ConformanceCase, Driver, FileResult, SuiteResult, Totals,
+  Actual,
+  AspectResult,
+  CaseResult,
+  ConformanceCase,
+  Driver,
+  FileResult,
+  SuiteResult,
+  Totals,
 } from "./types.ts";
 
 /** Repository root, derived from this file's location: packages/conformance/src -> root. */
@@ -67,7 +74,11 @@ async function runFile(path: string, schema: Schema, drivers: Record<string, Dri
 export function runCase(testCase: ConformanceCase, index: number, driver: Driver | undefined): CaseResult {
   const name = testCase.name ?? `case ${index}`;
   if (!driver) {
-    return { index, name, aspects: [{ aspect: "driver", status: "skip", detail: `no driver for section "${testCase.section}"` }] };
+    return {
+      index,
+      name,
+      aspects: [{ aspect: "driver", status: "skip", detail: `no driver for section "${testCase.section}"` }],
+    };
   }
 
   let actual: Actual;
@@ -122,14 +133,20 @@ export function compareCase(expected: ConformanceCase, actual: Actual): AspectRe
     } else if (got === expected[aspect]) {
       aspects.push({ aspect, status: "pass" });
     } else {
-      aspects.push({ aspect, status: "fail", detail: `expected ${JSON.stringify(expected[aspect])}, got ${JSON.stringify(got)}` });
+      aspects.push({
+        aspect,
+        status: "fail",
+        detail: `expected ${JSON.stringify(expected[aspect])}, got ${JSON.stringify(got)}`,
+      });
     }
   }
 
   if (actual.naive) {
-    aspects.push(actual.naive.pass
-      ? { aspect: "naive", status: "pass" }
-      : { aspect: "naive", status: "fail", detail: actual.naive.detail ?? "naive output lost or reordered content" });
+    aspects.push(
+      actual.naive.pass
+        ? { aspect: "naive", status: "pass" }
+        : { aspect: "naive", status: "fail", detail: actual.naive.detail ?? "naive output lost or reordered content" },
+    );
   }
 
   return aspects;
@@ -147,6 +164,8 @@ export function tally(files: FileResult[]): Totals {
 
 /** True when nothing failed and every file was well-formed. Skips do not count against the suite. */
 export function suitePassed(result: SuiteResult): boolean {
-  return result.totals.fail === 0
-    && result.files.every((file) => file.fileErrors.length === 0 && file.schemaErrors.length === 0);
+  return (
+    result.totals.fail === 0 &&
+    result.files.every((file) => file.fileErrors.length === 0 && file.schemaErrors.length === 0)
+  );
 }

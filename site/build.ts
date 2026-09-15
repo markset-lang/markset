@@ -9,11 +9,21 @@
 import { mkdir, readdir, readFile, rename, rm, writeFile, cp } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import type { Heading, Root } from "mdast";
-import { addHeadingIds, parseDocument, renderDowngrade, renderHtml, bodyAttributes, defaultStylesheetPath, type Diagnostic } from "./deps.ts";
+import {
+  addHeadingIds,
+  parseDocument,
+  renderDowngrade,
+  renderHtml,
+  bodyAttributes,
+  defaultStylesheetPath,
+  type Diagnostic,
+} from "./deps.ts";
 
 const root = resolve(import.meta.dirname, "..");
 /** Repository and site URLs come from package.json so they cannot drift from the remote. */
-const pkg = JSON.parse(await readFile(join(resolve(import.meta.dirname, ".."), "package.json"), "utf8")) as { repository: { url: string } };
+const pkg = JSON.parse(await readFile(join(resolve(import.meta.dirname, ".."), "package.json"), "utf8")) as {
+  repository: { url: string };
+};
 const REPO = pkg.repository.url.replace(/\.git$/, "");
 
 interface Page {
@@ -30,10 +40,25 @@ interface Page {
 }
 
 interface ConformanceCase {
-  section: string; name?: string; markset: string; html?: string; downgrade?: string; ast?: unknown; valid: boolean; diagnostics?: string[];
+  section: string;
+  name?: string;
+  markset: string;
+  html?: string;
+  downgrade?: string;
+  ast?: unknown;
+  valid: boolean;
+  diagnostics?: string[];
 }
 
-const NAV: Array<[string, string]> = [["Home", "index.html"], ["Start", "start/index.html"], ["Reference", "reference/index.html"], ["CLI", "cli/index.html"], ["Spec", "spec/index.html"], ["Conformance", "conformance/index.html"], ["Examples", "examples/index.html"]];
+const NAV: Array<[string, string]> = [
+  ["Home", "index.html"],
+  ["Start", "start/index.html"],
+  ["Reference", "reference/index.html"],
+  ["CLI", "cli/index.html"],
+  ["Spec", "spec/index.html"],
+  ["Conformance", "conformance/index.html"],
+  ["Examples", "examples/index.html"],
+];
 
 /** Documents rendered as their own pages, with the theme stylesheet each one is meant to be read with (spec §6). */
 /**
@@ -43,15 +68,58 @@ const NAV: Array<[string, string]> = [["Home", "index.html"], ["Start", "start/i
  * document behind it is a dead page. An unlisted file rode along in a commit
  * once and had to be removed from history.
  */
-export const EXAMPLES: Array<{ slug: string; file: string; title: string; theme?: string; toggles?: boolean; blurb: string }> = [
-  { slug: "showcase", file: "showcase.md", title: "Showcase", toggles: true, blurb: "Every construct at the size it would really be used, each with a tab holding the source that produced it. It declares no theme stylesheet, so it shows the vocabulary on whatever stylesheet renders it." },
-  { slug: "notification-routing", file: "notification-routing.md", title: "Analysis document", theme: "dossier.css", blurb: "A long analysis document with a theme stylesheet: status chips, a layer rail, a tinted pipeline stage, lettered steps. The system it describes is invented." },
-  { slug: "strategy-read", file: "strategy-read.md", title: "Strategy memo", theme: "memo.css", blurb: "An argued memo in a newspaper register: a masthead, a captioned data table, marked sections in a two-lane grid, pull quotes and source citations. The company and every figure are invented." },
-  { slug: "incident-review", file: "incident-review.md", title: "Incident review", theme: "incident.css", blurb: "A postmortem in the register of a printed report: an impact strip, a timeline on a rail, a factors table with a real caption, and an action list where the committed items mark themselves. Written to test whether steps carries a timeline; it does. The company and the outage are invented." },
+export const EXAMPLES: Array<{
+  slug: string;
+  file: string;
+  title: string;
+  theme?: string;
+  toggles?: boolean;
+  blurb: string;
+}> = [
+  {
+    slug: "showcase",
+    file: "showcase.md",
+    title: "Showcase",
+    toggles: true,
+    blurb:
+      "Every construct at the size it would really be used, each with a tab holding the source that produced it. It declares no theme stylesheet, so it shows the vocabulary on whatever stylesheet renders it.",
+  },
+  {
+    slug: "notification-routing",
+    file: "notification-routing.md",
+    title: "Analysis document",
+    theme: "dossier.css",
+    blurb:
+      "A long analysis document with a theme stylesheet: status chips, a layer rail, a tinted pipeline stage, lettered steps. The system it describes is invented.",
+  },
+  {
+    slug: "strategy-read",
+    file: "strategy-read.md",
+    title: "Strategy memo",
+    theme: "memo.css",
+    blurb:
+      "An argued memo in a newspaper register: a masthead, a captioned data table, marked sections in a two-lane grid, pull quotes and source citations. The company and every figure are invented.",
+  },
+  {
+    slug: "incident-review",
+    file: "incident-review.md",
+    title: "Incident review",
+    theme: "incident.css",
+    blurb:
+      "A postmortem in the register of a printed report: an impact strip, a timeline on a rail, a factors table with a real caption, and an action list where the committed items mark themselves. Written to test whether steps carries a timeline; it does. The company and the outage are invented.",
+  },
 ];
 
 const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
-const SECTION_ORDER = ["attribute-specifier", "bracketed-span", "block-directive", "separator-directive", "attribute-line", ...CONSTRUCTS, "frontmatter"];
+const SECTION_ORDER = [
+  "attribute-specifier",
+  "bracketed-span",
+  "block-directive",
+  "separator-directive",
+  "attribute-line",
+  ...CONSTRUCTS,
+  "frontmatter",
+];
 
 /**
  * Build the whole site, then move it into place in one step.
@@ -119,7 +187,10 @@ async function writeSite(outDir: string): Promise<string[]> {
     await markdownPage("cli/index.html", join(root, "site", "content", "cli.md")),
     await specPage(),
     await referenceIndex(),
-    await markdownPage("reference/frontmatter/index.html", join(root, "site", "content", "reference", "frontmatter.md")),
+    await markdownPage(
+      "reference/frontmatter/index.html",
+      join(root, "site", "content", "reference", "frontmatter.md"),
+    ),
     ...(await Promise.all(CONSTRUCTS.map((name) => referencePage(name, cases[name] ?? [])))),
     conformanceIndex(cases),
     ...SECTION_ORDER.filter((s) => cases[s]).map((s) => conformancePage(s, cases[s])),
@@ -153,17 +224,18 @@ function withSourceToggles(tree: Root, source: string): Root {
     const at = node.position;
     if (!DEMO_TYPES.has(node.type) || !at?.start.offset === undefined || at === undefined) return node;
     const text = source.slice(at.start.offset ?? 0, at.end.offset ?? 0);
-    const tab = (label: string, kids: unknown[]): unknown =>
-      ({ type: "tab", depth: 3, label: [{ type: "text", value: label }], children: kids });
+    const tab = (label: string, kids: unknown[]): unknown => ({
+      type: "tab",
+      depth: 3,
+      label: [{ type: "text", value: label }],
+      children: kids,
+    });
     return {
       type: "tabs",
       active: 1,
       id: null,
       classes: ["site-demo"],
-      children: [
-        tab("Result", [node]),
-        tab("Markdown", [{ type: "code", lang: "markdown", meta: null, value: text }]),
-      ],
+      children: [tab("Result", [node]), tab("Markdown", [{ type: "code", lang: "markdown", meta: null, value: text }])],
     } as unknown as typeof node;
   });
   return { ...tree, children };
@@ -186,11 +258,17 @@ async function markdownPage(path: string, file: string, themeCss?: string | fals
 
 /** One example document, with links to the index and to the other examples so no page is a dead end. */
 async function examplePage(example: (typeof EXAMPLES)[number]): Promise<Page> {
-  const page = await markdownPage(`examples/${example.slug}/index.html`, join(root, "examples", example.file), example.theme && `css/${example.theme}`, example.toggles ?? false);
-  const others = EXAMPLES.filter((e) => e.slug !== example.slug)
-    .map((e) => `<a href="../${e.slug}/index.html">${esc(e.title)}</a>`);
+  const page = await markdownPage(
+    `examples/${example.slug}/index.html`,
+    join(root, "examples", example.file),
+    example.theme && `css/${example.theme}`,
+    example.toggles ?? false,
+  );
+  const others = EXAMPLES.filter((e) => e.slug !== example.slug).map(
+    (e) => `<a href="../${e.slug}/index.html">${esc(e.title)}</a>`,
+  );
   const source = `<a href="${REPO}/blob/main/examples/${esc(example.file)}">source</a>`;
-  page.body += `<p class="site-more">Examples: <a href="../index.html">all</a>${others.length ? " · " + others.join(" · ") : ""} · ${source}</p>\n`;
+  page.body += `<p class="site-more">Examples: <a href="../index.html">all</a>${others.length ? ` · ${others.join(" · ")}` : ""} · ${source}</p>\n`;
   return page;
 }
 
@@ -202,7 +280,11 @@ async function examplesIndex(): Promise<Page> {
     const theme = e.theme ? ` Rendered with <code>--theme examples/${esc(e.theme)}</code>.` : "";
     return `<li><a href="${e.slug}/index.html">${esc(e.title)}</a> — ${esc(e.blurb)}${theme} <a href="${REPO}/blob/main/examples/${esc(e.file)}"><code>examples/${esc(e.file)}</code></a></li>`;
   }).join("\n");
-  return { path: "examples/index.html", title: "Examples", body: renderHtml(ast) + `<ul class="site-list">\n${list}\n</ul>\n` };
+  return {
+    path: "examples/index.html",
+    title: "Examples",
+    body: `${renderHtml(ast)}<ul class="site-list">\n${list}\n</ul>\n`,
+  };
 }
 
 async function specPage(): Promise<Page> {
@@ -222,11 +304,17 @@ async function referenceIndex(): Promise<Page> {
   const intro = await readFile(join(root, "site", "content", "reference", "index.md"), "utf8");
   const { ast, diagnostics } = parseDocument(intro);
   failOnErrors(diagnostics, "reference/index.md");
-  const list = CONSTRUCTS.map((name) => `<li><a href="${name}/index.html"><code>${name}</code></a> — ${esc(BLURB[name])}</li>`).join("\n");
+  const list = CONSTRUCTS.map(
+    (name) => `<li><a href="${name}/index.html"><code>${name}</code></a> — ${esc(BLURB[name])}</li>`,
+  ).join("\n");
   // Frontmatter is the ninth reference page and the only one that is not a
   // construct, so it is listed after the eight rather than among them.
   const frontmatter = `<p class="site-more">The document's own settings: <a href="frontmatter/index.html">frontmatter and theme tokens</a> — the version key, the seven theme tokens and what each preset changes.</p>\n`;
-  return { path: "reference/index.html", title: "Reference", body: renderHtml(ast) + `<ul class="site-list">\n${list}\n</ul>\n` + frontmatter };
+  return {
+    path: "reference/index.html",
+    title: "Reference",
+    body: `${renderHtml(ast)}<ul class="site-list">\n${list}\n</ul>\n${frontmatter}`,
+  };
 }
 
 const BLURB: Record<(typeof CONSTRUCTS)[number], string> = {
@@ -248,50 +336,125 @@ const BLURB: Record<(typeof CONSTRUCTS)[number], string> = {
  */
 const REFERENCE_EXAMPLES: Record<string, Array<[string, string]>> = {
   callout: [
-    ["canonical", "The marker, a title on the same line, and a body. This is GitHub's alert syntax unchanged, so it renders natively there too."],
-    ["collapsed by default, no title", "A trailing `-` folds the callout. With no title, the type name is used. It becomes a `<details>` element, so folding needs no script."],
-    ["body with several blocks", "The body is ordinary block content. Lists, code and further paragraphs all work; only the first line is special."],
-    ["nested: callout containing a card", "A callout is a blockquote, so a directive inside it needs no extra fencing. The downgrade keeps both."],
+    [
+      "canonical",
+      "The marker, a title on the same line, and a body. This is GitHub's alert syntax unchanged, so it renders natively there too.",
+    ],
+    [
+      "collapsed by default, no title",
+      "A trailing `-` folds the callout. With no title, the type name is used. It becomes a `<details>` element, so folding needs no script.",
+    ],
+    [
+      "body with several blocks",
+      "The body is ordinary block content. Lists, code and further paragraphs all work; only the first line is special.",
+    ],
+    [
+      "nested: callout containing a card",
+      "A callout is a blockquote, so a directive inside it needs no extra fencing. The downgrade keeps both.",
+    ],
   ],
   card: [
-    ["canonical", "The bracketed argument is the title and `tone` picks one of five semantic tones. Neither names a color."],
-    ["every tone", "All five tones side by side. What each one looks like is the theme's decision, not the document's."],
+    [
+      "canonical",
+      "The bracketed argument is the title and `tone` picks one of five semantic tones. Neither names a color.",
+    ],
+    [
+      "every tone",
+      "All five tones side by side. What each one looks like is the theme's decision, not the document's.",
+    ],
     ["mixed block content", "Any block content is allowed, including none. A card is a boundary, not a content type."],
-    ["nested cards use a longer outer fence", "The rule that matters when nesting: the outer fence must be longer than the inner one, exactly as with code fences."],
+    [
+      "nested cards use a longer outer fence",
+      "The rule that matters when nesting: the outer fence must be longer than the inner one, exactly as with code fences.",
+    ],
   ],
   grid: [
-    ["canonical", "Content must be exactly one list. That single rule is what makes the downgrade trivially exact: drop the fence and a list is still a list."],
-    ["every cols value", "`cols` accepts 1 to 4. The stylesheet collapses to fewer columns on a narrow screen; the document does not say when."],
-    ["items with nested blocks", "An item may hold several blocks, so a grid item can be a small article rather than a line."],
-    ["ordered list is allowed", "An ordered list works too. The marker is not rendered, so use whichever reads better in the raw source."],
+    [
+      "canonical",
+      "Content must be exactly one list. That single rule is what makes the downgrade trivially exact: drop the fence and a list is still a list.",
+    ],
+    [
+      "every cols value",
+      "`cols` accepts 1 to 4. The stylesheet collapses to fewer columns on a narrow screen; the document does not say when.",
+    ],
+    [
+      "items with nested blocks",
+      "An item may hold several blocks, so a grid item can be a small article rather than a line.",
+    ],
+    [
+      "ordered list is allowed",
+      "An ordered list works too. The marker is not rendered, so use whichever reads better in the raw source.",
+    ],
   ],
   columns: [
-    ["canonical", "Content before the first `::col` is the first column. The separator is a two-colon line, so two columns do not cost two levels of fencing."],
-    ["three-term ratio and gap", "`ratio` sizes the columns and its term count must equal the column count. This is the one place a document carries geometry."],
-    ["id and classes on the separator", "A `::col` line takes its own attribute specifier, which is how one column is singled out for a theme."],
-    ["nested inside a card", "Three levels deep, so the fences step down from the outside in: five colons, then four, then three. Each closing fence matches its own opener."],
+    [
+      "canonical",
+      "Content before the first `::col` is the first column. The separator is a two-colon line, so two columns do not cost two levels of fencing.",
+    ],
+    [
+      "three-term ratio and gap",
+      "`ratio` sizes the columns and its term count must equal the column count. This is the one place a document carries geometry.",
+    ],
+    [
+      "id and classes on the separator",
+      "A `::col` line takes its own attribute specifier, which is how one column is singled out for a theme.",
+    ],
+    [
+      "nested inside a card",
+      "Three levels deep, so the fences step down from the outside in: five colons, then four, then three. Each closing fence matches its own opener.",
+    ],
   ],
   tabs: [
-    ["canonical", "Headings become the tab labels. A renderer with no tab support shows the sections one after another, which is the downgrade."],
+    [
+      "canonical",
+      "Headings become the tab labels. A renderer with no tab support shows the sections one after another, which is the downgrade.",
+    ],
     ["active tab override", "`active` picks which tab opens. Panels switch with radio inputs, so there is no script."],
-    ["deeper headings are tab content", "The first heading level found sets the tab level. Anything deeper is content inside that tab."],
-    ["nested: a card inside a tab", "Tab content is ordinary blocks, so constructs nest inside it with the usual fence rule."],
+    [
+      "deeper headings are tab content",
+      "The first heading level found sets the tab level. Anything deeper is content inside that tab.",
+    ],
+    [
+      "nested: a card inside a tab",
+      "Tab content is ordinary blocks, so constructs nest inside it with the usual fence rule.",
+    ],
   ],
   steps: [
-    ["canonical", "Content must be exactly one ordered list. The numbering comes from the list, so the source reads as a procedure even unrendered."],
-    ["items with nested blocks", "A step can carry code, a table or a further list. This is the usual shape of a real procedure."],
-    ["start number is preserved", "A list starting at 3 keeps its numbering, which is how a procedure continues across sections."],
+    [
+      "canonical",
+      "Content must be exactly one ordered list. The numbering comes from the list, so the source reads as a procedure even unrendered.",
+    ],
+    [
+      "items with nested blocks",
+      "A step can carry code, a table or a further list. This is the usual shape of a real procedure.",
+    ],
+    [
+      "start number is preserved",
+      "A list starting at 3 keeps its numbering, which is how a procedure continues across sections.",
+    ],
     ["nested: a card inside a step", "A card inside a step needs the outer fence to be longer, as everywhere else."],
   ],
   metrics: [
-    ["canonical", "A table of at least two columns. The first is the label, the second the value, and an optional third is read as a delta."],
-    ["inverse direction", "`direction=inverse` flips which sign reads as good, for a measure like churn where down is the improvement."],
+    [
+      "canonical",
+      "A table of at least two columns. The first is the label, the second the value, and an optional third is read as a delta.",
+    ],
+    [
+      "inverse direction",
+      "`direction=inverse` flips which sign reads as good, for a measure like churn where down is the improvement.",
+    ],
     ["two columns without a delta", "The delta column is optional. Without it the tiles are label and value only."],
     ["alignment is kept", "GFM column alignment survives into the tiles, so numeric columns stay aligned."],
   ],
   figure: [
-    ["canonical", "The argument is the caption and `width` is a percentage. No pixels, because the same source has to typeset to print."],
-    ["table as content", "A figure may wrap a table. The caption is then emitted as the table's own `<caption>`, which is its accessible name."],
+    [
+      "canonical",
+      "The argument is the caption and `width` is a percentage. No pixels, because the same source has to typeset to print.",
+    ],
+    [
+      "table as content",
+      "A figure may wrap a table. The caption is then emitted as the table's own `<caption>`, which is its accessible name.",
+    ],
     ["code block as content", "A code block works too, which is how a listing gets a caption."],
     ["caption with inline markup", "The caption is inline content, so emphasis, code and links all work inside it."],
   ],
@@ -322,11 +485,13 @@ async function referencePage(name: (typeof CONSTRUCTS)[number], sectionCases: Co
 
 function conformanceIndex(cases: Record<string, ConformanceCase[]>): Page {
   const total = Object.values(cases).reduce((n, list) => n + list.length, 0);
-  const rows = SECTION_ORDER.filter((s) => cases[s]).map((s) => {
-    const list = cases[s];
-    const invalid = list.filter((c) => !c.valid).length;
-    return `<tr><td><a href="${s}/index.html"><code>${s}</code></a></td><td>${list.length}</td><td>${list.length - invalid}</td><td>${invalid}</td></tr>`;
-  }).join("\n");
+  const rows = SECTION_ORDER.filter((s) => cases[s])
+    .map((s) => {
+      const list = cases[s];
+      const invalid = list.filter((c) => !c.valid).length;
+      return `<tr><td><a href="${s}/index.html"><code>${s}</code></a></td><td>${list.length}</td><td>${list.length - invalid}</td><td>${invalid}</td></tr>`;
+    })
+    .join("\n");
   const body = `<h1 id="conformance-suite">Conformance suite</h1>
 <p>${total} cases in ${Object.keys(cases).length} sections, one JSON file per spec section under <a href="${REPO}/tree/main/tests"><code>tests/</code></a>. Each case pins the parse result, the diagnostics, and the two fallbacks. The pages below render every case live with the reference implementation: what you see in the "Rendered" column is produced at build time from the case's source, not copied from the file.</p>
 <p>Structure (validity, diagnostic codes, AST) is normative for every implementation. The HTML and downgrade strings are reference output; other implementations must be equivalent, not byte-identical. See <a href="../spec/index.html#7-conformance-suite">spec §7</a>.</p>
@@ -351,9 +516,15 @@ function inlineCode(text: string): string {
 }
 
 function caseCard(c: ConformanceCase, options: { showName: boolean; index?: number; compact?: boolean }): string {
-  const isDocument = c.section === "frontmatter" || c.section === "bracketed-span" || c.section === "attribute-line"
-    || (CONSTRUCTS as readonly string[]).includes(c.section) || c.markset.includes("\n");
-  const label = options.showName ? `<h3 class="site-case-title">${options.index ? `<span class="site-case-index">#${options.index}</span> ` : ""}${esc(c.name ?? "case")}</h3>` : "";
+  const isDocument =
+    c.section === "frontmatter" ||
+    c.section === "bracketed-span" ||
+    c.section === "attribute-line" ||
+    (CONSTRUCTS as readonly string[]).includes(c.section) ||
+    c.markset.includes("\n");
+  const label = options.showName
+    ? `<h3 class="site-case-title">${options.index ? `<span class="site-case-index">#${options.index}</span> ` : ""}${esc(c.name ?? "case")}</h3>`
+    : "";
   const badge = c.valid ? "" : ` <span class="ms-span badge danger">invalid</span>`;
   const diags = (c.diagnostics ?? []).length
     ? `<p class="site-diagnostics">Diagnostics: ${(c.diagnostics ?? []).map((d) => `<code>${esc(d)}</code>`).join(" ")}</p>`
@@ -363,7 +534,8 @@ function caseCard(c: ConformanceCase, options: { showName: boolean; index?: numb
   if (isDocument) {
     const { ast } = parseDocument(c.markset);
     rendered = `<div class="site-pane"><h4>Rendered</h4><div class="site-preview">\n${renderHtml(ast)}</div></div>`;
-    if (!options.compact) downgrade = `<div class="site-pane"><h4>Downgrade</h4><pre><code>${esc(renderDowngrade(ast) || "(empty)")}</code></pre></div>`;
+    if (!options.compact)
+      downgrade = `<div class="site-pane"><h4>Downgrade</h4><pre><code>${esc(renderDowngrade(ast) || "(empty)")}</code></pre></div>`;
   } else {
     rendered = `<div class="site-pane"><h4>Parse result</h4><pre><code>${esc(JSON.stringify(c.ast, null, 2))}</code></pre></div>`;
   }
@@ -384,7 +556,8 @@ function shell(page: Page): string {
   const depth = page.path.split("/").length - 1;
   const rel = depth === 0 ? "./" : "../".repeat(depth);
   const nav = NAV.map(([label, href]) => {
-    const active = page.path === href || (href !== "index.html" && page.path.startsWith(href.replace("index.html", "")));
+    const active =
+      page.path === href || (href !== "index.html" && page.path.startsWith(href.replace("index.html", "")));
     return `<a href="${rel}${href}"${active ? ' aria-current="page"' : ""}>${label}</a>`;
   }).join("\n");
   const attrs = page.themeAttributes || ' data-preset="technical"';

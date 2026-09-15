@@ -45,7 +45,10 @@ test("unterminated specifier spans from the brace to end of input", () => {
   const result = parseAttributeSpecifier(source, 0);
   assert.ok(result);
   assert.equal(result.end, source.length);
-  assert.deepEqual(result.diagnostics.map((d) => [d.code, d.start, d.end]), [[AttrCode.UNTERMINATED, 0, source.length]]);
+  assert.deepEqual(
+    result.diagnostics.map((d) => [d.code, d.start, d.end]),
+    [[AttrCode.UNTERMINATED, 0, source.length]],
+  );
 });
 
 test("attributes object has no prototype surprises", () => {

@@ -67,7 +67,8 @@ function check(schema: Schema, value: unknown, path: string, root: Schema, error
       }
     } else if (isObject(schema.additionalProperties)) {
       for (const key of Object.keys(value)) {
-        if (!Object.hasOwn(props, key)) check(schema.additionalProperties as Schema, value[key], `${path}.${key}`, root, errors);
+        if (!Object.hasOwn(props, key))
+          check(schema.additionalProperties as Schema, value[key], `${path}.${key}`, root, errors);
       }
     }
   }
@@ -77,7 +78,9 @@ function check(schema: Schema, value: unknown, path: string, root: Schema, error
       errors.push({ path, message: `expected at least ${schema.minItems} item(s), got ${value.length}` });
     }
     if (schema.items !== undefined) {
-      value.forEach((item, i) => check(schema.items as Schema, item, `${path}[${i}]`, root, errors));
+      value.forEach((item, i) => {
+        check(schema.items as Schema, item, `${path}[${i}]`, root, errors);
+      });
     }
   }
 
@@ -117,14 +120,22 @@ function resolveRef(ref: string, root: Schema): Schema {
 
 function matchesType(type: string, value: unknown): boolean {
   switch (type) {
-    case "null": return value === null;
-    case "boolean": return typeof value === "boolean";
-    case "string": return typeof value === "string";
-    case "number": return typeof value === "number";
-    case "integer": return typeof value === "number" && Number.isInteger(value);
-    case "array": return Array.isArray(value);
-    case "object": return isObject(value);
-    default: throw new Error(`unsupported type keyword "${type}"`);
+    case "null":
+      return value === null;
+    case "boolean":
+      return typeof value === "boolean";
+    case "string":
+      return typeof value === "string";
+    case "number":
+      return typeof value === "number";
+    case "integer":
+      return typeof value === "number" && Number.isInteger(value);
+    case "array":
+      return Array.isArray(value);
+    case "object":
+      return isObject(value);
+    default:
+      throw new Error(`unsupported type keyword "${type}"`);
   }
 }
 

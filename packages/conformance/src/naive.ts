@@ -22,7 +22,10 @@ export function checkNaive(source: string, marksetTree: Root): { pass: boolean; 
   const expected = blockSequence(marksetTree);
   const actual = blockSequence(naiveTree);
   if (expected.join(",") === actual.join(",")) return { pass: true };
-  return { pass: false, detail: `content blocks [${expected.join(", ")}] became [${actual.join(", ")}] under plain CommonMark` };
+  return {
+    pass: false,
+    detail: `content blocks [${expected.join(", ")}] became [${actual.join(", ")}] under plain CommonMark`,
+  };
 }
 
 /** Flatten a tree to the sequence of tracked block types, seeing through Markset constructs. */
