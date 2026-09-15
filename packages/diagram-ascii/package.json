@@ -1,0 +1,8 @@
+{
+  "name": "@markset/diagram-ascii",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Draws an ASCII diagram fence as SVG (spec §10). A drawer, not part of the renderer.",
+  "exports": "./src/index.ts"
+}

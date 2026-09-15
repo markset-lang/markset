@@ -388,6 +388,13 @@ summary.ms-callout-title { cursor: pointer; }
 /* A narrowed figure keeps the document's left edge rather than centering itself. */
 .ms-figure { margin-inline: 0; width: var(--ms-width, 100%); max-width: 100%; }
 .ms-figure > img { display: block; border-radius: var(--ms-radius); }
+
+/* A drawn diagram (§10). Line art does not survive being scaled down: a diagram
+ * shrunk to fit a phone is one nobody can read, so it keeps its size and the
+ * figure scrolls instead — the same trade tables and code blocks already make,
+ * and the reason the page itself still never scrolls sideways. */
+.ms-figure:has(> .ms-diagram) { overflow-x: auto; }
+.ms-diagram { max-width: none; }
 /* A full unit, not half of one. At half the caption sat against the table's
  * bottom rule and was nearly as far from the block below as from the table it
  * belongs to, so it read as floating between the two. */
