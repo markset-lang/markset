@@ -11,18 +11,20 @@ Specification · Reference implementation · Conformance suite
 # Markdown for rich documents, without leaving Markdown
 
 {.lead}
-Markset adds a small, **closed** vocabulary of layout constructs to CommonMark: cards, grids, columns, tabs, steps, metrics, figures, callouts, and a theme token model. Every valid CommonMark document is a valid Markset document. Every Markset construct degrades to plain CommonMark by rule.
+Markset adds a small, **closed** set of layout constructs to CommonMark: cards, grids, columns, tabs, steps, metrics, figures and callouts. Every valid CommonMark document is already a valid Markset document. Every Markset construct has a defined plain-CommonMark form it falls back to.
 
-[Release candidate]{.badge .info} [v0.0.0-rc.1]{.badge} [CommonMark superset]{.badge} [No runtime dependencies]{.badge}
+[Release candidate]{.badge .info} [v0.0.0-rc.1]{.badge} [CommonMark superset]{.badge}
 
 :::metrics{.stats}
 | Measure | Count |
 |---|---|
-| Constructs | 8 |
-| Conformance cases | 361 |
-| Graded aspects | 1,514 |
-| Runtime dependencies | 0 |
+| Layout constructs | 8 |
+| Test cases | 361 |
+| Renderers | 2 |
 :::
+
+{.small .muted}
+Every construct is pinned by cases in a shared test suite, so a second implementation can prove it agrees with this one rather than guessing. You can read every case, including the ones that are invalid on purpose, in the [conformance browser](conformance/index.html).
 
 {.tick}
 ***
@@ -32,13 +34,24 @@ Why it exists
 
 ## Markdown has no attributes and no generic container
 
-So rich documents reach for raw HTML, and that breaks portability, validation, and every output target that is not a browser. Pandoc, djot, Quarto, MyST, Markdoc and MDX each solved some of the *syntax*. None of them produced a component vocabulary that independent renderers can agree on. That vocabulary is what Markset is.
+So rich documents reach for raw HTML, and that breaks portability, validation, and every output target that is not a browser. Pandoc, djot, Quarto, MyST, Markdoc and MDX each solved some of the *syntax*. None of them produced a set of components that independent renderers can agree on. That set is what Markset is.
 
 :::grid{cols=3}
-- **Semantic, never presentational.** Authors name intent; themes decide appearance. No inline CSS and no pixel values in document source.
-- **Every construct degrades.** Each one wraps a CommonMark primitive and has a defined fallback. Paste a Markset file into a GitHub comment and it still reads.
-- **Closed vocabulary.** Unknown directives are errors, not silent passthrough. Documents are checkable, so generated output is reliable.
+- ### Semantic, never presentational
+
+  Authors name what a thing *is*, not how it looks. Whether a card has a border is decided by the theme: a handful of named settings in the document's frontmatter, such as a preset, an accent color and a density. No inline CSS and no pixel values in source.
+
+- ### Every construct degrades
+
+  Each one wraps an ordinary CommonMark block and has a defined fallback. Paste a Markset file into a GitHub comment and it still reads, top to bottom, with nothing lost.
+
+- ### Closed vocabulary
+
+  There are eight constructs and there will not quietly be a ninth. An unknown directive is a reported error, not silent passthrough, so a document can be checked before it ships.
 :::
+
+> [!NOTE]
+> **Nothing here executes.** Interactivity is out of scope for the core specification, permanently. Tabs switch with radio inputs, callouts fold with `<details>`, and a document is data rather than code. That is what lets the same file render safely anywhere.
 
 {.tick}
 ***
@@ -68,10 +81,12 @@ How it works
 :::
 ::::
 
-Rendered with `markset html`, the table becomes metric tiles with a direction on each delta. Run through `markset downgrade`, or pasted anywhere that has never heard of Markset, it is the table, unchanged. The construct adds meaning without taking the content hostage.
+On the left is what you write: an ordinary Markdown table, wrapped in a fence that names what it is. On the right is the same source rendered by `markset html`, the command line tool in this repository, which turns it into metric tiles and reads the direction of each delta from its sign.
 
-> [!NOTE]
-> **Nothing here executes.** Interactivity is permanently out of scope for the core spec. Tabs switch with radio inputs, callouts fold with `<details>`, and a document is data, not code.
+Run that source through `markset downgrade` instead and you get the table back, unchanged. Paste it into anything that has never heard of Markset and you get the table as well. The construct adds meaning without taking the content hostage.
+
+{.small .muted}
+Both commands, and the two others, are described on the [CLI page](cli/index.html).
 
 {.tick}
 ***
@@ -106,12 +121,11 @@ Start here
 ## Three ways in
 
 :::steps
-1. Read the [guide](guide/index.html) for one page per construct, each with live examples pulled straight from the conformance suite.
+1. Read the [guide](guide/index.html) for one page per construct, each with live examples pulled straight from the test suite.
 2. Read the [specification](spec/index.html). It is short, and it is the source of truth: when the code and the spec disagree, the spec wins.
-3. Browse the [conformance suite](conformance/index.html), where every case is rendered live by the reference implementation, including the ones that are invalid on purpose.
+3. Read the [CLI page](cli/index.html) if you would rather start by running something.
 :::
 
-::::columns{ratio="1:1"}
 :::card[Try it locally]{tone=info}
 ```sh
 git clone https://github.com/markset-lang/markset && cd markset
@@ -120,9 +134,10 @@ node packages/cli/src/markset.ts html examples/showcase.md -o showcase.html
 ```
 :::
 
-::col
-
 :::card[See it at length]
-Two complete documents, not fragments: a [tour of every construct](examples/showcase/index.html) on the default stylesheet, and a [long analysis document](examples/notification-routing/index.html) that adds a theme stylesheet of its own.
+Three complete documents, not fragments.
+
+The [construct tour](examples/showcase/index.html) uses every one of the eight constructs exactly once, on the default stylesheet, so you can see the whole vocabulary at its real size.
+
+The [analysis document](examples/notification-routing/index.html) and the [strategy memo](examples/strategy-read/index.html) are long documents of the kind Markset is actually for. Each adds a theme stylesheet of its own, and the difference between the two shows how far appearance can move while the source stays the same shape.
 :::
-::::
