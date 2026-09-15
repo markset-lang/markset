@@ -104,14 +104,14 @@ h3.label {
   white-space: nowrap;
 }
 .coverage td:last-child { color: var(--ms-fg-muted); font-size: 0.9rem; padding-left: 1.5rem; width: 46%; }
-.coverage > figcaption {
+.coverage caption {
   font-family: var(--ms-font-mono);
   font-size: 0.68rem;
   line-height: 1.6;
   font-style: normal;
   padding-top: 0.9rem;
 }
-.coverage > figcaption code { background: none; padding: 0; }
+.coverage caption code { background: none; padding: 0; }
 
 /* ---- readings ------------------------------------------------------------ */
 .reading { border-top: 1px solid var(--ms-border); padding-top: 1.6rem; gap: 0 2.25rem; }

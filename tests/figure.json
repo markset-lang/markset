@@ -150,7 +150,7 @@
     },
     "valid": true,
     "downgrade": "| a | b |\n| - | - |\n| 1 | 2 |\n\n*Sizes*\n",
-    "html": "<figure class=\"ms-figure\">\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n</tbody>\n</table>\n<figcaption>Sizes</figcaption>\n</figure>\n"
+    "html": "<figure class=\"ms-figure\">\n<table>\n<caption>Sizes</caption>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n</tbody>\n</table>\n</figure>\n"
   },
   {
     "section": "figure",
