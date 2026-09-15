@@ -20,11 +20,11 @@ Markset adds a small, **closed** set of layout constructs to CommonMark: cards, 
 |---|---|
 | Layout constructs | 8 |
 | Test cases | 361 |
-| Renderers | 2 |
+| JavaScript in the output | None |
 :::
 
 {.small .muted}
-Every construct is pinned by cases in a shared test suite, so a second implementation can prove it agrees with this one rather than guessing. You can read every case, including the ones that are invalid on purpose, in the [conformance browser](conformance/index.html).
+Eight constructs is the whole vocabulary, and it is closed. Every one of them is pinned by cases in a shared test suite, so a second implementation can prove it agrees with this one rather than guessing; you can read every case, including the ones that are invalid on purpose, in the [conformance browser](conformance/index.html). Nothing rendered from a Markset document contains a script, which is why tabs work by radio input and a folding callout is a `<details>` element.
 
 {.tick}
 ***
