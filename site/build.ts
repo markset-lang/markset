@@ -379,7 +379,7 @@ ${page.themeCss ? `<link rel="stylesheet" href="${rel}${page.themeCss}">\n` : ""
 ${nav}
 <a href="${REPO}">GitHub</a>
 </nav>
-</header>
+${SCHEME_CONTROL}</header>
 <div class="site-layout${page.toc ? " has-toc" : ""}">
 ${page.toc ? `<aside class="site-toc"><nav aria-label="Contents">${page.toc}</nav></aside>\n` : ""}<main class="ms-document">
 ${page.body}</main>
@@ -389,6 +389,28 @@ ${page.body}</main>
 </html>
 `;
 }
+
+/**
+ * Reader's choice of color scheme, as three radio inputs and their labels.
+ *
+ * No script, which is the constraint rather than an accident: a test asserts
+ * that no built page contains one, and the home page says as much. The inputs
+ * carry the state, body:has() in site.css reads it, and markset.css resolves
+ * every color from color-scheme, so the whole control is one CSS property.
+ *
+ * Auto is checked, so a reader who never touches it keeps their system
+ * preference. The choice lives in the markup, which means it does not survive
+ * a page load; persisting it is what would need a script.
+ */
+const SCHEME_CONTROL = `<div class="site-scheme" role="group" aria-label="Color scheme">
+<input type="radio" name="ms-scheme" id="ms-scheme-auto" class="site-scheme-input" checked>
+<label class="site-scheme-option" for="ms-scheme-auto">Auto</label>
+<input type="radio" name="ms-scheme" id="ms-scheme-light" class="site-scheme-input">
+<label class="site-scheme-option" for="ms-scheme-light">Light</label>
+<input type="radio" name="ms-scheme" id="ms-scheme-dark" class="site-scheme-input">
+<label class="site-scheme-option" for="ms-scheme-dark">Dark</label>
+</div>
+`;
 
 function tableOfContents(ast: Root, min: number, max: number): string {
   const items = ast.children.filter((n): n is Heading => n.type === "heading" && n.depth >= min && n.depth <= max);

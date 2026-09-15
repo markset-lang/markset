@@ -67,6 +67,21 @@ test("every document under examples/ is published, and every published one exist
   assert.deepEqual(onDisk, listed, "examples/ and EXAMPLES in site/build.ts must match exactly");
 });
 
+test("the reader can choose a color scheme, and no page gained a script for it", async () => {
+  // The no-script property is the constraint, not an accident: it is what lets
+  // the same page render safely anywhere, and the home page says so. The test
+  // above already asserts no page contains a script; this one asserts the
+  // control that would most obviously have needed one does not have it.
+  const home = await readFile(join(dist, "index.html"), "utf8");
+  assert.match(home, /<div class="site-scheme" role="group" aria-label="Color scheme">/);
+  assert.match(home, /id="ms-scheme-auto" class="site-scheme-input" checked/, "auto is the default, so a reader who ignores it keeps their system preference");
+  assert.match(home, /id="ms-scheme-light"/);
+  assert.match(home, /id="ms-scheme-dark"/);
+  const css = await readFile(join(dist, "css", "site.css"), "utf8");
+  assert.match(css, /body:has\(#ms-scheme-light:checked\) \{ color-scheme: light; \}/);
+  assert.match(css, /body:has\(#ms-scheme-dark:checked\) \{ color-scheme: dark; \}/);
+});
+
 test("the app bar sticks, and everything that has to clear it uses one token", async () => {
   // Three rules depend on the bar's height: the bar reserves it, the sticky
   // table of contents starts below it, and an anchored heading scrolls clear of
