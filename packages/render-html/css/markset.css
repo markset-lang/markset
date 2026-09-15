@@ -133,6 +133,13 @@ body {
 .ms-document :is(p, ul, ol, blockquote, pre, table, figure, hr, dl) { margin: 0; }
 .ms-document * + :is(p, ul, ol, pre, table, blockquote, figure, hr, dl) { margin-top: var(--ms-space); }
 
+/* A figure ends in a caption, so it needs more air after it than a block whose
+ * edge is its own border. Twice the gap keeps the caption closer to the content
+ * it describes than to whatever follows, which is the whole job of the spacing.
+ * Headings are excluded so they keep their own larger margin; :where() keeps
+ * this from outranking the eyebrow rule below. */
+.ms-document > .ms-figure + :where(:not(h1, h2, h3, h4, h5, h6)) { margin-top: calc(var(--ms-space) * 2); }
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--ms-font-heading);
   line-height: 1.2;
@@ -358,7 +365,10 @@ summary.ms-callout-title { cursor: pointer; }
 /* A narrowed figure keeps the document's left edge rather than centering itself. */
 .ms-figure { margin-inline: 0; width: var(--ms-width, 100%); max-width: 100%; }
 .ms-figure > img { display: block; border-radius: var(--ms-radius); }
-.ms-figure > figcaption, .ms-figure caption { margin-top: calc(var(--ms-space) / 2); font-size: 0.9em; color: var(--ms-fg-muted); font-style: italic; }
+/* A full unit, not half of one. At half the caption sat against the table's
+ * bottom rule and was nearly as far from the block below as from the table it
+ * belongs to, so it read as floating between the two. */
+.ms-figure > figcaption, .ms-figure caption { margin-top: var(--ms-space); font-size: 0.9em; color: var(--ms-fg-muted); font-style: italic; }
 /* A table's caption is its first child in the markup but reads below it. */
 .ms-figure caption { caption-side: bottom; text-align: left; }
 

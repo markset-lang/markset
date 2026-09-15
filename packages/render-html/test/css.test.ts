@@ -92,3 +92,18 @@ test("no element keeps a browser default margin that the rhythm cannot reach", a
     assert.ok(gap[1].includes(tag), `${tag} is reset but never given the standard gap back`);
   }
 });
+
+test("a caption stays nearer the thing it captions than the block below it", async () => {
+  // Spacing is what says the caption belongs to the table. At half a unit it
+  // sat against the table's bottom rule and was nearly as far from the next
+  // block as from its own table, so it read as floating between the two.
+  // A full unit inside and two outside keeps the ratio at about 1:2, and the
+  // ratio is what matters — both sides scale with the density token.
+  const css = await readFile(defaultStylesheetPath, "utf8");
+  assert.match(css, /\.ms-figure > figcaption, \.ms-figure caption \{ margin-top: var\(--ms-space\);/);
+  assert.match(
+    css,
+    /\.ms-document > \.ms-figure \+ :where\(:not\(h1, h2, h3, h4, h5, h6\)\) \{ margin-top: calc\(var\(--ms-space\) \* 2\); \}/,
+    "a figure needs more air after it than a block whose edge is its own border",
+  );
+});
