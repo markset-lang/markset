@@ -43,7 +43,8 @@ packages/
   render-html/      AST -> HTML
   conformance/      harness: validates tests/*.json against the schema, runs each section's driver
   cli/
-site/       static site generator (build.ts) and content; every page is Markset rendered by the packages above
+site/       static site generator (build.ts) and content; every page is Markset rendered by the packages above.
+            Nav lives in NAV and the page list in build(); content/cli.md documents the command line tool
 docs/       background analysis, prior art, design rationale
             future-requirements.md — open register of things real documents asked for; the
             open counterpart to spec §8, which is the closed list of deferred constructs

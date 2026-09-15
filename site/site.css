@@ -8,6 +8,7 @@
 body { --ms-font-heading: "Source Serif 4", Charter, Georgia, "Times New Roman", serif; }
 .ms-document > h1 { font-size: clamp(2.1rem, 4.2vw, 2.9rem); line-height: 1.06; letter-spacing: -0.022em; text-wrap: balance; }
 .ms-document > h2 { font-size: clamp(1.4rem, 2.4vw, 1.75rem); letter-spacing: -0.015em; text-wrap: balance; }
+.ms-document > h1 code { background: none; padding: 0; font-size: 0.82em; }
 .ms-document > .lead { max-width: 60ch; color: var(--ms-fg-muted); }
 .ms-document > .lead strong { color: var(--ms-fg); }
 .eyebrow { font-family: var(--ms-font-body); color: var(--ms-accent); letter-spacing: 0.12em; }
@@ -30,6 +31,10 @@ body { --ms-font-heading: "Source Serif 4", Charter, Georgia, "Times New Roman",
 .stats { gap: 1px; background: var(--ms-border); border: 1px solid var(--ms-border); border-radius: var(--ms-radius); overflow: hidden; }
 .stats .ms-metric { border: 0; border-radius: 0; padding: 0.9rem 1.1rem; }
 .stats .ms-metric-value { font-family: var(--ms-font-heading); }
+
+/* A grid item that leads with a heading: the heading is a label, not a section. */
+.ms-grid-item > h3:first-child { font-size: 1.02rem; letter-spacing: -0.01em; }
+.ms-grid-item > h3:first-child + * { margin-top: 0.45rem !important; }
 
 /* A comparison table: {.compare}. */
 .compare { font-size: 0.9rem; border: 1px solid var(--ms-border); border-radius: var(--ms-radius); border-collapse: separate; border-spacing: 0; background: var(--ms-surface); }

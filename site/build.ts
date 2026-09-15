@@ -35,7 +35,7 @@ interface ConformanceCase {
   section: string; name?: string; markset: string; html?: string; downgrade?: string; ast?: unknown; valid: boolean; diagnostics?: string[];
 }
 
-const NAV: Array<[string, string]> = [["Home", "index.html"], ["Guide", "guide/index.html"], ["Spec", "spec/index.html"], ["Conformance", "conformance/index.html"], ["Examples", "examples/index.html"]];
+const NAV: Array<[string, string]> = [["Home", "index.html"], ["Guide", "guide/index.html"], ["CLI", "cli/index.html"], ["Spec", "spec/index.html"], ["Conformance", "conformance/index.html"], ["Examples", "examples/index.html"]];
 
 /** Documents rendered as their own pages, with the theme stylesheet each one is meant to be read with (spec §6). */
 const EXAMPLES: Array<{ slug: string; file: string; title: string; theme?: string; blurb: string }> = [
@@ -62,6 +62,7 @@ export async function build(outDir: string = join(root, "dist")): Promise<string
   const cases = await loadCases();
   const pages: Page[] = [
     await markdownPage("index.html", join(root, "site", "content", "index.md")),
+    await markdownPage("cli/index.html", join(root, "site", "content", "cli.md")),
     await specPage(),
     await guideIndex(),
     ...(await Promise.all(CONSTRUCTS.map((name) => guidePage(name, cases[name] ?? [])))),
