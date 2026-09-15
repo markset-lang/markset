@@ -45,6 +45,8 @@ packages/
   cli/
 site/       static site generator (build.ts) and content; every page is Markset rendered by the packages above
 docs/       background analysis, prior art, design rationale
+            future-requirements.md — open register of things real documents asked for; the
+            open counterpart to spec §8, which is the closed list of deferred constructs
 ```
 
 ## Toolchain
