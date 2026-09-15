@@ -49,4 +49,4 @@ The site at <https://markset-lang.github.io/markset/> is generated from this rep
 
 ## Status
 
-Release candidate `0.0.0-rc.2`. The v0 spec is implemented end to end (parser, an HTML renderer, a downgrade renderer that emits plain CommonMark, stylesheet, CLI), the conformance suite passes, and the §9 questions are decided. The candidate period is for writing real documents against the spec before it is declared v0. See `CHANGELOG.md`, the status list in `CLAUDE.md`, and the change policy in spec §0.
+**v0, declared 2026-09-15.** Reference implementation `0.1.0`. The spec is implemented end to end (parser, an HTML renderer, a downgrade renderer that emits plain CommonMark, stylesheet, CLI), the conformance suite passes, and the §9 questions are decided. Six real documents were written against the candidate; the last four forced no change to §2 or §4, which is what v0 was waiting on. Changes within v0 are additive only — see the change policy in spec §0, `CHANGELOG.md`, and the status list in `CLAUDE.md`.

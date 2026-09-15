@@ -1,6 +1,6 @@
 {
   "name": "@markset/cli",
-  "version": "0.0.0-rc.2",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "markset command line: check, html, downgrade, ast.",

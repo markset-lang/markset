@@ -1,6 +1,6 @@
 {
   "name": "@markset/render-html",
-  "version": "0.0.0-rc.2",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "HTML renderer: Markset AST -> HTML with the ms- class vocabulary (spec \u00a74).",

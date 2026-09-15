@@ -64,7 +64,7 @@ test("every copy of the version agrees with package.json", async () => {
 
   const spec = await readFile(join(root, "spec", "v0.md"), "utf8");
   assert.match(spec, new RegExp(`^version: ${version}$`, "m"), "spec frontmatter");
-  assert.ok(spec.includes(`Release candidate \`${version}\``), "the spec's status line");
+  assert.ok(spec.includes(`\`${version}\``), "the spec's status line names the implementation version");
 
   const changelog = await readFile(join(root, "CHANGELOG.md"), "utf8");
   assert.match(
@@ -74,10 +74,10 @@ test("every copy of the version agrees with package.json", async () => {
   );
 
   const readme = await readFile(join(root, "README.md"), "utf8");
-  assert.ok(readme.includes(`Release candidate \`${version}\``), "README status line");
+  assert.ok(readme.includes(`\`${version}\``), "README status line names the version");
 
   for (const page of ["site/content/index.md", "examples/showcase.md"]) {
     const text = await readFile(join(root, page), "utf8");
-    assert.ok(text.includes(`v${version}`), `${page} shows a stale version`);
+    assert.ok(text.includes(version), `${page} shows a stale version`);
   }
 });

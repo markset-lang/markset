@@ -1,6 +1,6 @@
 {
   "name": "@markset/site",
-  "version": "0.0.0-rc.2",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "Static documentation site, written in Markset and built by the reference implementation.",
