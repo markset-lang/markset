@@ -1,4 +1,5 @@
 import type { Nodes, Root } from "mdast";
+import type { Nodes as HastNodes } from "hast";
 import { toHast } from "mdast-util-to-hast";
 import { toHtml } from "hast-util-to-html";
 import { parseDocument, type Attributes, type Diagnostic, type Frontmatter } from "@markset/parser";
@@ -21,8 +22,25 @@ export interface RenderOptions {
 export function renderHtml(tree: Root, options: RenderOptions = {}): string {
   const ids = (options.headingIds ?? true) ? addHeadingIds(tree) : tree;
   const hast = toHast(withBlockAttributes(ids), { handlers: marksetHandlers() });
+  if (hast) scopeTableHeaders(hast);
   const html = toHtml(hast);
   return html === "" ? "" : `${html}\n`;
+}
+
+/**
+ * Give every table header cell a scope.
+ *
+ * A bare <th> leaves a screen reader to guess which cells it heads, and the
+ * guess is wrong often enough that the guidance is always to say. A GFM table
+ * has one header row and no row headers, so the answer is always "col" and the
+ * author never has to write it — which is the whole argument for a closed
+ * vocabulary applied to output rather than to syntax.
+ */
+function scopeTableHeaders(tree: HastNodes): void {
+  if (tree.type === "element" && tree.tagName === "th" && tree.properties.scope === undefined) {
+    tree.properties.scope = "col";
+  }
+  if ("children" in tree) for (const child of tree.children) scopeTableHeaders(child);
 }
 
 export interface PageOptions extends RenderOptions {

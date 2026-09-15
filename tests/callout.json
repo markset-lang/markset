@@ -40,7 +40,7 @@
     },
     "valid": true,
     "downgrade": "> **Warning:** Breaking change in v3\n>\n> The `render()` signature changed.\n",
-    "html": "<div class=\"ms-callout\" data-type=\"warning\">\n<div class=\"ms-callout-title\">Breaking change in v3</div>\n<div class=\"ms-callout-body\">\n<p>The <code>render()</code> signature changed.</p>\n</div>\n</div>\n"
+    "html": "<div class=\"ms-callout\" data-type=\"warning\" role=\"note\" aria-labelledby=\"ms-callout-1-title\">\n<div class=\"ms-callout-title\" id=\"ms-callout-1-title\">Breaking change in v3</div>\n<div class=\"ms-callout-body\">\n<p>The <code>render()</code> signature changed.</p>\n</div>\n</div>\n"
   },
   {
     "section": "callout",
@@ -149,7 +149,7 @@
     },
     "valid": true,
     "downgrade": "> **Important:**\n",
-    "html": "<div class=\"ms-callout\" data-type=\"important\">\n<div class=\"ms-callout-title\">Important</div>\n<div class=\"ms-callout-body\"></div>\n</div>\n"
+    "html": "<div class=\"ms-callout\" data-type=\"important\" role=\"note\" aria-labelledby=\"ms-callout-1-title\">\n<div class=\"ms-callout-title\" id=\"ms-callout-1-title\">Important</div>\n<div class=\"ms-callout-body\"></div>\n</div>\n"
   },
   {
     "section": "callout",
@@ -187,7 +187,7 @@
     },
     "valid": true,
     "downgrade": "> **Caution:** Use *care* here\n",
-    "html": "<div class=\"ms-callout\" data-type=\"caution\">\n<div class=\"ms-callout-title\">Use <em>care</em> here</div>\n<div class=\"ms-callout-body\"></div>\n</div>\n"
+    "html": "<div class=\"ms-callout\" data-type=\"caution\" role=\"note\" aria-labelledby=\"ms-callout-1-title\">\n<div class=\"ms-callout-title\" id=\"ms-callout-1-title\">Use <em>care</em> here</div>\n<div class=\"ms-callout-body\"></div>\n</div>\n"
   },
   {
     "section": "callout",

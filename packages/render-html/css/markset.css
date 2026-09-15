@@ -318,7 +318,14 @@ summary.ms-callout-title { cursor: pointer; }
 .ms-step { position: relative; padding-left: 3rem; min-height: 2.25rem; }
 .ms-step + .ms-step { margin-top: var(--ms-space); }
 .ms-step::before {
+  /* The marker repeats the number the <ol> already carries, so it is decoration
+   * that some screen readers read out twice. The second declaration gives the
+   * generated content empty alternative text; the first stays as the fallback
+   * for a browser that does not understand the alt syntax and would otherwise
+   * drop the whole declaration and render no marker at all. */
   content: counter(list-item);
+  /* biome-ignore lint/suspicious/noDuplicateProperties: the pair is the point — the first is the fallback for the second. */
+  content: counter(list-item) / "";
   position: absolute; left: 0; top: 0;
   width: 2rem; height: 2rem;
   display: grid; place-items: center;
