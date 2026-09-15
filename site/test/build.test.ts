@@ -1,9 +1,9 @@
 import { after, test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { build } from "../build.ts";
+import { build, EXAMPLES } from "../build.ts";
 
 /**
  * Build once, into a temporary directory. Tests used to build into dist/ three
@@ -55,6 +55,16 @@ test("copied SVG assets stay valid XML", async () => {
   assert.ok(style, "the diagram carries its own styles");
   assert.doesNotMatch(style[1], /[<&]/, "no raw < or & inside an SVG <style> element");
   assert.match(svg, /prefers-color-scheme: dark/, "the diagram follows the reader's color scheme");
+});
+
+test("every document under examples/ is published, and every published one exists", async () => {
+  // Both directions matter. A document in the directory that no entry names is
+  // one nobody decided to publish, and that is how private material gets into a
+  // public repository; an entry naming a file that is not there is a dead page.
+  const dir = resolve(import.meta.dirname, "..", "..", "examples");
+  const onDisk = (await readdir(dir)).filter((f) => f.endsWith(".md")).sort();
+  const listed = EXAMPLES.map((e) => e.file).sort();
+  assert.deepEqual(onDisk, listed, "examples/ and EXAMPLES in site/build.ts must match exactly");
 });
 
 test("the app bar sticks, and everything that has to clear it uses one token", async () => {

@@ -38,7 +38,14 @@ interface ConformanceCase {
 const NAV: Array<[string, string]> = [["Home", "index.html"], ["Start", "start/index.html"], ["Reference", "reference/index.html"], ["CLI", "cli/index.html"], ["Spec", "spec/index.html"], ["Conformance", "conformance/index.html"], ["Examples", "examples/index.html"]];
 
 /** Documents rendered as their own pages, with the theme stylesheet each one is meant to be read with (spec §6). */
-const EXAMPLES: Array<{ slug: string; file: string; title: string; theme?: string; toggles?: boolean; blurb: string }> = [
+/**
+ * Every document under examples/ and the page it becomes. A test asserts this
+ * list covers the directory exactly, in both directions: a document that is not
+ * listed here is one nobody reviewed for publication, and a listing with no
+ * document behind it is a dead page. An unlisted file rode along in a commit
+ * once and had to be removed from history.
+ */
+export const EXAMPLES: Array<{ slug: string; file: string; title: string; theme?: string; toggles?: boolean; blurb: string }> = [
   { slug: "showcase", file: "showcase.md", title: "Showcase", toggles: true, blurb: "Every construct at the size it would really be used, each with a tab holding the source that produced it. It declares no theme stylesheet, so it shows the vocabulary on whatever stylesheet renders it." },
   { slug: "notification-routing", file: "notification-routing.md", title: "Analysis document", theme: "dossier.css", blurb: "A long analysis document with a theme stylesheet: status chips, a layer rail, a tinted pipeline stage, lettered steps. The system it describes is invented." },
   { slug: "strategy-read", file: "strategy-read.md", title: "Strategy memo", theme: "memo.css", blurb: "An argued memo in a newspaper register: a masthead, a captioned data table, marked sections in a two-lane grid, pull quotes and source citations. The company and every figure are invented." },
