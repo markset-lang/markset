@@ -188,5 +188,28 @@ Which means a fence with no caption stays exactly as written — useful when the
 
 That is a code block on purpose. Nothing about it wants to be a picture, and nothing had to be configured to keep it one.
 
+### Other diagram languages
+
+A fence may name any diagram language; the set is open. What decides whether a picture appears is which drawers the renderer was given, and this site was given one, for `ascii`. So a `mermaid` fence here stays as its source:
+
+:::figure[The ingest handshake as a mermaid sequence diagram. On this site it is a code block, because no mermaid drawer is registered.]{#fig-handshake}
+```mermaid
+sequenceDiagram
+    Client->>Edge: POST /v1/events
+    Edge->>Queue: append
+    Edge-->>Client: 202 Accepted
+    Router->>Queue: poll
+    Router->>Sink: deliver
+```
+:::
+
+That is not a failure and nothing was lost — it is the first obligation working, which says a renderer that cannot draw a language renders it as a code block. Give the same file a mermaid drawer and the figure above becomes a picture, with no change to the document:
+
+```sh
+markset html examples/architecture.md --diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"
+```
+
+The comparison is the argument, though. Read this page's source and the ASCII diagrams are diagrams; the mermaid block is a set of instructions for one. Both are portable, and only one of them is readable where the layout cannot follow.
+
 {.small .muted}
 Source: `examples/architecture.md`, read with `examples/tidewater.css`. Tidewater is invented, and so is every number on this page.

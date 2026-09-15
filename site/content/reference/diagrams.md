@@ -79,7 +79,32 @@ Every construct in Markset has to read where the layout cannot follow — a GitH
   Because it already was one. The same characters that the drawer turns into boxes and arrows are boxes and arrows to a person reading the raw file.
 :::
 
-Of the common diagram sources, ASCII is the only one whose unrendered form is as good as its rendered form. Renderers may draw anything they like; authors who care about where their document ends up should reach for ASCII first.
+Both of those are on this page right now. The same three-node graph is written twice below: on the left as a `mermaid` fence, on the right as an `ascii` fence. This site registers a drawer for one of them, so one is a picture and one is its own source — and that is exactly what a reader gets anywhere the layout cannot follow.
+
+::::columns{ratio="1:1"}
+```mermaid
+flowchart LR
+  Ingress --> Router
+  Router --> Handler
+```
+
+::col
+
+:::figure[The same graph, drawn.]
+```ascii
++---------+     +--------+
+| Ingress |---->| Router |
++---------+     +--------+
+                    |
+                    v
+               +---------+
+               | Handler |
+               +---------+
+```
+:::
+::::
+
+Read the left block and you are reading instructions for a picture. Read the right block's source and you are reading the picture. Of the common diagram sources, ASCII is the only one whose unrendered form is as good as its rendered form. Renderers may draw anything they like; authors who care about where their document ends up should reach for ASCII first.
 
 > [!TIP] It is readable before anything runs
 > Open this page's source on GitHub and the diagram above is still a diagram. That is not a fallback in the apologetic sense. For a lot of documents it is the only form anyone will ever see.
