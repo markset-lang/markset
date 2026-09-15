@@ -11,6 +11,22 @@ This is the open counterpart to spec §8. That list is closed and settled: seven
 
 **Adding an entry.** Say what was wanted, where it came from, what it would cost, and which change class it falls in. An entry with no originating document is a feature idea, and feature ideas belong in §8 or nowhere.
 
+## The bar for a new construct
+
+Most entries below are not constructs, and that is not an accident. Section 8 lists what was deferred and why; this is the test an entry has to pass before it can be considered at all.
+
+**A need justifies a construct only when it cannot be met by a class, because it requires independent renderers to agree on structure rather than on appearance.**
+
+The reasoning is what makes it usable. A class is portable in syntax and not in meaning: `{.featured}` reaches the HTML of every conformant renderer, but what it *is* lives in one stylesheet, so two implementations cannot agree about it and nothing can validate it. A construct is the opposite trade — a fixed name, a content rule, a defined fallback and a place in the conformance suite — bought at the cost of one more thing in a vocabulary whose whole value is being closed.
+
+So the question for any proposal is not "would a construct be nice here" but "does this need renderers to agree?" Three worked answers:
+
+- **A tinted pipeline stage, a pull quote, a status chip.** Appearance. Every one of them is a class, and `notification-routing.md` and `strategy-read.md` between them invented fifty of these. None is a construct.
+- **A timeline.** Structure, but structure that already exists: it is an ordered list of things that happened, which is what `steps` is. `incident-review.md` is the evidence — the rail and the markers are the theme's, and the document never mentions them. Not a construct.
+- **A chart.** Structure that nothing else expresses, because the output is computed from the data rather than styled from the content. A stylesheet cannot draw it and a second renderer cannot guess it. This is the one candidate in §8 that clears the bar, and it is still deferred for the reasons given there.
+
+An entry that fails the test is not thereby rejected — it may well be a good idea about output, tooling or the reserved set. It is only barred from being a ninth name.
+
 ## Change classes
 
 The class decides where a change can land. Spec §0 defines the policy; this table is the working summary.
@@ -93,11 +109,28 @@ Observed: raised September 2026 while reviewing the site against the CLI.
 
 ### 7. Reserved classes observed in real documents
 
-**Class: Additive. Wait for a third document.**
+**Class: Additive. Decided, September 2026: promote nothing.**
 
-Section 5 reserves seven classes, and adding more is explicitly additive in v0. Two long documents have now been written, and they independently invented the same two roles: a quiet monospaced label heading, and a list whose items read as notes rather than as a checklist, spelled `.facts` in both. Both also used `.eyebrow`, which is already reserved, which is the evidence that the reserved set is doing its job.
+Section 5 reserves ten classes and adding more is explicitly additive in v0. The question was whether real documents keep inventing the same roles. Four now exist, so it can be answered by counting instead of guessing.
 
-Two is a coincidence. Three is a pattern. Revisit after the next document rather than promoting these now.
+:::figure[Author classes invented by each example, excluding the reserved ones and the site's own. A class appears in the last column only if a second document invented it independently.]
+| Document | Classes invented | Shared with another document |
+|---|---|---|
+| `notification-routing.md` | 34 | `.facts`, `.colophon` |
+| `strategy-read.md` | 16 | `.facts`, `.colophon` |
+| `incident-review.md` | 3 | none |
+| `showcase.md` | 1 | none |
+:::
+
+Fifty-four invented classes across four documents, and exactly two of them were invented twice. Everything else was genuinely particular to one document — `.layer`, `.verdict`, `.pull`, `.impact`, `.when` — and no amount of reserving would have helped, because a second document does not want them.
+
+The two that repeat do not clear the bar either. `.colophon` marks the closing source note, which three of the four documents have; the fourth wrote `{.small .muted}` instead and reads identically, so reserving it would add a second spelling for something the reserved set already says. `.facts` is a real role — a list read as notes rather than as a checklist — but the third and fourth documents did not reach for it, so the pattern got weaker rather than stronger.
+
+The useful finding is the one that was not the question. The document that invented the fewest classes is the newest, and it is not the simplest: `incident-review.md` needed three, because the reserved set plus a theme stylesheet covered the rest. That is the closed-vocabulary argument holding up under its own test — documents invent freely at the class level, and what they share is already reserved.
+
+**Criterion for next time,** so this is not re-litigated by taste: a class earns reservation when three documents invent it independently *and* the reserved set cannot already express it. `.facts` meets neither half today. Revisit at document six.
+
+Observed: `notification-routing.md` and `strategy-read.md`, September 2026; decided against `incident-review.md` and `showcase.md` in the same month.
 
 ### 8. A responsive breakpoint as a theme token
 
@@ -118,6 +151,8 @@ No page has been rendered in a right-to-left language. The stylesheet uses logic
 **Class: Output. Out of scope for the spec.**
 
 The renderer emits `<code class="language-js">`, which is what every highlighter expects, so this is already solved for anyone who wants it. Recorded only to say so, since it is the first thing people ask for.
+
+One case is worth naming because it is not really highlighting. `incident-review.md` shows a configuration diff, and the added and removed lines cannot be colored by any stylesheet, because a code block's lines are text with no elements around them. A theme can reach a construct, a block, a list item and a span; it cannot reach a line. Anyone who wants colored diffs needs a highlighter, exactly as for any other language, and that remains outside the spec.
 
 ### 11. A light and dark mode toggle
 
@@ -154,6 +189,18 @@ There is no lint step and no formatter. Style is whatever each file ended up wit
 This is a repository concern rather than a specification one, so it does not touch the change classes above. The one decision worth making deliberately is whether formatting runs in continuous integration as a gate or only locally.
 
 Observed: raised September 2026.
+
+### 14. Structured metadata on a list item
+
+**Class: Breaking if the AST carries it. Observed, not recommended yet.**
+
+Every action in `incident-review.md` has an owner, a due date and a status, and all three are written as a bold line inside the step: `**Owner: … · Due 5 September · Done**`. That is prose pretending to be fields. Nothing can sort it, no stylesheet can align the columns, and a second renderer sees a sentence.
+
+The obvious answer is that the attribute specifier already allows it — `- {owner="Priya" due="2026-08-29" status=done}` reaches the HTML as `data-` attributes today, with no change to anything. That is genuinely available and the document could have used it. It was not used because the values would then be invisible in every fallback: the whole point of the degradation contract is that a GitHub comment shows the document, and `data-owner` shows nothing there.
+
+So the real request is a construct that renders its own attributes, and that is a much larger idea than it looks: it is a field schema, which is Markdoc's design, and it would put presentation decisions about field order and labels somewhere. Recorded because two documents will want it before one of them needs it, and because the reason it is hard is the interesting part.
+
+Observed: `examples/incident-review.md`, September 2026.
 
 ## Rejected
 
