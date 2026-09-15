@@ -2,7 +2,7 @@ import { after, test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { basename, join, resolve } from "node:path";
 import { build, EXAMPLES } from "../build.ts";
 
 /**
@@ -55,6 +55,27 @@ test("copied SVG assets stay valid XML", async () => {
   assert.ok(style, "the diagram carries its own styles");
   assert.doesNotMatch(style[1], /[<&]/, "no raw < or & inside an SVG <style> element");
   assert.match(svg, /prefers-color-scheme: dark/, "the diagram follows the reader's color scheme");
+});
+
+test("two builds into one directory both finish, and the tree is whole", async () => {
+  // `npm run site` while site:watch is rebuilding. With a fixed staging path
+  // each build deleted the directory the other was writing into, and the tree
+  // that got published was whatever survived — which looks exactly like a page
+  // whose stylesheet disappeared. Every build gets its own scratch space now,
+  // so the loser of the race publishes a complete tree rather than a ruin.
+  // Which interleaving happens varies, so this runs four at once rather than two.
+  const shared = await mkdtemp(join(tmpdir(), "markset-race-"));
+  try {
+    await Promise.all([build(shared), build(shared), build(shared), build(shared)]);
+    for (const file of ["index.html", join("css", "markset.css"), join("css", "site.css"), join("spec", "index.html")]) {
+      const text = await readFile(join(shared, file), "utf8");
+      assert.ok(text.length > 0, `${file} is empty after concurrent builds`);
+    }
+    const leftovers = (await readdir(resolve(shared, ".."))).filter((f) => f.startsWith(`${basename(shared)}.`));
+    assert.deepEqual(leftovers, [], "scratch directories are cleaned up");
+  } finally {
+    await rm(shared, { recursive: true, force: true });
+  }
 });
 
 test("every document under examples/ is published, and every published one exists", async () => {
