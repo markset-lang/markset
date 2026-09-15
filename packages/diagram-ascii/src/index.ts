@@ -31,6 +31,22 @@ const PAD = 6;
 
 const H_LINE = new Set(["-", "+"]);
 const V_LINE = new Set(["|", "+"]);
+/** Every character the drawer can consume, plus the space that separates them. */
+const DRAWING = new Set(["-", "|", "+", "/", "\\", ">", "<", "^", "v", " "]);
+
+/**
+ * A character that belongs to a word rather than to the drawing.
+ *
+ * This exists for one case, found by a real diagram: a lone hyphen inside a
+ * label. "region: us-east" has a dash between two letters, and a drawer that
+ * takes every dash for a line turns the label into "us" and "east" joined by a
+ * rule. So a single - or | with word characters on both sides is text. Two or
+ * more in a row is still a line, because nobody writes "a--b" in a label and
+ * people do draw short connectors.
+ */
+function isWordish(char: string): boolean {
+  return char !== "" && !DRAWING.has(char);
+}
 
 /** Draw an ASCII diagram. Returns SVG markup, or null when there is nothing to draw. */
 export function drawAscii(source: string): string | null {
@@ -72,14 +88,15 @@ export function drawAscii(source: string): string | null {
       }
       let end = x;
       while (end + 1 < columns && H_LINE.has(at(end + 1, y))) end++;
-      if (rows[y].slice(x, end + 1).includes("-")) {
+      const loneDash = end === x && at(x, y) === "-" && isWordish(at(x - 1, y)) && isWordish(at(x + 1, y));
+      if (!loneDash && rows[y].slice(x, end + 1).includes("-")) {
         for (let i = x; i <= end; i++) claim(i, y);
         const cy = y * CELL_H + CELL_H / 2;
         lines.push(
           line(
-            edgeStart(x, at(x, y), arrow(x - 1, y) !== null, CELL_W),
+            runStart(x, at(x, y), at(x - 1, y), arrow(x - 1, y) !== null, CELL_W, "|"),
             cy,
-            edgeEnd(end, at(end, y), arrow(end + 1, y) !== null, CELL_W),
+            runEnd(end, at(end, y), at(end + 1, y), arrow(end + 1, y) !== null, CELL_W, "|"),
             cy,
           ),
         );
@@ -100,15 +117,16 @@ export function drawAscii(source: string): string | null {
       while (end + 1 < rows.length && V_LINE.has(at(x, end + 1))) end++;
       let hasPipe = false;
       for (let i = y; i <= end; i++) if (at(x, i) === "|") hasPipe = true;
-      if (hasPipe) {
+      const lonePipe = end === y && at(x, y) === "|" && isWordish(at(x - 1, y)) && isWordish(at(x + 1, y));
+      if (hasPipe && !lonePipe) {
         for (let i = y; i <= end; i++) claim(x, i);
         const cx = x * CELL_W + CELL_W / 2;
         lines.push(
           line(
             cx,
-            edgeStart(y, at(x, y), arrow(x, y - 1) !== null, CELL_H),
+            runStart(y, at(x, y), at(x, y - 1), arrow(x, y - 1) !== null, CELL_H, "-"),
             cx,
-            edgeEnd(end, at(x, end), arrow(x, end + 1) !== null, CELL_H),
+            runEnd(end, at(x, end), at(x, end + 1), arrow(x, end + 1) !== null, CELL_H, "-"),
           ),
         );
       }
@@ -183,15 +201,28 @@ export function drawAscii(source: string): string | null {
  * Where a run begins. A + is a corner, so the line stops at its center and the
  * crossing line does the same, which is what makes a join look like a join. A
  * dash runs to the cell edge instead, and an arrowhead beyond it takes over
- * exactly at that edge, so the two meet with no seam.
+ * exactly at that edge, so the two meet with no seam. And a run that arrives at
+ * a line of the other orientation — a dash meeting the | wall of a box — runs on
+ * to that line's center rather than stopping at the cell boundary half a cell
+ * short of it, which is the difference between an arrow touching a box and an
+ * arrow pointing near one. A real architecture diagram is what exposed it.
  */
-function edgeStart(index: number, char: string, arrowBefore: boolean, size: number): number {
+function runStart(
+  index: number,
+  char: string,
+  before: string,
+  arrowBefore: boolean,
+  size: number,
+  perp: string,
+): number {
   if (arrowBefore) return index * size;
+  if (before === perp) return (index - 1) * size + size / 2;
   return char === "+" ? index * size + size / 2 : index * size;
 }
 
-function edgeEnd(index: number, char: string, arrowAfter: boolean, size: number): number {
+function runEnd(index: number, char: string, after: string, arrowAfter: boolean, size: number, perp: string): number {
   if (arrowAfter) return (index + 1) * size;
+  if (after === perp) return (index + 1) * size + size / 2;
   return char === "+" ? index * size + size / 2 : (index + 1) * size;
 }
 

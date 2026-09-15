@@ -85,3 +85,24 @@ test("a run of text is one element, pinned to its cells", () => {
   assert.ok(svg);
   assert.match(svg, /textLength="24" lengthAdjust="spacing">Hub</u);
 });
+
+test("a hyphen inside a word is a hyphen, not a rule", () => {
+  // Found by examples/architecture.md: "region: us-east" was drawn as two
+  // words joined by a line. A lone dash between word characters is text.
+  const svg = drawAscii("region: us-east\n");
+  assert.ok(svg);
+  assert.doesNotMatch(svg, /<path/u, "no line anywhere in a hyphenated label");
+  assert.match(svg, />region: us-east</u, "and the label stays one run");
+});
+
+test("but a real connector is still a line", () => {
+  assert.match(drawAscii("a--b\n") ?? "", /<path/u, "two dashes are a connector");
+  assert.match(drawAscii("a - b\n") ?? "", /<path/u, "a dash with space around it is a rule");
+  assert.match(drawAscii("+-+\n") ?? "", /<path/u, "a dash between corners is a line");
+});
+
+test("a lone pipe between words is text too", () => {
+  const svg = drawAscii("yes|no\n");
+  assert.ok(svg);
+  assert.doesNotMatch(svg, /<path/u);
+});

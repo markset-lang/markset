@@ -1,0 +1,64 @@
+/* Theme stylesheet for examples/architecture.md (spec §6).
+ *
+ * An architecture page is read in two ways: skimmed for the picture, and then
+ * argued with line by line. So the diagrams are given room and a surface of
+ * their own, and everything else is kept quiet enough that the pictures are
+ * what the eye lands on.
+ *
+ * Worth knowing, because it is the one real limit of a drawn diagram: a theme
+ * can frame, place and size the picture, but it cannot reach inside it. The SVG
+ * is embedded as a data URI, so the rules below style the <img> and not the
+ * lines within. Colors inside the drawing come from the drawer, which follows
+ * the reader's color scheme on its own. */
+
+body {
+  --ink: light-dark(#10212b, #e3edf2);
+  --rule: light-dark(#cfdde4, #2c3d47);
+  --surface: light-dark(#f5f9fb, #131e25);
+}
+
+.ms-document {
+  --ms-fg: var(--ink);
+  --ms-border: var(--rule);
+}
+.ms-document > h1 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.ms-document > h2 {
+  font-weight: 650;
+  letter-spacing: -0.012em;
+}
+.eyebrow {
+  font-family: var(--ms-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+}
+
+/* A diagram gets a surface, so it reads as a figure rather than as a gap in the
+ * prose. Centering is the theme's decision and not the document's: the source
+ * says "this is a figure holding a diagram" and nothing about where it sits. */
+.ms-figure:has(> .ms-diagram) {
+  padding: calc(var(--ms-space) * 1.25);
+  border: 1px solid var(--rule);
+  border-radius: var(--ms-radius);
+  background: var(--surface);
+}
+.ms-figure > .ms-diagram {
+  margin-inline: auto;
+}
+
+/* The tier labels in the overview are part of the drawing, so the caption
+ * carries the sentence instead. Keep it close to the picture it names. */
+.ms-figure:has(> .ms-diagram) > figcaption {
+  margin-top: calc(var(--ms-space) * 0.75);
+  text-align: center;
+  font-style: normal;
+  font-size: 0.85em;
+}
+
+/* A code block that is deliberately not a diagram should not look like a
+ * failed one, so it keeps the plain code surface with no border of its own. */
+.ms-document > pre {
+  background: var(--surface);
+}

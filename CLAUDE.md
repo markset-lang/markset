@@ -121,6 +121,7 @@ Read these before proposing syntax changes — most ideas have been tried.
       without a text alternative, drawing would remove content for a screen-reader user while adding it for everyone
       else. The drawn form is an `<img>` holding an SVG data URI, so it is inert by shape rather than by trust.
       ASCII is the recommended source: it is the only common one whose §3 fallback is still a diagram.
+- [x] Seventh example, `examples/architecture.md` with `examples/tidewater.css`: the diagram-heavy genre, written after §10 to test it. It found three defects no unit test had — a line stopping half a cell short of the box it met, a lone hyphen in a label drawn as a rule, and `.ms-figure` not being `border-box` despite carrying an explicit width, which pushed three figures past a 390px viewport. It invented no author classes.
 - [ ] Playground page (needs a bundler such as esbuild, not yet approved)
 - [x] Six real documents written against the candidate; the last four forced no change to §2 or §4, which is what v0 was waiting on
 - [ ] Publish: keep `@markset/*` private until the suite is frozen; add a `dist/` build (JS + declarations) when publishing becomes a goal
