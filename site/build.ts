@@ -41,6 +41,7 @@ const NAV: Array<[string, string]> = [["Home", "index.html"], ["Guide", "guide/i
 const EXAMPLES: Array<{ slug: string; file: string; title: string; theme?: string; blurb: string }> = [
   { slug: "showcase", file: "showcase.md", title: "Showcase", blurb: "Every v0 construct once, at the length of a real document. It declares no theme stylesheet, so it shows what the vocabulary looks like on whatever stylesheet renders it." },
   { slug: "notification-routing", file: "notification-routing.md", title: "Analysis document", theme: "dossier.css", blurb: "A long analysis document with a theme stylesheet: status chips, a layer rail, a tinted pipeline stage, lettered steps. The system it describes is invented." },
+  { slug: "strategy-read", file: "strategy-read.md", title: "Strategy memo", theme: "memo.css", blurb: "An argued memo in a newspaper register: a masthead, a captioned data table, marked sections in a two-lane grid, pull quotes and source citations. The company and every figure are invented." },
 ];
 
 const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
