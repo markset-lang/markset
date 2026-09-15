@@ -107,3 +107,24 @@ test("a caption stays nearer the thing it captions than the block below it", asy
     "a figure needs more air after it than a block whose edge is its own border",
   );
 });
+
+test("a construct that draws its own edge gets more room than prose does", async () => {
+  // Two lines of text are separated by their leading as well as by the margin,
+  // so the gap that reads as comfortable between paragraphs reads as tight
+  // against a border, which has no optical padding. Applied on both sides, or
+  // the block appears to belong to whichever side happens to be nearer.
+  const css = await readFile(defaultStylesheetPath, "utf8");
+  const boxed =
+    /\.ms-document > :where\(:not\(h1, h2, h3, h4, h5, h6\)\) \+ :is\(([^)]*)\),\n\.ms-document > :is\(([^)]*)\) \+ :where\(:not\(h1, h2, h3, h4, h5, h6\)\) \{\n\s*margin-top: calc\(var\(--ms-space\) \* 1\.5\);/.exec(
+      css,
+    );
+  assert.ok(boxed, "the rule covers both sides, and excludes a heading on either");
+  assert.equal(boxed[1], boxed[2], "the same constructs on both sides, or the spacing is lopsided");
+  for (const c of [".ms-callout", ".ms-card", ".ms-metrics", ".ms-tabs", ".ms-grid"]) {
+    assert.ok(boxed[1].includes(c), `${c} draws a border and is missing from the list`);
+  }
+  // steps and columns draw no box, so they keep the plain gap.
+  for (const c of [".ms-steps", ".ms-columns"]) {
+    assert.ok(!boxed[1].includes(c), `${c} draws no box and should not be in the list`);
+  }
+});
