@@ -12,8 +12,6 @@ import type { Heading, Root } from "mdast";
 import { addHeadingIds, parseDocument, renderDowngrade, renderHtml, bodyAttributes, defaultStylesheetPath, type Diagnostic } from "./deps.ts";
 
 const root = resolve(import.meta.dirname, "..");
-/** Output directory. `build()` may be pointed elsewhere, which is how tests avoid racing dist/ against a dev server. */
-let out = join(root, "dist");
 /** Repository and site URLs come from package.json so they cannot drift from the remote. */
 const pkg = JSON.parse(await readFile(join(resolve(import.meta.dirname, ".."), "package.json"), "utf8")) as { repository: { url: string } };
 const REPO = pkg.repository.url.replace(/\.git$/, "");
@@ -64,24 +62,46 @@ const SECTION_ORDER = ["attribute-specifier", "bracketed-span", "block-directive
  * previous build untouched if anything throws.
  */
 export async function build(outDir: string = join(root, "dist")): Promise<string[]> {
-  const staging = `${outDir}.staging`;
-  const previous = `${outDir}.previous`;
-  await rm(staging, { recursive: true, force: true });
+  // Both scratch directories are unique to this build. They used to be fixed
+  // names, which is fine until two builds overlap: `npm run site` while
+  // `site:watch` is rebuilding, and each one deletes the staging directory the
+  // other is still writing into. The tree that got renamed into place was
+  // whatever survived, which looked exactly like a page whose stylesheet had
+  // vanished. Renaming is still what publishes the build, so a reader never
+  // sees a half-written tree and a failure leaves the previous one intact.
+  const tag = `${process.pid}-${Math.random().toString(36).slice(2, 8)}`;
+  const staging = `${outDir}.staging-${tag}`;
+  const scratch = [staging];
   try {
     const written = await writeSite(staging);
-    await rm(previous, { recursive: true, force: true });
-    await rename(outDir, previous).catch(() => undefined); // absent on a first build
-    await rename(staging, outDir);
-    await rm(previous, { recursive: true, force: true });
+    for (let attempt = 0; ; attempt++) {
+      // A fresh name each time round. Reusing one meant the second attempt's
+      // rename landed on a directory that already existed, failed, and left the
+      // output in place — so the retry could never make progress.
+      const previous = `${outDir}.previous-${tag}-${attempt}`;
+      scratch.push(previous);
+      await rename(outDir, previous).catch(() => undefined); // absent on a first build
+      try {
+        await rename(staging, outDir);
+        break;
+      } catch (error) {
+        // Another build landed a complete tree between our two renames. Its
+        // output is as valid as ours, so step aside and publish over it.
+        const code = (error as NodeJS.ErrnoException).code;
+        if (attempt >= 3 || (code !== "ENOTEMPTY" && code !== "EEXIST")) throw error;
+      }
+    }
     return written;
-  } catch (error) {
-    await rm(staging, { recursive: true, force: true });
-    throw error;
+  } finally {
+    for (const path of scratch) await rm(path, { recursive: true, force: true });
   }
 }
 
 async function writeSite(outDir: string): Promise<string[]> {
-  out = outDir;
+  // Local, not module-level. As a shared variable two builds running in one
+  // process would each redirect the other's remaining writes, and the tree that
+  // got published would be missing whatever the loser had left to write.
+  const out = outDir;
   await mkdir(join(out, "css"), { recursive: true });
   await cp(defaultStylesheetPath, join(out, "css", "markset.css"));
   await cp(join(root, "site", "site.css"), join(out, "css", "site.css"));
