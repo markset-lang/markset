@@ -133,6 +133,19 @@ body {
 .ms-document :is(p, ul, ol, blockquote, pre, table, figure, hr, dl) { margin: 0; }
 .ms-document * + :is(p, ul, ol, pre, table, blockquote, figure, hr, dl) { margin-top: var(--ms-space); }
 
+/* Constructs that draw their own edge take more room than prose does. Two lines
+ * of text are separated by their leading as well as by the margin, so the same
+ * gap that reads as comfortable between paragraphs reads as tight against a
+ * border, which has no optical padding of its own. Applied above and below, so
+ * the block never appears to belong to whichever side happens to be nearer.
+ * `steps` and `columns` are not here: they draw no box. A heading on either side
+ * is excluded so it keeps its own rhythm — larger above, and closed up to the
+ * content below it — and :where() stops this outranking the eyebrow rule. */
+.ms-document > :where(:not(h1, h2, h3, h4, h5, h6)) + :is(.ms-callout, .ms-card, .ms-metrics, .ms-tabs, .ms-grid),
+.ms-document > :is(.ms-callout, .ms-card, .ms-metrics, .ms-tabs, .ms-grid) + :where(:not(h1, h2, h3, h4, h5, h6)) {
+  margin-top: calc(var(--ms-space) * 1.5);
+}
+
 /* A figure ends in a caption, so it needs more air after it than a block whose
  * edge is its own border. Twice the gap keeps the caption closer to the content
  * it describes than to whatever follows, which is the whole job of the spacing.
