@@ -18,11 +18,30 @@ test("a captioned diagram fence is drawn in place of the code block", () => {
   assert.doesNotMatch(out, /<pre>/u, "the code block is replaced, not duplicated");
 });
 
-test("drawing is off unless asked for, and off is a correct rendering", () => {
-  // §10 obligation 1. Every renderer that cannot draw is conformant.
+test("ascii fences are drawn by default, with no option at all", () => {
   const out = render(CAPTIONED);
+  assert.match(out, /<img class="ms-diagram" data-diagram="ascii"/u);
+});
+
+test("diagrams: false keeps every fence as code", () => {
+  // The escape hatch for a fence that is meant to stay selectable text.
+  // §10 obligation 1: not drawing is always a correct rendering.
+  const out = render(CAPTIONED, { diagrams: false });
   assert.match(out, /<pre><code class="language-ascii">/u);
   assert.doesNotMatch(out, /ms-diagram/u);
+});
+
+test("registering a language adds to the built-ins rather than replacing them", () => {
+  // Someone adding mermaid should not silently lose ascii.
+  const out = render(`${CAPTIONED}\n:::figure[A graph]\n\`\`\`dot\ndigraph {}\n\`\`\`\n:::\n`, {
+    diagrams: { drawers: { dot: () => SVG } },
+  });
+  assert.equal([...out.matchAll(/class="ms-diagram"/gu)].length, 2, "both languages drew");
+});
+
+test("a caller can still override a built-in", () => {
+  const out = render(CAPTIONED, { diagrams: { drawers: { ascii: () => null } } });
+  assert.match(out, /<pre><code class="language-ascii">/u);
 });
 
 test("a language with no drawer stays a code block", () => {
@@ -101,5 +120,9 @@ test("drawing does not change the AST it was given", () => {
   const before = JSON.stringify(ast);
   renderHtml(ast, { diagrams: { drawers } });
   assert.equal(JSON.stringify(ast), before);
-  assert.match(renderHtml(ast), /<pre><code class="language-ascii">/u, "and it still renders undrawn");
+  assert.match(
+    renderHtml(ast, { diagrams: false }),
+    /<pre><code class="language-ascii">/u,
+    "and it still renders undrawn when asked to",
+  );
 });

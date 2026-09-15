@@ -140,13 +140,14 @@ Drawing them
 
 ## Rendering with the command line
 
-Drawing is opt-in. Without a `--diagram` flag, every fence on every page stays a code block.
+**`ascii` fences are drawn by default.** The reference implementation ships one drawer and uses it without being asked, because an ASCII fence that is drawn and an ASCII fence that is not are the same picture — drawing it changes how it looks, not what it says. Every other language needs a command, and `--diagram none` turns drawing off entirely for a fence that is meant to stay selectable text.
 
 :::tabs
 ### Built-in ASCII
 
 ```sh
-markset html doc.md --diagram ascii -o doc.html
+markset html doc.md -o doc.html      # ascii fences are drawn
+markset html doc.md --diagram none   # and this keeps them as code
 ```
 
 The reference implementation ships one drawer, for `ascii`. It is a pure function with no dependencies: it reads the grid, joins the runs of `-` and `|`, puts an arrowhead where a line actually arrives, and sets everything else as text.
@@ -158,16 +159,19 @@ markset html doc.md --diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"
 markset html doc.md --diagram bob="svgbob"
 ```
 
-The fence's contents go to the command on stdin; SVG comes back on stdout. A command that exits non-zero, or prints something that is not SVG, leaves the code block in place and reports to stderr.
+The fence's contents go to the command on stdin; SVG comes back on stdout. A command that exits non-zero, or prints something that is not SVG, leaves the code block in place and reports to stderr. Naming a language here adds it; `ascii` keeps drawing alongside it.
 
 ### As a library
 
 ```js
 import { renderHtml } from "@markset/render-html";
-import { drawAscii } from "@markset/diagram-ascii";
 
-const html = renderHtml(ast, { diagrams: { drawers: { ascii: drawAscii } } });
+renderHtml(ast);                                        // ascii is drawn
+renderHtml(ast, { diagrams: false });                   // nothing is drawn
+renderHtml(ast, { diagrams: { drawers: { mermaid } } }); // ascii and mermaid
 ```
+
+A drawer you register is layered over the built-in one, so adding a language never silently takes `ascii` away.
 :::
 
 > [!IMPORTANT] A document never names its own drawer

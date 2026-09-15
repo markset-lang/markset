@@ -16,7 +16,6 @@ import {
   renderHtml,
   bodyAttributes,
   defaultStylesheetPath,
-  drawAscii,
   type Diagnostic,
 } from "./deps.ts";
 
@@ -127,15 +126,6 @@ export const EXAMPLES: Array<{
 ];
 
 const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
-/**
- * The site draws ASCII diagram fences (§10). It is the same option any consumer
- * passes, and the same drawer the CLI offers as --diagram ascii, so what a
- * reader sees here is what they get. Nothing else is registered: a mermaid
- * fence on this site would render as a code block, which is the point of
- * obligation 1.
- */
-const DIAGRAMS = { drawers: { ascii: (source: string) => drawAscii(source) } };
-
 const SECTION_ORDER = [
   "attribute-specifier",
   "bracketed-span",
@@ -277,7 +267,7 @@ async function markdownPage(path: string, file: string, themeCss?: string | fals
   return {
     path,
     title: firstHeading(ast) ?? basename(file, ".md"),
-    body: renderHtml(ast, { diagrams: DIAGRAMS }),
+    body: renderHtml(ast),
     themeAttributes: bodyAttributes(ast.frontmatter ?? null),
     ...(themeCss ? { themeCss } : {}),
   };

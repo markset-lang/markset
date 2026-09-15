@@ -16,6 +16,11 @@ export const documentDriver: Driver = (testCase) => {
     diagnostics: diagnostics.map((d) => d.code),
     ast: stripPositions(ast),
     downgrade: renderDowngrade(ast),
-    html: renderHtml(ast),
+    // Diagrams are left undrawn (§10). The reference implementation draws
+    // `ascii` by default, but a drawn diagram is an implementation's own SVG:
+    // a second implementation could not reproduce it byte for byte, and §10
+    // obligation 1 makes the undrawn code block the form every conformant
+    // renderer agrees on. So that is what the html aspect pins.
+    html: renderHtml(ast, { diagrams: false }),
   };
 };

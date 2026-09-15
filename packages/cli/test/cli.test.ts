@@ -102,15 +102,26 @@ async function diagramFile() {
   return file;
 }
 
-test("html draws diagram fences only when asked", async () => {
+test("html draws ascii fences with no flag at all", async () => {
   const file = await diagramFile();
-  const plain = await run(["html", "--fragment", file]);
-  assert.match(plain.out, /<pre><code class="language-ascii">/);
+  const { code, out } = await run(["html", "--fragment", file]);
+  assert.equal(code, 0);
+  assert.match(out, /<img class="ms-diagram" data-diagram="ascii"/);
+  assert.match(out, /alt="A hub and its edges"/);
+});
 
-  const drawn = await run(["html", "--fragment", "--diagram", "ascii", file]);
-  assert.equal(drawn.code, 0);
-  assert.match(drawn.out, /<img class="ms-diagram" data-diagram="ascii"/);
-  assert.match(drawn.out, /alt="A hub and its edges"/);
+test("--diagram none turns drawing off", async () => {
+  const file = await diagramFile();
+  const { code, out } = await run(["html", "--fragment", "--diagram", "none", file]);
+  assert.equal(code, 0);
+  assert.match(out, /<pre><code class="language-ascii">/);
+  assert.doesNotMatch(out, /ms-diagram/);
+});
+
+test("naming a language does not switch the built-in off", async () => {
+  const file = await diagramFile();
+  const { out } = await run(["html", "--fragment", "--diagram", "dot=echo x", file]);
+  assert.match(out, /ms-diagram/, "ascii still draws alongside the language just added");
 });
 
 test("a language with no built-in drawer is refused rather than ignored", async () => {
