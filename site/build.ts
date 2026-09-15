@@ -101,6 +101,21 @@ export const EXAMPLES: Array<{
       "An argued memo in a newspaper register: a masthead, a captioned data table, marked sections in a two-lane grid, pull quotes and source citations. The company and every figure are invented.",
   },
   {
+    slug: "runbook",
+    file: "runbook.md",
+    title: "On-call runbook",
+    theme: "runbook.css",
+    blurb:
+      "The shortest and densest genre there is: a page read under time pressure, where the first screen has to be the answer. Triage steps that rank themselves, a symptom grid, procedures in tabs, and an escalation table. Every service and threshold is invented.",
+  },
+  {
+    slug: "config-reference",
+    file: "config-reference.md",
+    title: "Configuration reference",
+    blurb:
+      "Reference documentation, the genre that is mostly tables and code: resolution order, a table of keys per section, the same configuration in four formats, and a deprecation table. The only long example that names no theme of its own, so it is read on the site's stylesheet like every other page here. The tool is invented.",
+  },
+  {
     slug: "incident-review",
     file: "incident-review.md",
     title: "Incident review",

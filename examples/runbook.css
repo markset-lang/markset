@@ -1,0 +1,129 @@
+/* Theme stylesheet for examples/runbook.md (spec §6).
+ *
+ * A runbook is read by someone who is already having a bad morning, so this
+ * theme is about ranking rather than decoration: the two things to do first are
+ * loud, the reference below them is quiet, and nothing is decorative enough to
+ * slow a reader down. The document names three author classes — .first, .now
+ * and the reserved tones — and this file decides what they look like. */
+
+body {
+  --ink: light-dark(#1a1517, #f0e9ea);
+  --rule: light-dark(#ded4d6, #3a3133);
+}
+
+.ms-document {
+  --ms-fg: var(--ink);
+  --ms-border: var(--rule);
+}
+.ms-document > h1 {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.ms-document > h2 {
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.ms-document > .lead {
+  font-size: 1.1rem;
+}
+.eyebrow {
+  font-family: var(--ms-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+}
+
+/* The threshold strip: what the alert fires on, at a glance. */
+.first {
+  gap: 0;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--ms-accent);
+}
+.first .ms-metric {
+  border: 0;
+  border-radius: 0;
+  padding: 0.7rem 1rem;
+}
+.first .ms-metric + .ms-metric {
+  border-left: 1px solid var(--rule);
+}
+.first .ms-metric-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+}
+.first .ms-metric-value {
+  font-family: var(--ms-font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* Steps as a checklist rather than a tutorial: square markers, tight rhythm. */
+.ms-steps {
+  counter-reset: none;
+}
+.ms-step {
+  padding-left: 2.4rem;
+  min-height: 0;
+}
+.ms-step + .ms-step {
+  margin-top: 1.1rem;
+}
+.ms-step::before {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  background: var(--ms-surface);
+  color: var(--ms-fg-muted);
+  border: 1px solid var(--rule);
+}
+.ms-step:not(:last-child)::after {
+  left: calc(0.75rem - 1px);
+  top: 1.75rem;
+}
+.ms-step > h3 {
+  font-size: 1rem;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* The two steps that are actually urgent. */
+.ms-step.now::before {
+  background: var(--ms-accent);
+  border-color: var(--ms-accent);
+  color: #fff;
+}
+.ms-step.now > h3 {
+  color: var(--ms-accent);
+}
+
+/* Symptom cards: the heading is the thing you are matching against, so it wins. */
+.ms-grid-item {
+  border-left: 3px solid var(--rule);
+  padding: 0.1rem 0 0.1rem 0.9rem;
+}
+.ms-grid-item > h3 {
+  font-family: var(--ms-font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.ms-grid-item strong {
+  color: var(--ms-accent);
+}
+
+.ms-callout {
+  border-radius: 0;
+}
+.ms-callout-title {
+  font-family: var(--ms-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.ms-tab {
+  font-family: var(--ms-font-mono);
+  font-size: 0.78rem;
+}
+.ms-figure td:first-child {
+  font-family: var(--ms-font-mono);
+  font-size: 0.85rem;
+}
