@@ -116,7 +116,11 @@ body {
  * width. Everything starts at the same left edge, so the page reads as one
  * column with some wide elements, not as two columns centered on each other. */
 .ms-document {
-  max-width: var(--ms-measure-wide);
+  /* `margin: 0 auto` turns off stretch when this is a grid item (the spec page
+   * puts it beside a table of contents), and the box then shrink-to-fits, which
+   * lets it exceed its track. Capping at 100% keeps it inside whatever holds it. */
+  max-width: min(var(--ms-measure-wide), 100%);
+  box-sizing: border-box; /* or the side padding is added on top of that 100% */
   margin: 0 auto;
   padding: calc(var(--ms-space) * 2) var(--ms-space);
 }
@@ -239,6 +243,32 @@ summary.ms-callout-title { cursor: pointer; }
 .ms-columns { display: grid; gap: var(--ms-gap, var(--ms-space)); grid-template-columns: var(--ms-ratio, repeat(auto-fit, minmax(0, 1fr))); align-items: start; }
 .ms-column > * + * { margin-top: var(--ms-space); }
 @media (max-width: 36rem) { .ms-columns { grid-template-columns: 1fr; } }
+
+/* A grid or flex item defaults to min-width: auto, so it refuses to shrink below
+ * the widest thing inside it. One long line in a code block then inflates the
+ * item, the construct, the page, and every unrelated block drifts sideways with
+ * it. Setting min-width: 0 on the items lets the scroll containers inside them
+ * (pre, table) do their job. */
+.ms-column, .ms-grid-item, .ms-tabpanel, .ms-callout-body, .ms-card, .ms-metric { min-width: 0; }
+
+/* ---- narrow viewports ---------------------------------------------------------
+ * A table is the one construct that cannot reflow: its columns have a minimum
+ * width, so a wide one pushes the whole page sideways and every other block
+ * drifts with it. Below the breakpoint the table scrolls inside itself instead.
+ *
+ * `display: block` is what makes overflow apply at all, since overflow is
+ * ignored on a table box. The cost is that some screen readers stop announcing
+ * it as a table, which is why this is scoped to narrow viewports rather than
+ * applied everywhere, and why the HTML keeps a plain <table> with no presentational
+ * wrapper around it (invariant 1). */
+@media (max-width: 48rem) {
+  .ms-document table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
 
 /* ---- tabs (§4.5): radio inputs, no JavaScript ------------------------------- */
 .ms-tabs { border: 1px solid var(--ms-border); border-radius: var(--ms-radius); overflow: hidden; }

@@ -47,6 +47,7 @@ body { --ms-font-heading: "Source Serif 4", Charter, Georgia, "Times New Roman",
 .site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--ms-accent); }
 .site-layout { max-width: 75rem; margin: 0 auto; }
 .site-layout.has-toc { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: var(--ms-space); }
+.site-layout.has-toc > * { min-width: 0; } /* or a wide block inside main widens the whole grid */
 .site-toc { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; padding: calc(var(--ms-space) * 2) var(--ms-space); font-size: 0.875rem; border-right: 1px solid var(--ms-border); }
 .site-toc ul { list-style: none; margin: 0; padding: 0; }
 .site-toc li { margin: 0.25rem 0; }
