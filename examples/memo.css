@@ -1,0 +1,214 @@
+/* Memo — a theme stylesheet for a long argued document (spec §6).
+ *
+ *   markset html examples/strategy-read.md --theme examples/memo.css
+ *
+ * A newspaper-ish register: a display sans for headings, a serif for reading,
+ * a mono for anything that is a label, a number or a citation. The document
+ * names none of this. It names roles (.marker, .claim, .change, .facts, .quote)
+ * and this file decides what a role looks like.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap");
+
+body {
+  --ms-font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --ms-font-heading: Archivo, "Helvetica Neue", Arial, sans-serif;
+  --ms-font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ms-base: 1.0625rem;
+  --memo-flag: #9e4220;
+  --memo-accent-soft: #e2efed;
+  font-size: var(--ms-base);
+  line-height: 1.62;
+}
+@media (prefers-color-scheme: dark) {
+  body { --memo-flag: #de9070; --memo-accent-soft: #17312f; }
+}
+
+/* ---- type roles ---------------------------------------------------------- */
+.ms-document > h1 {
+  font-size: clamp(2.4rem, 7vw, 4.1rem);
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  line-height: 1.02;
+}
+.ms-document h2 { font-weight: 600; letter-spacing: -0.018em; line-height: 1.14; }
+.ms-document h3 { font-size: 0.94rem; font-weight: 600; letter-spacing: 0.02em; }
+.eyebrow {
+  font-family: var(--ms-font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  color: var(--ms-fg-muted);
+}
+/* The repeated beat headings stay quiet; a topical h3 keeps the display face. */
+h3.label {
+  font-family: var(--ms-font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ms-fg-muted);
+}
+.ms-document > .lead { font-size: 1.2rem; line-height: 1.52; color: var(--ms-fg-muted); max-width: 60ch; }
+.ms-document > .lead em { color: var(--ms-fg); }
+.ms-document p { max-width: 66ch; }
+
+/* ---- masthead ------------------------------------------------------------ */
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+  border: 0;
+  border-bottom: 2px solid var(--ms-fg);
+  padding-bottom: 2rem;
+  font-family: var(--ms-font-mono);
+}
+.sources .ms-metric { border: 0; border-radius: 0; padding: 0; background: none; }
+.sources .ms-metric-label { font-size: 0.7rem; color: var(--ms-fg-muted); letter-spacing: 0; text-transform: none; }
+.sources .ms-metric-value { font-family: var(--ms-font-mono); font-size: 0.75rem; font-weight: 400; line-height: 1.5; }
+.sources .ms-metric-value code { background: none; padding: 0; }
+
+/* ---- the judgment -------------------------------------------------------- */
+.judgment { border-left: 4px solid var(--ms-accent); padding: clamp(1.4rem, 3.6vw, 2.1rem); }
+.judgment .claim-lead { font-weight: 600; font-size: 1.15rem; }
+.judgment p { font-size: 1.08rem; }
+.pull {
+  font-family: var(--ms-font-heading);
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.38;
+  letter-spacing: -0.012em;
+  color: var(--ms-accent);
+  max-width: 46ch;
+}
+
+/* ---- coverage table ------------------------------------------------------ */
+.coverage { border: 0; }
+.coverage th {
+  font-family: var(--ms-font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--ms-fg-muted);
+  padding: 0 0 0.6rem;
+  border-bottom: 1px solid var(--ms-fg);
+}
+.coverage td { padding: 0.8rem 0; vertical-align: baseline; border-bottom: 1px solid var(--ms-border); }
+.coverage td:first-child { font-weight: 600; padding-right: 1.25rem; }
+.coverage td:nth-child(2) {
+  font-family: var(--ms-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--memo-flag);
+  white-space: nowrap;
+}
+.coverage td:last-child { color: var(--ms-fg-muted); font-size: 0.9rem; padding-left: 1.5rem; width: 46%; }
+.coverage > figcaption {
+  font-family: var(--ms-font-mono);
+  font-size: 0.68rem;
+  line-height: 1.6;
+  font-style: normal;
+  padding-top: 0.9rem;
+}
+.coverage > figcaption code { background: none; padding: 0; }
+
+/* ---- readings ------------------------------------------------------------ */
+.reading { border-top: 1px solid var(--ms-border); padding-top: 1.6rem; gap: 0 2.25rem; }
+.ms-document > .reading + .reading { margin-top: clamp(2.8rem, 7vw, 4.5rem); }
+.reading .marker {
+  display: inline-block;
+  font-family: var(--ms-font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--ms-accent);
+  background: var(--memo-accent-soft);
+  padding: 0.25rem 0.55rem;
+  white-space: nowrap;
+}
+/* Below the point where a 1:9 split stops being readable, stack the two lanes. */
+@media (max-width: 55rem) {
+  .reading { grid-template-columns: 1fr; }
+}
+
+.claim { border: 0; border-left: 1px solid var(--ms-border); border-radius: 0; background: none; padding: 0 0 0 1.1rem; }
+.claim p { color: var(--ms-fg-muted); font-size: 0.95rem; line-height: 1.55; }
+
+.change {
+  border: 0;
+  border-left: 3px solid var(--ms-accent);
+  border-radius: 0;
+  background: none;
+  padding: 0.1rem 0 0.1rem 1.25rem;
+}
+.change h3 { color: var(--ms-accent); }
+
+/* An em dash instead of a bullet, which reads as a note rather than a checklist. */
+.facts { list-style: none; padding: 0; }
+.facts li { position: relative; padding-left: 1.6rem; font-size: 0.95rem; line-height: 1.55; color: var(--ms-fg-muted); max-width: 66ch; }
+.facts li + li { margin-top: 0.55rem; }
+.facts li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  font-family: var(--ms-font-mono);
+  font-size: 0.8rem;
+  color: var(--ms-fg-muted);
+}
+.facts li strong { color: var(--ms-fg); }
+
+.quote {
+  font-family: var(--ms-font-mono);
+  font-size: 0.8rem;
+  line-height: 1.62;
+  color: var(--ms-fg-muted);
+  background: var(--ms-surface);
+  border: 1px solid var(--ms-border);
+  border-left: 1px solid var(--ms-border);
+  padding: 0.9rem 1rem;
+  max-width: 62ch;
+}
+.quote strong { font-weight: 500; color: var(--ms-fg); }
+.quote .src { margin-top: 0.55rem; font-size: 0.66rem; color: var(--ms-fg-muted); overflow-wrap: anywhere; }
+.quote .src code { background: none; padding: 0; }
+
+/* ---- closing ------------------------------------------------------------- */
+.ms-document > .eyebrow + .closing-steps { margin-top: 1.25rem; }
+.closing-steps { border-top: 2px solid var(--ms-fg); padding-top: 1.9rem; }
+.closing-steps .ms-step { padding-left: 2.5rem; min-height: 0; }
+.closing-steps .ms-step + .ms-step { margin-top: 1.4rem; }
+.closing-steps .ms-step::before {
+  content: counter(list-item);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: auto;
+  height: auto;
+  background: none;
+  color: var(--ms-accent);
+  font-family: var(--ms-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 0;
+}
+.closing-steps .ms-step::after { display: none; } /* no connector line between steps */
+.closing-steps .ms-step > h3 {
+  font-family: var(--ms-font-heading);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.014em;
+  line-height: 1.25;
+}
+.closing-steps .ms-step > p { color: var(--ms-fg-muted); font-size: 0.95rem; }
+
+.coda { border-top: 1px solid var(--ms-border); padding-top: 1.4rem; font-size: 1.08rem; max-width: 62ch; }
+.colophon {
+  border-top: 1px solid var(--ms-border);
+  padding-top: 1.2rem;
+  font-family: var(--ms-font-mono);
+  font-size: 0.68rem;
+  line-height: 1.7;
+}
+.ms-document > * + .colophon { margin-top: 2.5rem; }
