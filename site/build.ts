@@ -119,6 +119,7 @@ async function writeSite(outDir: string): Promise<string[]> {
     await markdownPage("cli/index.html", join(root, "site", "content", "cli.md")),
     await specPage(),
     await referenceIndex(),
+    await markdownPage("reference/frontmatter/index.html", join(root, "site", "content", "reference", "frontmatter.md")),
     ...(await Promise.all(CONSTRUCTS.map((name) => referencePage(name, cases[name] ?? [])))),
     conformanceIndex(cases),
     ...SECTION_ORDER.filter((s) => cases[s]).map((s) => conformancePage(s, cases[s])),
@@ -222,7 +223,10 @@ async function referenceIndex(): Promise<Page> {
   const { ast, diagnostics } = parseDocument(intro);
   failOnErrors(diagnostics, "reference/index.md");
   const list = CONSTRUCTS.map((name) => `<li><a href="${name}/index.html"><code>${name}</code></a> — ${esc(BLURB[name])}</li>`).join("\n");
-  return { path: "reference/index.html", title: "Reference", body: renderHtml(ast) + `<ul class="site-list">\n${list}\n</ul>\n` };
+  // Frontmatter is the ninth reference page and the only one that is not a
+  // construct, so it is listed after the eight rather than among them.
+  const frontmatter = `<p class="site-more">The document's own settings: <a href="frontmatter/index.html">frontmatter and theme tokens</a> — the version key, the seven theme tokens and what each preset changes.</p>\n`;
+  return { path: "reference/index.html", title: "Reference", body: renderHtml(ast) + `<ul class="site-list">\n${list}\n</ul>\n` + frontmatter };
 }
 
 const BLURB: Record<(typeof CONSTRUCTS)[number], string> = {

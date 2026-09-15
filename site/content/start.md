@@ -44,7 +44,7 @@ Markset is the other answer. You name the layout instead of building it, and the
 :::
 
 > [!NOTE]
-> **It is not a site generator and not a component framework.** Markset gives you a document format and two renderers. Whatever builds your site keeps building your site.
+> **It is not a site generator and not a component framework.** Markset gives you a document format and two things that read it: `markset html`, which produces HTML, and `markset downgrade`, which produces plain CommonMark with the layout lowered away. Whatever builds your site keeps building your site.
 
 {.tick}
 ***
@@ -191,7 +191,7 @@ Next
 ## Where to go from here
 
 :::steps
-1. Read the [reference](reference/index.html). It starts with the three pieces of syntax every construct is built from, then gives one page per construct with four worked examples each.
+1. Read the [reference](reference/index.html). It starts with the three pieces of syntax every construct is built from, then gives one page per construct with four worked examples each, and a page on [frontmatter and theme tokens](reference/frontmatter/index.html) for the settings a document carries about itself.
 2. Skim the [CLI page](cli/index.html) for the four commands and their flags.
 3. Look at the [examples](examples/index.html) to see what a long document looks like when it has a theme of its own.
 4. Read the [specification](spec/index.html) when you want the normative answer. It is short, and it is what a second implementation would be written from.
