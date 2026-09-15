@@ -1,6 +1,6 @@
 {
   "name": "@markset/render-downgrade",
-  "version": "0.0.0-rc.1",
+  "version": "0.0.0-rc.2",
   "private": true,
   "type": "module",
   "description": "Downgrade renderer: Markset AST -> plain CommonMark (spec \u00a73).",

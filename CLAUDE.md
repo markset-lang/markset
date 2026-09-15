@@ -97,7 +97,7 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] CLI (`packages/cli`: `check`, `html`, `downgrade`, `ast`; `examples/showcase.md` exercises every construct)
 - [x] Attribute lines (§2.5, djot-style `{.lead}` line before a block; `packages/parser/src/attribute-lines.ts`, `tests/attribute-line.json`)
 - [x] §9 open questions closed with decisions (spec §9)
-- [x] Release candidate `0.0.0-rc.1` tagged 2026-09-14; change policy in spec §0; `CHANGELOG.md` started
+- [x] Release candidates `0.0.0-rc.1` and `0.0.0-rc.2` tagged 2026-09-14; change policy in spec §0. The version string lives in `package.json` and a test asserts every other copy of it agrees.
 - [x] Documentation site (`site/`): home, reference page per construct, spec with TOC, conformance browser, showcase; deployed by `pages.yml`
 - [x] Attributes on one list item (§2.5, `- {.hot}` opens the item) so a single grid item or step can be styled; theme stylesheet hook (`markset html --theme <file>`, `renderPage({ theme })`, §6)
 - [x] Default stylesheet layout: two lanes with one left edge (prose at `--ms-measure`, constructs and tables at `--ms-measure-wide`); chosen by screenshot 2026-09-14 after a centered two-lane version was rejected

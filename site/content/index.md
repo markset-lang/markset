@@ -13,7 +13,7 @@ Specification · Reference implementation · Conformance suite
 {.lead}
 Markset adds a small, **closed** set of layout constructs to CommonMark: cards, grids, columns, tabs, steps, metrics, figures and callouts. Every valid CommonMark document is already a valid Markset document. Every Markset construct has a defined plain-CommonMark form it falls back to.
 
-[Release candidate]{.badge .info} [v0.0.0-rc.1]{.badge} [CommonMark superset]{.badge}
+[Release candidate]{.badge .info} [v0.0.0-rc.2]{.badge} [CommonMark superset]{.badge}
 
 :::metrics{.stats}
 | Measure | Count |

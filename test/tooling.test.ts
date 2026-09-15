@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
+import { readdir } from "node:fs/promises";
 
 const root = resolve(import.meta.dirname, "..");
 
@@ -40,4 +41,43 @@ test("lint runs in CI, as a gate rather than a suggestion", async () => {
   const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
   assert.equal(pkg.scripts.lint, "biome check .");
   assert.equal(pkg.scripts.format, "biome check --write .");
+});
+
+/**
+ * The release version is written in thirteen places: seven package.json files,
+ * the spec's frontmatter and its status line, the changelog, the README, the
+ * home page badge and a span demo in the tour. package.json is the one that is
+ * true; the rest are copies, and copies drift the moment nothing checks them.
+ */
+test("every copy of the version agrees with package.json", async () => {
+  const version = JSON.parse(await readFile(join(root, "package.json"), "utf8")).version as string;
+  assert.match(version, /^\d+\.\d+\.\d+(-rc\.\d+)?$/, version);
+
+  const manifests = [
+    "site/package.json",
+    ...(await readdir(join(root, "packages"))).map((p) => `packages/${p}/package.json`),
+  ];
+  for (const file of manifests) {
+    const pkg = JSON.parse(await readFile(join(root, file), "utf8"));
+    assert.equal(pkg.version, version, `${file} is on ${pkg.version}`);
+  }
+
+  const spec = await readFile(join(root, "spec", "v0.md"), "utf8");
+  assert.match(spec, new RegExp(`^version: ${version}$`, "m"), "spec frontmatter");
+  assert.ok(spec.includes(`Release candidate \`${version}\``), "the spec's status line");
+
+  const changelog = await readFile(join(root, "CHANGELOG.md"), "utf8");
+  assert.match(
+    changelog,
+    new RegExp(`^## ${version.replace(/\./g, "\\.")} — `, "m"),
+    "the changelog has a section for it",
+  );
+
+  const readme = await readFile(join(root, "README.md"), "utf8");
+  assert.ok(readme.includes(`Release candidate \`${version}\``), "README status line");
+
+  for (const page of ["site/content/index.md", "examples/showcase.md"]) {
+    const text = await readFile(join(root, page), "utf8");
+    assert.ok(text.includes(`v${version}`), `${page} shows a stale version`);
+  }
 });
