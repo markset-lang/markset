@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Vertical rhythm: `figure` and `hr` were missing from the margin reset, so they kept a browser default bottom margin measured in `em` rather than in `--ms-space`. A figure sat 15px below itself against a 10px rhythm at compact density, and matched at the other two only because the token was larger and collapsed over it.
+- A figure's caption takes a full spacing unit rather than half of one, and the block after a figure takes two. At half a unit the caption sat against the table's bottom rule and was nearly as far from the next block as from the table it belongs to, so it read as floating between them. The ratio is what matters and both sides scale with the density token.
 - The site's section divider takes `margin-block` rather than `margin-top` alone. It was three units below the section it closed and one above the next, and looked symmetric only where an eyebrow followed and supplied a matching top margin of its own.
 
 ## 0.1.0 — 2026-09-15
