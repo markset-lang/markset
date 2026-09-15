@@ -49,10 +49,6 @@ body {
 body[data-scheme="light"] { color-scheme: light; }
 body[data-scheme="dark"] { color-scheme: dark; }
 
-/* density */
-body[data-density="compact"] { --ms-space: 0.625rem; --ms-base: 0.9375rem; }
-body[data-density="spacious"] { --ms-space: 1.5rem; --ms-base: 1.0625rem; }
-
 /* radius */
 body[data-radius="none"] { --ms-radius: 0; }
 body[data-radius="sm"] { --ms-radius: 0.25rem; }
@@ -97,6 +93,20 @@ body[data-preset="report"] {
   --ms-measure-wide: 72rem;
   --ms-radius: 0.25rem;
 }
+
+/* density — after the presets, because two of them set --ms-space and the
+ * author's own density is the more specific choice. With this block first, a
+ * document that asked for `report` and `compact` silently got the preset's
+ * spacing and the density token did nothing at all.
+ *
+ * `comfortable` has no rule on purpose: it means "whatever this preset calls
+ * normal", not a fixed value. One consequence is now reachable that was not
+ * before — `deck` with `spacious` takes this --ms-base, which is smaller than
+ * deck's own, so the text shrinks while the spacing stays. No document does
+ * that today; if one ever wants to, density should scale the preset's base
+ * rather than replace it. */
+body[data-density="compact"] { --ms-space: 0.625rem; --ms-base: 0.9375rem; }
+body[data-density="spacious"] { --ms-space: 1.5rem; --ms-base: 1.0625rem; }
 
 /* ---- document ------------------------------------------------------------ */
 body {

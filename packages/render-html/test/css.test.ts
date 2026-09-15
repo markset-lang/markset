@@ -128,3 +128,20 @@ test("a construct that draws its own edge gets more room than prose does", async
     assert.ok(!boxed[1].includes(c), `${c} draws no box and should not be in the list`);
   }
 });
+
+test("an explicit density beats the preset that would otherwise set the spacing", async () => {
+  // deck and report set --ms-space themselves. With the density block first,
+  // those two presets silently won and a document that asked for `compact` got
+  // the preset's spacing instead, with no way to tell. Order is the whole fix,
+  // so order is what this asserts.
+  const css = await readFile(defaultStylesheetPath, "utf8");
+  const lastPreset = css.lastIndexOf("body[data-preset=");
+  const firstDensity = css.indexOf("body[data-density=");
+  assert.ok(lastPreset > 0 && firstDensity > 0);
+  assert.ok(firstDensity > lastPreset, "the density rules must come after every preset rule");
+  // Both of the presets that set spacing are still there to be overridden.
+  for (const preset of ["deck", "report"]) {
+    const block = new RegExp(`body\\[data-preset="${preset}"\\] \\{[^}]*--ms-space:`);
+    assert.match(css, block, `${preset} sets --ms-space, which is why the order matters`);
+  }
+});
