@@ -230,14 +230,31 @@ Callouts adopt GitHub's alert syntax unchanged, so the bare marker renders nativ
 {.eyebrow}
 spans · attribute lines
 
-## Reaching the blocks that have no specifier
+## The two pieces that are not containers
 
-A bracketed span attaches attributes to inline text: [Draft]{.badge .warn} and [Shipped]{.badge .success} are spans, and so is a run of [quiet aside]{.muted} in the middle of a sentence.
+Every section above opens a container with a fence. Two smaller pieces of syntax do the rest of the work, and neither one contains anything: they attach attributes to something that is already there.
 
-An attribute line does the same job for a block that has nowhere to put a specifier of its own. The paragraph below is a plain paragraph carrying `.lead`, and the table under it carries a class the same way.
+A **bracketed span** attaches them to a run of inline text. It is how a status marker, or a phrase meant to read quietly, gets into the middle of a sentence without a box around it.
+
+:::card[Four spans and some ordinary text]
+Release [v0.0.0-rc.1]{.badge}, status [Draft]{.badge .warn}, target [on track]{.success}. The words between the markers are plain text, and [this phrase]{.muted} is a span as well.
+:::
+
+An **attribute line** attaches them to a block instead. A paragraph, heading, list or table has nowhere to write a specifier of its own, so the specifier goes on a line by itself and applies to whatever starts on the next line. The two columns below hold the same sentence. Only the right one has a line in front of it.
+
+:::columns{ratio="1:1"}
+No attribute line here, so this paragraph is set at body size like any other.
+
+::col
 
 {.lead}
-Between the two of them, every block and every run of text in a Markset document can be named, which is why the vocabulary can stay at eight constructs instead of growing one for each typographic need.
+An attribute line carrying `.lead` sits above this one, so it is set larger.
+:::
+
+Between them, every block and every run of text in a document can be named without a construct existing for it. That is what keeps the vocabulary at eight rather than growing one entry for every typographic need.
+
+{.tick}
+***
 
 {.small .muted}
-Source: `examples/showcase.md`. The document names no stylesheet of its own; that choice belongs to whoever renders it.
+Source: `examples/showcase.md`. The document names no stylesheet of its own; that choice belongs to whoever renders it. Each **Markdown** tab above is sliced from this file by the position of the construct it sits on, so it is the real source rather than a copy of it.

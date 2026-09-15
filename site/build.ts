@@ -6,7 +6,7 @@
  * Output: dist/ with relative links, so it works at any base path
  * (GitHub Pages project sites live under /<repo>/).
  */
-import { mkdir, readdir, readFile, rm, writeFile, cp } from "node:fs/promises";
+import { mkdir, readdir, readFile, rename, rm, writeFile, cp } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import type { Heading, Root } from "mdast";
 import { parseDocument, renderDowngrade, renderHtml, bodyAttributes, defaultStylesheetPath, type Diagnostic } from "./deps.ts";
@@ -47,9 +47,34 @@ const EXAMPLES: Array<{ slug: string; file: string; title: string; theme?: strin
 const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
 const SECTION_ORDER = ["attribute-specifier", "bracketed-span", "block-directive", "separator-directive", "attribute-line", ...CONSTRUCTS, "frontmatter"];
 
+/**
+ * Build the whole site, then move it into place in one step.
+ *
+ * Writing into the output directory in place means a reader sees a half-built
+ * site for as long as the build takes: the dev server serves from here while
+ * rebuilding, and a crash used to leave the directory wiped. Staging beside the
+ * target and renaming is atomic, survives open file handles, and leaves the
+ * previous build untouched if anything throws.
+ */
 export async function build(outDir: string = join(root, "dist")): Promise<string[]> {
+  const staging = `${outDir}.staging`;
+  const previous = `${outDir}.previous`;
+  await rm(staging, { recursive: true, force: true });
+  try {
+    const written = await writeSite(staging);
+    await rm(previous, { recursive: true, force: true });
+    await rename(outDir, previous).catch(() => undefined); // absent on a first build
+    await rename(staging, outDir);
+    await rm(previous, { recursive: true, force: true });
+    return written;
+  } catch (error) {
+    await rm(staging, { recursive: true, force: true });
+    throw error;
+  }
+}
+
+async function writeSite(outDir: string): Promise<string[]> {
   out = outDir;
-  await rm(out, { recursive: true, force: true });
   await mkdir(join(out, "css"), { recursive: true });
   await cp(defaultStylesheetPath, join(out, "css", "markset.css"));
   await cp(join(root, "site", "site.css"), join(out, "css", "site.css"));
@@ -406,6 +431,7 @@ function esc(value: string): string {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === resolve(import.meta.filename)) {
-  const written = await build();
-  console.log(`site: ${written.length} pages written to ${relative(process.cwd(), out)}/`);
+  const target = join(root, "dist");
+  const written = await build(target);
+  console.log(`site: ${written.length} pages written to ${relative(process.cwd(), target)}/`);
 }
