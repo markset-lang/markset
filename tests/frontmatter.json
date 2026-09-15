@@ -38,7 +38,7 @@
     },
     "valid": true,
     "downgrade": "---\nmarkset: 0\ntheme:\n  preset: editorial       # editorial | technical | deck | report\n  accent: \"#2563eb\"\n  density: comfortable    # compact | comfortable | spacious\n  radius: md              # none | sm | md | lg\n  type:\n    body: \"Source Serif 4\"\n    heading: \"Inter\"\n    scale: 1.25\n---\n\n# Title\n",
-    "html": "<h1>Title</h1>\n"
+    "html": "<h1 id=\"title\">Title</h1>\n"
   },
   {
     "section": "frontmatter",

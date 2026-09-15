@@ -23,7 +23,7 @@ test("renderPage wraps the fragment and carries theme tokens onto body", () => {
   assert.match(page, /<title>Hello &amp; World<\/title>/);
   assert.match(page, /<link rel="stylesheet" href="markset.css">/);
   assert.ok(page.includes('<body data-preset="deck" data-density="compact" data-radius="lg" style="--ms-accent: #2563eb; --ms-font-body: &quot;Source Serif 4&quot;; --ms-font-heading: &quot;Inter&quot;; --ms-type-scale: 1.25">'), page);
-  assert.ok(page.includes('<main class="ms-document">\n<h1>Hello &#x26; World</h1>\n</main>'), page);
+  assert.ok(page.includes('<main class="ms-document">\n<h1 id="hello-world">Hello &#x26; World</h1>\n</main>'), page);
 });
 
 test("renderPage emits the theme stylesheet after the default one", () => {

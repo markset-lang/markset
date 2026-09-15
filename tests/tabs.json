@@ -594,7 +594,7 @@
       ]
     },
     "downgrade": "intro\n\n### A\n\nx\n",
-    "html": "<p>intro</p>\n<h3>A</h3>\n<p>x</p>\n"
+    "html": "<p>intro</p>\n<h3 id=\"a\">A</h3>\n<p>x</p>\n"
   },
   {
     "section": "tabs",

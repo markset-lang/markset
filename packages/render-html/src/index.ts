@@ -3,17 +3,29 @@ import { toHast } from "mdast-util-to-hast";
 import { toHtml } from "hast-util-to-html";
 import { parseDocument, type Attributes, type Diagnostic, type Frontmatter } from "@markset/parser";
 import { marksetHandlers } from "./handlers.ts";
+import { addHeadingIds } from "./heading-ids.ts";
 
 export { marksetHandlers };
+export { addHeadingIds, headingSlug } from "./heading-ids.ts";
+
+export interface RenderOptions {
+  /**
+   * Give every heading without an explicit id a generated one, so the sections
+   * of a rendered document can be linked (§2.1). On by default: a document
+   * whose headings cannot be linked is one every consumer has to post-process.
+   */
+  headingIds?: boolean;
+}
 
 /** Render a parsed tree as an HTML fragment. Non-empty output ends with a newline, as in the CommonMark suite. */
-export function renderHtml(tree: Root): string {
-  const hast = toHast(withBlockAttributes(tree), { handlers: marksetHandlers() });
+export function renderHtml(tree: Root, options: RenderOptions = {}): string {
+  const ids = options.headingIds ?? true ? addHeadingIds(tree) : tree;
+  const hast = toHast(withBlockAttributes(ids), { handlers: marksetHandlers() });
   const html = toHtml(hast);
   return html === "" ? "" : `${html}\n`;
 }
 
-export interface PageOptions {
+export interface PageOptions extends RenderOptions {
   /** Contents of a <title>; defaults to the first level-one heading's text, else "Document". */
   title?: string;
   /** Inline stylesheet text, or a URL to link. */
@@ -30,7 +42,7 @@ export function renderPage(tree: Root, options: PageOptions = {}): string {
   const style = styleTag(options.stylesheet) + styleTag(options.theme);
   return `<!doctype html>\n<html lang="${escapeHtml(options.lang ?? "en")}">\n<head>\n<meta charset="utf-8">\n`
     + `<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${title}</title>\n${style}</head>\n`
-    + `<body${bodyAttributes(meta)}>\n<main class="ms-document">\n${renderHtml(tree)}</main>\n</body>\n</html>\n`;
+    + `<body${bodyAttributes(meta)}>\n<main class="ms-document">\n${renderHtml(tree, options)}</main>\n</body>\n</html>\n`;
 }
 
 function styleTag(sheet: { inline: string } | { href: string } | undefined): string {

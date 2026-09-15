@@ -1746,7 +1746,7 @@
     },
     "valid": true,
     "downgrade": "# H\n\nPara with `code` and ::: mid.\n",
-    "html": "<h1>H</h1>\n<p>Para with <code>code</code> and ::: mid.</p>\n"
+    "html": "<h1 id=\"h\">H</h1>\n<p>Para with <code>code</code> and ::: mid.</p>\n"
   },
   {
     "section": "block-directive",
