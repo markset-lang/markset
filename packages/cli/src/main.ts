@@ -4,13 +4,13 @@ import { parseArgs } from "node:util";
 import { parseDocument, type Diagnostic } from "@markset/parser";
 import { renderDowngrade } from "@markset/render-downgrade";
 import {
+  builtInDrawers,
   defaultStylesheetPath,
   renderHtml,
   renderPage,
   type DiagramDrawer,
   type DiagramOptions,
 } from "@markset/render-html";
-import { drawAscii } from "@markset/diagram-ascii";
 
 const USAGE = `usage: markset <command> [options] <file>
 
@@ -25,8 +25,9 @@ options
   --fragment             html: emit only the body fragment
   --css <mode>           html: inline (default) | none | <href to link>
   --theme <file>         html: append a theme stylesheet after the default (spec §6)
-  --diagram <spec>       html: draw diagram fences (spec §10); repeatable
-                           ascii            use the built-in ASCII drawer
+  --diagram <spec>       html: diagram fences (spec §10); repeatable
+                           ascii fences are drawn by default
+                           none             draw nothing; keep every fence as code
                            <lang>=<command> run a command: fence on stdin, SVG on stdout
   --title <text>         html: page title (default: first level-one heading)
   --json                 check: emit diagnostics as JSON
@@ -95,8 +96,9 @@ export async function main(
       const source = await read(files[0]);
       const { ast, diagnostics } = parseDocument(source);
       warn(diagnostics, source, files[0], io);
-      const diagrams = diagramOptions(values.diagram, io);
-      if (diagrams === false) return 2;
+      const choice = diagramOptions(values.diagram, io);
+      if (!choice.ok) return 2;
+      const diagrams = choice.diagrams;
       if (values.fragment) {
         await emit(renderHtml(ast, { diagrams }));
       } else {
@@ -134,11 +136,14 @@ export async function main(
   }
 }
 
-/** Built-in drawers, named by info string. Everything else needs a command. */
-const BUILT_IN: Record<string, DiagramDrawer> = { ascii: (source) => drawAscii(source) };
+/** Either the render option to use, or a usage error already reported. */
+export type DiagramChoice = { ok: true; diagrams: DiagramOptions | false } | { ok: false };
 
 /**
- * Build the --diagram option, or false when a spec is unusable.
+ * Build the --diagram option.
+ *
+ * Drawing is on by default, so no flag at all still draws `ascii` fences; the
+ * flag adds a language, or turns drawing off entirely with `none`.
  *
  * The one property worth stating plainly: a document never names its drawer.
  * The mapping from info string to command comes from this flag and nowhere
@@ -147,32 +152,31 @@ const BUILT_IN: Record<string, DiagramDrawer> = { ascii: (source) => drawAscii(s
  * is the part of invariant 4 that matters — the operator opting into a build
  * step is the same choice they already made by running markset at all.
  */
-export function diagramOptions(
-  specs: string[] | undefined,
-  io: { stderr: (s: string) => void },
-): DiagramOptions | undefined | false {
-  if (!specs || specs.length === 0) return undefined;
+export function diagramOptions(specs: string[] | undefined, io: { stderr: (s: string) => void }): DiagramChoice {
+  const onError = (error: Error, language: string): void =>
+    io.stderr(`markset: diagram ${language}: ${error.message}\n`);
+  // Drawers layer over the built-ins, so naming one language never silently
+  // removes another. An empty set still means "the built-ins", not "none".
   const drawers: Record<string, DiagramDrawer> = {};
-  for (const spec of specs) {
+  for (const spec of specs ?? []) {
+    if (spec === "none") return { ok: true, diagrams: false };
     const split = spec.indexOf("=");
     const language = split === -1 ? spec : spec.slice(0, split);
     if (language === "") {
       io.stderr(`markset: --diagram "${spec}": a language is required\n`);
-      return false;
+      return { ok: false };
     }
     if (split === -1) {
-      const builtIn = BUILT_IN[language];
-      if (!builtIn) {
-        const known = Object.keys(BUILT_IN).join(", ");
+      if (!builtInDrawers[language]) {
+        const known = Object.keys(builtInDrawers).join(", ");
         io.stderr(`markset: --diagram ${language}: no built-in drawer (have: ${known}); use ${language}=<command>\n`);
-        return false;
+        return { ok: false };
       }
-      drawers[language] = builtIn;
       continue;
     }
     drawers[language] = commandDrawer(spec.slice(split + 1));
   }
-  return { drawers, onError: (error, language) => io.stderr(`markset: diagram ${language}: ${error.message}\n`) };
+  return { ok: true, diagrams: { drawers, onError } };
 }
 
 /**

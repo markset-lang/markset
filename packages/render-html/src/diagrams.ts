@@ -9,6 +9,7 @@
  * rather than by promise.
  */
 import type { Element, Nodes as HastNodes, Parent } from "hast";
+import { drawAscii } from "@markset/diagram-ascii";
 
 /**
  * Draws one diagram. Receives the fence's source and its info string, returns
@@ -19,6 +20,20 @@ import type { Element, Nodes as HastNodes, Parent } from "hast";
  * cope with its input should say so rather than return something broken.
  */
 export type DiagramDrawer = (source: string, language: string) => string | null;
+
+/**
+ * Drawers that are on unless a caller turns them off.
+ *
+ * Only `ascii` is here, and the reason is §10's closing argument rather than
+ * convenience: every other diagram source falls back to its own source code,
+ * so drawing it by default would quietly change what a document means in the
+ * places Markset cares most about. ASCII falls back to a diagram either way,
+ * which makes drawing it the same picture the author already wrote.
+ *
+ * Anything a caller passes is layered over this, so registering `mermaid` adds
+ * a language rather than silently removing `ascii`.
+ */
+export const builtInDrawers: Record<string, DiagramDrawer> = { ascii: (source) => drawAscii(source) };
 
 export interface DiagramOptions {
   /** Drawers by info string. A language with no drawer is left as a code block. */
@@ -39,6 +54,19 @@ export interface DiagramOptions {
 export function drawDiagrams(tree: HastNodes, options: DiagramOptions): void {
   if (Object.keys(options.drawers).length === 0) return;
   visit(tree, options);
+}
+
+/**
+ * Resolve the `diagrams` render option into the drawers to actually use.
+ *
+ * `undefined` means the built-ins, because drawing is on by default; `false`
+ * turns every drawer off, which is what an author wants when a fence is meant
+ * to stay text; an object adds to the built-ins rather than replacing them.
+ */
+export function resolveDrawers(option: DiagramOptions | false | undefined): DiagramOptions | null {
+  if (option === false) return null;
+  if (!option) return { drawers: builtInDrawers };
+  return { drawers: { ...builtInDrawers, ...option.drawers }, onError: option.onError };
 }
 
 function visit(node: HastNodes, options: DiagramOptions): void {

@@ -5,11 +5,11 @@ import { toHtml } from "hast-util-to-html";
 import { parseDocument, type Attributes, type Diagnostic, type Frontmatter } from "@markset/parser";
 import { marksetHandlers } from "./handlers.ts";
 import { addHeadingIds } from "./heading-ids.ts";
-import { drawDiagrams, type DiagramOptions } from "./diagrams.ts";
+import { drawDiagrams, resolveDrawers, type DiagramOptions } from "./diagrams.ts";
 
 export { marksetHandlers };
 export { addHeadingIds, headingSlug } from "./heading-ids.ts";
-export { drawDiagrams } from "./diagrams.ts";
+export { drawDiagrams, builtInDrawers, resolveDrawers } from "./diagrams.ts";
 export type { DiagramDrawer, DiagramOptions } from "./diagrams.ts";
 
 export interface RenderOptions {
@@ -20,12 +20,16 @@ export interface RenderOptions {
    */
   headingIds?: boolean;
   /**
-   * Draw diagram code fences (§10). Off by default, and off is always a
-   * correct rendering: a language with no drawer stays a code block. Only a
-   * fence inside a captioned `figure` is ever drawn, and a drawer that fails
-   * leaves the code block untouched.
+   * Draw diagram code fences (§10).
+   *
+   * On by default, with the built-in `ascii` drawer. Pass an object to add a
+   * language — it layers over the built-ins rather than replacing them — or
+   * `false` to draw nothing, which is what a document wants when a fence is
+   * meant to stay selectable text. Only a fence inside a captioned `figure` is
+   * ever drawn (obligation 7), and a drawer that fails leaves the code block
+   * untouched (obligation 5), so neither setting can lose content.
    */
-  diagrams?: DiagramOptions;
+  diagrams?: DiagramOptions | false;
 }
 
 /** Render a parsed tree as an HTML fragment. Non-empty output ends with a newline, as in the CommonMark suite. */
@@ -34,7 +38,8 @@ export function renderHtml(tree: Root, options: RenderOptions = {}): string {
   const hast = toHast(withBlockAttributes(ids), { handlers: marksetHandlers() });
   if (hast) {
     scopeTableHeaders(hast);
-    if (options.diagrams) drawDiagrams(hast, options.diagrams);
+    const diagrams = resolveDrawers(options.diagrams);
+    if (diagrams) drawDiagrams(hast, diagrams);
   }
   const html = toHtml(hast);
   return html === "" ? "" : `${html}\n`;

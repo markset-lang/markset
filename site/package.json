@@ -7,7 +7,6 @@
   "dependencies": {
     "@markset/parser": "*",
     "@markset/render-downgrade": "*",
-    "@markset/render-html": "*",
-    "@markset/diagram-ascii": "*"
+    "@markset/render-html": "*"
   }
 }
