@@ -47,6 +47,7 @@ export const EXAMPLES: Array<{ slug: string; file: string; title: string; theme?
   { slug: "showcase", file: "showcase.md", title: "Showcase", toggles: true, blurb: "Every construct at the size it would really be used, each with a tab holding the source that produced it. It declares no theme stylesheet, so it shows the vocabulary on whatever stylesheet renders it." },
   { slug: "notification-routing", file: "notification-routing.md", title: "Analysis document", theme: "dossier.css", blurb: "A long analysis document with a theme stylesheet: status chips, a layer rail, a tinted pipeline stage, lettered steps. The system it describes is invented." },
   { slug: "strategy-read", file: "strategy-read.md", title: "Strategy memo", theme: "memo.css", blurb: "An argued memo in a newspaper register: a masthead, a captioned data table, marked sections in a two-lane grid, pull quotes and source citations. The company and every figure are invented." },
+  { slug: "incident-review", file: "incident-review.md", title: "Incident review", theme: "incident.css", blurb: "A postmortem in the register of a printed report: an impact strip, a timeline on a rail, a factors table with a real caption, and an action list where the committed items mark themselves. Written to test whether steps carries a timeline; it does. The company and the outage are invented." },
 ];
 
 const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;

@@ -1,0 +1,107 @@
+/* Theme stylesheet for examples/incident-review.md (spec §6).
+ *
+ * The register a postmortem wants is close to a printed report: quiet, dense,
+ * and ordered, with the timeline carrying most of the weight. Nothing here is
+ * named in the document — the document names roles, this file decides what a
+ * role looks like — and everything it styles is either a reserved class or an
+ * author class the document invents: .impact, .when and .now. */
+
+body {
+  --ink: light-dark(#1b1a17, #ece7df);
+  --rule: light-dark(#d8d2c6, #3b3731);
+  --wash: light-dark(#faf7f1, #1b1a17);
+}
+
+.ms-document { --ms-fg: var(--ink); --ms-border: var(--rule); --ms-surface: var(--wash); }
+.ms-document > h1 { font-weight: 700; letter-spacing: -0.025em; }
+.ms-document > h2 { font-weight: 700; letter-spacing: -0.015em; }
+.ms-document > .lead { font-size: 1.15rem; line-height: 1.55; }
+
+/* The eyebrow reads as a file reference rather than a section label here. */
+.eyebrow { font-family: var(--ms-font-mono); font-size: 0.7rem; letter-spacing: 0.1em; }
+
+/* ---- the impact strip ---------------------------------------------------- */
+/* Four facts across the top, in the register of a cover sheet: rules between
+ * them rather than boxes around them, so it reads as one row of figures. */
+.impact { gap: 0; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); }
+.impact .ms-metric { border: 0; border-radius: 0; padding: 0.85rem 1.1rem 0.95rem; }
+.impact .ms-metric + .ms-metric { border-left: 1px solid var(--rule); }
+.impact .ms-metric-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.09em; }
+.impact .ms-metric-value { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
+.impact .ms-metric-delta { font-size: 0.78rem; }
+
+/* ---- the timeline -------------------------------------------------------- */
+/* This is `steps`, not a timeline construct. A postmortem timeline is an
+ * ordered list of things that happened, which is exactly what steps already
+ * carries; what a theme adds is a rail and a marker, and the document says
+ * nothing about either. */
+.ms-steps { border-left: 2px solid var(--rule); margin-left: 0.35rem; padding-left: 1.7rem; }
+.ms-step { padding-left: 0; padding-bottom: 0.35rem; min-height: 0; }
+.ms-step + .ms-step { margin-top: 1.6rem; }
+/* The default styling numbers each step in a filled circle and joins them with
+ * a connector. Here the rail on the list does the joining, so the connector is
+ * dropped and the number becomes a dot: the headings carry the times, and a
+ * timeline numbered 1 to 6 beside them would be counting the same thing twice. */
+.ms-step:not(:last-child)::after { content: none; }
+.ms-step::before {
+  content: "";
+  left: -2.15rem;
+  top: 0.55rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--ms-bg);
+  border: 2px solid var(--rule);
+}
+.ms-step > h3 { font-family: var(--ms-font-mono); font-size: 0.92rem; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+.ms-step > h3 + * { margin-top: 0.5rem !important; }
+
+/* A step that is an action we have already committed to, rather than a thing
+ * that happened. The document marks it {.now}; the rail marker fills in. */
+.ms-step.now::before { background: var(--ms-accent); border-color: var(--ms-accent); }
+.ms-step.now > h3 { color: var(--ms-accent); }
+
+/* A dateline inside a step: {.when} on the paragraph. */
+.when {
+  font-family: var(--ms-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ms-fg-muted);
+  margin-top: 0.3rem !important;
+}
+.when + * { margin-top: 0.45rem !important; }
+
+/* ---- tables and figures -------------------------------------------------- */
+.ms-figure table { font-size: 0.92rem; border-collapse: collapse; width: 100%; }
+.ms-figure th {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ms-fg-muted);
+  border-bottom: 1px solid var(--ink);
+  padding: 0 0.7rem 0.5rem;
+}
+.ms-figure td { padding: 0.6rem 0.7rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.ms-figure td:first-child { font-weight: 600; }
+.ms-figure caption { font-size: 0.85rem; padding-top: 0.7rem; }
+
+/* ---- cards and callouts -------------------------------------------------- */
+.ms-card { border-width: 1px; }
+.ms-card-title { font-size: 0.95rem; letter-spacing: -0.005em; }
+.ms-card pre { background: var(--ms-bg); border: 1px solid var(--rule); }
+.ms-callout { border-radius: 0; }
+.ms-callout-title { font-family: var(--ms-font-mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* ---- grid ---------------------------------------------------------------- */
+.ms-grid-item { border-top: 2px solid var(--rule); padding-top: 0.8rem; }
+.ms-grid-item > h3 { font-size: 0.95rem; letter-spacing: -0.005em; }
+
+/* ---- tabs ---------------------------------------------------------------- */
+.ms-tab { font-family: var(--ms-font-mono); font-size: 0.78rem; }
+.ms-tabpanel pre { font-size: 0.8rem; }
+
+@media print {
+  .ms-steps { break-inside: auto; }
+  .ms-step { break-inside: avoid; }
+}
