@@ -76,3 +76,19 @@ test("one palette, resolved by color-scheme, and a hook to force it", async () =
   // Paper is light even for a reader who chose dark on screen.
   assert.match(css, /body, body\[data-scheme="dark"\] \{ color-scheme: light;/);
 });
+
+test("no element keeps a browser default margin that the rhythm cannot reach", async () => {
+  // Spacing is margin-top only. An element missing from the reset keeps its UA
+  // bottom margin, which is in em and so ignores --ms-space: a figure sat 15px
+  // below itself against a 10px rhythm at compact density, and looked fine at
+  // the others only because the token was larger and collapsed over it.
+  const css = await readFile(defaultStylesheetPath, "utf8");
+  const reset = /\.ms-document :is\(([^)]*)\) \{ margin: 0; \}/.exec(css);
+  assert.ok(reset, "the margin reset is a single :is() list");
+  const gap = /\.ms-document \* \+ :is\(([^)]*)\) \{ margin-top: var\(--ms-space\); \}/.exec(css);
+  assert.ok(gap, "and so is the list that gives them the standard gap");
+  for (const tag of ["p", "ul", "ol", "blockquote", "pre", "table", "figure", "hr", "dl"]) {
+    assert.ok(reset[1].includes(tag), `${tag} keeps a browser default margin`);
+    assert.ok(gap[1].includes(tag), `${tag} is reset but never given the standard gap back`);
+  }
+});
