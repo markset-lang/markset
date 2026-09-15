@@ -174,7 +174,7 @@ A few class names are reserved by the specification, which means they work on th
 | `.info` `.success` `.warn` `.danger` `.neutral` | any | Tone, the same five a card's `tone` attribute uses |
 :::
 
-Everything else you write is yours. Unknown classes reach the HTML untouched and mean whatever a theme stylesheet says they mean, which is how the two long [examples](../examples/index.html) get their look without a single color in their source.
+Everything else you write is yours. Unknown classes reach the HTML untouched and mean whatever a theme stylesheet says they mean, which is how the long [examples](../examples/index.html) get their look without a single color in their source.
 
 {.tick}
 ***
