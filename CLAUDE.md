@@ -44,7 +44,11 @@ packages/
   conformance/      harness: validates tests/*.json against the schema, runs each section's driver
   cli/
 site/       static site generator (build.ts) and content; every page is Markset rendered by the packages above.
-            Nav lives in NAV and the page list in build(); content/cli.md documents the command line tool
+            Nav lives in NAV and the page list in build(). content/start.md is the adoption page,
+            content/cli.md documents the command line tool, and content/guide/index.md teaches the
+            shared grammar. An example with `toggles: true` in EXAMPLES gets every top-level construct
+            wrapped in a Result/Markdown tabs pair, with the source sliced from the file by node
+            position, so the panes cannot drift and the toggle needs no script.
 docs/       background analysis, prior art, design rationale
             future-requirements.md — open register of things real documents asked for; the
             open counterpart to spec §8, which is the closed list of deferred constructs

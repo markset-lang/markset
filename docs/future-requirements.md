@@ -111,6 +111,36 @@ No page has been rendered in a right-to-left language. The stylesheet uses logic
 
 The renderer emits `<code class="language-js">`, which is what every highlighter expects, so this is already solved for anyone who wants it. Recorded only to say so, since it is the first thing people ask for.
 
+### 11. A light and dark mode toggle
+
+**Class: Output. Recommended.**
+
+Every page follows `prefers-color-scheme` and has no way to override it. A reader whose system is dark cannot read a page in light, which matters for anyone checking how a document will print or sharing a screen.
+
+The obvious implementation is a script, and the site has none by design: a test asserts that no built page contains one, and the home page claims as much. A checkbox and a sibling selector can do it without script, at the cost of a control that lives in the markup rather than in the chrome. Worth doing, worth doing carefully, and worth writing down that the no-script property is the constraint rather than an accident.
+
+Observed: raised September 2026 while reviewing the site.
+
+### 12. A left navigation rail on more than the specification
+
+**Class: Output. Recommended.**
+
+The specification page has a sticky table of contents and every other long page does not. The guide index, the CLI page and both long examples are now long enough to want one, and the machinery already exists in the generator.
+
+The work is deciding which pages get it, since a rail on a short page is clutter, and making the rail collapse on a narrow screen the way the specification's already does.
+
+Observed: raised September 2026 while reviewing the site.
+
+### 13. A linter and formatter
+
+**Class: Tooling. Recommended.**
+
+There is no lint step and no formatter. Style is whatever each file ended up with, and the only automated check on the source is the type checker. Biome is the candidate: one binary, no configuration sprawl, and it handles both jobs for TypeScript, JSON and CSS.
+
+This is a repository concern rather than a specification one, so it does not touch the change classes above. The one decision worth making deliberately is whether formatting runs in continuous integration as a gate or only locally.
+
+Observed: raised September 2026.
+
 ## Rejected
 
 | Request | Reason |
