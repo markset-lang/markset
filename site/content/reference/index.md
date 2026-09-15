@@ -6,7 +6,7 @@ theme:
 ---
 
 {.eyebrow}
-Guide
+Reference
 
 # Three pieces of syntax, then eight names
 

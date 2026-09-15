@@ -45,7 +45,7 @@ packages/
   cli/
 site/       static site generator (build.ts) and content; every page is Markset rendered by the packages above.
             Nav lives in NAV and the page list in build(). content/start.md is the adoption page,
-            content/cli.md documents the command line tool, and content/guide/index.md teaches the
+            content/cli.md documents the command line tool, and content/reference/index.md teaches the
             shared grammar. An example with `toggles: true` in EXAMPLES gets every top-level construct
             wrapped in a Result/Markdown tabs pair, with the source sliced from the file by node
             position, so the panes cannot drift and the toggle needs no script.
@@ -64,7 +64,7 @@ docs/       background analysis, prior art, design rationale
 - `site/site.css` is the site's own theme, layered over `markset.css` the way a theme stylesheet is layered over a document (§6). It carries the display typeface and the author classes the site's pages use: `.tick` for a ruler divider, `.stats` for a metrics fact strip, `.compare` for a comparison table, alongside the reserved classes from §5.
 - `build(outDir)` takes an output directory; the tests build into a temporary one so the suite never races `dist/` against a running `site:watch` or a browser.
 - The repository and site URLs live in `package.json` (`repository`, `homepage`) and are read by `site/build.ts`; a test asserts no page or README links anywhere else. Change them there, not in prose.
-- `npm run site` builds the documentation site into `dist/` (ignored by git). `npm run site:watch` serves it at http://localhost:3000 (`-- --port N` to change), rebuilds on change, and reloads open browsers; a stylesheet edit swaps the `<link>` instead of reloading, so the scroll position survives. The reload client is injected as pages are served, never written to `dist/`. The guide and conformance pages are generated from `tests/*.json`, so they never drift from the suite. `.github/workflows/pages.yml` deploys `dist/` to GitHub Pages on push to `main`; Pages must be enabled once in the repository settings with "GitHub Actions" as the source.
+- `npm run site` builds the documentation site into `dist/` (ignored by git). `npm run site:watch` serves it at http://localhost:3000 (`-- --port N` to change), rebuilds on change, and reloads open browsers; a stylesheet edit swaps the `<link>` instead of reloading, so the scroll position survives. The reload client is injected as pages are served, never written to `dist/`. The reference and conformance pages are generated from `tests/*.json`, so they never drift from the suite. `.github/workflows/pages.yml` deploys `dist/` to GitHub Pages on push to `main`; Pages must be enabled once in the repository settings with "GitHub Actions" as the source.
 - Adding a section to `tests/` without a driver in `packages/conformance/src/drivers.ts` is fine: the harness reports it as skipped, not failed. Same for `html`/`downgrade` fields before those renderers exist. Register a driver once the code exists so the cases start counting.
 
 ## Prior art worth knowing
@@ -96,7 +96,7 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] Attribute lines (§2.5, djot-style `{.lead}` line before a block; `packages/parser/src/attribute-lines.ts`, `tests/attribute-line.json`)
 - [x] §9 open questions closed with decisions (spec §9)
 - [x] Release candidate `0.0.0-rc.1` tagged 2026-09-14; change policy in spec §0; `CHANGELOG.md` started
-- [x] Documentation site (`site/`): home, guide per construct, spec with TOC, conformance browser, showcase; deployed by `pages.yml`
+- [x] Documentation site (`site/`): home, reference page per construct, spec with TOC, conformance browser, showcase; deployed by `pages.yml`
 - [x] Attributes on one list item (§2.5, `- {.hot}` opens the item) so a single grid item or step can be styled; theme stylesheet hook (`markset html --theme <file>`, `renderPage({ theme })`, §6)
 - [x] Default stylesheet layout: two lanes with one left edge (prose at `--ms-measure`, constructs and tables at `--ms-measure-wide`); chosen by screenshot 2026-09-14 after a centered two-lane version was rejected
 - [x] First real documents written against the candidate. The private original is untracked and stays out of the repository; the published twin is `examples/notification-routing.md` with `examples/dossier.css`, describing an invented system. Writing them forced §2.5 list-item attributes and the theme hook, and nothing in §4.

@@ -1,6 +1,6 @@
 /**
  * Static site generator for markset.dev-style docs. Every page is Markset
- * rendered by the packages in this repo; the guide and conformance pages are
+ * rendered by the packages in this repo; the reference and conformance pages are
  * generated from tests/*.json so they cannot drift from the suite.
  *
  * Output: dist/ with relative links, so it works at any base path
@@ -19,7 +19,7 @@ const pkg = JSON.parse(await readFile(join(resolve(import.meta.dirname, ".."), "
 const REPO = pkg.repository.url.replace(/\.git$/, "");
 
 interface Page {
-  /** Output path relative to dist/, e.g. "guide/card/index.html". */
+  /** Output path relative to dist/, e.g. "reference/card/index.html". */
   path: string;
   title: string;
   /** Rendered <main> content. */
@@ -35,7 +35,7 @@ interface ConformanceCase {
   section: string; name?: string; markset: string; html?: string; downgrade?: string; ast?: unknown; valid: boolean; diagnostics?: string[];
 }
 
-const NAV: Array<[string, string]> = [["Home", "index.html"], ["Start", "start/index.html"], ["Guide", "guide/index.html"], ["CLI", "cli/index.html"], ["Spec", "spec/index.html"], ["Conformance", "conformance/index.html"], ["Examples", "examples/index.html"]];
+const NAV: Array<[string, string]> = [["Home", "index.html"], ["Start", "start/index.html"], ["Reference", "reference/index.html"], ["CLI", "cli/index.html"], ["Spec", "spec/index.html"], ["Conformance", "conformance/index.html"], ["Examples", "examples/index.html"]];
 
 /** Documents rendered as their own pages, with the theme stylesheet each one is meant to be read with (spec §6). */
 const EXAMPLES: Array<{ slug: string; file: string; title: string; theme?: string; toggles?: boolean; blurb: string }> = [
@@ -65,8 +65,8 @@ export async function build(outDir: string = join(root, "dist")): Promise<string
     await markdownPage("start/index.html", join(root, "site", "content", "start.md")),
     await markdownPage("cli/index.html", join(root, "site", "content", "cli.md")),
     await specPage(),
-    await guideIndex(),
-    ...(await Promise.all(CONSTRUCTS.map((name) => guidePage(name, cases[name] ?? [])))),
+    await referenceIndex(),
+    ...(await Promise.all(CONSTRUCTS.map((name) => referencePage(name, cases[name] ?? [])))),
     conformanceIndex(cases),
     ...SECTION_ORDER.filter((s) => cases[s]).map((s) => conformancePage(s, cases[s])),
     await examplesIndex(),
@@ -165,12 +165,12 @@ async function specPage(): Promise<Page> {
   return { path: "spec/index.html", title: "Markset v0 specification", body: banner + renderHtml(ast), toc };
 }
 
-async function guideIndex(): Promise<Page> {
-  const intro = await readFile(join(root, "site", "content", "guide", "index.md"), "utf8");
+async function referenceIndex(): Promise<Page> {
+  const intro = await readFile(join(root, "site", "content", "reference", "index.md"), "utf8");
   const { ast, diagnostics } = parseDocument(intro);
-  failOnErrors(diagnostics, "guide/index.md");
+  failOnErrors(diagnostics, "reference/index.md");
   const list = CONSTRUCTS.map((name) => `<li><a href="${name}/index.html"><code>${name}</code></a> — ${esc(BLURB[name])}</li>`).join("\n");
-  return { path: "guide/index.html", title: "Guide", body: renderHtml(ast) + `<ul class="site-list">\n${list}\n</ul>\n` };
+  return { path: "reference/index.html", title: "Reference", body: renderHtml(ast) + `<ul class="site-list">\n${list}\n</ul>\n` };
 }
 
 const BLURB: Record<(typeof CONSTRUCTS)[number], string> = {
@@ -185,12 +185,12 @@ const BLURB: Record<(typeof CONSTRUCTS)[number], string> = {
 };
 
 /**
- * The examples each guide page shows, in order, with a line saying what to look
+ * The examples each reference page shows, in order, with a line saying what to look
  * at. Named rather than sliced, so a page shows a chosen progression from the
  * canonical form to the awkward corners instead of whatever happens to be first.
  * A name that no longer matches a case fails the build.
  */
-const GUIDE_EXAMPLES: Record<string, Array<[string, string]>> = {
+const REFERENCE_EXAMPLES: Record<string, Array<[string, string]>> = {
   callout: [
     ["canonical", "The marker, a title on the same line, and a body. This is GitHub's alert syntax unchanged, so it renders natively there too."],
     ["collapsed by default, no title", "A trailing `-` folds the callout. With no title, the type name is used. It becomes a `<details>` element, so folding needs no script."],
@@ -241,18 +241,18 @@ const GUIDE_EXAMPLES: Record<string, Array<[string, string]>> = {
   ],
 };
 
-async function guidePage(name: (typeof CONSTRUCTS)[number], sectionCases: ConformanceCase[]): Promise<Page> {
-  const file = join(root, "site", "content", "guide", `${name}.md`);
+async function referencePage(name: (typeof CONSTRUCTS)[number], sectionCases: ConformanceCase[]): Promise<Page> {
+  const file = join(root, "site", "content", "reference", `${name}.md`);
   const { ast, diagnostics } = parseDocument(await readFile(file, "utf8"));
   failOnErrors(diagnostics, file);
   addHeadingIds(ast);
-  const chosen = GUIDE_EXAMPLES[name] ?? [["canonical", ""]];
+  const chosen = REFERENCE_EXAMPLES[name] ?? [["canonical", ""]];
   const invalid = sectionCases.filter((c) => !c.valid).slice(0, 3);
   let body = renderHtml(ast);
   body += `<h2 id="examples">Examples</h2>\n`;
   for (const [caseName, note] of chosen) {
     const found = sectionCases.find((c) => c.name === caseName);
-    if (!found) throw new Error(`guide/${name}: no conformance case named "${caseName}"`);
+    if (!found) throw new Error(`reference/${name}: no conformance case named "${caseName}"`);
     if (note) body += `<p class="site-note">${inlineCode(note)}</p>\n`;
     body += `${caseCard(found, { showName: true })}\n`;
   }
@@ -261,7 +261,7 @@ async function guidePage(name: (typeof CONSTRUCTS)[number], sectionCases: Confor
     body += invalid.map((c) => caseCard(c, { showName: true, compact: true })).join("\n");
   }
   body += `<p class="site-more">All ${sectionCases.length} cases for <code>${name}</code> are in the <a href="../../conformance/${name}/index.html">conformance browser</a>. The normative text is <a href="../../spec/index.html#4-core-constructs">spec §4</a>.</p>\n`;
-  return { path: `guide/${name}/index.html`, title: `${name} — Guide`, body };
+  return { path: `reference/${name}/index.html`, title: `${name} — Reference`, body };
 }
 
 function conformanceIndex(cases: Record<string, ConformanceCase[]>): Page {
@@ -289,7 +289,7 @@ ${list.map((c, i) => caseCard(c, { showName: true, index: i + 1 })).join("\n")}`
 }
 
 /** One case: source, live rendering (when a document), downgrade, diagnostics. */
-/** Backticks in a guide note become code elements; everything else is escaped. */
+/** Backticks in a reference note become code elements; everything else is escaped. */
 function inlineCode(text: string): string {
   return esc(text).replace(/`([^`]+)`/g, "<code>$1</code>");
 }

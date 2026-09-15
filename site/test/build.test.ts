@@ -17,7 +17,7 @@ after(async () => { await rm(dist, { recursive: true, force: true }); });
 test("the site builds, every page has the shell, and links stay relative", async () => {
   assert.ok(pages.includes("index.html"));
   assert.ok(pages.includes("spec/index.html"));
-  assert.ok(pages.includes("guide/card/index.html"));
+  assert.ok(pages.includes("reference/card/index.html"));
   assert.ok(pages.includes("conformance/grid/index.html"));
   assert.ok(pages.length >= 25, `only ${pages.length} pages`);
   for (const page of pages) {
