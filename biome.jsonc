@@ -1,0 +1,66 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": {
+    "includes": ["**", "!**/node_modules", "!dist", "!dist.staging-*", "!dist.previous-*"]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    // 95% of the existing lines fit in 105 columns. This leaves the deliberate
+    // long ones alone without inviting new ones.
+    "lineWidth": 120
+  },
+  "javascript": {
+    "formatter": { "quoteStyle": "double", "semicolons": "always", "trailingCommas": "all" }
+  },
+  "json": {
+    "formatter": { "indentStyle": "space", "indentWidth": 2 }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "style": {
+        // A non-null assertion here always sits behind a check the compiler
+        // cannot see through, such as an index access proving a branch. Made
+        // explicit rather than left as 5 inline suppressions.
+        "noNonNullAssertion": "off"
+      },
+      "complexity": {
+        // Used deliberately, and only to beat a sibling margin set by the
+        // default stylesheet, which is what a theme stylesheet is for (§6).
+        "noImportantStyles": "off"
+      }
+    }
+  },
+  // Import order is not something this repository has ever argued about, and
+  // reordering imports is a change the type checker cannot catch if it is wrong.
+  "assist": { "actions": { "source": { "organizeImports": "off" } } },
+  "overrides": [
+    {
+      // The stylesheets are written one rule to a line on purpose: markset.css
+      // is mostly token declarations, and a formatter that explodes each rule
+      // over three lines triples its length and makes it harder to scan. Two
+      // tests also pin exact rule text. Linting still applies.
+      "includes": ["**/*.css"],
+      "formatter": { "enabled": false },
+      "linter": {
+        "rules": {
+          "style": {
+            // Layering a theme over the default stylesheet means later rules
+            // routinely have lower specificity than earlier ones, which is the
+            // cascade working, not a mistake. 80 of these, all intended.
+            "noDescendingSpecificity": "off"
+          }
+        }
+      }
+    },
+    {
+      // The conformance suite is generated, written by JSON.stringify with two
+      // spaces. A formatter that disagrees would fight every regeneration.
+      "includes": ["tests/**/*.json"],
+      "formatter": { "enabled": false }
+    }
+  ]
+}

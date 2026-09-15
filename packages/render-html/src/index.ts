@@ -19,7 +19,7 @@ export interface RenderOptions {
 
 /** Render a parsed tree as an HTML fragment. Non-empty output ends with a newline, as in the CommonMark suite. */
 export function renderHtml(tree: Root, options: RenderOptions = {}): string {
-  const ids = options.headingIds ?? true ? addHeadingIds(tree) : tree;
+  const ids = (options.headingIds ?? true) ? addHeadingIds(tree) : tree;
   const hast = toHast(withBlockAttributes(ids), { handlers: marksetHandlers() });
   const html = toHtml(hast);
   return html === "" ? "" : `${html}\n`;
@@ -40,14 +40,18 @@ export function renderPage(tree: Root, options: PageOptions = {}): string {
   const meta = tree.frontmatter ?? null;
   const title = escapeHtml(options.title ?? firstHeading(tree) ?? "Document");
   const style = styleTag(options.stylesheet) + styleTag(options.theme);
-  return `<!doctype html>\n<html lang="${escapeHtml(options.lang ?? "en")}">\n<head>\n<meta charset="utf-8">\n`
-    + `<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${title}</title>\n${style}</head>\n`
-    + `<body${bodyAttributes(meta)}>\n<main class="ms-document">\n${renderHtml(tree, options)}</main>\n</body>\n</html>\n`;
+  return (
+    `<!doctype html>\n<html lang="${escapeHtml(options.lang ?? "en")}">\n<head>\n<meta charset="utf-8">\n` +
+    `<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${title}</title>\n${style}</head>\n` +
+    `<body${bodyAttributes(meta)}>\n<main class="ms-document">\n${renderHtml(tree, options)}</main>\n</body>\n</html>\n`
+  );
 }
 
 function styleTag(sheet: { inline: string } | { href: string } | undefined): string {
   if (!sheet) return "";
-  return "inline" in sheet ? `<style>\n${sheet.inline}\n</style>\n` : `<link rel="stylesheet" href="${escapeHtml(sheet.href)}">\n`;
+  return "inline" in sheet
+    ? `<style>\n${sheet.inline}\n</style>\n`
+    : `<link rel="stylesheet" href="${escapeHtml(sheet.href)}">\n`;
 }
 
 export function bodyAttributes(meta: Frontmatter | null): string {
@@ -85,7 +89,10 @@ function withBlockAttributes(tree: Root): Root {
       if (attributes.id) properties.id = attributes.id;
       if (attributes.classes.length) properties.className = attributes.classes;
       for (const [key, value] of Object.entries(attributes.attrs)) properties[`data-${key}`] = value;
-      node.data = { ...node.data, hProperties: { ...(node.data as { hProperties?: object } | undefined)?.hProperties, ...properties } };
+      node.data = {
+        ...node.data,
+        hProperties: { ...(node.data as { hProperties?: object } | undefined)?.hProperties, ...properties },
+      };
     }
     if ("children" in node) for (const child of node.children) visit(child as Nodes);
   };
@@ -94,11 +101,25 @@ function withBlockAttributes(tree: Root): Root {
 }
 
 /** Node types whose handlers in handlers.ts already read `attributes` or `id`/`classes` themselves. */
-const MARKSET_HANDLED = new Set(["callout", "card", "grid", "columns", "column", "tabs", "tab", "steps", "metrics", "figure", "span", "directive", "separator"]);
+const MARKSET_HANDLED = new Set([
+  "callout",
+  "card",
+  "grid",
+  "columns",
+  "column",
+  "tabs",
+  "tab",
+  "steps",
+  "metrics",
+  "figure",
+  "span",
+  "directive",
+  "separator",
+]);
 
 function firstHeading(tree: Root): string | null {
   const heading = tree.children.find((n) => n.type === "heading" && n.depth === 1);
-  if (!heading || heading.type !== "heading") return null;
+  if (heading?.type !== "heading") return null;
   let text = "";
   const visit = (node: { type?: string; value?: unknown; children?: unknown[] }): void => {
     if (typeof node.value === "string" && node.type !== "html") text += node.value;

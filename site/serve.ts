@@ -163,7 +163,9 @@ function rebuild(): Promise<boolean> {
   return new Promise((done) => {
     const child = spawn(process.execPath, [join(root, "site", "build.ts")], { stdio: ["ignore", "inherit", "pipe"] });
     let stderr = "";
-    child.stderr.on("data", (chunk) => { stderr += String(chunk); });
+    child.stderr.on("data", (chunk) => {
+      stderr += String(chunk);
+    });
     child.on("close", (code) => {
       if (code !== 0) process.stderr.write(`site: build failed\n${stderr}`);
       done(code === 0);
@@ -206,7 +208,9 @@ function startWatching(): void {
     if (name.startsWith(".") || name.endsWith("~") || /^\d+$/.test(name)) return;
     pending.add(file);
     if (timer) clearTimeout(timer);
-    timer = setTimeout(() => { void flush(); }, 50);
+    timer = setTimeout(() => {
+      void flush();
+    }, 50);
   };
 
   for (const target of WATCHED) {
@@ -224,7 +228,9 @@ async function main(argv: string[]): Promise<void> {
   process.stdout.write("site: building\n");
   if (!(await rebuild())) process.exitCode = 1;
   startWatching();
-  createServer((req, res) => { void handle(req, res); }).listen(port, () => {
+  createServer((req, res) => {
+    void handle(req, res);
+  }).listen(port, () => {
     process.stdout.write(`site: http://localhost:${port} — watching for changes\n`);
   });
 }

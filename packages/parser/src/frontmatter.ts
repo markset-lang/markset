@@ -40,13 +40,21 @@ const HEX_COLOR = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 export function readFrontmatter(node: Yaml, diagnostics: Diagnostic[]): Frontmatter {
   const valueStart = (node.position?.start.offset ?? 0) + 4; // past "---\n"
   const report = (code: string, severity: Severity, message: string, line?: number): void => {
-    const span = line === undefined ? { start: node.position?.start.offset ?? 0, end: node.position?.end.offset ?? 0 } : lineSpan(node.value, line, valueStart);
+    const span =
+      line === undefined
+        ? { start: node.position?.start.offset ?? 0, end: node.position?.end.offset ?? 0 }
+        : lineSpan(node.value, line, valueStart);
     diagnostics.push({ code, severity, message, ...span });
   };
 
   const parsed = parseYamlSubset(node.value);
   if (parsed.error) {
-    report(FrontmatterCode.UNPARSEABLE, "warning", `frontmatter could not be read: ${parsed.error.message}`, parsed.error.line);
+    report(
+      FrontmatterCode.UNPARSEABLE,
+      "warning",
+      `frontmatter could not be read: ${parsed.error.message}`,
+      parsed.error.line,
+    );
     return { markset: null, theme: null };
   }
   const data = parsed.value;
@@ -57,13 +65,24 @@ export function readFrontmatter(node: Yaml, diagnostics: Diagnostic[]): Frontmat
     if (data.markset === 0) {
       markset = 0;
     } else {
-      report(FrontmatterCode.VERSION_UNSUPPORTED, "error", `markset: ${JSON.stringify(data.markset)} is not a supported version; this parser implements 0`, lineOf("markset"));
+      report(
+        FrontmatterCode.VERSION_UNSUPPORTED,
+        "error",
+        `markset: ${JSON.stringify(data.markset)} is not a supported version; this parser implements 0`,
+        lineOf("markset"),
+      );
     }
   }
 
   let theme: Theme | null = null;
   if ("theme" in data) {
-    theme = { preset: null, accent: null, density: null, radius: null, type: { body: null, heading: null, scale: null } };
+    theme = {
+      preset: null,
+      accent: null,
+      density: null,
+      radius: null,
+      type: { body: null, heading: null, scale: null },
+    };
     const block = data.theme;
     if (!isMap(block)) {
       report(FrontmatterCode.THEME_INVALID_TOKEN, "error", "theme must be a mapping of tokens", lineOf("theme"));
@@ -71,33 +90,72 @@ export function readFrontmatter(node: Yaml, diagnostics: Diagnostic[]): Frontmat
       for (const [key, value] of Object.entries(block)) {
         const line = lineOf(key);
         switch (key) {
-          case "preset": theme.preset = oneOf(PRESETS, value, key, line); break;
-          case "density": theme.density = oneOf(DENSITIES, value, key, line); break;
-          case "radius": theme.radius = oneOf(RADII, value, key, line); break;
+          case "preset":
+            theme.preset = oneOf(PRESETS, value, key, line);
+            break;
+          case "density":
+            theme.density = oneOf(DENSITIES, value, key, line);
+            break;
+          case "radius":
+            theme.radius = oneOf(RADII, value, key, line);
+            break;
           case "accent":
             if (typeof value === "string" && HEX_COLOR.test(value)) theme.accent = value;
-            else report(FrontmatterCode.THEME_INVALID_TOKEN, "error", `theme.accent must be a hex color like "#2563eb"`, line);
+            else
+              report(
+                FrontmatterCode.THEME_INVALID_TOKEN,
+                "error",
+                `theme.accent must be a hex color like "#2563eb"`,
+                line,
+              );
             break;
           case "type":
             if (!isMap(value)) {
-              report(FrontmatterCode.THEME_INVALID_TOKEN, "error", "theme.type must be a mapping with body, heading, scale", line);
+              report(
+                FrontmatterCode.THEME_INVALID_TOKEN,
+                "error",
+                "theme.type must be a mapping with body, heading, scale",
+                line,
+              );
               break;
             }
             for (const [sub, subValue] of Object.entries(value)) {
               const subLine = lineOf(sub);
               if (sub === "body" || sub === "heading") {
                 if (typeof subValue === "string" && subValue !== "") theme.type[sub] = subValue;
-                else report(FrontmatterCode.THEME_INVALID_TOKEN, "error", `theme.type.${sub} must be a font family name`, subLine);
+                else
+                  report(
+                    FrontmatterCode.THEME_INVALID_TOKEN,
+                    "error",
+                    `theme.type.${sub} must be a font family name`,
+                    subLine,
+                  );
               } else if (sub === "scale") {
                 if (typeof subValue === "number" && subValue >= 1 && subValue <= 2) theme.type.scale = subValue;
-                else report(FrontmatterCode.THEME_INVALID_TOKEN, "error", "theme.type.scale must be a number from 1 to 2", subLine);
+                else
+                  report(
+                    FrontmatterCode.THEME_INVALID_TOKEN,
+                    "error",
+                    "theme.type.scale must be a number from 1 to 2",
+                    subLine,
+                  );
               } else {
-                report(FrontmatterCode.THEME_UNKNOWN_TOKEN, "warning", `theme.type.${sub} is not a theme token; it is ignored`, subLine);
+                report(
+                  FrontmatterCode.THEME_UNKNOWN_TOKEN,
+                  "warning",
+                  `theme.type.${sub} is not a theme token; it is ignored`,
+                  subLine,
+                );
               }
             }
             break;
           default:
-            report(FrontmatterCode.THEME_UNKNOWN_TOKEN, "warning", `theme.${key} is not a theme token; it is ignored`, line);
+            report(
+              FrontmatterCode.THEME_UNKNOWN_TOKEN,
+              "warning",
+              `theme.${key} is not a theme token; it is ignored`,
+              line,
+            );
         }
       }
     }

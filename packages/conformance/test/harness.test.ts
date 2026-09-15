@@ -18,8 +18,17 @@ test("all aspects pass when actual matches expected", () => {
 });
 
 test("html and downgrade are skipped, not failed, when no renderer exists", () => {
-  const aspects = compareCase({ ...base, html: "<p>", downgrade: "x" }, { valid: true, diagnostics: [], ast: { a: 1 } });
-  assert.deepEqual(statuses(aspects), { valid: "pass", diagnostics: "pass", ast: "pass", html: "skip", downgrade: "skip" });
+  const aspects = compareCase(
+    { ...base, html: "<p>", downgrade: "x" },
+    { valid: true, diagnostics: [], ast: { a: 1 } },
+  );
+  assert.deepEqual(statuses(aspects), {
+    valid: "pass",
+    diagnostics: "pass",
+    ast: "pass",
+    html: "skip",
+    downgrade: "skip",
+  });
 });
 
 test("html and downgrade are compared when the driver supplies them", () => {
@@ -27,7 +36,13 @@ test("html and downgrade are compared when the driver supplies them", () => {
     { ...base, html: "<p>", downgrade: "x" },
     { valid: true, diagnostics: [], ast: { a: 1 }, html: "<p>", downgrade: "y" },
   );
-  assert.deepEqual(statuses(aspects), { valid: "pass", diagnostics: "pass", ast: "pass", html: "pass", downgrade: "fail" });
+  assert.deepEqual(statuses(aspects), {
+    valid: "pass",
+    diagnostics: "pass",
+    ast: "pass",
+    html: "pass",
+    downgrade: "fail",
+  });
 });
 
 test("diagnostics are compared as a multiset and valid is checked independently", () => {
@@ -50,7 +65,9 @@ test("driver problems and thrown errors are reported as driver failures", () => 
   const problems = compareCase(base, { valid: true, diagnostics: [], ast: { a: 1 }, problems: ["leftover input"] });
   assert.equal(problems.filter((a) => a.aspect === "driver" && a.status === "fail").length, 1);
 
-  const throwing: Driver = () => { throw new Error("boom"); };
+  const throwing: Driver = () => {
+    throw new Error("boom");
+  };
   const result = runCase(base, 1, throwing);
   assert.equal(result.aspects[0].status, "fail");
   assert.match(result.aspects[0].detail!, /boom/);
@@ -70,11 +87,17 @@ test("runSuite validates files against the schema and checks the section name", 
   await writeFile(join(dir, "notjson.json"), "{");
 
   const echo: Driver = () => ({ valid: true, diagnostics: [], ast: 1 });
-  const result = await runSuite({ testsDir: dir, drivers: { good: echo, mismatch: echo, broken: echo, notjson: echo } });
+  const result = await runSuite({
+    testsDir: dir,
+    drivers: { good: echo, mismatch: echo, broken: echo, notjson: echo },
+  });
   const byName = Object.fromEntries(result.files.map((f) => [f.section, f]));
 
   assert.equal(byName.good.cases.length, 1);
-  assert.equal(byName.good.cases[0].aspects.every((a) => a.status === "pass"), true);
+  assert.equal(
+    byName.good.cases[0].aspects.every((a) => a.status === "pass"),
+    true,
+  );
   assert.match(byName.mismatch.fileErrors[0], /declares section "other"/);
   assert.ok(byName.broken.schemaErrors.some((e) => e.message.includes('"markset"')));
   assert.match(byName.notjson.fileErrors[0], /could not read as JSON/);

@@ -31,7 +31,7 @@ test("fence-line diagnostics carry document offsets", () => {
 });
 
 test("span diagnostics carry document offsets across lines", () => {
-  const source = "Line one.\nLine two with [x]{tone=a\"b} here.\n";
+  const source = 'Line one.\nLine two with [x]{tone=a"b} here.\n';
   const { diagnostics } = parseDocument(source);
   assert.equal(diagnostics.length, 1);
   assert.equal(diagnostics[0].code, "ATTR_BAD_VALUE");
@@ -41,14 +41,20 @@ test("span diagnostics carry document offsets across lines", () => {
 test("unclosed warning points at the opening fence line", () => {
   const source = "> :::card{tone=info}\n> body\n";
   const { diagnostics } = parseDocument(source);
-  assert.deepEqual(diagnostics.map((d) => [d.code, d.severity]), [["DIRECTIVE_UNCLOSED", "warning"]]);
+  assert.deepEqual(
+    diagnostics.map((d) => [d.code, d.severity]),
+    [["DIRECTIVE_UNCLOSED", "warning"]],
+  );
   assert.equal(source.slice(diagnostics[0].start, diagnostics[0].end), ":::card{tone=info}");
 });
 
 test("diagnostics are sorted by offset across parser and structure passes", () => {
   const source = "::col\n\n:::card{#}\n:::\n\n::col\n";
   const { diagnostics } = parseDocument(source);
-  assert.deepEqual(diagnostics.map((d) => d.code), ["SEPARATOR_OUTSIDE_PARENT", "ATTR_BAD_IDENTIFIER", "SEPARATOR_OUTSIDE_PARENT"]);
+  assert.deepEqual(
+    diagnostics.map((d) => d.code),
+    ["SEPARATOR_OUTSIDE_PARENT", "ATTR_BAD_IDENTIFIER", "SEPARATOR_OUTSIDE_PARENT"],
+  );
   for (let i = 1; i < diagnostics.length; i++) assert.ok(diagnostics[i - 1].start <= diagnostics[i].start);
 });
 

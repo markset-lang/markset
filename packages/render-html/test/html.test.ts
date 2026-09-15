@@ -16,13 +16,19 @@ test("tab input names restart per render, so documents do not share ids", () => 
 });
 
 test("renderPage wraps the fragment and carries theme tokens onto body", () => {
-  const source = "---\nmarkset: 0\ntheme:\n  preset: deck\n  accent: \"#2563eb\"\n  density: compact\n  radius: lg\n  type:\n    body: \"Source Serif 4\"\n    heading: Inter\n    scale: 1.25\n---\n\n# Hello & World\n";
+  const source =
+    '---\nmarkset: 0\ntheme:\n  preset: deck\n  accent: "#2563eb"\n  density: compact\n  radius: lg\n  type:\n    body: "Source Serif 4"\n    heading: Inter\n    scale: 1.25\n---\n\n# Hello & World\n';
   const { ast } = parseDocument(source);
   const page = renderPage(ast, { stylesheet: { href: "markset.css" } });
   assert.match(page, /^<!doctype html>\n<html lang="en">/);
   assert.match(page, /<title>Hello &amp; World<\/title>/);
   assert.match(page, /<link rel="stylesheet" href="markset.css">/);
-  assert.ok(page.includes('<body data-preset="deck" data-density="compact" data-radius="lg" style="--ms-accent: #2563eb; --ms-font-body: &quot;Source Serif 4&quot;; --ms-font-heading: &quot;Inter&quot;; --ms-type-scale: 1.25">'), page);
+  assert.ok(
+    page.includes(
+      '<body data-preset="deck" data-density="compact" data-radius="lg" style="--ms-accent: #2563eb; --ms-font-body: &quot;Source Serif 4&quot;; --ms-font-heading: &quot;Inter&quot;; --ms-type-scale: 1.25">',
+    ),
+    page,
+  );
   assert.ok(page.includes('<main class="ms-document">\n<h1 id="hello-world">Hello &#x26; World</h1>\n</main>'), page);
 });
 

@@ -86,12 +86,27 @@ function parseOpen(line: string, fence: number, nameStart: number): DirectiveLin
   const { name, end: nameEnd } = readName(line, pos);
   pos = nameEnd;
   if (name === "") {
-    error(DirectiveCode.MISSING_NAME, "directive fence has no name; anonymous fenced divs are not Markset", nameStart, nameStart);
+    error(
+      DirectiveCode.MISSING_NAME,
+      "directive fence has no name; anonymous fenced divs are not Markset",
+      nameStart,
+      nameStart,
+    );
   } else if (!IDENTIFIER.test(name)) {
-    error(DirectiveCode.BAD_NAME, `"${name}" is not a valid directive name; names match [A-Za-z][A-Za-z0-9_-]*`, nameStart, nameEnd);
+    error(
+      DirectiveCode.BAD_NAME,
+      `"${name}" is not a valid directive name; names match [A-Za-z][A-Za-z0-9_-]*`,
+      nameStart,
+      nameEnd,
+    );
   } else if (!BLOCK_DIRECTIVE_NAMES.has(name)) {
     const hint = SEPARATOR_NAMES.has(name) ? `; "::${name}" is a separator, not a block directive` : "";
-    error(DirectiveCode.UNKNOWN_NAME, `unknown directive "${name}"${hint}; expected one of ${[...BLOCK_DIRECTIVE_NAMES].join(", ")}`, nameStart, nameEnd);
+    error(
+      DirectiveCode.UNKNOWN_NAME,
+      `unknown directive "${name}"${hint}; expected one of ${[...BLOCK_DIRECTIVE_NAMES].join(", ")}`,
+      nameStart,
+      nameEnd,
+    );
   }
   const validName = name !== "" && IDENTIFIER.test(name) ? name : null;
 
@@ -101,7 +116,13 @@ function parseOpen(line: string, fence: number, nameStart: number): DirectiveLin
     if (closeAt === -1) {
       error(DirectiveCode.UNTERMINATED_ARGUMENT, "directive argument is missing its closing `]`", pos, line.length);
       return {
-        line: { type: "directive-open", fence, name: validName, argument: line.slice(pos + 1), attributes: emptyAttributes() },
+        line: {
+          type: "directive-open",
+          fence,
+          name: validName,
+          argument: line.slice(pos + 1),
+          attributes: emptyAttributes(),
+        },
         diagnostics,
       };
     }
@@ -132,7 +153,12 @@ function parseSeparator(line: string, nameStart: number): DirectiveLineResult | 
   };
 
   if (!SEPARATOR_NAMES.has(name)) {
-    error(DirectiveCode.UNKNOWN_NAME, `unknown separator "${name}"; expected one of ${[...SEPARATOR_NAMES].join(", ")}`, nameStart, nameEnd);
+    error(
+      DirectiveCode.UNKNOWN_NAME,
+      `unknown separator "${name}"; expected one of ${[...SEPARATOR_NAMES].join(", ")}`,
+      nameStart,
+      nameEnd,
+    );
   }
 
   let pos = nameEnd;
@@ -160,20 +186,28 @@ function findClosingBracket(line: string, openAt: number): number {
   let depth = 0;
   for (let i = openAt; i < line.length; i++) {
     const c = line[i];
-    if (c === "\\") { i++; continue; }
+    if (c === "\\") {
+      i++;
+      continue;
+    }
     if (c === "[") depth++;
     else if (c === "]" && --depth === 0) return i;
   }
   return -1;
 }
 
-function checkTrailing(line: string, pos: number, error: (code: string, message: string, start: number, end: number) => void): void {
+function checkTrailing(
+  line: string,
+  pos: number,
+  error: (code: string, message: string, start: number, end: number) => void,
+): void {
   if (isBlank(line, pos)) return;
   let start = pos;
   while (start < line.length && (line[start] === " " || line[start] === "\t")) start++;
-  const hint = line[start] === "[" || line[start] === "{"
-    ? "; the argument and attribute specifier must follow the name with no whitespace"
-    : "";
+  const hint =
+    line[start] === "[" || line[start] === "{"
+      ? "; the argument and attribute specifier must follow the name with no whitespace"
+      : "";
   error(DirectiveCode.TRAILING_CONTENT, `unexpected content after the directive${hint}`, start, line.length);
 }
 

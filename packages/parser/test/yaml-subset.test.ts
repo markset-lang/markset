@@ -3,21 +3,23 @@ import assert from "node:assert/strict";
 import { parseYamlSubset } from "../src/index.ts";
 
 test("maps, nesting, scalars, and comments", () => {
-  const { value, error } = parseYamlSubset([
-    "markset: 0",
-    "title: \"Quoted: with colon\"  # trailing comment",
-    "single: 'it''s'",
-    "# full-line comment",
-    "flag: true",
-    "nothing: ~",
-    "ratio: 1.25",
-    "neg: -3",
-    "theme:",
-    "  preset: deck",
-    "  type:",
-    "    scale: 1.2",
-    "url: https://example.test/#anchor",
-  ].join("\n"));
+  const { value, error } = parseYamlSubset(
+    [
+      "markset: 0",
+      'title: "Quoted: with colon"  # trailing comment',
+      "single: 'it''s'",
+      "# full-line comment",
+      "flag: true",
+      "nothing: ~",
+      "ratio: 1.25",
+      "neg: -3",
+      "theme:",
+      "  preset: deck",
+      "  type:",
+      "    scale: 1.2",
+      "url: https://example.test/#anchor",
+    ].join("\n"),
+  );
   assert.equal(error, null);
   assert.deepEqual(value, {
     markset: 0,
@@ -33,7 +35,9 @@ test("maps, nesting, scalars, and comments", () => {
 });
 
 test("block and flow sequences, including maps in sequences", () => {
-  const { value, error } = parseYamlSubset("tags: [a, \"b, c\", 3]\nauthors:\n  - name: X\n    role: y\n  - name: Z\nplain:\n  - one\n  - two\n");
+  const { value, error } = parseYamlSubset(
+    'tags: [a, "b, c", 3]\nauthors:\n  - name: X\n    role: y\n  - name: Z\nplain:\n  - one\n  - two\n',
+  );
   assert.equal(error, null);
   assert.deepEqual(value, {
     tags: ["a", "b, c", 3],
@@ -58,5 +62,5 @@ test("errors report the line and stop", () => {
   assert.deepEqual(bad.value, {});
   assert.equal(parseYamlSubset("- a\n- b\n").error?.message, "frontmatter must be a mapping");
   assert.equal(parseYamlSubset("not a key\n").error?.message, 'expected "key: value"');
-  assert.equal(parseYamlSubset("q: \"open\n").error?.message, "unterminated quoted string");
+  assert.equal(parseYamlSubset('q: "open\n').error?.message, "unterminated quoted string");
 });

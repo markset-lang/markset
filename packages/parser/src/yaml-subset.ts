@@ -15,7 +15,11 @@ export interface YamlResult {
   error: { message: string; line: number } | null;
 }
 
-interface Line { indent: number; text: string; number: number }
+interface Line {
+  indent: number;
+  text: string;
+  number: number;
+}
 
 export function parseYamlSubset(source: string): YamlResult {
   const lines: Line[] = [];
@@ -61,16 +65,22 @@ export function parseYamlSubset(source: string): YamlResult {
         map[key] = parseBlockScalar(indent, rest === ">");
       } else {
         map[key] = parseScalar(rest, line.number);
-        if (pos < lines.length && lines[pos].indent > indent) throw new YamlError("unexpected indentation", lines[pos].number);
+        if (pos < lines.length && lines[pos].indent > indent)
+          throw new YamlError("unexpected indentation", lines[pos].number);
       }
     }
-    if (pos < lines.length && lines[pos].indent > indent) throw new YamlError("unexpected indentation", lines[pos].number);
+    if (pos < lines.length && lines[pos].indent > indent)
+      throw new YamlError("unexpected indentation", lines[pos].number);
     return map;
   }
 
   function parseSequence(indent: number): YamlValue[] {
     const list: YamlValue[] = [];
-    while (pos < lines.length && lines[pos].indent === indent && (lines[pos].text.startsWith("- ") || lines[pos].text === "-")) {
+    while (
+      pos < lines.length &&
+      lines[pos].indent === indent &&
+      (lines[pos].text.startsWith("- ") || lines[pos].text === "-")
+    ) {
       const line = lines[pos];
       const rest = line.text === "-" ? "" : line.text.slice(2).trim();
       if (rest === "") {

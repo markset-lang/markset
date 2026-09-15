@@ -10,17 +10,23 @@
     "node": ">=22.18"
   },
   "scripts": {
-    "test": "node --test packages/*/test/*.test.ts site/test/*.test.ts",
+    "test": "node --test packages/*/test/*.test.ts site/test/*.test.ts test/*.test.ts",
     "conformance": "node packages/conformance/src/cli.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "biome check .",
+    "format": "biome check --write .",
     "site": "node site/build.ts",
     "site:watch": "node site/serve.ts"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.13",
     "@types/node": "^26.5.1",
     "typescript": "^7.0.2"
   },
   "version": "0.0.0-rc.1",
-  "repository": { "type": "git", "url": "https://github.com/markset-lang/markset.git" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/markset-lang/markset.git"
+  },
   "homepage": "https://markset-lang.github.io/markset/"
 }
