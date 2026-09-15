@@ -5,9 +5,12 @@ import { toHtml } from "hast-util-to-html";
 import { parseDocument, type Attributes, type Diagnostic, type Frontmatter } from "@markset/parser";
 import { marksetHandlers } from "./handlers.ts";
 import { addHeadingIds } from "./heading-ids.ts";
+import { drawDiagrams, type DiagramOptions } from "./diagrams.ts";
 
 export { marksetHandlers };
 export { addHeadingIds, headingSlug } from "./heading-ids.ts";
+export { drawDiagrams } from "./diagrams.ts";
+export type { DiagramDrawer, DiagramOptions } from "./diagrams.ts";
 
 export interface RenderOptions {
   /**
@@ -16,13 +19,23 @@ export interface RenderOptions {
    * whose headings cannot be linked is one every consumer has to post-process.
    */
   headingIds?: boolean;
+  /**
+   * Draw diagram code fences (§10). Off by default, and off is always a
+   * correct rendering: a language with no drawer stays a code block. Only a
+   * fence inside a captioned `figure` is ever drawn, and a drawer that fails
+   * leaves the code block untouched.
+   */
+  diagrams?: DiagramOptions;
 }
 
 /** Render a parsed tree as an HTML fragment. Non-empty output ends with a newline, as in the CommonMark suite. */
 export function renderHtml(tree: Root, options: RenderOptions = {}): string {
   const ids = (options.headingIds ?? true) ? addHeadingIds(tree) : tree;
   const hast = toHast(withBlockAttributes(ids), { handlers: marksetHandlers() });
-  if (hast) scopeTableHeaders(hast);
+  if (hast) {
+    scopeTableHeaders(hast);
+    if (options.diagrams) drawDiagrams(hast, options.diagrams);
+  }
   const html = toHtml(hast);
   return html === "" ? "" : `${html}\n`;
 }

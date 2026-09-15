@@ -214,6 +214,32 @@ So the real request is a construct that renders its own attributes, and that is 
 
 Observed: `examples/incident-review.md`, September 2026.
 
+### 15. Diagrams
+
+**Class: Additive. Done, September 2026.**
+
+Nothing drew a diagram. A document could always *write* one — a fenced code block is CommonMark and `figure` has always taken a code block as its content — and `markset check` was happy, and the downgrade was clean. What was missing was an answer to what a renderer should do with such a fence, which meant two renderers could reasonably do different things with the same document. That is precisely the interop gap the project exists to close, so the gap was in the spec rather than in the grammar.
+
+**No construct, and the reasoning is the bar in this file.** A `:::diagram` directive would have to justify itself by making independent renderers agree on structure. They already agree: it is a code block with an info string, and every conformant renderer already produces `<pre><code class="language-…">` from it. A construct would have bought nothing and cost a ninth name in a vocabulary whose value is being closed. The five conformance cases pin exactly that — the AST of a diagram is `figure` around `code`, and there is no diagram node.
+
+Settled as spec §10, with seven renderer obligations. Two are worth repeating here.
+
+**Obligation 7: a renderer must not draw a diagram it has no text alternative for.** This one has teeth, and it is the second time an invariant has cost the project something rather than merely ruling out a bad idea. An undrawn diagram is a code block, and a reader using a screen reader gets its source: mediocre, but present. Draw it with no alternative and that reader gets nothing, so drawing would remove content for them while adding it for everyone else. The caption is the alternative, and `figure` is the only place a fence can carry one — so a diagram outside a captioned figure is rendered as a code block however capable the renderer is. Same shape as §4.5's refusal of tab roles.
+
+**The drawn form is an `<img>` holding an SVG data URI, not inline SVG.** Inline markup would be smaller and themeable from the page. It was refused because §4 says raw HTML in the source is never passed through, and a drawer — on the CLI path, an arbitrary command the operator named — should not get a channel that documents are denied. An SVG loaded through `<img>` cannot execute script, so obligation 6 holds by the shape of the output rather than by trusting the drawer. The cost is real and accepted: a data URI is bulkier and the page cannot restyle the picture.
+
+**Drawing is opt-in and the document never chooses it.** `markset html --diagram <lang>=<command>` maps an info string to a command; the fence reaches the command on stdin and never gets interpolated into it. So nothing written in a Markset file can cause anything to run, which is the part of invariant 4 that matters — the operator opting into a build step is the same choice they already made by running `markset` at all. A test asserts it.
+
+**ASCII is the recommended source, and this is the part that is about Markset.** Section 3 requires a document to read where the layout cannot follow. A `mermaid` or `dot` fence falls back to its own source code: honest, and not a diagram. An ASCII fence falls back to a diagram, because it already was one — in a GitHub comment, in a terminal, in `markset downgrade` output, in a diff. Of the common diagram sources it is the only one whose naive output is as good as its rendered output, which makes it the one that fits the degradation contract rather than merely surviving it.
+
+That argument is strong enough that the repository ships one drawer, `@markset/diagram-ascii`: a pure string-to-string function with no dependencies, which is why it does not strain invariant 4 any more than the downgrade renderer does. It reads the character grid, joins runs of `-` and `|`, treats `+` as a corner, and puts an arrowhead where a line actually arrives — the rule that stops the `v` in "very" from sprouting a triangle. It carries its own `prefers-color-scheme` block, which resolves against the embedding page's `color-scheme`, so a drawn diagram follows §6's `data-scheme` like everything else; that propagation was measured in Chrome rather than assumed. It is deliberately not svgbob: no shape detection, no rounded corners, no layout. Anyone who wants those points `--diagram` at a tool that has them.
+
+**One thing that turned out not to be broken.** The suspicion that opened this entry was that a forced color scheme could not reach an SVG loaded through `<img>`, leaving a dark diagram on a light page. Measured instead of asserted: page forced light gives a white pixel, forced dark gives a black one. The embedding page's `color-scheme` does propagate, `examples/degrade.svg` was correct all along, and the comment inside it that says so is right. Recorded because it was the premise of a different and worse design.
+
+Cost, as built: one spec section, one workspace package, one renderer pass, one CLI flag, five conformance cases, 26 tests, two stylesheet rules and a reference page.
+
+Observed: requested September 2026. The standing evidence was `examples/degrade.svg`, a hand-maintained SVG carried beside `showcase.md` by a line in the site generator, which is the thing a diagram fence removes the need for.
+
 ## Rejected
 
 | Request | Reason |

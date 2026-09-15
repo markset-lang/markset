@@ -1,0 +1,148 @@
+[
+  {
+    "section": "diagram",
+    "name": "canonical",
+    "markset": ":::figure[How a request reaches a handler]{#fig-flow}\n```ascii\n  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+\n```\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "How a request reaches a handler"
+            }
+          ],
+          "width": null,
+          "id": "fig-flow",
+          "classes": [],
+          "children": [
+            {
+              "type": "code",
+              "lang": "ascii",
+              "meta": null,
+              "value": "  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "```ascii\n  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+\n```\n\n*How a request reaches a handler*\n",
+    "html": "<figure class=\"ms-figure\" id=\"fig-flow\">\n<pre><code class=\"language-ascii\">  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+\n</code></pre>\n<figcaption>How a request reaches a handler</figcaption>\n</figure>\n"
+  },
+  {
+    "section": "diagram",
+    "name": "a bare fence is an ordinary code block",
+    "markset": "```ascii\n  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+\n```\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "code",
+          "lang": "ascii",
+          "meta": null,
+          "value": "  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+"
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "```ascii\n  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+\n```\n",
+    "html": "<pre><code class=\"language-ascii\">  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+\n</code></pre>\n"
+  },
+  {
+    "section": "diagram",
+    "name": "an unrecognized diagram language is not a diagnostic",
+    "markset": ":::figure[The routing graph]\n```dot\ndigraph { a -> b }\n```\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "The routing graph"
+            }
+          ],
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "code",
+              "lang": "dot",
+              "meta": null,
+              "value": "digraph { a -> b }"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "```dot\ndigraph { a -> b }\n```\n\n*The routing graph*\n",
+    "html": "<figure class=\"ms-figure\">\n<pre><code class=\"language-dot\">digraph { a -> b }\n</code></pre>\n<figcaption>The routing graph</figcaption>\n</figure>\n"
+  },
+  {
+    "section": "diagram",
+    "name": "an uncaptioned figure has nothing to draw with",
+    "markset": ":::figure\n```ascii\n  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+\n```\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": null,
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "code",
+              "lang": "ascii",
+              "meta": null,
+              "value": "  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "```ascii\n  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+\n```\n",
+    "html": "<figure class=\"ms-figure\">\n<pre><code class=\"language-ascii\">  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+\n</code></pre>\n</figure>\n"
+  },
+  {
+    "section": "diagram",
+    "name": "the language is the first word of the info string",
+    "markset": ":::figure[Tagged fence]\n```ascii linenos=false\n  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+\n```\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "Tagged fence"
+            }
+          ],
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "code",
+              "lang": "ascii",
+              "meta": "linenos=false",
+              "value": "  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "```ascii linenos=false\n  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+\n```\n\n*Tagged fence*\n",
+    "html": "<figure class=\"ms-figure\">\n<pre><code class=\"language-ascii\">  +-------+     +--------+\n  | Start |---->| Finish |\n  +-------+     +--------+\n</code></pre>\n<figcaption>Tagged fence</figcaption>\n</figure>\n"
+  }
+]

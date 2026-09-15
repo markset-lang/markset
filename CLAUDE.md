@@ -41,6 +41,8 @@ packages/
   parser/           CommonMark base + Markset extensions -> AST
   render-downgrade/ AST -> plain CommonMark
   render-html/      AST -> HTML
+  diagram-ascii/    ASCII diagram -> SVG (spec §10). A drawer, not part of the renderer:
+                    render-html ships no engine and draws nothing unless a caller passes one.
   conformance/      harness: validates tests/*.json against the schema, runs each section's driver
   cli/
 site/       static site generator (build.ts) and content; every page is Markset rendered by the packages above.
@@ -66,6 +68,9 @@ docs/       background analysis, prior art, design rationale
 - `site/site.css` is the site's own theme, layered over `markset.css` the way a theme stylesheet is layered over a document (§6). It carries the display typeface and the author classes the site's pages use: `.tick` for a ruler divider, `.stats` for a metrics fact strip, `.compare` for a comparison table, alongside the reserved classes from §5.
 - `build(outDir)` takes an output directory; the tests build into a temporary one so the suite never races `dist/` against a running `site:watch` or a browser.
 - The repository and site URLs live in `package.json` (`repository`, `homepage`) and are read by `site/build.ts`; a test asserts no page or README links anywhere else. Change them there, not in prose.
+- The site draws `ascii` fences with `@markset/diagram-ascii`, through the same `diagrams` option any consumer passes
+  and the same drawer `--diagram ascii` offers, so a reader sees what they would get. No other language is registered:
+  a `mermaid` fence on this site renders as a code block, which is §10 obligation 1 working.
 - `npm run site` builds the documentation site into `dist/` (ignored by git). Each build stages into its own `dist.staging-<tag>/` and renames into place, so a reader never sees a half-built tree, a failed build leaves the previous one intact, and two builds at once (`npm run site` while `site:watch` rebuilds) cannot delete each other's work. `npm run site:watch` serves it at http://localhost:3000 (`-- --port N` to change), rebuilds on change, and reloads open browsers; a stylesheet edit swaps the `<link>` instead of reloading, so the scroll position survives. The reload client is injected as pages are served, never written to `dist/`. The reference and conformance pages are generated from `tests/*.json`, so they never drift from the suite. `.github/workflows/pages.yml` deploys `dist/` to GitHub Pages on push to `main`; Pages must be enabled once in the repository settings with "GitHub Actions" as the source.
 - Adding a section to `tests/` without a driver in `packages/conformance/src/drivers.ts` is fine: the harness reports it as skipped, not failed. Same for `html`/`downgrade` fields before those renderers exist. Register a driver once the code exists so the cases start counting.
 
@@ -108,6 +113,12 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] Reader's choice of color scheme with no script. Every color is one `light-dark()` pair resolved through `color-scheme`; `data-scheme` on `<body>` forces it (§6); the site's control is three radio inputs read by `:has()`.
 - [x] Fourth real document, `examples/incident-review.md` with `examples/incident.css`. Forced nothing in §2 or §4, and is the evidence that `steps` already carries a timeline.
 - [x] Register entry 7 decided by counting: four documents invented 54 author classes and shared two, neither of which clears the bar. `docs/future-requirements.md` also carries the test a proposed ninth construct has to pass.
+- [x] Diagrams (§10, added 2026-09-15). Not a construct: a diagram is a fenced code block whose info string names
+      a language, which every renderer already agrees on. §10 settles what a renderer may *do* with one. Drawing is
+      opt-in (`markset html --diagram`), never changes the AST, and only happens inside a captioned `figure` —
+      without a text alternative, drawing would remove content for a screen-reader user while adding it for everyone
+      else. The drawn form is an `<img>` holding an SVG data URI, so it is inert by shape rather than by trust.
+      ASCII is the recommended source: it is the only common one whose §3 fallback is still a diagram.
 - [ ] Playground page (needs a bundler such as esbuild, not yet approved)
 - [x] Six real documents written against the candidate; the last four forced no change to §2 or §4, which is what v0 was waiting on
 - [ ] Publish: keep `@markset/*` private until the suite is frozen; add a `dist/` build (JS + declarations) when publishing becomes a goal

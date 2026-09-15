@@ -16,6 +16,7 @@ import {
   renderHtml,
   bodyAttributes,
   defaultStylesheetPath,
+  drawAscii,
   type Diagnostic,
 } from "./deps.ts";
 
@@ -126,6 +127,15 @@ export const EXAMPLES: Array<{
 ];
 
 const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
+/**
+ * The site draws ASCII diagram fences (§10). It is the same option any consumer
+ * passes, and the same drawer the CLI offers as --diagram ascii, so what a
+ * reader sees here is what they get. Nothing else is registered: a mermaid
+ * fence on this site would render as a code block, which is the point of
+ * obligation 1.
+ */
+const DIAGRAMS = { drawers: { ascii: (source: string) => drawAscii(source) } };
+
 const SECTION_ORDER = [
   "attribute-specifier",
   "bracketed-span",
@@ -134,6 +144,7 @@ const SECTION_ORDER = [
   "attribute-line",
   ...CONSTRUCTS,
   "frontmatter",
+  "diagram",
 ];
 
 /**
@@ -206,6 +217,7 @@ async function writeSite(outDir: string): Promise<string[]> {
       "reference/frontmatter/index.html",
       join(root, "site", "content", "reference", "frontmatter.md"),
     ),
+    await markdownPage("reference/diagrams/index.html", join(root, "site", "content", "reference", "diagrams.md")),
     ...(await Promise.all(CONSTRUCTS.map((name) => referencePage(name, cases[name] ?? [])))),
     conformanceIndex(cases),
     ...SECTION_ORDER.filter((s) => cases[s]).map((s) => conformancePage(s, cases[s])),
@@ -265,7 +277,7 @@ async function markdownPage(path: string, file: string, themeCss?: string | fals
   return {
     path,
     title: firstHeading(ast) ?? basename(file, ".md"),
-    body: renderHtml(ast),
+    body: renderHtml(ast, { diagrams: DIAGRAMS }),
     themeAttributes: bodyAttributes(ast.frontmatter ?? null),
     ...(themeCss ? { themeCss } : {}),
   };
@@ -324,7 +336,9 @@ async function referenceIndex(): Promise<Page> {
   ).join("\n");
   // Frontmatter is the ninth reference page and the only one that is not a
   // construct, so it is listed after the eight rather than among them.
-  const frontmatter = `<p class="site-more">The document's own settings: <a href="frontmatter/index.html">frontmatter and theme tokens</a> — the version key, the seven theme tokens and what each preset changes.</p>\n`;
+  const frontmatter =
+    `<p class="site-more">The document's own settings: <a href="frontmatter/index.html">frontmatter and theme tokens</a> — the version key, the seven theme tokens and what each preset changes.</p>\n` +
+    `<p class="site-more">Not a construct, but it belongs here: <a href="diagrams/index.html">diagrams</a> — why a diagram is a code fence rather than a ninth name, and what a renderer may do with one.</p>\n`;
   return {
     path: "reference/index.html",
     title: "Reference",

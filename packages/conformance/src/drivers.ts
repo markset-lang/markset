@@ -23,4 +23,5 @@ export const drivers: Record<string, Driver> = {
   steps: documentDriver,
   metrics: documentDriver,
   figure: documentDriver,
+  diagram: documentDriver,
 };
