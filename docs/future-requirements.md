@@ -134,6 +134,8 @@ The useful finding is the one that was not the question. The document that inven
 
 **Criterion for next time,** so this is not re-litigated by taste: a class earns reservation when three documents invent it independently *and* the reserved set cannot already express it. `.facts` meets neither half today. Revisit at document six.
 
+**Document seven, September 2026: zero.** `examples/architecture.md` invented no author classes at all. Its theme styles `.ms-figure`, `.ms-diagram` and the reserved `.eyebrow`, and the document names nothing else. That is the strongest version of the finding above — the document with the most distinctive look of the seven is the one that asked the vocabulary for the least, because what it needed was a construct's own class and the reserved set. Nothing to promote.
+
 Observed: `notification-routing.md` and `strategy-read.md`, September 2026; decided against `incident-review.md` and `showcase.md` in the same month.
 
 ### 8. A responsive breakpoint as a theme token
@@ -236,7 +238,9 @@ That argument is strong enough that the repository ships one drawer, `@markset/d
 
 **One thing that turned out not to be broken.** The suspicion that opened this entry was that a forced color scheme could not reach an SVG loaded through `<img>`, leaving a dark diagram on a light page. Measured instead of asserted: page forced light gives a white pixel, forced dark gives a black one. The embedding page's `color-scheme` does propagate, `examples/degrade.svg` was correct all along, and the comment inside it that says so is right. Recorded because it was the premise of a different and worse design.
 
-Cost, as built: one spec section, one workspace package, one renderer pass, one CLI flag, five conformance cases, 31 tests, two stylesheet rules and a reference page.
+**The seventh document is what tested it.** `examples/architecture.md` was written after the feature was built, and it found three things the feature's own tests had not, which is the usual result and the reason the examples exist. A line arriving at a box stopped half a cell short of it. A lone hyphen in a label — `region: us-east` — was drawn as a rule, turning a word into two words joined by a line. And `.ms-figure` was not `border-box` despite carrying an explicit width, so the theme's padding around a diagram pushed three figures past a 390px viewport. None of these is visible in a unit test of the drawer; all three are obvious in a page.
+
+Cost, as built: one spec section, one workspace package, one renderer pass, one CLI flag, five conformance cases, 35 tests, three stylesheet rules, a reference page and a worked example.
 
 Observed: requested September 2026. The standing evidence was `examples/degrade.svg`, a hand-maintained SVG carried beside `showcase.md` by a line in the site generator, which is the thing a diagram fence removes the need for.
 

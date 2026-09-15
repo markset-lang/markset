@@ -145,3 +145,15 @@ test("an explicit density beats the preset that would otherwise set the spacing"
     assert.match(css, block, `${preset} sets --ms-space, which is why the order matters`);
   }
 });
+
+test("a figure is border-box, so a theme can pad it without pushing the page sideways", async () => {
+  // .ms-figure carries an explicit width (--ms-width, default 100%), so padding
+  // added by a theme lands outside that width unless the box is border-box.
+  // examples/tidewater.css found this: it gives a diagram a surface, and three
+  // figures then overflowed a 390px viewport.
+  const css = await readFile(defaultStylesheetPath, "utf8");
+  const rule = /\.ms-figure \{([^}]*)\}/u.exec(css);
+  assert.ok(rule, "the .ms-figure base rule exists");
+  assert.match(rule[1], /box-sizing:\s*border-box/u);
+  assert.match(rule[1], /width:\s*var\(--ms-width/u, "and it still takes its width from the token");
+});

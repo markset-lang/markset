@@ -116,6 +116,14 @@ export const EXAMPLES: Array<{
       "Reference documentation, the genre that is mostly tables and code: resolution order, a table of keys per section, the same configuration in four formats, and a deprecation table. The only long example that names no theme of its own, so it is read on the site's stylesheet like every other page here. The tool is invented.",
   },
   {
+    slug: "architecture",
+    file: "architecture.md",
+    title: "Architecture overview",
+    theme: "tidewater.css",
+    blurb:
+      "The genre that is mostly diagrams: a system map, a state machine and a deployment topology, each an ASCII fence in the source rather than an image file anyone has to keep in step with the prose. It also shows the rule in action — one fence is left as a code block, because the characters are the content rather than a picture of it. The system is invented.",
+  },
+  {
     slug: "incident-review",
     file: "incident-review.md",
     title: "Incident review",

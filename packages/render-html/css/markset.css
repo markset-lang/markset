@@ -386,7 +386,11 @@ summary.ms-callout-title { cursor: pointer; }
 
 /* ---- figure (§4.8) ---------------------------------------------------------- */
 /* A narrowed figure keeps the document's left edge rather than centering itself. */
-.ms-figure { margin-inline: 0; width: var(--ms-width, 100%); max-width: 100%; }
+/* border-box because the width is explicit: a figure carries `width: 60%` from
+ * --ms-width, so any padding a theme adds would otherwise land outside that 60%
+ * and push the page sideways. Found by examples/tidewater.css, which gives a
+ * diagram a surface to sit on. */
+.ms-figure { box-sizing: border-box; margin-inline: 0; width: var(--ms-width, 100%); max-width: 100%; }
 .ms-figure > img { display: block; border-radius: var(--ms-radius); }
 
 /* A drawn diagram (§10). Line art does not survive being scaled down: a diagram
