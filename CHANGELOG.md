@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Vertical rhythm: `figure` and `hr` were missing from the margin reset, so they kept a browser default bottom margin measured in `em` rather than in `--ms-space`. A figure sat 15px below itself against a 10px rhythm at compact density, and matched at the other two only because the token was larger and collapsed over it.
+- The site's section divider takes `margin-block` rather than `margin-top` alone. It was three units below the section it closed and one above the next, and looked symmetric only where an eyebrow followed and supplied a matching top margin of its own.
+
 ## 0.1.0 — 2026-09-15
 
 **v0 is declared.** The vocabulary is closed, the grammar is fixed, and changes from here are additive only: new diagnostics, new theme tokens, new reserved classes, clarifications that do not change the parse of any existing conformance case. Anything that would change an existing case's `ast`, `valid` or `diagnostics` belongs to v1, which will declare itself with a new `markset:` value. The `-rc.N` exception that allowed a breaking change during the candidate period is gone.

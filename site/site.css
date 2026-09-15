@@ -24,7 +24,12 @@ body { --ms-font-heading: "Source Serif 4", Charter, Georgia, "Times New Roman",
   background-image: repeating-linear-gradient(to right, var(--ms-border) 0 1px, transparent 1px 12px);
   background-size: 100% 5px;
   background-repeat: no-repeat;
-  margin-top: calc(var(--ms-space) * 3);
+  /* Both sides, not just the top. With a top margin alone the rule sat three
+   * units below the section it closed and one above the next one, and looked
+   * symmetric only because an eyebrow follows almost every rule on this site
+   * and brings a matching top margin of its own. The colophon is the one place
+   * nothing follows it, and that is where the lopsidedness showed. */
+  margin-block: calc(var(--ms-space) * 3);
 }
 
 /* A metrics block as a dense fact strip: {.stats}. */

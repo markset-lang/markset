@@ -124,8 +124,14 @@ body {
 .ms-document > * { min-width: 0; max-width: var(--ms-measure); }
 .ms-document > :is(.ms-grid, .ms-columns, .ms-metrics, .ms-tabs, .ms-figure, table, .wide) { max-width: none; }
 .ms-document > * + * { margin-top: var(--ms-space); }
-.ms-document p, .ms-document ul, .ms-document ol, .ms-document blockquote, .ms-document pre, .ms-document table { margin: 0; }
-.ms-document * + p, .ms-document * + ul, .ms-document * + ol, .ms-document * + pre, .ms-document * + table, .ms-document * + blockquote { margin-top: var(--ms-space); }
+/* Spacing comes from margin-top alone, so every element's own margins are
+ * cleared first. An element left out of this list keeps the browser's default
+ * bottom margin, which does not scale with --ms-space and so only shows at some
+ * densities: a figure's 1em sat 15px below itself against a 10px rhythm at
+ * compact, and matched at the others because the token was larger and collapsed
+ * over it. figure and hr were the two that were missing. */
+.ms-document :is(p, ul, ol, blockquote, pre, table, figure, hr, dl) { margin: 0; }
+.ms-document * + :is(p, ul, ol, pre, table, blockquote, figure, hr, dl) { margin-top: var(--ms-space); }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--ms-font-heading);

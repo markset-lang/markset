@@ -114,6 +114,19 @@ test("the reader can choose a color scheme, and no page gained a script for it",
   assert.match(css, /body:has\(#ms-scheme-dark:checked\) \{ color-scheme: dark; \}/);
 });
 
+test("the section divider is spaced the same above and below", async () => {
+  // With a top margin alone the rule sat three units below the section it
+  // closed and one above the next, and read as symmetric only because an
+  // eyebrow follows almost every rule here and brings a matching top margin of
+  // its own. The colophon is the one place nothing does, and that is where it
+  // showed. margin-block keeps it true whatever follows.
+  const css = await readFile(join(dist, "css", "site.css"), "utf8");
+  const rule = /\.ms-document > hr\.tick \{[^}]*\}/.exec(css);
+  assert.ok(rule, "the divider rule exists");
+  assert.match(rule[0], /margin-block: calc\(var\(--ms-space\) \* 3\);/);
+  assert.doesNotMatch(rule[0], /margin-top:/, "a top margin alone makes it depend on what follows");
+});
+
 test("the app bar sticks, and everything that has to clear it uses one token", async () => {
   // Three rules depend on the bar's height: the bar reserves it, the sticky
   // table of contents starts below it, and an anchored heading scrolls clear of
