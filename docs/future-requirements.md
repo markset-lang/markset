@@ -121,11 +121,17 @@ The renderer emits `<code class="language-js">`, which is what every highlighter
 
 ### 11. A light and dark mode toggle
 
-**Class: Output. Recommended.**
+**Class: Output. Done, September 2026.**
 
-Every page follows `prefers-color-scheme` and has no way to override it. A reader whose system is dark cannot read a page in light, which matters for anyone checking how a document will print or sharing a screen.
+Every page followed `prefers-color-scheme` and had no way to override it. A reader whose system is dark could not read a page in light, which matters for anyone checking how a document will print or sharing a screen.
 
-The obvious implementation is a script, and the site has none by design: a test asserts that no built page contains one, and the home page claims as much. A checkbox and a sibling selector can do it without script, at the cost of a control that lives in the markup rather than in the chrome. Worth doing, worth doing carefully, and worth writing down that the no-script property is the constraint rather than an accident.
+The obvious implementation is a script, and the site has none by design: a test asserts that no built page contains one, and the home page claims as much. The constraint turned out to be the design. The default stylesheet now writes each color once as `light-dark(light, dark)` and resolves it through `color-scheme`, so following the system and forcing a scheme are the same mechanism rather than two palettes to keep in sync, and `@media (prefers-color-scheme: dark)` is gone from the stylesheet entirely. Forcing is one property: §6 defines `data-scheme` on `<body>` for a renderer or chrome to set. Printing forces light, which also fixed a real bug — a reader who chose dark used to print a dark surface with pale borders.
+
+The site's control is three radio inputs in the app bar with `body:has()` reading them. Auto is checked, so a reader who never touches it keeps their system preference. `color-scheme` also makes form controls and scrollbars match, which the old media query did not do.
+
+What it does not do: the choice lives in the markup, so it does not survive a page load. Persisting it needs `localStorage`, which needs a script, which is the thing not being given up. Recorded rather than hidden.
+
+Cost, as built: ten tokens rewritten, two rules for the hook, one shell fragment, eleven lines of site CSS, a paragraph in §6.
 
 Observed: raised September 2026 while reviewing the site.
 

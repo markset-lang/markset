@@ -69,6 +69,21 @@ body { --site-header-h: 3.25rem; }
 .site-brand { flex: none; }
 .site-nav a { color: var(--ms-fg-muted); text-decoration: none; font-family: var(--ms-font-body); font-size: 0.9rem; }
 .site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--ms-accent); }
+/* The reader's color scheme, with no script anywhere. The radio inputs hold the
+ * state; body:has() reads it; markset.css resolves every color through
+ * color-scheme, so forcing a scheme is one property. The inputs are clipped
+ * rather than display:none, which would take them out of the tab order. */
+body:has(#ms-scheme-light:checked) { color-scheme: light; }
+body:has(#ms-scheme-dark:checked) { color-scheme: dark; }
+.site-scheme { flex: none; display: flex; align-items: center; gap: 1px; padding: 2px; border: 1px solid var(--ms-border); border-radius: 999px; background: var(--ms-bg); }
+.site-scheme-input { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.site-scheme-option { padding: 0.2rem 0.55rem; border-radius: 999px; font-family: var(--ms-font-body); font-size: 0.7rem; line-height: 1.4; color: var(--ms-fg-muted); cursor: pointer; }
+.site-scheme-option:hover { color: var(--ms-fg); }
+.site-scheme-input:checked + .site-scheme-option { background: var(--ms-surface); color: var(--ms-fg); }
+/* Keyboard focus has to be visible on the label, because the input it belongs
+ * to is clipped out of sight. */
+.site-scheme-input:focus-visible + .site-scheme-option { outline: 2px solid var(--ms-accent); outline-offset: 1px; }
+
 .site-layout { max-width: 75rem; margin: 0 auto; }
 .site-layout.has-toc { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: var(--ms-space); }
 .site-layout.has-toc > * { min-width: 0; } /* or a wide block inside main widens the whole grid */
@@ -110,7 +125,14 @@ body { --site-header-h: 3.25rem; }
  * third of the screen, so they become one scrolling row instead. The fade on
  * the right edge is what says there is more of it. */
 @media (max-width: 40rem) {
+  /* Brand and scheme control on the first row, links on their own below. Three
+   * things on one row left the links about 140px of it. The height token moves
+   * with the layout, because scroll-margin still reads it. */
+  body { --site-header-h: 5rem; }
+  .site-header { flex-wrap: wrap; row-gap: 0.4rem; padding-block: 0.5rem; }
   .site-nav {
+    order: 3;
+    flex-basis: 100%;
     flex-wrap: nowrap;
     min-width: 0;
     overflow-x: auto;
@@ -124,4 +146,5 @@ body { --site-header-h: 3.25rem; }
 
 @media print {
   .site-header { position: static; }
+  .site-scheme { display: none; }
 }

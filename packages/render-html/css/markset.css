@@ -16,17 +16,22 @@ body {
   --ms-space: 1rem;
   --ms-radius: 0.5rem;
 
-  --ms-fg: #1f2328;
-  --ms-fg-muted: #59636e;
-  --ms-bg: #ffffff;
-  --ms-surface: #f6f8fa;
-  --ms-border: #d0d7de;
+  /* Each color is written once, light value first. light-dark() resolves it
+   * against the element's color-scheme, so following the reader's system
+   * preference and forcing a scheme are the same mechanism: set color-scheme.
+   * A theme overriding any of these with a flat color still works. */
+  color-scheme: light dark;
+  --ms-fg: light-dark(#1f2328, #e6edf3);
+  --ms-fg-muted: light-dark(#59636e, #9198a1);
+  --ms-bg: light-dark(#ffffff, #0d1117);
+  --ms-surface: light-dark(#f6f8fa, #161b22);
+  --ms-border: light-dark(#d0d7de, #30363d);
 
-  --ms-tone-neutral: #59636e;
-  --ms-tone-info: #0969da;
-  --ms-tone-success: #1a7f37;
-  --ms-tone-warn: #9a6700;
-  --ms-tone-danger: #cf222e;
+  --ms-tone-neutral: light-dark(#59636e, #9198a1);
+  --ms-tone-info: light-dark(#0969da, #4493f8);
+  --ms-tone-success: light-dark(#1a7f37, #3fb950);
+  --ms-tone-warn: light-dark(#9a6700, #d29922);
+  --ms-tone-danger: light-dark(#cf222e, #f85149);
 
   /* Derived type scale: h6 .. h1 step up from the base. */
   --ms-h6: var(--ms-base);
@@ -37,20 +42,12 @@ body {
   --ms-h1: calc(var(--ms-h2) * var(--ms-type-scale));
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
-    --ms-fg: #e6edf3;
-    --ms-fg-muted: #9198a1;
-    --ms-bg: #0d1117;
-    --ms-surface: #161b22;
-    --ms-border: #30363d;
-    --ms-tone-neutral: #9198a1;
-    --ms-tone-info: #4493f8;
-    --ms-tone-success: #3fb950;
-    --ms-tone-warn: #d29922;
-    --ms-tone-danger: #f85149;
-  }
-}
+/* Forcing a scheme. The document never asks for one — which colors a reader
+ * sees is not authorial intent (invariant 1) — but the chrome around it may,
+ * on the reader's behalf. Setting data-scheme re-resolves every light-dark()
+ * above, and tells form controls and scrollbars to match. */
+body[data-scheme="light"] { color-scheme: light; }
+body[data-scheme="dark"] { color-scheme: dark; }
 
 /* density */
 body[data-density="compact"] { --ms-space: 0.625rem; --ms-base: 0.9375rem; }
@@ -354,7 +351,9 @@ summary.ms-callout-title { cursor: pointer; }
 
 /* ---- print -------------------------------------------------------------------- */
 @media print {
-  body { --ms-bg: #fff; --ms-fg: #000; }
+  /* Paper is light. Forcing the scheme re-resolves every token, so a reader who
+   * chose dark on screen does not print a dark surface and a pale border. */
+  body, body[data-scheme="dark"] { color-scheme: light; --ms-bg: #fff; --ms-fg: #000; }
   .ms-document { max-width: none; padding: 0; }
   .ms-tabpanel { display: block !important; padding-top: 0; }
   .ms-tablist { display: none; }

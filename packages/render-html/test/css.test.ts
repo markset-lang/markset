@@ -60,3 +60,19 @@ test("grid items may shrink, so one long line cannot widen the page", async () =
     assert.ok(rule[0].includes(item), `${item} is a grid or flex item and needs it too`);
   }
 });
+
+test("one palette, resolved by color-scheme, and a hook to force it", async () => {
+  // Writing the dark palette as a second block under a media query means two
+  // lists of colors to keep in sync, and no way for a reader on a dark system
+  // to read the page in light. Each color is written once instead.
+  const css = await readFile(defaultStylesheetPath, "utf8");
+  assert.doesNotMatch(css, /@media \(prefers-color-scheme/, "the palette is not duplicated under a media query");
+  assert.match(css, /color-scheme: light dark;/, "the document follows the reader by default");
+  for (const token of ["--ms-fg", "--ms-bg", "--ms-surface", "--ms-border", "--ms-tone-danger"]) {
+    assert.match(css, new RegExp(`${token}: light-dark\\(`), `${token} carries both values`);
+  }
+  assert.match(css, /body\[data-scheme="light"\] \{ color-scheme: light; \}/);
+  assert.match(css, /body\[data-scheme="dark"\] \{ color-scheme: dark; \}/);
+  // Paper is light even for a reader who chose dark on screen.
+  assert.match(css, /body, body\[data-scheme="dark"\] \{ color-scheme: light;/);
+});
