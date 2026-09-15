@@ -79,9 +79,17 @@ Observed: `examples/notification-routing.md` and `examples/strategy-read.md`, Se
 
 ### 6. Heading anchors in the HTML renderer
 
-**Class: Output. Recommended.**
+**Class: Output. Done, September 2026.**
 
-The site generator assigns heading ids so the specification page can have a table of contents. The HTML renderer does not, so anyone rendering with the CLI gets a document whose sections cannot be linked. Moving the id assignment into the renderer, or offering it as an option, removes a piece of machinery every consumer would otherwise rewrite.
+The site generator assigned heading ids so the specification page could have a table of contents. The HTML renderer did not, so anyone rendering with the CLI got a document whose sections could not be linked. That is a piece of machinery every consumer would have rewritten.
+
+Built as `addHeadingIds` in `@markset/render-html`, applied by `renderHtml` unless `headingIds: false` is passed. It sets `attributes.id` on heading nodes rather than writing ids at the HTML stage, so a caller that needs the ids for something else — a table of contents, as the site does — reads them off the tree it renders, and the two cannot disagree. The site's own copy was deleted.
+
+Two things the site's version got wrong and this one does not. It slugged with an ASCII character class, so a heading in any language that is not English collapsed to `section`, and a document of them collapsed to `section`, `section-2`, `section-3`; the slug is now Unicode-aware, which is also most of what entry 9 would have asked for here. It also visited only top-level headings, so a heading inside a `steps` or `grid` item was not linkable.
+
+Cost, as built: one module, five pinned `html` expectations updated, seven unit tests, one paragraph in §2.1.
+
+Observed: raised September 2026 while reviewing the site against the CLI.
 
 ### 7. Reserved classes observed in real documents
 

@@ -88,7 +88,7 @@
       ]
     },
     "valid": true,
-    "html": "<h1 class=\"x\">Title</h1>\n",
+    "html": "<h1 id=\"title\" class=\"x\">Title</h1>\n",
     "downgrade": "# Title\n"
   },
   {

@@ -9,7 +9,7 @@
 import { mkdir, readdir, readFile, rename, rm, writeFile, cp } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import type { Heading, Root } from "mdast";
-import { parseDocument, renderDowngrade, renderHtml, bodyAttributes, defaultStylesheetPath, type Diagnostic } from "./deps.ts";
+import { addHeadingIds, parseDocument, renderDowngrade, renderHtml, bodyAttributes, defaultStylesheetPath, type Diagnostic } from "./deps.ts";
 
 const root = resolve(import.meta.dirname, "..");
 /** Output directory. `build()` may be pointed elsewhere, which is how tests avoid racing dist/ against a dev server. */
@@ -151,9 +151,8 @@ async function markdownPage(path: string, file: string, themeCss?: string | fals
   const source = await readFile(file, "utf8");
   const parsed = parseDocument(source);
   const { diagnostics } = parsed;
-  const ast = toggles ? withSourceToggles(parsed.ast, source) : parsed.ast;
   failOnErrors(diagnostics, file);
-  addHeadingIds(ast);
+  const ast = addHeadingIds(toggles ? withSourceToggles(parsed.ast, source) : parsed.ast);
   return {
     path,
     title: firstHeading(ast) ?? basename(file, ".md"),
@@ -186,9 +185,9 @@ async function examplesIndex(): Promise<Page> {
 
 async function specPage(): Promise<Page> {
   const file = join(root, "spec", "v0.md");
-  const { ast, diagnostics } = parseDocument(await readFile(file, "utf8"));
-  failOnErrors(diagnostics, file);
-  addHeadingIds(ast);
+  const parsed = parseDocument(await readFile(file, "utf8"));
+  failOnErrors(parsed.diagnostics, file);
+  const ast = addHeadingIds(parsed.ast);
   const toc = tableOfContents(ast, 2, 3);
   const meta = ast.children[0]?.type === "yaml" ? ast.children[0].value : "";
   const status = /status:\s*(.+)/.exec(meta)?.[1] ?? "";
@@ -275,9 +274,9 @@ const REFERENCE_EXAMPLES: Record<string, Array<[string, string]>> = {
 
 async function referencePage(name: (typeof CONSTRUCTS)[number], sectionCases: ConformanceCase[]): Promise<Page> {
   const file = join(root, "site", "content", "reference", `${name}.md`);
-  const { ast, diagnostics } = parseDocument(await readFile(file, "utf8"));
-  failOnErrors(diagnostics, file);
-  addHeadingIds(ast);
+  const parsed = parseDocument(await readFile(file, "utf8"));
+  failOnErrors(parsed.diagnostics, file);
+  const ast = addHeadingIds(parsed.ast);
   const chosen = REFERENCE_EXAMPLES[name] ?? [["canonical", ""]];
   const invalid = sectionCases.filter((c) => !c.valid).slice(0, 3);
   let body = renderHtml(ast);
@@ -394,20 +393,6 @@ ${page.body}</main>
 function tableOfContents(ast: Root, min: number, max: number): string {
   const items = ast.children.filter((n): n is Heading => n.type === "heading" && n.depth >= min && n.depth <= max);
   return `<ul>\n${items.map((h) => `<li class="toc-${h.depth}"><a href="#${h.attributes?.id ?? ""}">${esc(text(h))}</a></li>`).join("\n")}\n</ul>`;
-}
-
-/** Give every heading a stable slug id through the same attribute mechanism authors use (§2.5). */
-function addHeadingIds(ast: Root): void {
-  const seen = new Map<string, number>();
-  for (const node of ast.children) {
-    if (node.type !== "heading") continue;
-    let slug = text(node).toLowerCase().replace(/[`*_]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "section";
-    const n = seen.get(slug) ?? 0;
-    seen.set(slug, n + 1);
-    if (n > 0) slug = `${slug}-${n + 1}`;
-    if (!node.attributes) node.attributes = { type: "attributes", id: null, classes: [], attrs: {} };
-    if (!node.attributes.id) node.attributes.id = slug;
-  }
 }
 
 function text(node: { type?: string; value?: unknown; children?: unknown[] }): string {
