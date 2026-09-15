@@ -223,7 +223,7 @@
       ]
     },
     "valid": true,
-    "html": "<table id=\"t\">\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n</tbody>\n</table>\n",
+    "html": "<table id=\"t\">\n<thead>\n<tr>\n<th scope=\"col\">a</th>\n<th scope=\"col\">b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n</tbody>\n</table>\n",
     "downgrade": "| a | b |\n| - | - |\n| 1 | 2 |\n"
   },
   {
@@ -378,7 +378,7 @@
       ]
     },
     "valid": true,
-    "html": "<div class=\"ms-callout muted\" id=\"n1\" data-type=\"note\">\n<div class=\"ms-callout-title\">T</div>\n<div class=\"ms-callout-body\">\n<p>b</p>\n</div>\n</div>\n",
+    "html": "<div class=\"ms-callout muted\" id=\"n1\" data-type=\"note\" role=\"note\" aria-labelledby=\"n1-title\">\n<div class=\"ms-callout-title\" id=\"n1-title\">T</div>\n<div class=\"ms-callout-body\">\n<p>b</p>\n</div>\n</div>\n",
     "downgrade": "> **Note:** T\n>\n> b\n"
   },
   {
@@ -855,7 +855,7 @@
       ]
     },
     "valid": true,
-    "html": "<div class=\"ms-tabs\">\n<input class=\"ms-tab-input\" type=\"radio\" name=\"ms-tabs-1\" id=\"ms-tabs-1-1\" checked>\n<input class=\"ms-tab-input\" type=\"radio\" name=\"ms-tabs-1\" id=\"ms-tabs-1-2\">\n<div class=\"ms-tablist\">\n<label class=\"ms-tab\" for=\"ms-tabs-1-1\">macOS</label>\n<label class=\"ms-tab\" for=\"ms-tabs-1-2\">Windows</label>\n</div>\n<div class=\"ms-tabpanel primary\" id=\"mac\" data-index=\"1\">\n<p>x</p>\n</div>\n<div class=\"ms-tabpanel\" data-index=\"2\">\n<p>y</p>\n</div>\n</div>\n",
+    "html": "<div class=\"ms-tabs\">\n<input class=\"ms-tab-input\" type=\"radio\" name=\"ms-tabs-1\" id=\"ms-tabs-1-1\" checked>\n<input class=\"ms-tab-input\" type=\"radio\" name=\"ms-tabs-1\" id=\"ms-tabs-1-2\">\n<div class=\"ms-tablist\">\n<label class=\"ms-tab\" id=\"ms-tabs-1-1-label\" for=\"ms-tabs-1-1\">macOS</label>\n<label class=\"ms-tab\" id=\"ms-tabs-1-2-label\" for=\"ms-tabs-1-2\">Windows</label>\n</div>\n<div class=\"ms-tabpanel primary\" id=\"mac\" data-index=\"1\" aria-labelledby=\"ms-tabs-1-1-label\">\n<p>x</p>\n</div>\n<div class=\"ms-tabpanel\" data-index=\"2\" aria-labelledby=\"ms-tabs-1-2-label\">\n<p>y</p>\n</div>\n</div>\n",
     "downgrade": "### macOS\n\nx\n\n### Windows\n\ny\n"
   },
   {

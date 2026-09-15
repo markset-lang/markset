@@ -31,6 +31,7 @@ const CALLOUT_LABEL: Record<CalloutKind, string> = {
 
 export function marksetHandlers(): Handlers {
   let tabsCount = 0;
+  let calloutCount = 0;
 
   const el = (tagName: string, properties: Properties, children: ElementContent[]): Element => ({
     type: "element",
@@ -69,7 +70,15 @@ export function marksetHandlers(): Handlers {
         if (node.fold === "open") props.open = true;
         return finish(state, node, block("details", props, [summary, body]));
       }
-      const title = el("div", { className: ["ms-callout-title"] }, label);
+      // A callout is ancillary to the main content, which is what role="note"
+      // says, and its title is its name. The folding form gets neither: on a
+      // <details> a role would replace the disclosure semantics, which tell a
+      // reader something more useful — that there is content here to open.
+      calloutCount++;
+      const titleId = `${(props.id as string) ?? `ms-callout-${calloutCount}`}-title`;
+      const title = el("div", { className: ["ms-callout-title"], id: titleId }, label);
+      props.role = "note";
+      props.ariaLabelledBy = [titleId];
       return finish(state, node, block("div", props, [title, body]));
     },
 
@@ -118,13 +127,25 @@ export function marksetHandlers(): Handlers {
         if (index + 1 === node.active) input.checked = true;
         return el("input", input, []);
       });
+      // Each label gets an id so its panel can be named after it. What is
+      // deliberately not here is role="tablist"/"tab"/"tabpanel": that pattern
+      // requires aria-selected to track the active tab, which is dynamic state
+      // and cannot be maintained without a script. A tablist whose aria-selected
+      // is frozen at its initial value is worse than honest radio buttons, and
+      // no script anywhere is invariant 4. Hidden panels are display:none, so
+      // they are already out of the accessibility tree.
       const labels = node.children.map((tab, index) =>
-        el("label", { className: ["ms-tab"], htmlFor: [`${name}-${index + 1}`] }, inline(state, tab.label)),
+        el(
+          "label",
+          { className: ["ms-tab"], id: `${name}-${index + 1}-label`, htmlFor: [`${name}-${index + 1}`] },
+          inline(state, tab.label),
+        ),
       );
       const panels = node.children.map((tab, index) => {
         const panel: Properties = { className: classes("ms-tabpanel", tab.attributes?.classes ?? []) };
         if (tab.attributes?.id) panel.id = tab.attributes.id;
         panel.dataIndex = String(index + 1);
+        panel.ariaLabelledBy = [`${name}-${index + 1}-label`];
         for (const [key, value] of Object.entries(tab.attributes?.attrs ?? {})) panel[`data-${key}`] = value;
         return block("div", panel, state.all(tab));
       });

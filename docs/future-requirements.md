@@ -54,16 +54,20 @@ Observed: `examples/strategy-read.md`, September 2026. Kept here rather than del
 
 ### 2. Accessible names and roles in rendered output
 
-**Class: Output. Recommended, in pieces.**
+**Class: Output. Done, September 2026, with one item refused.**
 
-Nothing in the rendered HTML is wrong for assistive technology, but several constructs give less than they could, and none of it costs an author anything:
+Nothing in the rendered HTML was wrong for assistive technology, but several constructs gave less than they could, and none of it costs an author anything. Three of the four are built. The fourth turned out not to be free, and refusing it is the more interesting result.
 
-- GFM table header cells emit a bare `<th>`; they should carry `scope="col"` or `scope="row"`.
-- The tabs construct is radio inputs and labels with no `role="tablist"`, `role="tab"` or `role="tabpanel"`, so it is announced as a form control group rather than as tabs.
-- Step markers are decorative counters that are announced as content.
-- A callout's type is conveyed by a `data-type` attribute and a visual title; a screen reader gets the title text but no indication that the block is an aside.
+- **Table header cells now carry `scope="col"`.** A bare `<th>` leaves a screen reader to guess which cells it heads. A GFM table has one header row and no row headers, so the renderer always knows the answer and the author never writes it.
+- **A callout is `role="note"`, named by its title** through `aria-labelledby`. It is ancillary to the main content, which is what `note` means. The folding form keeps its `<details>` and takes no role: a role there would replace the disclosure semantics, which tell a reader the more useful thing.
+- **Step markers are decoration again.** The number is already carried by the `<ol>`; the CSS counter repeated it, and some screen readers read it out twice. The generated content now has empty alternative text, with the plain declaration left in front as the fallback for a browser that does not understand the alt syntax.
+- **Tabs are named but take no roles.** Each panel is `aria-labelledby` its label. `role="tablist"`, `role="tab"` and `role="tabpanel"` are refused.
 
-Each is independent, so they can land one at a time with a conformance case each.
+**Why the tab roles are refused,** because it looked free when this entry was written and it is not. The tablist pattern requires `aria-selected` to follow the active tab. That is dynamic state. Markset's tabs are radio inputs precisely so that nothing has to run, and a static `aria-selected` frozen at the initially checked tab would tell assistive technology something false about every other tab, forever. That is worse than radio buttons, which are at least honestly described. Invariant 4 makes the script that would fix it unavailable, so the honest output is the one that claims less.
+
+This is the first place an invariant has cost the project something real rather than merely ruling out a bad idea, and it is worth having written down as such.
+
+Cost, as built: one tree pass for `scope`, two handler changes, one CSS declaration, ten pinned `html` expectations, seven tests, and three paragraphs in §4.
 
 Observed: `examples/strategy-read.md`, September 2026, which in its original form used `aria-labelledby` throughout and had no way to say so in Markset.
 

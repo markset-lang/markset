@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Accessibility in rendered output, none of which an author writes: table header cells carry `scope="col"`, a callout is `role="note"` named by its title through `aria-labelledby`, each tab panel is named by its label, and the step marker's CSS counter has empty alternative text so it is not announced on top of the list numbering it repeats. Tab roles are deliberately absent — see §4.5.
+
 ## 0.0.0-rc.2 — 2026-09-14
 
 Second release candidate. Everything here came out of writing real documents against rc.1, which is what the candidate period is for. Three of the four documents that now exist were written after rc.1 was tagged, and the last two forced no change to §2 or §4.
