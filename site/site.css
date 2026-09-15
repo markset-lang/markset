@@ -45,15 +45,34 @@ body { --ms-font-heading: "Source Serif 4", Charter, Georgia, "Times New Roman",
 .compare tr:last-child { background: var(--ms-bg); }
 
 /* ---- chrome -------------------------------------------------------------- */
-.site-header { display: flex; align-items: center; justify-content: space-between; gap: var(--ms-space); padding: 0.75rem var(--ms-space); border-bottom: 1px solid var(--ms-border); background: var(--ms-surface); }
+/* The app bar follows the page. Its height is a token rather than a measured
+ * value, because two other things have to line up under it: the sticky table of
+ * contents, and the scroll position of any heading reached by an anchor. */
+body { --site-header-h: 3.25rem; }
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ms-space);
+  min-height: var(--site-header-h);
+  padding: 0.75rem var(--ms-space);
+  border-bottom: 1px solid var(--ms-border);
+  background: var(--ms-surface);
+}
+/* An anchor target must clear the bar instead of hiding behind it. */
+.ms-document :is(h1, h2, h3, h4, h5, h6) { scroll-margin-top: calc(var(--site-header-h) + 0.5rem); }
 .site-brand { font-family: var(--ms-font-heading); font-weight: 700; font-size: 1.1rem; color: var(--ms-fg); text-decoration: none; letter-spacing: -0.01em; }
 .site-nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
+.site-brand { flex: none; }
 .site-nav a { color: var(--ms-fg-muted); text-decoration: none; font-family: var(--ms-font-body); font-size: 0.9rem; }
 .site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--ms-accent); }
 .site-layout { max-width: 75rem; margin: 0 auto; }
 .site-layout.has-toc { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: var(--ms-space); }
 .site-layout.has-toc > * { min-width: 0; } /* or a wide block inside main widens the whole grid */
-.site-toc { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; padding: calc(var(--ms-space) * 2) var(--ms-space); font-size: 0.875rem; border-right: 1px solid var(--ms-border); }
+.site-toc { position: sticky; top: var(--site-header-h); align-self: start; max-height: calc(100vh - var(--site-header-h)); overflow-y: auto; padding: calc(var(--ms-space) * 2) var(--ms-space); font-size: 0.875rem; border-right: 1px solid var(--ms-border); }
 .site-toc ul { list-style: none; margin: 0; padding: 0; }
 .site-toc li { margin: 0.25rem 0; }
 .site-toc .toc-3 { padding-left: 1rem; }
@@ -85,4 +104,24 @@ body { --ms-font-heading: "Source Serif 4", Charter, Georgia, "Times New Roman",
 @media (max-width: 60rem) {
   .site-layout.has-toc { grid-template-columns: 1fr; }
   .site-toc { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--ms-border); }
+}
+
+/* Narrow: the links would wrap to three rows and the sticky bar would eat a
+ * third of the screen, so they become one scrolling row instead. The fade on
+ * the right edge is what says there is more of it. */
+@media (max-width: 40rem) {
+  .site-nav {
+    flex-wrap: nowrap;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-right: 1.25rem;
+    mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent);
+  }
+  .site-nav::-webkit-scrollbar { display: none; }
+  .site-nav a { white-space: nowrap; }
+}
+
+@media print {
+  .site-header { position: static; }
 }

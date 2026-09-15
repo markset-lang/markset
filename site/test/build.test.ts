@@ -57,6 +57,19 @@ test("copied SVG assets stay valid XML", async () => {
   assert.match(svg, /prefers-color-scheme: dark/, "the diagram follows the reader's color scheme");
 });
 
+test("the app bar sticks, and everything that has to clear it uses one token", async () => {
+  // Three rules depend on the bar's height: the bar reserves it, the sticky
+  // table of contents starts below it, and an anchored heading scrolls clear of
+  // it. If one of them stops reading --site-header-h they drift apart silently.
+  const css = await readFile(join(dist, "css", "site.css"), "utf8");
+  assert.match(css, /--site-header-h:/, "the bar's height is a token");
+  assert.match(css, /\.site-header \{[^}]*position: sticky;[^}]*top: 0;/, "the app bar is sticky");
+  assert.match(css, /\.site-header \{[^}]*min-height: var\(--site-header-h\)/);
+  assert.match(css, /\.site-toc \{[^}]*top: var\(--site-header-h\)/, "the TOC starts below the bar");
+  assert.match(css, /scroll-margin-top: calc\(var\(--site-header-h\)/, "anchors clear the bar");
+  assert.match(css, /@media print \{\s*\.site-header \{ position: static/, "a printed page has no sticky bar");
+});
+
 test("every link to the repository matches package.json, which matches the remote", async () => {
   const root = resolve(import.meta.dirname, "..", "..");
   const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as { repository: { url: string }; homepage: string };
