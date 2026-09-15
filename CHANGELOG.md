@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## 0.1.0 — 2026-09-15
+
+**v0 is declared.** The vocabulary is closed, the grammar is fixed, and changes from here are additive only: new diagnostics, new theme tokens, new reserved classes, clarifications that do not change the parse of any existing conformance case. Anything that would change an existing case's `ast`, `valid` or `diagnostics` belongs to v1, which will declare itself with a new `markset:` value. The `-rc.N` exception that allowed a breaking change during the candidate period is gone.
+
+The candidate period existed to write real documents against the spec and find out what broke. Six were written, all describing invented systems. The first two forced §2.5 list-item attributes and the §6 theme stylesheet hook; the third forced a real `<caption>` in §4.8. The last four forced nothing in §2 or §4 — a strategy memo, an incident review, a configuration reference and an on-call runbook — and that is the condition this release was waiting on.
+
+What the six did produce is fourteen entries in `docs/future-requirements.md`, and not one of them is a construct. Four are closed: a real table caption, heading ids, a light and dark toggle, and the accessibility pass below. One was closed by counting and deciding against it. The rest are v1's problem.
 
 - Accessibility in rendered output, none of which an author writes: table header cells carry `scope="col"`, a callout is `role="note"` named by its title through `aria-labelledby`, each tab panel is named by its label, and the step marker's CSS counter has empty alternative text so it is not announced on top of the list numbering it repeats. Tab roles are deliberately absent — see §4.5.
 
