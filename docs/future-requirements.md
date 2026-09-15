@@ -26,15 +26,15 @@ The class decides where a change can land. Spec §0 defines the policy; this tab
 
 ### 1. A real table caption
 
-**Class: Output. Recommended.**
+**Class: Output. Done, September 2026.**
 
 A captioned data table is the most common single element in the kind of document Markset is for, and both long examples needed one. Today the only route is `figure`, which wraps the table and emits `<figcaption>` after it. That renders correctly but is the wrong structure: `<caption>` is a table's own accessible name and is announced as such, while a `figcaption` beside a table is not.
 
 The fix needs no new construct and no grammar change. When a `figure`'s content is a table, emit the caption as the table's first child, `<table><caption>…</caption>`, instead of a sibling `figcaption`. The AST does not move. The `figure` element stays as the box that carries `id` and `width`.
 
-Cost: one renderer branch, the `html` expectations on the figure cases that use a table, and a sentence in §4.8.
+Cost, as built: one renderer branch, one pinned expectation, two stylesheet rules and a sentence in §4.8. The caption is placed below the table with `caption-side`, so nothing moves visually.
 
-Observed: `examples/strategy-read.md`, September 2026.
+Observed: `examples/strategy-read.md`, September 2026. Kept here rather than deleted, as the worked example of an entry that resolved without a new construct.
 
 ### 2. Accessible names and roles in rendered output
 

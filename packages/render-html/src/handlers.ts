@@ -153,7 +153,14 @@ export function marksetHandlers(): Handlers {
       const [content] = node.children;
       const body = content.type === "paragraph" ? state.all(content) : state.all(node);
       const children = [...body];
-      if (node.caption) children.push(el("figcaption", {}, inline(state, node.caption)));
+      // A table has its own caption element, and it is the table's accessible
+      // name; a figcaption beside a table is not (§4.8). Put it inside instead.
+      const table = content.type === "table" ? children.find((c): c is Element => c.type === "element" && c.tagName === "table") : undefined;
+      if (node.caption && table) {
+        table.children.unshift({ type: "text", value: "\n" }, el("caption", {}, inline(state, node.caption)));
+      } else if (node.caption) {
+        children.push(el("figcaption", {}, inline(state, node.caption)));
+      }
       return finish(state, node, block("figure", props, children));
     },
 
