@@ -35,11 +35,11 @@ interface ConformanceCase {
   section: string; name?: string; markset: string; html?: string; downgrade?: string; ast?: unknown; valid: boolean; diagnostics?: string[];
 }
 
-const NAV: Array<[string, string]> = [["Home", "index.html"], ["Guide", "guide/index.html"], ["CLI", "cli/index.html"], ["Spec", "spec/index.html"], ["Conformance", "conformance/index.html"], ["Examples", "examples/index.html"]];
+const NAV: Array<[string, string]> = [["Home", "index.html"], ["Start", "start/index.html"], ["Guide", "guide/index.html"], ["CLI", "cli/index.html"], ["Spec", "spec/index.html"], ["Conformance", "conformance/index.html"], ["Examples", "examples/index.html"]];
 
 /** Documents rendered as their own pages, with the theme stylesheet each one is meant to be read with (spec §6). */
-const EXAMPLES: Array<{ slug: string; file: string; title: string; theme?: string; blurb: string }> = [
-  { slug: "showcase", file: "showcase.md", title: "Showcase", blurb: "Every v0 construct once, at the length of a real document. It declares no theme stylesheet, so it shows what the vocabulary looks like on whatever stylesheet renders it." },
+const EXAMPLES: Array<{ slug: string; file: string; title: string; theme?: string; toggles?: boolean; blurb: string }> = [
+  { slug: "showcase", file: "showcase.md", title: "Showcase", toggles: true, blurb: "Every construct at the size it would really be used, each with a tab holding the source that produced it. It declares no theme stylesheet, so it shows the vocabulary on whatever stylesheet renders it." },
   { slug: "notification-routing", file: "notification-routing.md", title: "Analysis document", theme: "dossier.css", blurb: "A long analysis document with a theme stylesheet: status chips, a layer rail, a tinted pipeline stage, lettered steps. The system it describes is invented." },
   { slug: "strategy-read", file: "strategy-read.md", title: "Strategy memo", theme: "memo.css", blurb: "An argued memo in a newspaper register: a masthead, a captioned data table, marked sections in a two-lane grid, pull quotes and source citations. The company and every figure are invented." },
 ];
@@ -62,6 +62,7 @@ export async function build(outDir: string = join(root, "dist")): Promise<string
   const cases = await loadCases();
   const pages: Page[] = [
     await markdownPage("index.html", join(root, "site", "content", "index.md")),
+    await markdownPage("start/index.html", join(root, "site", "content", "start.md")),
     await markdownPage("cli/index.html", join(root, "site", "content", "cli.md")),
     await specPage(),
     await guideIndex(),
@@ -84,9 +85,41 @@ export async function build(outDir: string = join(root, "dist")): Promise<string
 
 // ---------------------------------------------------------------------------
 
-async function markdownPage(path: string, file: string, themeCss?: string | false): Promise<Page> {
+/** Construct nodes, which are the ones worth showing the source of. */
+const DEMO_TYPES = new Set(["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"]);
+
+/**
+ * Wrap every top-level construct in a two-tab toggle: the rendered result, and
+ * the source that produced it, sliced out of the document by the node's own
+ * position. The source is never duplicated in the file, so the two panes cannot
+ * drift, and because tabs are radio inputs the toggle needs no script.
+ */
+function withSourceToggles(tree: Root, source: string): Root {
+  const children = tree.children.map((node) => {
+    const at = node.position;
+    if (!DEMO_TYPES.has(node.type) || !at?.start.offset === undefined || at === undefined) return node;
+    const text = source.slice(at.start.offset ?? 0, at.end.offset ?? 0);
+    const tab = (label: string, kids: unknown[]): unknown =>
+      ({ type: "tab", depth: 3, label: [{ type: "text", value: label }], children: kids });
+    return {
+      type: "tabs",
+      active: 1,
+      id: null,
+      classes: ["site-demo"],
+      children: [
+        tab("Result", [node]),
+        tab("Markdown", [{ type: "code", lang: "markdown", meta: null, value: text }]),
+      ],
+    } as unknown as typeof node;
+  });
+  return { ...tree, children };
+}
+
+async function markdownPage(path: string, file: string, themeCss?: string | false, toggles = false): Promise<Page> {
   const source = await readFile(file, "utf8");
-  const { ast, diagnostics } = parseDocument(source);
+  const parsed = parseDocument(source);
+  const { diagnostics } = parsed;
+  const ast = toggles ? withSourceToggles(parsed.ast, source) : parsed.ast;
   failOnErrors(diagnostics, file);
   addHeadingIds(ast);
   return {
@@ -100,7 +133,7 @@ async function markdownPage(path: string, file: string, themeCss?: string | fals
 
 /** One example document, with links to the index and to the other examples so no page is a dead end. */
 async function examplePage(example: (typeof EXAMPLES)[number]): Promise<Page> {
-  const page = await markdownPage(`examples/${example.slug}/index.html`, join(root, "examples", example.file), example.theme && `css/${example.theme}`);
+  const page = await markdownPage(`examples/${example.slug}/index.html`, join(root, "examples", example.file), example.theme && `css/${example.theme}`, example.toggles ?? false);
   const others = EXAMPLES.filter((e) => e.slug !== example.slug)
     .map((e) => `<a href="../${e.slug}/index.html">${esc(e.title)}</a>`);
   const source = `<a href="${REPO}/blob/main/examples/${esc(example.file)}">source</a>`;
