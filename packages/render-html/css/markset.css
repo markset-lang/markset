@@ -185,6 +185,9 @@ th { font-weight: 600; }
 }
 /* Tone classes and data-tone set one variable that the rest reads. */
 .neutral, [data-tone="neutral"] { --ms-tone: var(--ms-tone-neutral); }
+/* A tone on a plain span tints the text. Without this the class sets the custom
+ * property and nothing reads it, so `[shipping]{.success}` renders unchanged. */
+.ms-span:is(.info, .success, .warn, .danger, .neutral):not(.badge) { color: var(--ms-tone); }
 .info, [data-tone="info"] { --ms-tone: var(--ms-tone-info); }
 .success, [data-tone="success"] { --ms-tone: var(--ms-tone-success); }
 .warn, [data-tone="warn"] { --ms-tone: var(--ms-tone-warn); }

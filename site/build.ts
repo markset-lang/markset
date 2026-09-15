@@ -151,15 +151,78 @@ const BLURB: Record<(typeof CONSTRUCTS)[number], string> = {
   figure: "An image, table, or code block with a caption.",
 };
 
+/**
+ * The examples each guide page shows, in order, with a line saying what to look
+ * at. Named rather than sliced, so a page shows a chosen progression from the
+ * canonical form to the awkward corners instead of whatever happens to be first.
+ * A name that no longer matches a case fails the build.
+ */
+const GUIDE_EXAMPLES: Record<string, Array<[string, string]>> = {
+  callout: [
+    ["canonical", "The marker, a title on the same line, and a body. This is GitHub's alert syntax unchanged, so it renders natively there too."],
+    ["collapsed by default, no title", "A trailing `-` folds the callout. With no title, the type name is used. It becomes a `<details>` element, so folding needs no script."],
+    ["body with several blocks", "The body is ordinary block content. Lists, code and further paragraphs all work; only the first line is special."],
+    ["nested: callout containing a card", "A callout is a blockquote, so a directive inside it needs no extra fencing. The downgrade keeps both."],
+  ],
+  card: [
+    ["canonical", "The bracketed argument is the title and `tone` picks one of five semantic tones. Neither names a color."],
+    ["every tone", "All five tones side by side. What each one looks like is the theme's decision, not the document's."],
+    ["mixed block content", "Any block content is allowed, including none. A card is a boundary, not a content type."],
+    ["nested cards use a longer outer fence", "The rule that matters when nesting: the outer fence must be longer than the inner one, exactly as with code fences."],
+  ],
+  grid: [
+    ["canonical", "Content must be exactly one list. That single rule is what makes the downgrade trivially exact: drop the fence and a list is still a list."],
+    ["every cols value", "`cols` accepts 1 to 4. The stylesheet collapses to fewer columns on a narrow screen; the document does not say when."],
+    ["items with nested blocks", "An item may hold several blocks, so a grid item can be a small article rather than a line."],
+    ["ordered list is allowed", "An ordered list works too. The marker is not rendered, so use whichever reads better in the raw source."],
+  ],
+  columns: [
+    ["canonical", "Content before the first `::col` is the first column. The separator is a two-colon line, so two columns do not cost two levels of fencing."],
+    ["three-term ratio and gap", "`ratio` sizes the columns and its term count must equal the column count. This is the one place a document carries geometry."],
+    ["id and classes on the separator", "A `::col` line takes its own attribute specifier, which is how one column is singled out for a theme."],
+    ["nested inside a card", "Three levels deep, so the fences step down from the outside in: five colons, then four, then three. Each closing fence matches its own opener."],
+  ],
+  tabs: [
+    ["canonical", "Headings become the tab labels. A renderer with no tab support shows the sections one after another, which is the downgrade."],
+    ["active tab override", "`active` picks which tab opens. Panels switch with radio inputs, so there is no script."],
+    ["deeper headings are tab content", "The first heading level found sets the tab level. Anything deeper is content inside that tab."],
+    ["nested: a card inside a tab", "Tab content is ordinary blocks, so constructs nest inside it with the usual fence rule."],
+  ],
+  steps: [
+    ["canonical", "Content must be exactly one ordered list. The numbering comes from the list, so the source reads as a procedure even unrendered."],
+    ["items with nested blocks", "A step can carry code, a table or a further list. This is the usual shape of a real procedure."],
+    ["start number is preserved", "A list starting at 3 keeps its numbering, which is how a procedure continues across sections."],
+    ["nested: a card inside a step", "A card inside a step needs the outer fence to be longer, as everywhere else."],
+  ],
+  metrics: [
+    ["canonical", "A table of at least two columns. The first is the label, the second the value, and an optional third is read as a delta."],
+    ["inverse direction", "`direction=inverse` flips which sign reads as good, for a measure like churn where down is the improvement."],
+    ["two columns without a delta", "The delta column is optional. Without it the tiles are label and value only."],
+    ["alignment is kept", "GFM column alignment survives into the tiles, so numeric columns stay aligned."],
+  ],
+  figure: [
+    ["canonical", "The argument is the caption and `width` is a percentage. No pixels, because the same source has to typeset to print."],
+    ["table as content", "A figure may wrap a table. The caption is then emitted as the table's own `<caption>`, which is its accessible name."],
+    ["code block as content", "A code block works too, which is how a listing gets a caption."],
+    ["caption with inline markup", "The caption is inline content, so emphasis, code and links all work inside it."],
+  ],
+};
+
 async function guidePage(name: (typeof CONSTRUCTS)[number], sectionCases: ConformanceCase[]): Promise<Page> {
   const file = join(root, "site", "content", "guide", `${name}.md`);
   const { ast, diagnostics } = parseDocument(await readFile(file, "utf8"));
   failOnErrors(diagnostics, file);
   addHeadingIds(ast);
-  const canonical = sectionCases.find((c) => c.name === "canonical") ?? sectionCases[0];
+  const chosen = GUIDE_EXAMPLES[name] ?? [["canonical", ""]];
   const invalid = sectionCases.filter((c) => !c.valid).slice(0, 3);
   let body = renderHtml(ast);
-  if (canonical) body += `<h2 id="example">Example</h2>\n${caseCard(canonical, { showName: false })}`;
+  body += `<h2 id="examples">Examples</h2>\n`;
+  for (const [caseName, note] of chosen) {
+    const found = sectionCases.find((c) => c.name === caseName);
+    if (!found) throw new Error(`guide/${name}: no conformance case named "${caseName}"`);
+    if (note) body += `<p class="site-note">${inlineCode(note)}</p>\n`;
+    body += `${caseCard(found, { showName: true })}\n`;
+  }
   if (invalid.length) {
     body += `<h2 id="diagnostics">What the validator catches</h2>\n<p>Every error below is specified; nothing degrades silently.</p>\n`;
     body += invalid.map((c) => caseCard(c, { showName: true, compact: true })).join("\n");
@@ -193,6 +256,11 @@ ${list.map((c, i) => caseCard(c, { showName: true, index: i + 1 })).join("\n")}`
 }
 
 /** One case: source, live rendering (when a document), downgrade, diagnostics. */
+/** Backticks in a guide note become code elements; everything else is escaped. */
+function inlineCode(text: string): string {
+  return esc(text).replace(/`([^`]+)`/g, "<code>$1</code>");
+}
+
 function caseCard(c: ConformanceCase, options: { showName: boolean; index?: number; compact?: boolean }): string {
   const isDocument = c.section === "frontmatter" || c.section === "bracketed-span" || c.section === "attribute-line"
     || (CONSTRUCTS as readonly string[]).includes(c.section) || c.markset.includes("\n");

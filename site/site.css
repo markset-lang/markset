@@ -65,6 +65,11 @@ body { --ms-font-heading: "Source Serif 4", Charter, Georgia, "Times New Roman",
 .site-table td, .site-table th { padding-right: 1.5rem; }
 .site-more { color: var(--ms-fg-muted); font-size: 0.875rem; margin-top: calc(var(--ms-space) * 2) !important; padding-top: var(--ms-space); border-top: 1px solid var(--ms-border); }
 
+/* A line above a guide example saying what to look at. */
+.site-note { color: var(--ms-fg-muted); max-width: 70ch; }
+.ms-document > .site-note { margin-top: calc(var(--ms-space) * 1.5) !important; }
+.ms-document > .site-note + .site-case { margin-top: 0.5rem !important; }
+
 /* conformance and guide case cards */
 .site-case { border: 1px solid var(--ms-border); border-radius: var(--ms-radius); padding: var(--ms-space); }
 .site-case + .site-case { margin-top: var(--ms-space); }
