@@ -19,6 +19,7 @@ commands
   html <file>            render HTML (a full page with the default stylesheet inlined)
   downgrade <file>       render plain CommonMark
   ast <file>             print the AST as JSON
+  css                    write the default stylesheet, for a site that links it once
 
 options
   -o, --out <path>       write output to a file instead of stdout
@@ -35,6 +36,9 @@ options
   -h, --help             show this help
 
 "-" reads the document from stdin.`;
+
+/** Every command name, so an unknown one is reported as one rather than as a missing file. */
+const COMMANDS = new Set(["check", "html", "downgrade", "ast", "css"]);
 
 export async function main(
   argv: string[],
@@ -60,7 +64,14 @@ export async function main(
     io.stdout(`${USAGE}\n`);
     return values.help ? 0 : 2;
   }
-  if (files.length === 0) {
+  // Check the command before asking for a file, or a typo in the command is
+  // reported as a missing argument: "markset htlm" used to answer "a file is
+  // required", which sends the reader looking in the wrong place entirely.
+  if (!COMMANDS.has(command)) {
+    io.stderr(`markset: unknown command "${command}"\n\n${USAGE}\n`);
+    return 2;
+  }
+  if (files.length === 0 && command !== "css") {
     io.stderr(`markset ${command}: a file is required ("-" for stdin)\n`);
     return 2;
   }
@@ -111,6 +122,15 @@ export async function main(
         const theme = values.theme ? { inline: await readFile(values.theme, "utf8") } : undefined;
         await emit(renderPage(ast, { title: values.title, stylesheet, theme, diagrams }));
       }
+      return 0;
+    }
+    case "css": {
+      // A site that renders more than one page wants the stylesheet linked
+      // once rather than inlined into every file, and it should not have to
+      // know a path inside the package to get it. Writing the Pages recipe is
+      // what made that obvious: --css already took an href, and there was no
+      // way to produce the file it pointed at.
+      await emit(await readFile(defaultStylesheetPath, "utf8"));
       return 0;
     }
     case "downgrade": {

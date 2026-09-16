@@ -46,6 +46,10 @@ Commands
 - ### `markset html`
 
   Renders a complete HTML page with the default stylesheet inlined, so the output is one self-contained file. Add `--fragment` for the body content alone, `--theme <file>` to append a theme stylesheet, and `--title` to set the page title. ASCII diagram fences are drawn automatically (spec §10), and `--diagram` adds other languages or turns drawing off. What draws a fence is an *engine*: a function built into the renderer, or a command you name.
+- ### `markset css`
+
+  Writes the default stylesheet — tokens, the eight constructs, print rules, light and dark. A site that renders more than one page links it once instead of inlining it into every file, which is the difference between a 24 KB page and a 0.5 KB one. Takes no input file. See [publishing to GitHub Pages](github-pages/index.html).
+
 - ### `markset downgrade`
 
   Lowers every construct to the plain CommonMark it is defined to fall back to. The output is a fixed point: downgrading it again changes nothing, and it parses with no diagnostics. This is the degradation contract, executable.
@@ -68,6 +72,7 @@ Options
 | Flag | Applies to | Effect |
 |---|---|---|
 | `-o`, `--out <path>` | all | Write to a file instead of standard output. |
+| (no file) | `css` | `css` is the one command that takes no input document. |
 | `--fragment` | `html` | Emit the body content only, with no page shell or stylesheet. |
 | `--css <mode>` | `html` | `inline` inlines the default stylesheet and is the default. `none` omits it. Any other value is treated as a URL and linked. |
 | `--theme <file>` | `html` | Append a theme stylesheet after the default one, so it can style author classes and override tokens. See spec §6. |
