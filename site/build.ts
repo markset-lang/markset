@@ -239,6 +239,7 @@ async function writeSite(outDir: string): Promise<string[]> {
     await markdownPage("index.html", join(root, "site", "content", "index.md")),
     await markdownPage("start/index.html", join(root, "site", "content", "start.md")),
     await markdownPage("cli/index.html", join(root, "site", "content", "cli.md")),
+    await markdownPage("github-pages/index.html", join(root, "site", "content", "github-pages.md")),
     await specPage(),
     await referenceIndex(),
     await markdownPage(

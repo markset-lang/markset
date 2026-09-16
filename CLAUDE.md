@@ -48,7 +48,8 @@ packages/
 site/       static site generator (build.ts) and content; every page is Markset rendered by the packages above.
             Nav lives in NAV and the page list in build(). The examples index generates Markset source and renders it,
             rather than assembling HTML, so that page is a Markset document like every other one.
-            content/start.md is the adoption page,
+            content/start.md is the adoption page, content/github-pages.md is the publishing recipe
+            (tested by site/test/recipe.test.ts, which runs it),
             content/cli.md documents the command line tool, and content/reference/index.md teaches the
             shared grammar. An example with `toggles: true` in EXAMPLES gets every top-level construct
             wrapped in a Result/Markdown tabs pair, with the source sliced from the file by node
@@ -102,7 +103,7 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] Constructs: callout, card, grid, columns, tabs, steps, metrics, figure (`packages/parser/src/constructs.ts`, one `tests/<name>.json` each; AST aspect only until the renderers exist)
 - [x] HTML renderer (`packages/render-html`, mdast-util-to-hast + hast-util-to-html; `renderHtml` fragment and `renderPage` full page with theme tokens on `<body>`; `html` aspect pinned on 59 cases)
 - [x] Default stylesheet (`packages/render-html/css/markset.css`: tokens, presets, density, radius, dark mode, print; tabs via radio inputs; grid and columns via CSS grid)
-- [x] CLI (`packages/cli`: `check`, `html`, `downgrade`, `ast`; `examples/showcase.md` exercises every construct)
+- [x] CLI (`packages/cli`: `check`, `html`, `downgrade`, `ast`, `css`; `examples/showcase.md` exercises every construct)
 - [x] Attribute lines (§2.5, djot-style `{.lead}` line before a block; `packages/parser/src/attribute-lines.ts`, `tests/attribute-line.json`)
 - [x] §9 open questions closed with decisions (spec §9)
 - [x] **v0 declared 2026-09-15, reference implementation `0.1.0`.** Candidates `0.0.0-rc.1` and `0.0.0-rc.2` preceded it. Changes within v0 are additive only; the change policy is spec §0. The version string lives in `package.json` and a test asserts every other copy of it agrees.

@@ -32,7 +32,7 @@ Markset is the other answer. You name the layout instead of building it, and the
 
 - ### A public site or GitHub Pages
 
-  Same shape, published. The site you are reading is the worked example: every page is a Markset document, built by the reference implementation, deployed by a workflow. There is no framework underneath it.
+  Same shape, published. The site you are reading is the worked example: every page is a Markset document, built by the reference implementation, deployed by a workflow. There is no framework underneath it, and the whole recipe — one workflow file and two commands — is on the [GitHub Pages page](github-pages/index.html).
 
 - ### Documents that get pasted around
 
@@ -194,6 +194,7 @@ Next
 :::steps
 1. Read the [reference](reference/index.html). It starts with the three pieces of syntax every construct is built from, then gives one page per construct with four worked examples each, a page on [frontmatter and theme tokens](reference/frontmatter/index.html) for the settings a document carries about itself, and a page on [diagrams](reference/diagrams/index.html) for turning an ASCII or mermaid fence into a picture.
 2. Skim the [CLI page](cli/index.html) for the four commands and their flags.
-3. Look at the [examples](examples/index.html) to see what a long document looks like when it has a theme of its own.
-4. Read the [specification](spec/index.html) when you want the normative answer. It is short, and it is what a second implementation would be written from.
+3. Follow [publishing to GitHub Pages](github-pages/index.html) if what you want is a site: it is one workflow file, two commands, and the three things that are easy to get wrong.
+4. Look at the [examples](examples/index.html) to see what a long document looks like when it has a theme of its own.
+5. Read the [specification](spec/index.html) when you want the normative answer. It is short, and it is what a second implementation would be written from.
 :::

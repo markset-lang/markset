@@ -4,6 +4,7 @@ import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { main, position } from "../src/main.ts";
+import { defaultStylesheetPath } from "@markset/render-html";
 
 function run(argv: string[]) {
   let out = "";
@@ -162,4 +163,31 @@ test("a document cannot name its own engine", async () => {
   const { code } = await run(["html", "--fragment", "--diagram", "ascii", file]);
   assert.equal(code, 0);
   await assert.rejects(readFile(marker), "the info string is not a command");
+});
+
+test("css writes the stylesheet a multi-page site links once", async () => {
+  // Without this there is no way to obtain markset.css except by knowing a
+  // path inside the package, which makes --css <href> an option you cannot
+  // actually use. Found while writing the GitHub Pages recipe.
+  const { code, out } = await run(["css"]);
+  assert.equal(code, 0);
+  const shipped = await readFile(defaultStylesheetPath, "utf8");
+  assert.equal(out, shipped, "byte for byte the stylesheet that ships");
+});
+
+test("css needs no file argument, unlike every other command", async () => {
+  const missing = await run(["html", "--fragment"]);
+  assert.equal(missing.code, 2, "html still requires a file");
+  assert.match(missing.err, /a file is required/);
+});
+
+test("a site can link one stylesheet instead of inlining it into every page", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "markset-pages-"));
+  const page = join(dir, "doc.md");
+  await writeFile(page, "---\nmarkset: 0\n---\n\n# Deployment\n\nText.\n");
+
+  const inlined = await run(["html", page]);
+  const linked = await run(["html", "--css", "markset.css", page]);
+  assert.match(linked.out, /<link rel="stylesheet" href="markset\.css">/);
+  assert.ok(linked.out.length * 4 < inlined.out.length, "linking is much smaller than inlining");
 });

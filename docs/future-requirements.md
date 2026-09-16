@@ -248,6 +248,21 @@ Cost, as built: one spec section, one workspace package, one renderer pass, one 
 
 Observed: requested September 2026. The standing evidence was `examples/degrade.svg`, a hand-maintained SVG carried beside `showcase.md` by a line in the site generator, which is the thing a diagram fence removes the need for.
 
+### 16. A recipe for publishing to GitHub Pages
+
+**Class: Tooling and documentation. Done, September 2026.**
+
+The adoption page had listed "a public site or GitHub Pages" as one of four things Markset is good for, and said only that this site is the worked example. That is a promise with no path behind it: the reader who wants it has to reverse-engineer `site/build.ts`, which is six hundred lines and is not the minimum.
+
+Written as `site/content/github-pages.md`, and the useful part is what writing it forced, which is the same pattern the real documents established for the spec.
+
+- **`markset css`.** The recipe wants one stylesheet linked by every page rather than inlined into each one — 24 KB a page against 0.5 KB. `--css <href>` already accepted a URL to link, and there was no way to produce the file it pointed at except by knowing a path inside the package. The command that emits it did not exist, and the option was therefore unusable as documented.
+- **An unknown command is now reported as one.** The missing-file check ran before the command was dispatched, so a typo answered "a file is required". Found because a test asserted every command named in the guide exists, and the assertion passed for a command that did not.
+
+**The real blocker is not documentation.** The recipe's first line should be `npm i -D @markset/cli` and cannot be: every package is `private: true`, so the workflow checks the repository out and runs the CLI from source. It works, and it is the one ugly step in an otherwise short recipe. If the Pages case is as common as it looks, publishing is worth more than any further writing — and it is its own project, because it needs a decision about shipping TypeScript sources against a compiled `dist/`.
+
+Observed: raised September 2026, on the grounds that it is likely to be the common case.
+
 ## Rejected
 
 | Request | Reason |
