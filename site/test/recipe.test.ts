@@ -78,10 +78,12 @@ test("the recipe in the guide actually produces a site", async () => {
   }
 });
 
-test("the guide keeps the flag that stops a browser being downloaded into every build", () => {
-  // --omit=dev is why a reader's Pages build does not pull Chromium for
-  // mermaid, which is a dev dependency of this repository. The guide calls it
-  // load-bearing; this is what keeps that claim true.
-  assert.match(guide, /npm --prefix \.markset ci --omit=dev/u);
-  assert.match(guide, /--omit=dev. is load-bearing/u, "and explains why, rather than just doing it");
+test("the guide installs the published CLI rather than reaching into this repository", () => {
+  // The recipe used to check Markset out and run it from source, because
+  // nothing was on npm. Now that there is, a reader installs one package and
+  // calls one command. If this page ever drifts back, their build starts
+  // depending on our internal layout, which we are free to change.
+  assert.match(guide, /npm i -g @markset-lang\/cli@\d/u, "installs the published CLI, at a pinned version");
+  assert.doesNotMatch(guide, /packages\/cli\/src/u, "and never names a path inside this repository");
+  assert.doesNotMatch(guide, /repository: markset-lang\/markset/u, "and never checks it out");
 });

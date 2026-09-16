@@ -11,7 +11,7 @@ Reference implementation
 # The `markset` command
 
 {.lead}
-One executable with four commands. It validates a document, renders it to HTML, lowers it to plain CommonMark, or prints the parsed tree. There is no build step and no configuration file.
+One executable with five commands. It validates a document, renders it to HTML, lowers it to plain CommonMark, prints the parsed tree, or writes the default stylesheet. There is no build step and no configuration file.
 
 {.tick}
 ***
@@ -19,17 +19,19 @@ One executable with four commands. It validates a document, renders it to HTML, 
 {.eyebrow}
 Getting it
 
-## Running it from a clone
+## Installing it
 
-There is no published package yet. Clone the repository and run the entry point directly. Node 22.18 or newer is required, because the source is TypeScript that Node runs by stripping the types.
+Node 22.18 or newer, and one package.
 
 ```sh
-git clone https://github.com/markset-lang/markset && cd markset
-npm install
-node packages/cli/src/markset.ts --help
+npm i -g @markset-lang/cli
+markset --help
 ```
 
-Everything below writes `markset` where you would type that longer path.
+A project that renders as part of its own build wants it as a dev dependency instead — `npm i -D @markset-lang/cli` puts `markset` on the path inside npm scripts. To try it without installing anything, `npx @markset-lang/cli html doc.md`.
+
+{.small .muted}
+Working on Markset rather than with it? Clone the repository and run `node packages/cli/src/markset.ts`, which is the same program before packaging: the sources are TypeScript that Node runs by stripping the types, so there is no build step between an edit and running it.
 
 {.tick}
 ***

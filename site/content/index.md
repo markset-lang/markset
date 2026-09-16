@@ -128,9 +128,8 @@ Start here
 
 :::card[Try it locally]{tone=info}
 ```sh
-git clone https://github.com/markset-lang/markset && cd markset
-npm install
-node packages/cli/src/markset.ts html examples/showcase.md -o showcase.html
+npm i -g @markset-lang/cli
+markset html doc.md -o doc.html
 ```
 :::
 

@@ -15,9 +15,20 @@ Markset extends Markdown with a small, closed vocabulary of layout constructs an
 
 The specification is [`spec/v0.md`](spec/v0.md). The eight constructs are callout, card, grid, columns, tabs, steps, metrics, and figure, plus bracketed spans for inline attributes and frontmatter theme tokens.
 
-## Running
+## Installing
 
-Node 22.18 or later. No build step: sources are TypeScript run directly by Node.
+Node 22.18 or later.
+
+```sh
+npm i -g @markset-lang/cli          # the command line tool
+npm i @markset-lang/render-html     # or the library
+```
+
+Five packages are published under the `@markset-lang` scope: `parser`, `diagram-ascii`, `render-downgrade`, `render-html`, and `cli`.
+
+## Working on it
+
+No build step in development: sources are TypeScript run directly by Node. The build exists only for publishing.
 
 ```sh
 npm install
@@ -40,13 +51,14 @@ The site at <https://markset-lang.github.io/markset/> is generated from this rep
 | `spec/conformance.schema.json` | Schema for the conformance case files. |
 | `tests/*.json` | Conformance cases, one file per spec section. |
 | `packages/parser` | micromark/mdast based parser: grammar, constructs, frontmatter, diagnostics. |
+| `packages/diagram-ascii` | ASCII diagram to SVG (spec §10). No dependencies. |
 | `packages/render-downgrade` | Markset AST to plain CommonMark. |
 | `packages/render-html` | Markset AST to HTML, plus the default stylesheet. |
 | `packages/conformance` | Harness that runs `tests/*.json` against the packages above. |
-| `packages/cli` | `markset check | html | downgrade | ast`. |
+| `packages/cli` | `markset check | html | downgrade | ast | css`. |
 | `site/` | Documentation site, written in Markset and built by the packages above (`npm run site`). |
 | `docs/` | Background analysis and design rationale. |
 
 ## Status
 
-**v0, declared 2026-09-15.** Reference implementation `0.2.0`. The spec is implemented end to end (parser, an HTML renderer, a downgrade renderer that emits plain CommonMark, stylesheet, CLI), the conformance suite passes, and the §9 questions are decided. Six real documents were written against the candidate; the last four forced no change to §2 or §4, which is what v0 was waiting on. Changes within v0 are additive only — see the change policy in spec §0, `CHANGELOG.md`, and the status list in `CLAUDE.md`.
+**v0, declared 2026-09-15.** Reference implementation `0.2.0`. The spec is implemented end to end (parser, an HTML renderer, a downgrade renderer that emits plain CommonMark, stylesheet, CLI), the conformance suite passes, and the §9 questions are decided. The five packages are on npm under the `@markset-lang` scope. Six real documents were written against the candidate; the last four forced no change to §2 or §4, which is what v0 was waiting on. Changes within v0 are additive only — see the change policy in spec §0, `CHANGELOG.md`, and the status list in `CLAUDE.md`.

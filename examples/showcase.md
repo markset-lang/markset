@@ -129,11 +129,10 @@ tabs
 Tab labels are headings, so a renderer with no tab support shows the sections one after another and loses nothing. The panels switch with radio inputs, which is why this works in a printed page and in an email client.
 
 :::tabs
-### From source
+### On the command line
 ```sh
-git clone https://github.com/markset-lang/markset && cd markset
-npm install
-node packages/cli/src/markset.ts html examples/showcase.md -o showcase.html
+npm i -g @markset-lang/cli
+markset html showcase.md -o showcase.html
 ```
 
 ### As a library
@@ -148,7 +147,7 @@ const html = renderHtml(ast);
 
 ### In CI
 ```sh
-node packages/cli/src/markset.ts check docs/*.md
+npx @markset-lang/cli check docs/*.md
 ```
 :::
 
