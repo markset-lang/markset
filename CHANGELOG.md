@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 — 2026-09-16
+
+**The first release published to npm.** Five packages go out — `parser`, `diagram-ascii`, `render-downgrade`, `render-html` and `cli` — and everything below landed after v0 was declared. It is a minor bump rather than 0.1.0 because `v0.1.0` was already tagged at the commit that declared v0, fifteen commits back, and everything since is additive.
 
 - **The packages are ready to publish.** Five go to npm — `parser`, `diagram-ascii`, `render-downgrade`, `render-html` and `cli`; `conformance` stays private because nothing consumes it. All five carry a license, a version, a repository directory and an `exports` map, and `npm run build` compiles them to `dist/` with declarations and source maps. Nothing is published yet.
 - Shipping the TypeScript sources instead was not a close call: **Node refuses to strip types under `node_modules`**, with no flag that lifts it, so a `.ts` package simply cannot be imported by a Node consumer. The emit turned out to cost almost nothing, because `erasableSyntaxOnly` had been keeping the sources transformation-free all along, and `rewriteRelativeImportExtensions` rewrites our `./x.ts` specifiers to `./x.js`.
