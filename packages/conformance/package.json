@@ -1,5 +1,5 @@
 {
-  "name": "@markset/conformance",
+  "name": "@markset-lang/conformance",
   "version": "0.2.0",
   "private": true,
   "type": "module",
@@ -8,9 +8,9 @@
     "markset-conformance": "./src/cli.ts"
   },
   "dependencies": {
-    "@markset/parser": "*",
-    "@markset/render-downgrade": "*",
-    "@markset/render-html": "*",
+    "@markset-lang/parser": "*",
+    "@markset-lang/render-downgrade": "*",
+    "@markset-lang/render-html": "*",
     "mdast-util-from-markdown": "*",
     "micromark-extension-gfm-table": "*",
     "mdast-util-gfm-table": "*",

@@ -4,7 +4,7 @@ import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { main, position } from "../src/main.ts";
-import { defaultStylesheetPath } from "@markset/render-html";
+import { defaultStylesheetPath } from "@markset-lang/render-html";
 
 function run(argv: string[]) {
   let out = "";

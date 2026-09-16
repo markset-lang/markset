@@ -1,4 +1,4 @@
-import { parseDirectiveLine } from "@markset/parser";
+import { parseDirectiveLine } from "@markset-lang/parser";
 import type { Driver } from "../types.ts";
 import { documentDriver } from "./document.ts";
 

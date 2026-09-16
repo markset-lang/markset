@@ -16,7 +16,7 @@ You have Markdown in a repository and you want it on the web, without adopting a
 [No framework]{.badge} [No configuration file]{.badge} [Two commands]{.badge .info}
 
 > [!IMPORTANT] Markset is not on npm yet
-> The packages are still private while the conformance suite settles, so the workflow below checks Markset out and runs it from source rather than installing it. That is the one ugly line in this recipe and it is temporary: when the packages publish, the checkout step and the long paths collapse into `npm i -D @markset/cli` and `markset`. Everything else on this page stays as it is.
+> The packages are still private while the conformance suite settles, so the workflow below checks Markset out and runs it from source rather than installing it. That is the one ugly line in this recipe and it is temporary: when the packages publish, the checkout step and the long paths collapse into `npm i -D @markset-lang/cli` and `markset`. Everything else on this page stays as it is.
 
 {.tick}
 ***

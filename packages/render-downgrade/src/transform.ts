@@ -14,7 +14,7 @@ import type {
   Root,
   RootContent,
 } from "mdast";
-import type { CalloutKind } from "@markset/parser";
+import type { CalloutKind } from "@markset-lang/parser";
 
 const CALLOUT_LABEL: Record<CalloutKind, string> = {
   NOTE: "Note",

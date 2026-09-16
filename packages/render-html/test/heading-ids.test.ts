@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseDocument } from "@markset/parser";
+import { parseDocument } from "@markset-lang/parser";
 import { addHeadingIds, headingSlug, renderHtml } from "../src/index.ts";
 
 const render = (source: string, options?: { headingIds?: boolean }) => renderHtml(parseDocument(source).ast, options);

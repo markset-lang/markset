@@ -1,8 +1,8 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { parseArgs } from "node:util";
-import { parseDocument, type Diagnostic } from "@markset/parser";
-import { renderDowngrade } from "@markset/render-downgrade";
+import { parseDocument, type Diagnostic } from "@markset-lang/parser";
+import { renderDowngrade } from "@markset-lang/render-downgrade";
 import {
   builtInEngines,
   defaultStylesheetPath,
@@ -10,7 +10,7 @@ import {
   renderPage,
   type DiagramEngine,
   type DiagramOptions,
-} from "@markset/render-html";
+} from "@markset-lang/render-html";
 
 const USAGE = `usage: markset <command> [options] <file>
 

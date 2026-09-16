@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseDocument } from "@markset/parser";
+import { parseDocument } from "@markset-lang/parser";
 import { downgrade, downgradeTree } from "../src/index.ts";
 
 // Output strings are pinned in tests/*.json; these cover the transform's

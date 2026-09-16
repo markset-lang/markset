@@ -9,7 +9,7 @@
  * rather than by promise.
  */
 import type { Element, Nodes as HastNodes, Parent } from "hast";
-import { drawAscii } from "@markset/diagram-ascii";
+import { drawAscii } from "@markset-lang/diagram-ascii";
 
 /**
  * Draws one diagram. Receives the fence's source and its info string, returns

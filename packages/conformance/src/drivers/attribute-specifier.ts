@@ -1,4 +1,4 @@
-import { parseAttributeSpecifier } from "@markset/parser";
+import { parseAttributeSpecifier } from "@markset-lang/parser";
 import type { Driver } from "../types.ts";
 
 /**

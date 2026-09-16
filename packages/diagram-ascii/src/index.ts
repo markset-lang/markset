@@ -1,7 +1,7 @@
 /**
  * ASCII diagram to SVG (spec §10).
  *
- * This is a *engine*, not part of the renderer: `@markset/render-html` ships no
+ * This is a *engine*, not part of the renderer: `@markset-lang/render-html` ships no
  * engine and draws nothing on its own. It is a pure string-to-string function
  * with no dependencies and no I/O, which is what lets it sit in a format whose
  * fourth invariant is that nothing evaluates anything — there is no evaluation

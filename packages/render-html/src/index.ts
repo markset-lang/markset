@@ -2,7 +2,7 @@ import type { Nodes, Root } from "mdast";
 import type { Nodes as HastNodes } from "hast";
 import { toHast } from "mdast-util-to-hast";
 import { toHtml } from "hast-util-to-html";
-import { parseDocument, type Attributes, type Diagnostic, type Frontmatter } from "@markset/parser";
+import { parseDocument, type Attributes, type Diagnostic, type Frontmatter } from "@markset-lang/parser";
 import { marksetHandlers } from "./handlers.ts";
 import { addHeadingIds } from "./heading-ids.ts";
 import { drawDiagrams, resolveEngines, type DiagramOptions } from "./diagrams.ts";

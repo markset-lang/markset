@@ -19,7 +19,7 @@ import type {
   Span,
   Steps,
   Tabs,
-} from "@markset/parser";
+} from "@markset-lang/parser";
 
 const CALLOUT_LABEL: Record<CalloutKind, string> = {
   NOTE: "Note",
