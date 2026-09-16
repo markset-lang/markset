@@ -205,3 +205,50 @@ test("every published package asks to be public", async () => {
     assert.equal(d.publishConfig?.access, "public", `${name} would publish restricted`);
   }
 });
+
+test("the manifests are already in the form npm would rewrite them into", async () => {
+  // npm silently "auto-corrects" a manifest on publish and warns that it did.
+  // A warning on every release that says errors were corrected is a warning
+  // people stop reading, and it means the published manifest differs from the
+  // one in the repository. These are the two npm pkg fix wanted.
+  for (const name of [...PUBLISHED, "."]) {
+    const dir = name === "." ? root : join(root, "packages", name);
+    const d = JSON.parse(await readFile(join(dir, "package.json"), "utf8")) as {
+      repository?: { url: string };
+      bin?: Record<string, string>;
+    };
+    if (d.repository) {
+      assert.match(d.repository.url, /^git\+https:\/\//u, `${name}: repository.url wants a git+ prefix`);
+    }
+    for (const [command, path] of Object.entries(d.bin ?? {})) {
+      assert.doesNotMatch(path, /^\.\//u, `${name}: bin.${command} should not lead with ./`);
+    }
+  }
+});
+
+test("the release names every published package, and nothing else", async () => {
+  // --workspaces would be shorter and it also sweeps up the two private
+  // packages, which npm's dry run happily lists. Naming them is the only
+  // spelling that cannot quietly publish the test harness, and this keeps the
+  // list honest when a package is added.
+  const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as {
+    scripts: Record<string, string>;
+  };
+  const release = pkg.scripts.release;
+  assert.match(release, /^npm run build &&/u, "a release always builds first, so dist cannot be stale");
+  const named = [...release.matchAll(/--workspace (@markset\/[a-z-]+)/gu)].map((m) => m[1]);
+  assert.deepEqual(named.sort(), PUBLISHED.map((n) => `@markset/${n}`).sort());
+  assert.doesNotMatch(release, /--workspaces\b/u, "never the sweep-everything form");
+});
+
+test("the release workflow proves the build before it publishes", async () => {
+  const yaml = await readFile(join(root, ".github", "workflows", "release.yml"), "utf8");
+  assert.match(yaml, /tags: \["v\*"\]/u, "a release is a deliberate tag, not every push");
+  assert.match(yaml, /id-token: write/u, "provenance needs it");
+  assert.match(yaml, /--provenance/u, "each tarball is tied to the run that built it");
+  assert.match(yaml, /NODE_AUTH_TOKEN: \$\{\{ secrets\.NPM_TOKEN \}\}/u);
+  for (const step of ["npm run lint", "npm run typecheck", "npm test", "npm run conformance"]) {
+    assert.ok(yaml.includes(step), `the release re-proves ${step}, since a tag can come from anywhere`);
+  }
+  assert.match(yaml, /does not match package version/u, "the tag must match the version it claims");
+});

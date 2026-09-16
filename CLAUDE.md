@@ -139,4 +139,6 @@ Read these before proposing syntax changes — most ideas have been tried.
       `publishConfig.exports`, which was the alternative. Verified by packing all five and installing them into a
       clean project: the CLI runs, the library imports, and a TypeScript consumer gets accurate types.
       **Not yet published** — `npm publish` has not been run and no version is on the registry.
-- [ ] Run the first publish, once the npm scope and an auth token exist
+- [ ] Run the first publish. The `markset` org exists; what is left is `npm login` (the CLI is not authenticated —
+      a website session is not the same thing) or an `NPM_TOKEN` secret for `.github/workflows/release.yml`, which
+      publishes on a `v*` tag with provenance. `npm run release` is the same path by hand.

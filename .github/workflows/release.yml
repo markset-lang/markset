@@ -1,0 +1,51 @@
+name: Release
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+# id-token lets npm attach provenance, which ties each published tarball to the
+# commit and workflow run that produced it.
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      # The test suite builds the site, which draws mermaid, which needs the
+      # browser mermaid-cli brings. Cached so a release is not a cold download.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/puppeteer
+          key: puppeteer-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - run: npm ci
+
+      # A tag can be pushed from anywhere, so the release re-proves the whole
+      # thing rather than trusting that CI ran on this commit.
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run conformance
+
+      - name: The tag must match the version being published
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          version="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$version" ]; then
+            echo "tag $GITHUB_REF_NAME does not match package version $version" >&2
+            exit 1
+          fi
+
+      # release runs the build first, so dist can never be stale. Every package
+      # declares access: public, so no flag is needed for the scope.
+      - run: npm run release -- --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
