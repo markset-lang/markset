@@ -4,11 +4,11 @@ import { parseArgs } from "node:util";
 import { parseDocument, type Diagnostic } from "@markset/parser";
 import { renderDowngrade } from "@markset/render-downgrade";
 import {
-  builtInDrawers,
+  builtInEngines,
   defaultStylesheetPath,
   renderHtml,
   renderPage,
-  type DiagramDrawer,
+  type DiagramEngine,
   type DiagramOptions,
 } from "@markset/render-html";
 
@@ -145,7 +145,7 @@ export type DiagramChoice = { ok: true; diagrams: DiagramOptions | false } | { o
  * Drawing is on by default, so no flag at all still draws `ascii` fences; the
  * flag adds a language, or turns drawing off entirely with `none`.
  *
- * The one property worth stating plainly: a document never names its drawer.
+ * The one property worth stating plainly: a document never names its engine.
  * The mapping from info string to command comes from this flag and nowhere
  * else, and the fence's contents reach the command on stdin rather than being
  * interpolated into it. So a Markset file cannot cause anything to run, which
@@ -155,9 +155,9 @@ export type DiagramChoice = { ok: true; diagrams: DiagramOptions | false } | { o
 export function diagramOptions(specs: string[] | undefined, io: { stderr: (s: string) => void }): DiagramChoice {
   const onError = (error: Error, language: string): void =>
     io.stderr(`markset: diagram ${language}: ${error.message}\n`);
-  // Drawers layer over the built-ins, so naming one language never silently
+  // Engines layer over the built-ins, so naming one language never silently
   // removes another. An empty set still means "the built-ins", not "none".
-  const drawers: Record<string, DiagramDrawer> = {};
+  const engines: Record<string, DiagramEngine> = {};
   for (const spec of specs ?? []) {
     if (spec === "none") return { ok: true, diagrams: false };
     const split = spec.indexOf("=");
@@ -167,16 +167,16 @@ export function diagramOptions(specs: string[] | undefined, io: { stderr: (s: st
       return { ok: false };
     }
     if (split === -1) {
-      if (!builtInDrawers[language]) {
-        const known = Object.keys(builtInDrawers).join(", ");
-        io.stderr(`markset: --diagram ${language}: no built-in drawer (have: ${known}); use ${language}=<command>\n`);
+      if (!builtInEngines[language]) {
+        const known = Object.keys(builtInEngines).join(", ");
+        io.stderr(`markset: --diagram ${language}: no built-in engine (have: ${known}); use ${language}=<command>\n`);
         return { ok: false };
       }
       continue;
     }
-    drawers[language] = commandDrawer(spec.slice(split + 1));
+    engines[language] = commandEngine(spec.slice(split + 1));
   }
-  return { ok: true, diagrams: { drawers, onError } };
+  return { ok: true, diagrams: { engines, onError } };
 }
 
 /**
@@ -184,7 +184,7 @@ export function diagramOptions(specs: string[] | undefined, io: { stderr: (s: st
  * (§10 obligation 5), so a command that fails leaves the code block in place
  * and the document keeps its content.
  */
-function commandDrawer(command: string): DiagramDrawer {
+function commandEngine(command: string): DiagramEngine {
   return (source) => {
     const result = spawnSync(command, { shell: true, input: source, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
     if (result.error) throw result.error;

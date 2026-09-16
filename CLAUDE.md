@@ -42,7 +42,7 @@ packages/
   render-downgrade/ AST -> plain CommonMark
   render-html/      AST -> HTML
   diagram-ascii/    ASCII diagram -> SVG (spec §10). A pure function with no dependencies;
-                    render-html uses it by default and takes any other drawer from its caller.
+                    render-html uses it by default and takes any other engine from its caller.
   conformance/      harness: validates tests/*.json against the schema, runs each section's driver
   cli/
 site/       static site generator (build.ts) and content; every page is Markset rendered by the packages above.

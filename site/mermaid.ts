@@ -1,11 +1,11 @@
 /**
- * A mermaid drawer for diagram fences (spec §10).
+ * A mermaid engine for diagram fences (spec §10).
  *
- * A "drawer" is whatever turns a fence into a picture. This one shells out to
+ * A "engine" is whatever turns a fence into a picture. This one shells out to
  * mermaid's own command line, so the pictures are real mermaid rather than an
  * approximation of it — Markset itself still draws nothing but ASCII.
  *
- * The awkward part is color. The ASCII drawer carries one palette and a
+ * The awkward part is color. The ASCII engine carries one palette and a
  * prefers-color-scheme block, so a diagram follows the reader's choice. mermaid
  * bakes a theme into the SVG it produces and has no such switch, so a single
  * render is readable in one scheme and poor in the other. The fix is to render
@@ -85,7 +85,7 @@ function strip(svg: string): string {
     .replace(/ style="[^"]*"/u, "");
 }
 
-// Read a fence on stdin and write SVG on stdout, so this file is also a drawer
+// Read a fence on stdin and write SVG on stdout, so this file is also an engine
 // command. Guarded so importing it costs nothing.
 if (process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/^.*?(?=site\/mermaid\.ts$)/u, ""))) {
   const chunks: Buffer[] = [];

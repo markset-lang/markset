@@ -190,7 +190,7 @@ That is a code block on purpose. Nothing about it wants to be a picture, and not
 
 ### Other diagram languages
 
-A fence may name any diagram language; the set is open. What decides whether a picture appears is which *drawers* the renderer was given — a drawer being whatever turns a fence into a picture, either built in or a program named at render time.
+A fence may name any diagram language; the set is open. What decides whether a picture appears is which *engines* the renderer was given — an engine being whatever turns a fence into a picture, either built in or a program named at render time.
 
 :::figure[The ingest handshake, written as a mermaid sequence diagram rather than as ASCII. This site draws it by running mermaid's own command line.]{#fig-handshake}
 ```mermaid
@@ -203,7 +203,7 @@ sequenceDiagram
 ```
 :::
 
-A sequence diagram is the case where mermaid earns its keep: laying out actors and ladder lines by hand in ASCII is miserable, and mermaid does it from four lines of text. Nothing in this document had to change to allow it — the fence names its language and the renderer either has a drawer for it or does not:
+A sequence diagram is the case where mermaid earns its keep: laying out actors and ladder lines by hand in ASCII is miserable, and mermaid does it from four lines of text. Nothing in this document had to change to allow it — the fence names its language and the renderer either has an engine for it or does not:
 
 ```sh
 markset html examples/architecture.md --diagram mermaid="node site/mermaid.ts"

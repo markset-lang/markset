@@ -5,12 +5,12 @@ import { toHtml } from "hast-util-to-html";
 import { parseDocument, type Attributes, type Diagnostic, type Frontmatter } from "@markset/parser";
 import { marksetHandlers } from "./handlers.ts";
 import { addHeadingIds } from "./heading-ids.ts";
-import { drawDiagrams, resolveDrawers, type DiagramOptions } from "./diagrams.ts";
+import { drawDiagrams, resolveEngines, type DiagramOptions } from "./diagrams.ts";
 
 export { marksetHandlers };
 export { addHeadingIds, headingSlug } from "./heading-ids.ts";
-export { drawDiagrams, builtInDrawers, resolveDrawers } from "./diagrams.ts";
-export type { DiagramDrawer, DiagramOptions } from "./diagrams.ts";
+export { drawDiagrams, builtInEngines, resolveEngines } from "./diagrams.ts";
+export type { DiagramEngine, DiagramOptions } from "./diagrams.ts";
 
 export interface RenderOptions {
   /**
@@ -22,11 +22,11 @@ export interface RenderOptions {
   /**
    * Draw diagram code fences (§10).
    *
-   * On by default, with the built-in `ascii` drawer. Pass an object to add a
+   * On by default, with the built-in `ascii` engine. Pass an object to add a
    * language — it layers over the built-ins rather than replacing them — or
    * `false` to draw nothing, which is what a document wants when a fence is
    * meant to stay selectable text. Only a fence inside a captioned `figure` is
-   * ever drawn (obligation 7), and a drawer that fails leaves the code block
+   * ever drawn (obligation 7), and an engine that fails leaves the code block
    * untouched (obligation 5), so neither setting can lose content.
    */
   diagrams?: DiagramOptions | false;
@@ -38,7 +38,7 @@ export function renderHtml(tree: Root, options: RenderOptions = {}): string {
   const hast = toHast(withBlockAttributes(ids), { handlers: marksetHandlers() });
   if (hast) {
     scopeTableHeaders(hast);
-    const diagrams = resolveDrawers(options.diagrams);
+    const diagrams = resolveEngines(options.diagrams);
     if (diagrams) drawDiagrams(hast, diagrams);
   }
   const html = toHtml(hast);

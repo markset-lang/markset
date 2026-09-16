@@ -124,17 +124,17 @@ test("naming a language does not switch the built-in off", async () => {
   assert.match(out, /ms-diagram/, "ascii still draws alongside the language just added");
 });
 
-test("a language with no built-in drawer is refused rather than ignored", async () => {
+test("a language with no built-in engine is refused rather than ignored", async () => {
   // Silently rendering a code block after being asked for a diagram would look
-  // like the drawer ran and produced nothing.
+  // like the engine ran and produced nothing.
   const file = await diagramFile();
   const { code, err } = await run(["html", "--fragment", "--diagram", "mermaid", file]);
   assert.equal(code, 2);
-  assert.match(err, /no built-in drawer/);
+  assert.match(err, /no built-in engine/);
   assert.match(err, /mermaid=<command>/, "and it says what to write instead");
 });
 
-test("a drawer command receives the fence on stdin and returns SVG on stdout", async () => {
+test("an engine command receives the fence on stdin and returns SVG on stdout", async () => {
   const file = await diagramFile();
   const command = `node -e "let s='';process.stdin.on('data',c=>s+=c).on('end',()=>process.stdout.write('<svg xmlns=\\"http://www.w3.org/2000/svg\\" data-len=\\"'+s.trim().split('\\n').length+'\\"></svg>'))"`;
   const { code, out } = await run(["html", "--fragment", "--diagram", `ascii=${command}`, file]);
@@ -143,7 +143,7 @@ test("a drawer command receives the fence on stdin and returns SVG on stdout", a
   assert.match(decodeURIComponent(out), /data-len="3"/, "the command saw all three lines of the fence");
 });
 
-test("a drawer command that fails leaves the code block and says so", async () => {
+test("an engine command that fails leaves the code block and says so", async () => {
   const file = await diagramFile();
   const { code, out, err } = await run(["html", "--fragment", "--diagram", "ascii=exit 7", file]);
   assert.equal(code, 0, "a failed diagram is not a failed render");
@@ -151,7 +151,7 @@ test("a drawer command that fails leaves the code block and says so", async () =
   assert.match(err, /diagram ascii:.*exited 7/);
 });
 
-test("a document cannot name its own drawer", async () => {
+test("a document cannot name its own engine", async () => {
   // The property that keeps invariant 4 intact: the mapping from info string to
   // command comes from the flag and nowhere else, so nothing in a Markset file
   // can cause anything to run.

@@ -45,7 +45,7 @@ Commands
   Reads one or more documents and reports every diagnostic with a file, line and column. Exits with status 1 if any diagnostic is an error, which is what makes it usable in continuous integration. Add `--json` to get the diagnostics as structured data instead of text.
 - ### `markset html`
 
-  Renders a complete HTML page with the default stylesheet inlined, so the output is one self-contained file. Add `--fragment` for the body content alone, `--theme <file>` to append a theme stylesheet, and `--title` to set the page title. ASCII diagram fences are drawn automatically (spec §10), and `--diagram` adds other languages or turns drawing off. What draws a fence is called a *drawer*: a function built into the renderer, or a command you name.
+  Renders a complete HTML page with the default stylesheet inlined, so the output is one self-contained file. Add `--fragment` for the body content alone, `--theme <file>` to append a theme stylesheet, and `--title` to set the page title. ASCII diagram fences are drawn automatically (spec §10), and `--diagram` adds other languages or turns drawing off. What draws a fence is an *engine*: a function built into the renderer, or a command you name.
 - ### `markset downgrade`
 
   Lowers every construct to the plain CommonMark it is defined to fall back to. The output is a fixed point: downgrading it again changes nothing, and it parses with no diagnostics. This is the degradation contract, executable.
@@ -71,7 +71,7 @@ Options
 | `--fragment` | `html` | Emit the body content only, with no page shell or stylesheet. |
 | `--css <mode>` | `html` | `inline` inlines the default stylesheet and is the default. `none` omits it. Any other value is treated as a URL and linked. |
 | `--theme <file>` | `html` | Append a theme stylesheet after the default one, so it can style author classes and override tokens. See spec §6. |
-| `--diagram <spec>` | `html` | Diagram code fences. `ascii` is drawn by default; `none` turns drawing off; `<lang>=<command>` adds a language, running a command with the fence on stdin and SVG on stdout. Repeatable. Only a fence inside a captioned `figure` is drawn, and a drawer that fails leaves the code block in place. See spec §10 and the [diagrams reference](reference/diagrams/index.html). |
+| `--diagram <spec>` | `html` | Diagram code fences. `ascii` is drawn by default; `none` turns drawing off; `<lang>=<command>` adds a language, running a command with the fence on stdin and SVG on stdout. Repeatable. Only a fence inside a captioned `figure` is drawn, and an engine that fails leaves the code block in place. See spec §10 and the [diagrams reference](reference/diagrams/index.html). |
 | `--title <text>` | `html` | Page title. Defaults to the first level-one heading. |
 | `--json` | `check` | Emit diagnostics as JSON rather than as lines of text. |
 | `--positions` | `ast` | Keep the `position` field on every node. |
