@@ -2,3 +2,4 @@ node_modules/
 dist/
 dist.staging-*/
 dist.previous-*/
+packages/*/dist/

@@ -10,13 +10,15 @@
     "node": ">=22.18"
   },
   "scripts": {
-    "test": "node --test packages/*/test/*.test.ts site/test/*.test.ts test/*.test.ts",
-    "conformance": "node packages/conformance/src/cli.ts",
+    "build": "rm -rf packages/*/dist && tsc -p packages/parser/tsconfig.build.json && tsc -p packages/diagram-ascii/tsconfig.build.json && tsc -p packages/render-downgrade/tsconfig.build.json && tsc -p packages/render-html/tsconfig.build.json && tsc -p packages/cli/tsconfig.build.json",
+    "markset": "node --conditions=markset-source packages/cli/src/markset.ts",
+    "test": "node --conditions=markset-source --test packages/*/test/*.test.ts site/test/*.test.ts test/*.test.ts",
+    "conformance": "node --conditions=markset-source packages/conformance/src/cli.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "site": "node site/build.ts",
-    "site:watch": "node site/serve.ts"
+    "site": "node --conditions=markset-source site/build.ts",
+    "site:watch": "node --conditions=markset-source site/serve.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.13",

@@ -6,6 +6,7 @@
     "strict": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,
+    "customConditions": ["markset-source"],
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true,
     "types": ["node"],

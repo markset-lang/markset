@@ -1,10 +1,36 @@
 {
   "name": "@markset/parser",
   "version": "0.1.0",
-  "private": true,
-  "type": "module",
   "description": "Markset parser: CommonMark base plus the Markset grammar extensions, producing an AST.",
-  "exports": "./src/index.ts",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/markset-lang/markset.git",
+    "directory": "packages/parser"
+  },
+  "homepage": "https://markset-lang.github.io/markset/",
+  "keywords": [
+    "markdown",
+    "commonmark",
+    "markset",
+    "mdast",
+    "parser"
+  ],
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "markset-source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "dependencies": {
     "mdast-util-from-markdown": "^2.0.3",
     "mdast-util-frontmatter": "^2.0.1",
@@ -16,10 +42,5 @@
     "micromark-factory-space": "^2.0.1",
     "micromark-util-character": "^2.1.1",
     "micromark-util-symbol": "^2.0.1"
-  },
-  "devDependencies": {
-    "@types/mdast": "^4.0.4",
-    "@types/unist": "^3.0.3",
-    "micromark-util-types": "^2.0.2"
   }
 }

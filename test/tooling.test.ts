@@ -104,3 +104,93 @@ test("the heavy dev dependency stays out of the library", async () => {
   assert.ok("@mermaid-js/mermaid-cli" in (pkg.devDependencies ?? {}), "declared as a dev dependency");
   assert.ok(!("@mermaid-js/mermaid-cli" in (pkg.dependencies ?? {})), "and not as a runtime one");
 });
+
+/** The packages that go to npm. The conformance harness is not one of them. */
+const PUBLISHED = ["parser", "diagram-ascii", "render-downgrade", "render-html", "cli"];
+
+test("every published package is publishable, and says the same version", async () => {
+  const rootPkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as { version: string };
+  for (const name of PUBLISHED) {
+    const d = JSON.parse(await readFile(join(root, "packages", name, "package.json"), "utf8")) as Record<
+      string,
+      // biome-ignore lint/suspicious/noExplicitAny: a manifest is arbitrary JSON, and the assertions below are the shape check
+      any
+    >;
+    assert.ok(!d.private, `${name} must not be private`);
+    assert.equal(d.license, "MIT", `${name} needs a license or nobody may legally use it`);
+    assert.equal(d.version, rootPkg.version, `${name} version must match the root`);
+    assert.ok(d.files?.includes("dist"), `${name} must ship dist`);
+    assert.ok(d.files?.includes("src"), `${name} ships src too, so declaration maps lead somewhere`);
+    assert.ok(d.repository?.directory, `${name} should say where in the repo it lives`);
+
+    const entry = d.exports["."];
+    assert.match(entry["markset-source"], /^\.\/src\/.*\.ts$/u, `${name} resolves to source in this repo`);
+    assert.match(entry.types, /^\.\/dist\/.*\.d\.ts$/u, `${name} types come from dist`);
+    assert.match(entry.default, /^\.\/dist\/.*\.js$/u, `${name} installs as compiled JS`);
+    // Order is the whole mechanism: first match wins, so the source condition
+    // has to come before the two that a published consumer will hit.
+    assert.equal(Object.keys(entry)[0], "markset-source", `${name} lists the source condition first`);
+
+    for (const [dep, range] of Object.entries(d.dependencies ?? {})) {
+      if (!dep.startsWith("@markset/")) continue;
+      assert.equal(range, `^${rootPkg.version}`, `${name} must pin ${dep} to a real version, not "*"`);
+    }
+  }
+});
+
+test("the conformance harness stays private, because nothing consumes it", async () => {
+  const d = JSON.parse(await readFile(join(root, "packages", "conformance", "package.json"), "utf8")) as {
+    private?: boolean;
+  };
+  assert.equal(d.private, true);
+});
+
+test("every published package has a build config, and dist is not committed", async () => {
+  for (const name of PUBLISHED) {
+    const config = JSON.parse(await readFile(join(root, "packages", name, "tsconfig.build.json"), "utf8")) as {
+      extends: string;
+      compilerOptions: { outDir: string; rootDir: string };
+    };
+    assert.equal(config.extends, "../../tsconfig.build.json");
+    assert.equal(config.compilerOptions.outDir, "dist");
+  }
+  // Emitted output is never committed: a stale dist in the tree is a bug that
+  // only shows up for whoever installs it.
+  const ignore = await readFile(join(root, ".gitignore"), "utf8");
+  assert.match(ignore, /^packages\/\*\/dist\/$/mu);
+  // And the shared config must rewrite .ts specifiers, or the emitted JS
+  // imports files that do not exist once compiled.
+  const build = JSON.parse(await readFile(join(root, "tsconfig.build.json"), "utf8")) as {
+    compilerOptions: Record<string, unknown>;
+  };
+  assert.equal(build.compilerOptions.rewriteRelativeImportExtensions, true);
+  assert.equal(build.compilerOptions.declaration, true);
+  assert.equal(build.compilerOptions.declarationMap, true);
+});
+
+test("the development workflow asks for source, in every script that runs node", async () => {
+  // Without the condition, running anything in this repo resolves @markset/*
+  // to a dist that a fresh clone has not built. tsc needs the same thing, by
+  // its own spelling.
+  const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as {
+    scripts: Record<string, string>;
+  };
+  for (const [name, script] of Object.entries(pkg.scripts)) {
+    if (!script.startsWith("node ")) continue;
+    assert.match(script, /--conditions=markset-source/u, `script "${name}" runs node without the source condition`);
+  }
+  const ts = JSON.parse(await readFile(join(root, "tsconfig.json"), "utf8")) as {
+    compilerOptions: { customConditions?: string[] };
+  };
+  assert.deepEqual(ts.compilerOptions.customConditions, ["markset-source"]);
+});
+
+test("the formatter leaves build output alone, at any depth", async () => {
+  // "!dist" excludes the site's output directory and nothing else: the
+  // packages' dist/ sat one level deeper and was being formatted and linted as
+  // though it were source. Generated files are not ours to style, and after a
+  // build the lint gate would have been judging the compiler's output.
+  const text = await readFile(join(root, "biome.jsonc"), "utf8");
+  const config = JSON.parse(text.replace(/^\s*\/\/.*$/gm, "")) as { files: { includes: string[] } };
+  assert.ok(config.files.includes.includes("!**/dist"), "dist is excluded wherever it appears");
+});

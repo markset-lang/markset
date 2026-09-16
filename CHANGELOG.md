@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **The packages are ready to publish.** Five go to npm — `parser`, `diagram-ascii`, `render-downgrade`, `render-html` and `cli`; `conformance` stays private because nothing consumes it. All five carry a license, a version, a repository directory and an `exports` map, and `npm run build` compiles them to `dist/` with declarations and source maps. Nothing is published yet.
+- Shipping the TypeScript sources instead was not a close call: **Node refuses to strip types under `node_modules`**, with no flag that lifts it, so a `.ts` package simply cannot be imported by a Node consumer. The emit turned out to cost almost nothing, because `erasableSyntaxOnly` had been keeping the sources transformation-free all along, and `rewriteRelativeImportExtensions` rewrites our `./x.ts` specifiers to `./x.js`.
+- **The `markset-source` export condition keeps this repo running on sources.** Every manifest lists it first, pointing at `src`, so the repo's own scripts resolve to TypeScript and an installed consumer falls through to `dist`. npm ignores `publishConfig.exports`, which was the tidier alternative and does not work. `npm run markset -- <args>` is the way to run the CLI from a checkout.
+- Verified rather than assumed: all five packed, installed into a clean project from the tarballs, then `markset check`, `markset css` and `markset html` run, an ASCII diagram drew, every library entry imported, and a TypeScript consumer got accurate types.
+- A LICENSE file. There was none, which meant the code was nobody's to use.
+- The formatter no longer styles build output. `"!dist"` excluded the site's output directory and nothing else, so `packages/*/dist` — one level deeper — was being formatted and linted as though it were source, and after a build the lint gate would have been judging the compiler's work.
+
 - **The app bar is quieter.** Home and GitHub are icons — a house and the GitHub mark — and the color scheme control shows only the scheme in force, opening to all three on hover or focus. Three named options sitting in the bar permanently were three decisions a reader was not making; the one that matters is which is in force, and that is what the closed state shows. Focus-within is what makes it work without a pointer, so tabbing or tapping opens it too.
 - Opening the control does not move anything. A slot reserves the open width against a `--site-scheme-w` token, measured rather than guessed: the nav sits at the same pixel closed and open.
 - Every icon control keeps its word in the accessibility tree, hidden visually, and the SVGs are `aria-hidden`. An icon with no text announces as "link" and nothing else.
