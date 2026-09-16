@@ -1,0 +1,18 @@
+{
+  "//": "Shared emit settings for publishing. tsconfig.json stays noEmit and is what typecheck and the editor use; this is the one that produces dist/. Nothing in the development workflow reads it: node still runs the .ts sources directly.",
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "strict": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "types": ["node"],
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
+  }
+}

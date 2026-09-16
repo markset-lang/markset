@@ -1,17 +1,42 @@
 {
   "name": "@markset/render-html",
   "version": "0.1.0",
-  "private": true,
-  "type": "module",
   "description": "HTML renderer: Markset AST -> HTML with the ms- class vocabulary (spec \u00a74).",
-  "exports": "./src/index.ts",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/markset-lang/markset.git",
+    "directory": "packages/render-html"
+  },
+  "homepage": "https://markset-lang.github.io/markset/",
+  "keywords": [
+    "markdown",
+    "html",
+    "markset",
+    "renderer",
+    "hast"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "css"
+  ],
+  "exports": {
+    ".": {
+      "markset-source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./css/markset.css": "./css/markset.css"
+  },
   "dependencies": {
-    "@markset/parser": "*",
-    "@markset/diagram-ascii": "*",
+    "@markset/parser": "^0.1.0",
+    "@markset/diagram-ascii": "^0.1.0",
     "mdast-util-to-hast": "^13.2.0",
     "hast-util-to-html": "^9.0.5"
-  },
-  "devDependencies": {
-    "@types/hast": "^3.0.4"
   }
 }

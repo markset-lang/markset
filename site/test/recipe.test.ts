@@ -3,7 +3,9 @@ import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm, writeFile, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { main } from "@markset/cli/src/main.ts";
+// Through the package entry, not a deep path: the exports map encapsulates
+// the package now, which is what a published dependency should do.
+import { main } from "@markset/cli";
 
 const root = resolve(import.meta.dirname, "..", "..");
 const guide = await readFile(join(root, "site", "content", "github-pages.md"), "utf8");

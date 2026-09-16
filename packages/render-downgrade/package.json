@@ -1,12 +1,37 @@
 {
   "name": "@markset/render-downgrade",
   "version": "0.1.0",
-  "private": true,
-  "type": "module",
   "description": "Downgrade renderer: Markset AST -> plain CommonMark (spec \u00a73).",
-  "exports": "./src/index.ts",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/markset-lang/markset.git",
+    "directory": "packages/render-downgrade"
+  },
+  "homepage": "https://markset-lang.github.io/markset/",
+  "keywords": [
+    "markdown",
+    "commonmark",
+    "markset",
+    "renderer"
+  ],
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "markset-source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "dependencies": {
-    "@markset/parser": "*",
+    "@markset/parser": "^0.1.0",
     "mdast-util-to-markdown": "^2.1.2",
     "mdast-util-gfm-table": "^2.0.0",
     "mdast-util-frontmatter": "^2.0.1"
