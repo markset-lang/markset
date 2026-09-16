@@ -53,7 +53,7 @@ body { --ms-font-heading: "Source Serif 4", Charter, Georgia, "Times New Roman",
 /* The app bar follows the page. Its height is a token rather than a measured
  * value, because two other things have to line up under it: the sticky table of
  * contents, and the scroll position of any heading reached by an anchor. */
-body { --site-header-h: 3.25rem; }
+body { --site-header-h: 3.25rem; --site-scheme-w: 5.6rem; }
 .site-header {
   position: sticky;
   top: 0;
@@ -80,11 +80,35 @@ body { --site-header-h: 3.25rem; }
  * rather than display:none, which would take them out of the tab order. */
 body:has(#ms-scheme-light:checked) { color-scheme: light; }
 body:has(#ms-scheme-dark:checked) { color-scheme: dark; }
-.site-scheme { flex: none; display: flex; align-items: center; gap: 1px; padding: 2px; border: 1px solid var(--ms-border); border-radius: 999px; background: var(--ms-bg); }
+/* Icon-only controls in the bar. The word they replace stays in the
+ * accessibility tree, so an icon link still announces as "Home" or "GitHub". */
+/* Deliberately in flow rather than position: absolute. The usual visually
+ * hidden recipe is absolutely positioned, and inside the horizontally
+ * scrolling nav on a phone it resolved against the sticky header instead of
+ * its link, landing 60px past the viewport and dragging the page's scroll
+ * width with it. One pixel in the layout costs nothing and cannot escape. */
+.site-visually-hidden { display: inline-block; width: 1px; height: 1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.site-icon { display: block; width: 1.05rem; height: 1.05rem; }
+.site-nav a:has(.site-icon) { display: inline-flex; align-items: center; }
+
+/* The scheme control shows only the scheme in use, and opens on hover or on
+ * focus. Three options sitting in the bar at all times is three decisions the
+ * reader is not making, and the one that matters — which is in force — is the
+ * one the collapsed state shows. The slot reserves the open width, so opening
+ * it does not shove the nav sideways. Focus-within is what makes it work
+ * without a pointer: tapping or tabbing to the control opens it too. */
+.site-scheme-slot { flex: none; display: flex; justify-content: flex-end; width: var(--site-scheme-w); }
+.site-scheme { display: flex; align-items: center; gap: 1px; padding: 2px; border: 1px solid var(--ms-border); border-radius: 999px; background: var(--ms-bg); }
 .site-scheme-input { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.site-scheme-option { padding: 0.2rem 0.55rem; border-radius: 999px; font-family: var(--ms-font-body); font-size: 0.7rem; line-height: 1.4; color: var(--ms-fg-muted); cursor: pointer; }
+.site-scheme-option { display: none; padding: 0.3rem; border-radius: 999px; color: var(--ms-fg-muted); cursor: pointer; }
+.site-scheme-input:checked + .site-scheme-option,
+.site-scheme:hover .site-scheme-option,
+.site-scheme:focus-within .site-scheme-option { display: inline-flex; }
 .site-scheme-option:hover { color: var(--ms-fg); }
 .site-scheme-input:checked + .site-scheme-option { background: var(--ms-surface); color: var(--ms-fg); }
+/* Closed, there is only one option showing, so marking it as the chosen one
+ * says nothing and draws a pill inside a pill. */
+.site-scheme:not(:hover):not(:focus-within) .site-scheme-option { background: none; }
 /* Keyboard focus has to be visible on the label, because the input it belongs
  * to is clipped out of sight. */
 .site-scheme-input:focus-visible + .site-scheme-option { outline: 2px solid var(--ms-accent); outline-offset: 1px; }
@@ -151,5 +175,5 @@ body:has(#ms-scheme-dark:checked) { color-scheme: dark; }
 
 @media print {
   .site-header { position: static; }
-  .site-scheme { display: none; }
+  .site-scheme-slot { display: none; }
 }

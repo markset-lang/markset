@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **The app bar is quieter.** Home and GitHub are icons — a house and the GitHub mark — and the color scheme control shows only the scheme in force, opening to all three on hover or focus. Three named options sitting in the bar permanently were three decisions a reader was not making; the one that matters is which is in force, and that is what the closed state shows. Focus-within is what makes it work without a pointer, so tabbing or tapping opens it too.
+- Opening the control does not move anything. A slot reserves the open width against a `--site-scheme-w` token, measured rather than guessed: the nav sits at the same pixel closed and open.
+- Every icon control keeps its word in the accessibility tree, hidden visually, and the SVGs are `aria-hidden`. An icon with no text announces as "link" and nothing else.
+- The visually hidden utility is in flow rather than absolutely positioned. Absolute is the usual recipe and it was wrong here: inside the horizontally scrolling nav on a phone it resolved against the sticky header instead of its own link, landed sixty pixels past the viewport, and pushed every one of the forty pages sideways. One pixel of layout costs nothing and cannot escape.
+
 - **A guide for publishing to GitHub Pages**, which the adoption page had named as a use case for weeks while giving no path to it. One workflow file, two commands, and the three things that bite: links must be relative because a project site is served from a subpath, file names become URLs, and Jekyll never runs on the Actions deployment path. A test runs the recipe and asserts the commands in it still exist, so the page cannot drift from the tool it documents.
 - **`markset css`** writes the default stylesheet. Writing that guide is what made the gap obvious: `--css <href>` already took a URL to link, and there was no way to produce the file it pointed at short of knowing a path inside the package. A site that renders more than one page now links one stylesheet instead of inlining it into every file, which is the difference between a 24 KB page and a 0.5 KB one.
 - An unknown command is reported as one. The check for a missing file ran before the command was looked at, so `markset htlm` answered "a file is required" and sent the reader looking in entirely the wrong place.

@@ -672,7 +672,10 @@ function shell(page: Page): string {
   const nav = NAV.map(([label, href]) => {
     const active =
       page.path === href || (href !== "index.html" && page.path.startsWith(href.replace("index.html", "")));
-    return `<a href="${rel}${href}"${active ? ' aria-current="page"' : ""}>${label}</a>`;
+    const icon = NAV_ICONS[label];
+    const body = icon ? `${icon}<span class="site-visually-hidden">${label}</span>` : label;
+    const title = icon ? ` title="${label}"` : "";
+    return `<a href="${rel}${href}"${active ? ' aria-current="page"' : ""}${title}>${body}</a>`;
   }).join("\n");
   const attrs = page.themeAttributes || ' data-preset="technical"';
   return `<!doctype html>
@@ -689,7 +692,7 @@ ${page.themeCss ? `<link rel="stylesheet" href="${rel}${page.themeCss}">\n` : ""
 <a class="site-brand" href="${rel}index.html">Markset</a>
 <nav class="site-nav">
 ${nav}
-<a href="${REPO}">GitHub</a>
+<a href="${REPO}" title="GitHub">${ICON_GITHUB}<span class="site-visually-hidden">GitHub</span></a>
 </nav>
 ${SCHEME_CONTROL}</header>
 <div class="site-layout${page.toc ? " has-toc" : ""}">
@@ -714,14 +717,35 @@ ${page.body}</main>
  * preference. The choice lives in the markup, which means it does not survive
  * a page load; persisting it is what would need a script.
  */
-const SCHEME_CONTROL = `<div class="site-scheme" role="group" aria-label="Color scheme">
+/**
+ * Inline icons for the app bar.
+ *
+ * Inline rather than linked so they need no second request and inherit
+ * currentColor, which is what makes them follow the reader's color scheme for
+ * free. Each one is decorative in the accessibility tree: the link or label
+ * around it carries real text, visually hidden, so an icon-only control still
+ * has a name to announce.
+ */
+const ICON_HOME = `<svg class="site-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.8 12 3l9 6.8V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>`;
+
+/** The GitHub mark, used unmodified as the link to the repository. */
+const ICON_GITHUB = `<svg class="site-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>`;
+
+const ICON_AUTO = `<svg class="site-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor" stroke="none"/></svg>`;
+const ICON_LIGHT = `<svg class="site-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/></svg>`;
+const ICON_DARK = `<svg class="site-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.2A8.4 8.4 0 0 1 9.8 4a8.5 8.5 0 1 0 10.2 10.2z"/></svg>`;
+
+/** Nav entries that show as an icon instead of their word. The word stays as the accessible name. */
+const NAV_ICONS: Record<string, string> = { Home: ICON_HOME };
+
+const SCHEME_CONTROL = `<div class="site-scheme-slot"><div class="site-scheme" role="group" aria-label="Color scheme">
 <input type="radio" name="ms-scheme" id="ms-scheme-auto" class="site-scheme-input" checked>
-<label class="site-scheme-option" for="ms-scheme-auto">Auto</label>
+<label class="site-scheme-option" for="ms-scheme-auto" title="Match the system">${ICON_AUTO}<span class="site-visually-hidden">Auto</span></label>
 <input type="radio" name="ms-scheme" id="ms-scheme-light" class="site-scheme-input">
-<label class="site-scheme-option" for="ms-scheme-light">Light</label>
+<label class="site-scheme-option" for="ms-scheme-light" title="Light">${ICON_LIGHT}<span class="site-visually-hidden">Light</span></label>
 <input type="radio" name="ms-scheme" id="ms-scheme-dark" class="site-scheme-input">
-<label class="site-scheme-option" for="ms-scheme-dark">Dark</label>
-</div>
+<label class="site-scheme-option" for="ms-scheme-dark" title="Dark">${ICON_DARK}<span class="site-visually-hidden">Dark</span></label>
+</div></div>
 `;
 
 function tableOfContents(ast: Root, min: number, max: number): string {

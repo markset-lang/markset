@@ -164,3 +164,44 @@ test("every link to the repository matches package.json, which matches the remot
     assert.ok(url.startsWith(repo), `README links ${url}, not ${repo}`);
   }
 });
+
+test("the icon controls in the app bar still say what they are", async () => {
+  // Home and GitHub are icons now. An icon with no text is a control a screen
+  // reader announces as "link", so each keeps its word in the accessibility
+  // tree, and the SVG itself is hidden from it.
+  const home = await readFile(join(dist, "index.html"), "utf8");
+  for (const name of ["Home", "GitHub", "Auto", "Light", "Dark"]) {
+    assert.match(home, new RegExp(`<span class="site-visually-hidden">${name}</span>`), `${name} has a name`);
+  }
+  assert.match(home, /<svg class="site-icon"[^>]*aria-hidden="true"/, "the icons are decorative");
+  assert.equal(
+    [...home.matchAll(/<svg class="site-icon"(?![^>]*aria-hidden)/gu)].length,
+    0,
+    "every bar icon is hidden from assistive technology",
+  );
+});
+
+test("the scheme control shows one option until it is asked for, and does not move the bar", async () => {
+  const css = await readFile(join(dist, "css", "site.css"), "utf8");
+  assert.match(css, /\.site-scheme-option \{[^}]*display: none/u, "options are hidden by default");
+  // Three ways it opens: the one in force is always shown, and hover or focus
+  // reveals the rest. Focus is what makes it reachable by keyboard and by tap.
+  const opens =
+    /\.site-scheme-input:checked \+ \.site-scheme-option,\s*\.site-scheme:hover \.site-scheme-option,\s*\.site-scheme:focus-within \.site-scheme-option \{[^}]*display: inline-flex/u;
+  assert.match(css, opens, "checked, hover and focus-within all reveal options");
+  // The slot reserves the open width. Without it the nav slides sideways every
+  // time a pointer crosses the control.
+  assert.match(css, /\.site-scheme-slot \{[^}]*width: var\(--site-scheme-w\)/u);
+  assert.match(css, /--site-scheme-w:/u, "and the width is a token, like the bar's height");
+});
+
+test("a visually hidden label cannot escape its container", async () => {
+  // It used to be position: absolute, and inside the horizontally scrolling
+  // nav on a phone it resolved against the sticky header rather than its link,
+  // landing past the viewport and pushing every page sideways.
+  const css = await readFile(join(dist, "css", "site.css"), "utf8");
+  const rule = /\.site-visually-hidden \{([^}]*)\}/u.exec(css);
+  assert.ok(rule, "the utility exists");
+  assert.doesNotMatch(rule[1], /position:\s*absolute/u, "in flow, so it has nowhere to escape to");
+  assert.match(rule[1], /clip-path: inset\(50%\)/u);
+});
