@@ -13,6 +13,9 @@
     "directory": "packages/cli"
   },
   "homepage": "https://markset-lang.github.io/markset/",
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "markdown",
     "markset",

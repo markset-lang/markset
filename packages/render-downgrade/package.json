@@ -13,6 +13,9 @@
     "directory": "packages/render-downgrade"
   },
   "homepage": "https://markset-lang.github.io/markset/",
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "markdown",
     "commonmark",

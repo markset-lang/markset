@@ -13,6 +13,9 @@
     "directory": "packages/parser"
   },
   "homepage": "https://markset-lang.github.io/markset/",
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "markdown",
     "commonmark",

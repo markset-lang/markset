@@ -194,3 +194,14 @@ test("the formatter leaves build output alone, at any depth", async () => {
   const config = JSON.parse(text.replace(/^\s*\/\/.*$/gm, "")) as { files: { includes: string[] } };
   assert.ok(config.files.includes.includes("!**/dist"), "dist is excluded wherever it appears");
 });
+
+test("every published package asks to be public", async () => {
+  // A scoped package defaults to restricted, which needs a paid plan: without
+  // this the first publish fails instead of going out publicly.
+  for (const name of PUBLISHED) {
+    const d = JSON.parse(await readFile(join(root, "packages", name, "package.json"), "utf8")) as {
+      publishConfig?: { access?: string };
+    };
+    assert.equal(d.publishConfig?.access, "public", `${name} would publish restricted`);
+  }
+});
