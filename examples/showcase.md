@@ -237,7 +237,7 @@ Every section above opens a container with a fence. Two smaller pieces of syntax
 A **bracketed span** attaches them to a run of inline text. It is how a status marker, or a phrase meant to read quietly, gets into the middle of a sentence without a box around it.
 
 :::card[Four spans and some ordinary text]
-Release [v0.1.0]{.badge}, status [Draft]{.badge .warn}, target [on track]{.success}. The words between the markers are plain text, and [this phrase]{.muted} is a span as well.
+Release [v0.2.0]{.badge}, status [Draft]{.badge .warn}, target [on track]{.success}. The words between the markers are plain text, and [this phrase]{.muted} is a span as well.
 :::
 
 An **attribute line** attaches them to a block instead. A paragraph, heading, list or table has nowhere to write a specifier of its own, so the specifier goes on a line by itself and applies to whatever starts on the next line. The two columns below hold the same sentence. Only the right one has a line in front of it.

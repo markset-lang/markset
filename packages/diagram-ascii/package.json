@@ -1,6 +1,6 @@
 {
   "name": "@markset/diagram-ascii",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Draws an ASCII diagram fence as SVG (spec \u00a710). An engine, not part of the renderer.",
   "license": "MIT",
   "type": "module",
