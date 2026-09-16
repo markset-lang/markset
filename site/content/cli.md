@@ -45,7 +45,7 @@ Commands
   Reads one or more documents and reports every diagnostic with a file, line and column. Exits with status 1 if any diagnostic is an error, which is what makes it usable in continuous integration. Add `--json` to get the diagnostics as structured data instead of text.
 - ### `markset html`
 
-  Renders a complete HTML page with the default stylesheet inlined, so the output is one self-contained file. Add `--fragment` for the body content alone, `--theme <file>` to append a theme stylesheet, and `--title` to set the page title. ASCII diagram fences are drawn automatically (spec §10); `--diagram none` keeps them as code.
+  Renders a complete HTML page with the default stylesheet inlined, so the output is one self-contained file. Add `--fragment` for the body content alone, `--theme <file>` to append a theme stylesheet, and `--title` to set the page title. ASCII diagram fences are drawn automatically (spec §10), and `--diagram` adds other languages or turns drawing off. What draws a fence is called a *drawer*: a function built into the renderer, or a command you name.
 - ### `markset downgrade`
 
   Lowers every construct to the plain CommonMark it is defined to fall back to. The output is a fixed point: downgrading it again changes nothing, and it parses with no diagnostics. This is the degradation contract, executable.

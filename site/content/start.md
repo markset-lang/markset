@@ -180,6 +180,7 @@ Honest constraints
 | Themes are yours to write | Eight constructs come styled by the default stylesheet. Author classes beyond the reserved ones mean whatever your stylesheet says, and you write that stylesheet. |
 | The vocabulary is closed | There are eight constructs and an unknown name is an error. If you need a ninth, the answer is a class and a theme rule, not a new directive. |
 | Nothing executes | No expressions, no includes, no components. A document is data. If you need computation, it happens before the document exists. |
+| Diagrams need a drawer | An ASCII fence is drawn out of the box. Any other diagram language — mermaid, graphviz — is a code block until you name a command that draws it, and stays a readable code block if you never do. |
 :::
 
 {.tick}
@@ -191,7 +192,7 @@ Next
 ## Where to go from here
 
 :::steps
-1. Read the [reference](reference/index.html). It starts with the three pieces of syntax every construct is built from, then gives one page per construct with four worked examples each, and a page on [frontmatter and theme tokens](reference/frontmatter/index.html) for the settings a document carries about itself.
+1. Read the [reference](reference/index.html). It starts with the three pieces of syntax every construct is built from, then gives one page per construct with four worked examples each, a page on [frontmatter and theme tokens](reference/frontmatter/index.html) for the settings a document carries about itself, and a page on [diagrams](reference/diagrams/index.html) for turning an ASCII or mermaid fence into a picture.
 2. Skim the [CLI page](cli/index.html) for the four commands and their flags.
 3. Look at the [examples](examples/index.html) to see what a long document looks like when it has a theme of its own.
 4. Read the [specification](spec/index.html) when you want the normative answer. It is short, and it is what a second implementation would be written from.

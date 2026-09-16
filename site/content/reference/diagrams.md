@@ -15,6 +15,9 @@ A diagram is a fenced code block whose info string names a diagram language. The
 
 [Spec §10]{.badge .info} [No new syntax]{.badge} [Works in plain CommonMark]{.badge}
 
+> [!NOTE]
+> **One word first: a *drawer*.** A drawer is the thing that turns a diagram fence into a picture. It is either a function built into the renderer — Markset ships one, for `ascii` — or a program you name when you render, such as mermaid's `mmdc`. Markset never goes looking for one. A fence in a language with no drawer stays a code block, and that is always a correct rendering rather than a failure. The word appears throughout this page and means only that.
+
 {.tick}
 ***
 
@@ -79,10 +82,21 @@ Every construct in Markset has to read where the layout cannot follow — a GitH
   Because it already was one. The same characters that the drawer turns into boxes and arrows are boxes and arrows to a person reading the raw file.
 :::
 
-Both of those are on this page right now. The same three-node graph is written twice below: on the left as a `mermaid` fence, on the right as an `ascii` fence. This site registers a drawer for one of them, so one is a picture and one is its own source — and that is exactly what a reader gets anywhere the layout cannot follow.
+Both are on this page below, and **both are drawn** — this site registers a drawer for each. So the difference is not in the picture, and the pictures are not the point. The difference is the second block in each column: what is left of that diagram somewhere the drawing cannot happen.
 
 ::::columns{ratio="1:1"}
+:::figure[mermaid, drawn by its own command line.]
 ```mermaid
+flowchart LR
+  Ingress --> Router
+  Router --> Handler
+```
+:::
+
+{.small .muted}
+And in a pull request, a terminal, a plain-text mail:
+
+```text
 flowchart LR
   Ingress --> Router
   Router --> Handler
@@ -90,21 +104,25 @@ flowchart LR
 
 ::col
 
-:::figure[The same graph, drawn.]
+:::figure[ascii, drawn by the built-in drawer.]
 ```ascii
-+---------+     +--------+
-| Ingress |---->| Router |
-+---------+     +--------+
-                    |
-                    v
-               +---------+
-               | Handler |
-               +---------+
++---------+    +--------+    +---------+
+| Ingress |--->| Router |--->| Handler |
++---------+    +--------+    +---------+
 ```
 :::
+
+{.small .muted}
+And in a pull request, a terminal, a plain-text mail:
+
+```text
++---------+    +--------+    +---------+
+| Ingress |--->| Router |--->| Handler |
++---------+    +--------+    +---------+
+```
 ::::
 
-Read the left block and you are reading instructions for a picture. Read the right block's source and you are reading the picture. Of the common diagram sources, ASCII is the only one whose unrendered form is as good as its rendered form. Renderers may draw anything they like; authors who care about where their document ends up should reach for ASCII first.
+The bottom left is a set of instructions for a picture. The bottom right is a picture. Of the common diagram sources ASCII is the only one whose unrendered form is as good as its rendered form, which is what makes it the one that fits the degradation contract rather than merely surviving it. Renderers may draw anything they like; authors who care about where their document ends up should reach for ASCII first.
 
 > [!TIP] It is readable before anything runs
 > Open this page's source on GitHub and the diagram above is still a diagram. That is not a fallback in the apologetic sense. For a lot of documents it is the only form anyone will ever see.
@@ -175,7 +193,7 @@ markset html doc.md -o doc.html      # ascii fences are drawn
 markset html doc.md --diagram none   # and this keeps them as code
 ```
 
-The reference implementation ships one drawer, for `ascii`. It is a pure function with no dependencies: it reads the grid, joins the runs of `-` and `|`, puts an arrowhead where a line actually arrives, and sets everything else as text.
+The reference implementation ships one built-in drawer, for `ascii`. It is a pure function with no dependencies: it reads the grid, joins the runs of `-` and `|`, puts an arrowhead where a line actually arrives, and sets everything else as text.
 
 ### Any other engine
 
