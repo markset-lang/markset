@@ -1,6 +1,6 @@
-import { parseDocument } from "@markset/parser";
-import { renderDowngrade } from "@markset/render-downgrade";
-import { renderHtml } from "@markset/render-html";
+import { parseDocument } from "@markset-lang/parser";
+import { renderDowngrade } from "@markset-lang/render-downgrade";
+import { renderHtml } from "@markset-lang/render-html";
 import type { Driver } from "../types.ts";
 import { stripPositions } from "../strip.ts";
 import { checkNaive } from "../naive.ts";

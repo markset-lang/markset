@@ -2,7 +2,7 @@ import type { Root } from "mdast";
 import { toMarkdown, type Options } from "mdast-util-to-markdown";
 import { gfmTableToMarkdown } from "mdast-util-gfm-table";
 import { frontmatterToMarkdown } from "mdast-util-frontmatter";
-import { parseDocument, type Diagnostic } from "@markset/parser";
+import { parseDocument, type Diagnostic } from "@markset-lang/parser";
 import { downgradeTree } from "./transform.ts";
 
 export { downgradeTree };

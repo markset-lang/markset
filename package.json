@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "rm -rf packages/*/dist && tsc -p packages/parser/tsconfig.build.json && tsc -p packages/diagram-ascii/tsconfig.build.json && tsc -p packages/render-downgrade/tsconfig.build.json && tsc -p packages/render-html/tsconfig.build.json && tsc -p packages/cli/tsconfig.build.json",
-    "release": "npm run build && npm publish --workspace @markset/parser --workspace @markset/diagram-ascii --workspace @markset/render-downgrade --workspace @markset/render-html --workspace @markset/cli",
+    "release": "npm run build && npm publish --workspace @markset-lang/parser --workspace @markset-lang/diagram-ascii --workspace @markset-lang/render-downgrade --workspace @markset-lang/render-html --workspace @markset-lang/cli",
     "markset": "node --conditions=markset-source packages/cli/src/markset.ts",
     "test": "node --conditions=markset-source --test packages/*/test/*.test.ts site/test/*.test.ts test/*.test.ts",
     "conformance": "node --conditions=markset-source packages/conformance/src/cli.ts",

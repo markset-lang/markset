@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseDocument } from "@markset/parser";
+import { parseDocument } from "@markset-lang/parser";
 import { bodyAttributes, html, renderHtml, renderPage } from "../src/index.ts";
 
 // Fragment shapes are pinned in tests/*.json; these cover the page wrapper

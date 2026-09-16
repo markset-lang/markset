@@ -90,8 +90,8 @@ Fitting it in
    For a generator you control, skip the process boundary. The parse result is mdast plus a few node types, so anything in the unified ecosystem can walk it.
 
    ```js
-   import { parseDocument } from "@markset/parser";
-   import { renderHtml } from "@markset/render-html";
+   import { parseDocument } from "@markset-lang/parser";
+   import { renderHtml } from "@markset-lang/render-html";
 
    const { ast, diagnostics } = parseDocument(source);
    if (diagnostics.some((d) => d.severity === "error")) throw new Error("invalid document");

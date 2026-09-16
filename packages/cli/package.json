@@ -1,5 +1,5 @@
 {
-  "name": "@markset/cli",
+  "name": "@markset-lang/cli",
   "version": "0.2.0",
   "description": "markset command line: check, html, downgrade, ast.",
   "license": "MIT",
@@ -36,9 +36,9 @@
     "markset": "dist/markset.js"
   },
   "dependencies": {
-    "@markset/parser": "^0.2.0",
-    "@markset/render-downgrade": "^0.2.0",
-    "@markset/render-html": "^0.2.0",
-    "@markset/diagram-ascii": "^0.2.0"
+    "@markset-lang/parser": "^0.2.0",
+    "@markset-lang/render-downgrade": "^0.2.0",
+    "@markset-lang/render-html": "^0.2.0",
+    "@markset-lang/diagram-ascii": "^0.2.0"
   }
 }

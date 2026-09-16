@@ -132,7 +132,7 @@ test("every published package is publishable, and says the same version", async 
     assert.equal(Object.keys(entry)[0], "markset-source", `${name} lists the source condition first`);
 
     for (const [dep, range] of Object.entries(d.dependencies ?? {})) {
-      if (!dep.startsWith("@markset/")) continue;
+      if (!dep.startsWith("@markset-lang/")) continue;
       assert.equal(range, `^${rootPkg.version}`, `${name} must pin ${dep} to a real version, not "*"`);
     }
   }
@@ -169,7 +169,7 @@ test("every published package has a build config, and dist is not committed", as
 });
 
 test("the development workflow asks for source, in every script that runs node", async () => {
-  // Without the condition, running anything in this repo resolves @markset/*
+  // Without the condition, running anything in this repo resolves @markset-lang/*
   // to a dist that a fresh clone has not built. tsc needs the same thing, by
   // its own spelling.
   const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as {
@@ -236,8 +236,8 @@ test("the release names every published package, and nothing else", async () => 
   };
   const release = pkg.scripts.release;
   assert.match(release, /^npm run build &&/u, "a release always builds first, so dist cannot be stale");
-  const named = [...release.matchAll(/--workspace (@markset\/[a-z-]+)/gu)].map((m) => m[1]);
-  assert.deepEqual(named.sort(), PUBLISHED.map((n) => `@markset/${n}`).sort());
+  const named = [...release.matchAll(/--workspace (@markset-lang\/[a-z-]+)/gu)].map((m) => m[1]);
+  assert.deepEqual(named.sort(), PUBLISHED.map((n) => `@markset-lang/${n}`).sort());
   assert.doesNotMatch(release, /--workspaces\b/u, "never the sweep-everything form");
 });
 

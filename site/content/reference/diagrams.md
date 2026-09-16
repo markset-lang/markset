@@ -207,7 +207,7 @@ The fence's contents go to the command on stdin; SVG comes back on stdout. A com
 ### As a library
 
 ```js
-import { renderHtml } from "@markset/render-html";
+import { renderHtml } from "@markset-lang/render-html";
 
 renderHtml(ast);                                        // ascii is drawn
 renderHtml(ast, { diagrams: false });                   // nothing is drawn

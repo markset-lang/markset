@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseDocument } from "@markset/parser";
+import { parseDocument } from "@markset-lang/parser";
 import { renderHtml } from "../src/index.ts";
 
 const SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"></svg>';

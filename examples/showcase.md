@@ -138,8 +138,8 @@ node packages/cli/src/markset.ts html examples/showcase.md -o showcase.html
 
 ### As a library
 ```js
-import { parseDocument } from "@markset/parser";
-import { renderHtml } from "@markset/render-html";
+import { parseDocument } from "@markset-lang/parser";
+import { renderHtml } from "@markset-lang/render-html";
 
 const { ast, diagnostics } = parseDocument(source);
 if (diagnostics.some((d) => d.severity === "error")) throw new Error("invalid document");

@@ -1,5 +1,5 @@
 import type { Nodes, Root } from "mdast";
-import type { Attributes } from "@markset/parser";
+import type { Attributes } from "@markset-lang/parser";
 
 /**
  * Slug for a heading: lowercased, with every run of characters that is not a
