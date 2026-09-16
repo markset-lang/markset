@@ -190,9 +190,9 @@ That is a code block on purpose. Nothing about it wants to be a picture, and not
 
 ### Other diagram languages
 
-A fence may name any diagram language; the set is open. What decides whether a picture appears is which drawers the renderer was given, and this site was given one, for `ascii`. So a `mermaid` fence here stays as its source:
+A fence may name any diagram language; the set is open. What decides whether a picture appears is which *drawers* the renderer was given — a drawer being whatever turns a fence into a picture, either built in or a program named at render time.
 
-:::figure[The ingest handshake as a mermaid sequence diagram. On this site it is a code block, because no mermaid drawer is registered.]{#fig-handshake}
+:::figure[The ingest handshake, written as a mermaid sequence diagram rather than as ASCII. This site draws it by running mermaid's own command line.]{#fig-handshake}
 ```mermaid
 sequenceDiagram
     Client->>Edge: POST /v1/events
@@ -203,13 +203,13 @@ sequenceDiagram
 ```
 :::
 
-That is not a failure and nothing was lost — it is the first obligation working, which says a renderer that cannot draw a language renders it as a code block. Give the same file a mermaid drawer and the figure above becomes a picture, with no change to the document:
+A sequence diagram is the case where mermaid earns its keep: laying out actors and ladder lines by hand in ASCII is miserable, and mermaid does it from four lines of text. Nothing in this document had to change to allow it — the fence names its language and the renderer either has a drawer for it or does not:
 
 ```sh
-markset html examples/architecture.md --diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"
+markset html examples/architecture.md --diagram mermaid="node site/mermaid.ts"
 ```
 
-The comparison is the argument, though. Read this page's source and the ASCII diagrams are diagrams; the mermaid block is a set of instructions for one. Both are portable, and only one of them is readable where the layout cannot follow.
+Render the same file without that flag and the figure above is a code block instead, with everything else on the page unchanged. That is the trade, and it is worth seeing plainly: read this page's source and the ASCII diagrams are still diagrams, while the mermaid block is a set of instructions for one. Both are portable. Only one of them is readable where the drawing cannot happen.
 
 {.small .muted}
 Source: `examples/architecture.md`, read with `examples/tidewater.css`. Tidewater is invented, and so is every number on this page.

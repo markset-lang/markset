@@ -18,6 +18,7 @@ import {
   defaultStylesheetPath,
   type Diagnostic,
 } from "./deps.ts";
+import { drawMermaid } from "./mermaid.ts";
 
 const root = resolve(import.meta.dirname, "..");
 /** Repository and site URLs come from package.json so they cannot drift from the remote. */
@@ -143,6 +144,26 @@ export const EXAMPLES: Array<{
 ];
 
 const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
+/**
+ * Diagram drawers for this site (spec §10).
+ *
+ * `ascii` comes with the renderer. `mermaid` is added here because a
+ * documentation site that talks about other diagram languages should show one
+ * rather than describe it — see site/mermaid.ts for how the color scheme is
+ * handled.
+ *
+ * A drawer that fails fails the build, rather than taking §10's fallback. The
+ * fallback is right for a renderer that does not know what the page says; here
+ * the pages state that these are drawn, so quietly shipping a code block would
+ * make the site contradict itself.
+ */
+const DIAGRAMS = {
+  drawers: { mermaid: drawMermaid },
+  onError: (error: Error, language: string): never => {
+    throw new Error(`site: the ${language} drawer failed: ${error.message}`);
+  },
+};
+
 const SECTION_ORDER = [
   "attribute-specifier",
   "bracketed-span",
@@ -284,7 +305,7 @@ async function markdownPage(path: string, file: string, themeCss?: string | fals
   return {
     path,
     title: firstHeading(ast) ?? basename(file, ".md"),
-    body: renderHtml(ast),
+    body: renderHtml(ast, { diagrams: DIAGRAMS }),
     themeAttributes: bodyAttributes(ast.frontmatter ?? null),
     ...(themeCss ? { themeCss } : {}),
   };
@@ -390,15 +411,22 @@ async function referenceIndex(): Promise<Page> {
   const list = CONSTRUCTS.map(
     (name) => `<li><a href="${name}/index.html"><code>${name}</code></a> — ${esc(BLURB[name])}</li>`,
   ).join("\n");
-  // Frontmatter is the ninth reference page and the only one that is not a
-  // construct, so it is listed after the eight rather than among them.
-  const frontmatter =
-    `<p class="site-more">The document's own settings: <a href="frontmatter/index.html">frontmatter and theme tokens</a> — the version key, the seven theme tokens and what each preset changes.</p>\n` +
-    `<p class="site-more">Not a construct, but it belongs here: <a href="diagrams/index.html">diagrams</a> — why a diagram is a code fence rather than a ninth name, and what a renderer may do with one.</p>\n`;
+  // Two reference pages are not constructs. They used to be trailing notes
+  // under the eight, which is where a reader who is looking for diagrams does
+  // not look: the page existed and was reported as missing. They get a heading
+  // and a list of their own now, so the section is somewhere rather than after.
+  const beyond = [
+    `<li><a href="diagrams/index.html">Diagrams</a> — an ASCII or mermaid fence becomes a picture, why that needs no ninth construct, and what a renderer may and may not do with one.</li>`,
+    `<li><a href="frontmatter/index.html">Frontmatter and theme tokens</a> — the version key, the seven theme tokens, and what each preset changes.</li>`,
+  ].join("\n");
   return {
     path: "reference/index.html",
     title: "Reference",
-    body: `${renderHtml(ast)}<ul class="site-list">\n${list}\n</ul>\n${frontmatter}`,
+    body:
+      `${renderHtml(ast)}<ul class="site-list">\n${list}\n</ul>\n` +
+      `<h2 id="beyond-the-constructs">Beyond the constructs</h2>\n` +
+      `<p>Two things a document does that no construct covers.</p>\n` +
+      `<ul class="site-list">\n${beyond}\n</ul>\n`,
   };
 }
 

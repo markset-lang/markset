@@ -81,3 +81,26 @@ test("every copy of the version agrees with package.json", async () => {
     assert.ok(text.includes(version), `${page} shows a stale version`);
   }
 });
+
+test("the heavy dev dependency stays out of the library", async () => {
+  // mermaid-cli pulls puppeteer and a Chromium download. It exists for
+  // site/mermaid.ts and nothing else, and CLAUDE.md says so; this keeps that
+  // true. A package that reached for it would put a browser in the install
+  // path of anyone consuming the renderer.
+  const dirs = await readdir(join(root, "packages"));
+  for (const dir of dirs) {
+    const manifest = JSON.parse(await readFile(join(root, "packages", dir, "package.json"), "utf8")) as {
+      dependencies?: Record<string, string>;
+      devDependencies?: Record<string, string>;
+    };
+    const named = { ...manifest.dependencies, ...manifest.devDependencies };
+    assert.ok(!("@mermaid-js/mermaid-cli" in named), `packages/${dir} must not depend on mermaid-cli`);
+  }
+  // And it is a dev dependency of the workspace root, never a runtime one.
+  const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as {
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+  };
+  assert.ok("@mermaid-js/mermaid-cli" in (pkg.devDependencies ?? {}), "declared as a dev dependency");
+  assert.ok(!("@mermaid-js/mermaid-cli" in (pkg.dependencies ?? {})), "and not as a runtime one");
+});

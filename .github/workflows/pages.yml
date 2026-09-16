@@ -19,6 +19,12 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      # Chromium is downloaded by mermaid-cli's postinstall and is the slowest
+      # part of a cold build, so it is cached against the lockfile it came from.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/puppeteer
+          key: puppeteer-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - run: npm ci
       - run: npm run site
       - uses: actions/upload-pages-artifact@v3

@@ -86,7 +86,7 @@ On the left is what you write: an ordinary Markdown table, wrapped in a fence th
 Run that source through `markset downgrade` instead and you get the table back, unchanged. Paste it into anything that has never heard of Markset and you get the table as well. The construct adds meaning without taking the content hostage.
 
 {.small .muted}
-Both commands, and the two others, are described on the [CLI page](cli/index.html).
+Both commands, and the two others, are described on the [CLI page](cli/index.html). The same trick covers diagrams: an ASCII or mermaid fence is an ordinary code block that a renderer may draw, so a picture needs no construct and no raw HTML — see [diagrams](reference/diagrams/index.html).
 
 {.tick}
 ***
@@ -121,7 +121,7 @@ Start here
 ## Three ways in
 
 :::steps
-1. Read the [reference](reference/index.html) for one page per construct, each with live examples pulled straight from the test suite.
+1. Read the [reference](reference/index.html) for one page per construct, each with live examples pulled straight from the test suite, plus [diagrams](reference/diagrams/index.html) and [frontmatter](reference/frontmatter/index.html).
 2. Read the [specification](spec/index.html). It is short, and it is the source of truth: when the code and the spec disagree, the spec wins.
 3. Read the [CLI page](cli/index.html) if you would rather start by running something.
 :::
