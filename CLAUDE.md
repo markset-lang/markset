@@ -138,7 +138,16 @@ Read these before proposing syntax changes — most ideas have been tried.
       tsc) resolve to TypeScript while an installed consumer falls through to `dist`. npm ignores
       `publishConfig.exports`, which was the alternative. Verified by packing all five and installing them into a
       clean project: the CLI runs, the library imports, and a TypeScript consumer gets accurate types.
-      **Not yet published** — `npm publish` has not been run and no version is on the registry.
-- [ ] Run the first publish. The `markset` org exists; what is left is `npm login` (the CLI is not authenticated —
-      a website session is not the same thing) or an `NPM_TOKEN` secret for `.github/workflows/release.yml`, which
-      publishes on a `v*` tag with provenance. `npm run release` is the same path by hand.
+- [x] **Published 2026-09-16, `0.2.0`, under the `@markset-lang` scope.** Not `@markset`: that scope belongs to
+      someone else, alongside an unscoped `markset` package from 2019, and npm answers a write to a scope you do not
+      belong to with 404 rather than 403 — so the first attempt read as "package not found" and meant "not yours".
+      `markset-lang` was already the GitHub org, so the two now agree. The CLI is unaffected either way: `bin` names
+      are independent of package names, so `markset` is still the command.
+      Publishing needs a TTY. npm's 2FA is a passkey here, and the browser flow it opens has no headless form —
+      `npm login --auth-type=web` first, since a token from a plain `npm login` only offers to take a typed code.
+      `--provenance` is CI-only and fails locally with `provider: null`.
+- [ ] Publish from CI. `.github/workflows/release.yml` runs the whole gate on a `v*` tag and publishes only what is
+      not already on the registry, so a re-pushed tag is safe. It still needs credentials: either an `NPM_TOKEN`
+      secret, or — better, and what npm is steering everyone to, since tokens that bypass 2FA are being restricted —
+      trusted publishing, which is OIDC and needs each package configured once on npmjs.com. Until one of those
+      exists, tagging `v0.2.0` runs the gate and publishes nothing, which is correct but is not a release.

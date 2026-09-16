@@ -15,9 +15,6 @@ You have Markdown in a repository and you want it on the web, without adopting a
 
 [No framework]{.badge} [No configuration file]{.badge} [Two commands]{.badge .info}
 
-> [!IMPORTANT] Markset is not on npm yet
-> The packages are still private while the conformance suite settles, so the workflow below checks Markset out and runs it from source rather than installing it. That is the one ugly line in this recipe and it is temporary: when the packages publish, the checkout step and the long paths collapse into `npm i -D @markset-lang/cli` and `markset`. Everything else on this page stays as it is.
-
 {.tick}
 ***
 
@@ -63,22 +60,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          repository: markset-lang/markset
-          path: .markset
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: npm --prefix .markset ci --omit=dev
+      - run: npm i -g @markset-lang/cli@0.2
 
       - name: Render
         run: |
           mkdir -p dist
-          node .markset/packages/cli/src/markset.ts css -o dist/markset.css
+          markset css -o dist/markset.css
           for f in docs/*.md; do
-            node .markset/packages/cli/src/markset.ts html "$f" \
-              --css markset.css -o "dist/$(basename "$f" .md).html"
+            markset html "$f" --css markset.css -o "dist/$(basename "$f" .md).html"
           done
 
       - uses: actions/upload-pages-artifact@v3
@@ -96,8 +88,8 @@ jobs:
         uses: actions/deploy-pages@v4
 ```
 
-> [!TIP] `--omit=dev` is load-bearing
-> Markset's own development dependencies include a headless browser, for drawing mermaid diagrams on this site. You do not need it to render pages, and omitting it takes a large download out of every build of your site.
+> [!TIP] Pin the version, and install it globally
+> `@0.2` is what makes the build reproducible: a rebuild next year renders with the version it rendered with today, and changes within v0 are additive only (spec §0), so the pin costs you nothing. Installing globally is what keeps the rest of the recipe short — your repository needs no `package.json` and no lockfile, because the only tool involved is this one.
 
 {.tick}
 ***
@@ -173,7 +165,7 @@ markset html docs/guide.md --css markset.css \
 
 ::col
 
-**Diagrams cost nothing until they do.** An `ascii` fence in a captioned figure is drawn with no extra setup, in CI as anywhere else. Any other language needs an engine you name, and mermaid's brings a headless browser with it — which is exactly the download `--omit=dev` just saved you, so add it back deliberately or not at all. See [diagrams](../reference/diagrams/index.html).
+**Diagrams cost nothing until they do.** An `ascii` fence in a captioned figure is drawn with no extra setup, in CI as anywhere else. Any other language needs an engine you name, and mermaid's brings a headless browser with it — a large download in every build, so add it deliberately or not at all. See [diagrams](../reference/diagrams/index.html).
 ::::
 
 {.tick}

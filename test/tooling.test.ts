@@ -252,3 +252,18 @@ test("the release workflow proves the build before it publishes", async () => {
   }
   assert.match(yaml, /does not match package version/u, "the tag must match the version it claims");
 });
+
+test("the release workflow can be run a second time without failing", async () => {
+  // npm answers a second publish of a version that already exists with a 403.
+  // Run all five as one command and that 403 fails the step, stranding every
+  // package after it -- so a re-pushed tag, or a rerun after a partial
+  // publish, would do damage rather than nothing. The first release of this
+  // scope was published by hand and needed exactly that rerun.
+  const yaml = await readFile(join(root, ".github", "workflows", "release.yml"), "utf8");
+  assert.match(yaml, /curl -sf -o \/dev\/null "https:\/\/registry\.npmjs\.org/u, "asks the registry before it writes");
+  assert.doesNotMatch(yaml, /npm view/u, "over plain HTTPS: npm view fails on a bad token, which would read as not published");
+  assert.doesNotMatch(yaml, /npm run release/u, "and not the all-at-once script, which cannot skip");
+  // The list it walks is the one the release script names. Two copies of it
+  // would be two things to keep in step, and the test above only governs one.
+  assert.match(yaml, /scripts\.release\.match/u, "derives the package list rather than repeating it");
+});
