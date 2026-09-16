@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/markset-lang/markset.git",
+    "url": "git+https://github.com/markset-lang/markset.git",
     "directory": "packages/cli"
   },
   "homepage": "https://markset-lang.github.io/markset/",
@@ -33,7 +33,7 @@
     }
   },
   "bin": {
-    "markset": "./dist/markset.js"
+    "markset": "dist/markset.js"
   },
   "dependencies": {
     "@markset/parser": "^0.1.0",

@@ -25,7 +25,7 @@ const root = resolve(import.meta.dirname, "..");
 const pkg = JSON.parse(await readFile(join(resolve(import.meta.dirname, ".."), "package.json"), "utf8")) as {
   repository: { url: string };
 };
-const REPO = pkg.repository.url.replace(/\.git$/, "");
+const REPO = pkg.repository.url.replace(/^git\+/, "").replace(/\.git$/, "");
 
 interface Page {
   /** Output path relative to dist/, e.g. "reference/card/index.html". */

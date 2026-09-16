@@ -146,7 +146,8 @@ test("every link to the repository matches package.json, which matches the remot
     repository: { url: string };
     homepage: string;
   };
-  const repo = pkg.repository.url.replace(/\.git$/, "");
+  // Same normalization the generator does: npm wants the canonical git+ prefix on repository.url.
+  const repo = pkg.repository.url.replace(/^git\+/, "").replace(/\.git$/, "");
   assert.match(repo, /^https:\/\/github\.com\/[^/]+\/[^/]+$/, "repository.url must be a GitHub project URL");
 
   for (const page of pages) {
