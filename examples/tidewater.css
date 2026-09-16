@@ -8,7 +8,7 @@
  * Worth knowing, because it is the one real limit of a drawn diagram: a theme
  * can frame, place and size the picture, but it cannot reach inside it. The SVG
  * is embedded as a data URI, so the rules below style the <img> and not the
- * lines within. Colors inside the drawing come from the drawer, which follows
+ * lines within. Colors inside the drawing come from the engine, which follows
  * the reader's color scheme on its own. */
 
 body {

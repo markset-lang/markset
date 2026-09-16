@@ -145,22 +145,22 @@ export const EXAMPLES: Array<{
 
 const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
 /**
- * Diagram drawers for this site (spec §10).
+ * Diagram engines for this site (spec §10).
  *
  * `ascii` comes with the renderer. `mermaid` is added here because a
  * documentation site that talks about other diagram languages should show one
  * rather than describe it — see site/mermaid.ts for how the color scheme is
  * handled.
  *
- * A drawer that fails fails the build, rather than taking §10's fallback. The
+ * An engine that fails fails the build, rather than taking §10's fallback. The
  * fallback is right for a renderer that does not know what the page says; here
  * the pages state that these are drawn, so quietly shipping a code block would
  * make the site contradict itself.
  */
 const DIAGRAMS = {
-  drawers: { mermaid: drawMermaid },
+  engines: { mermaid: drawMermaid },
   onError: (error: Error, language: string): never => {
-    throw new Error(`site: the ${language} drawer failed: ${error.message}`);
+    throw new Error(`site: the ${language} engine failed: ${error.message}`);
   },
 };
 

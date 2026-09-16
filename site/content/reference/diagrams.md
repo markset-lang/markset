@@ -16,7 +16,7 @@ A diagram is a fenced code block whose info string names a diagram language. The
 [Spec §10]{.badge .info} [No new syntax]{.badge} [Works in plain CommonMark]{.badge}
 
 > [!NOTE]
-> **One word first: a *drawer*.** A drawer is the thing that turns a diagram fence into a picture. It is either a function built into the renderer — Markset ships one, for `ascii` — or a program you name when you render, such as mermaid's `mmdc`. Markset never goes looking for one. A fence in a language with no drawer stays a code block, and that is always a correct rendering rather than a failure. The word appears throughout this page and means only that.
+> **What an engine is, on this page.** An engine is whatever turns a diagram fence into a picture: a function built into the renderer — Markset ships one, for `ascii` — or a program you name when you render, such as mermaid's `mmdc`. Markset never goes looking for one on its own. A fence whose language has no engine stays a code block, which is a correct rendering rather than a failure.
 
 {.tick}
 ***
@@ -79,10 +79,10 @@ Every construct in Markset has to read where the layout cannot follow — a GitH
 
 - ### An `ascii` fence falls back to a diagram
 
-  Because it already was one. The same characters that the drawer turns into boxes and arrows are boxes and arrows to a person reading the raw file.
+  Because it already was one. The same characters that the engine turns into boxes and arrows are boxes and arrows to a person reading the raw file.
 :::
 
-Both are on this page below, and **both are drawn** — this site registers a drawer for each. So the difference is not in the picture, and the pictures are not the point. The difference is the second block in each column: what is left of that diagram somewhere the drawing cannot happen.
+Both are on this page below, and **both are drawn** — this site registers an engine for each. So the difference is not in the picture, and the pictures are not the point. The difference is the second block in each column: what is left of that diagram somewhere the drawing cannot happen.
 
 ::::columns{ratio="1:1"}
 :::figure[mermaid, drawn by its own command line.]
@@ -104,7 +104,7 @@ flowchart LR
 
 ::col
 
-:::figure[ascii, drawn by the built-in drawer.]
+:::figure[ascii, drawn by the built-in engine.]
 ```ascii
 +---------+    +--------+    +---------+
 | Ingress |--->| Router |--->| Handler |
@@ -183,7 +183,7 @@ Drawing them
 
 ## Rendering with the command line
 
-**`ascii` fences are drawn by default.** The reference implementation ships one drawer and uses it without being asked, because an ASCII fence that is drawn and an ASCII fence that is not are the same picture — drawing it changes how it looks, not what it says. Every other language needs a command, and `--diagram none` turns drawing off entirely for a fence that is meant to stay selectable text.
+**`ascii` fences are drawn by default.** The reference implementation ships one engine and uses it without being asked, because an ASCII fence that is drawn and an ASCII fence that is not are the same picture — drawing it changes how it looks, not what it says. Every other language needs a command, and `--diagram none` turns drawing off entirely for a fence that is meant to stay selectable text.
 
 :::tabs
 ### Built-in ASCII
@@ -193,7 +193,7 @@ markset html doc.md -o doc.html      # ascii fences are drawn
 markset html doc.md --diagram none   # and this keeps them as code
 ```
 
-The reference implementation ships one built-in drawer, for `ascii`. It is a pure function with no dependencies: it reads the grid, joins the runs of `-` and `|`, puts an arrowhead where a line actually arrives, and sets everything else as text.
+The reference implementation ships one built-in engine, for `ascii`. It is a pure function with no dependencies: it reads the grid, joins the runs of `-` and `|`, puts an arrowhead where a line actually arrives, and sets everything else as text.
 
 ### Any other engine
 
@@ -211,13 +211,13 @@ import { renderHtml } from "@markset/render-html";
 
 renderHtml(ast);                                        // ascii is drawn
 renderHtml(ast, { diagrams: false });                   // nothing is drawn
-renderHtml(ast, { diagrams: { drawers: { mermaid } } }); // ascii and mermaid
+renderHtml(ast, { diagrams: { engines: { mermaid } } }); // ascii and mermaid
 ```
 
-A drawer you register is layered over the built-in one, so adding a language never silently takes `ascii` away.
+An engine you register is layered over the built-in one, so adding a language never silently takes `ascii` away.
 :::
 
-> [!IMPORTANT] A document never names its own drawer
+> [!IMPORTANT] A document never names its own engine
 > The mapping from info string to command comes from the flag and nowhere else, and the fence's contents reach the command on stdin rather than being pasted into it. Nothing written in a Markset file can cause anything to run. Invariant 4 is intact: choosing a build step is the operator's decision, exactly as running `markset` at all already was.
 
 {.tick}
@@ -234,9 +234,9 @@ A drawn diagram replaces the `<pre>` with an image:
 <img class="ms-diagram" data-diagram="ascii" src="data:image/svg+xml,…" alt="How a request reaches a handler.">
 ```
 
-The reference implementation draws to SVG and embeds it as a `data:` URI rather than inlining the markup. Markset never passes raw HTML from a document through to output, and a drawer — which on the command line is an arbitrary command — should not get a channel that documents are denied. An SVG loaded through `<img>` cannot execute script, so obligation 6 holds because of the shape of the output rather than because the drawer was trusted.
+The reference implementation draws to SVG and embeds it as a `data:` URI rather than inlining the markup. Markset never passes raw HTML from a document through to output, and an engine — which on the command line is an arbitrary command — should not get a channel that documents are denied. An SVG loaded through `<img>` cannot execute script, so obligation 6 holds because of the shape of the output rather than because the engine was trusted.
 
-The built-in drawer carries its own `prefers-color-scheme` block, which resolves against the page's color scheme, so a diagram follows the [light and dark control](../../index.html) in the bar above like everything else on the page. Try it: the picture at the top of this page changes with it.
+The built-in engine carries its own `prefers-color-scheme` block, which resolves against the page's color scheme, so a diagram follows the [light and dark control](../../index.html) in the bar above like everything else on the page. Try it: the picture at the top of this page changes with it.
 
 {.tick}
 ***
@@ -244,9 +244,9 @@ The built-in drawer carries its own `prefers-color-scheme` block, which resolves
 {.eyebrow}
 The supported subset
 
-## What the built-in drawer understands
+## What the built-in engine understands
 
-:::figure[Everything the ASCII drawer recognizes. Anything else on the line is set as text.]
+:::figure[Everything the ASCII engine recognizes. Anything else on the line is set as text.]
 | Characters | Meaning |
 |---|---|
 | `-` | Horizontal line |
@@ -280,4 +280,4 @@ The last two rows are the ones that matter in practice. An arrowhead is only an 
 :::
 
 {.small .muted}
-The drawer is deliberately small and deliberately not `svgbob`. If you want rounded corners, shape detection and styling hints, point `--diagram` at a tool that does those things — that is what the flag is for.
+The engine is deliberately small and deliberately not `svgbob`. If you want rounded corners, shape detection and styling hints, point `--diagram` at a tool that does those things — that is what the flag is for.

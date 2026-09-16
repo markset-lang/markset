@@ -16,13 +16,13 @@ import { drawAscii } from "@markset/diagram-ascii";
  * SVG markup, or null when it declines to draw this one.
  *
  * Throwing is a supported outcome: §10 obligation 5 says a failed diagram falls
- * back to the code block and never removes content, so a drawer that cannot
+ * back to the code block and never removes content, so an engine that cannot
  * cope with its input should say so rather than return something broken.
  */
-export type DiagramDrawer = (source: string, language: string) => string | null;
+export type DiagramEngine = (source: string, language: string) => string | null;
 
 /**
- * Drawers that are on unless a caller turns them off.
+ * Engines that are on unless a caller turns them off.
  *
  * Only `ascii` is here, and the reason is §10's closing argument rather than
  * convenience: every other diagram source falls back to its own source code,
@@ -33,12 +33,12 @@ export type DiagramDrawer = (source: string, language: string) => string | null;
  * Anything a caller passes is layered over this, so registering `mermaid` adds
  * a language rather than silently removing `ascii`.
  */
-export const builtInDrawers: Record<string, DiagramDrawer> = { ascii: (source) => drawAscii(source) };
+export const builtInEngines: Record<string, DiagramEngine> = { ascii: (source) => drawAscii(source) };
 
 export interface DiagramOptions {
-  /** Drawers by info string. A language with no drawer is left as a code block. */
-  drawers: Record<string, DiagramDrawer>;
-  /** Called when a drawer throws or returns something that is not SVG (§10 obligation 5). */
+  /** Engines by info string. A language with no engine is left as a code block. */
+  engines: Record<string, DiagramEngine>;
+  /** Called when an engine throws or returns something that is not SVG (§10 obligation 5). */
   onError?: (error: Error, language: string) => void;
 }
 
@@ -46,27 +46,27 @@ export interface DiagramOptions {
  * Replace drawable diagram fences with an <img> carrying an SVG data URI.
  *
  * Why a data URI and not inline SVG: §4 says raw HTML in the source is never
- * passed through, and a drawer — which on the CLI path is an arbitrary command
+ * passed through, and an engine — which on the CLI path is an arbitrary command
  * the operator named — should not be handed a channel that documents are
  * denied. An SVG loaded through <img> cannot execute script, so §10 obligation
- * 6 is satisfied by the shape of the output instead of by trusting the drawer.
+ * 6 is satisfied by the shape of the output instead of by trusting the engine.
  */
 export function drawDiagrams(tree: HastNodes, options: DiagramOptions): void {
-  if (Object.keys(options.drawers).length === 0) return;
+  if (Object.keys(options.engines).length === 0) return;
   visit(tree, options);
 }
 
 /**
- * Resolve the `diagrams` render option into the drawers to actually use.
+ * Resolve the `diagrams` render option into the engines to actually use.
  *
  * `undefined` means the built-ins, because drawing is on by default; `false`
- * turns every drawer off, which is what an author wants when a fence is meant
+ * turns every engine off, which is what an author wants when a fence is meant
  * to stay text; an object adds to the built-ins rather than replacing them.
  */
-export function resolveDrawers(option: DiagramOptions | false | undefined): DiagramOptions | null {
+export function resolveEngines(option: DiagramOptions | false | undefined): DiagramOptions | null {
   if (option === false) return null;
-  if (!option) return { drawers: builtInDrawers };
-  return { drawers: { ...builtInDrawers, ...option.drawers }, onError: option.onError };
+  if (!option) return { engines: builtInEngines };
+  return { engines: { ...builtInEngines, ...option.engines }, onError: option.onError };
 }
 
 function visit(node: HastNodes, options: DiagramOptions): void {
@@ -94,35 +94,35 @@ function drawInFigure(figure: Element, options: DiagramOptions): void {
     const code = child.children.find((n): n is Element => n.type === "element" && n.tagName === "code");
     if (!code) continue;
     const language = languageOf(code);
-    const drawer = language ? options.drawers[language] : undefined;
-    if (!language || !drawer) continue;
+    const engine = language ? options.engines[language] : undefined;
+    if (!language || !engine) continue;
 
-    const svg = draw(drawer, textOf(code), language, options.onError);
+    const svg = draw(engine, textOf(code), language, options.onError);
     if (svg === null) continue;
     figure.children[index] = image(svg, language, alt);
   }
 }
 
 function draw(
-  drawer: DiagramDrawer,
+  engine: DiagramEngine,
   source: string,
   language: string,
   onError: DiagramOptions["onError"],
 ): string | null {
   let svg: string | null;
   try {
-    svg = drawer(source, language);
+    svg = engine(source, language);
   } catch (error) {
     onError?.(error instanceof Error ? error : new Error(String(error)), language);
     return null;
   }
   if (svg === null || svg === "") return null;
-  // A drawer on the CLI path is a command the operator named, so its stdout can
+  // An engine on the CLI path is a command the operator named, so its stdout can
   // be anything at all — a usage message, a stack trace, an empty file. Check
   // that it is at least SVG before embedding it, so a misconfigured command
   // degrades to the code block (obligation 5) instead of to a broken image.
   if (!/^\s*(?:<\?xml[^>]*\?>\s*|<!--[\s\S]*?-->\s*)*<svg[\s>]/.test(svg)) {
-    onError?.(new Error(`drawer for "${language}" did not return SVG`), language);
+    onError?.(new Error(`engine for "${language}" did not return SVG`), language);
     return null;
   }
   return svg;

@@ -28,7 +28,7 @@ test("prose still draws as prose", () => {
 
 test("an arrowhead needs a line arriving at it", () => {
   // The whole reason the rule exists: v is a letter far more often than it is
-  // an arrow, and a drawer that guesses wrong corrupts ordinary words.
+  // an arrow, and an engine that guesses wrong corrupts ordinary words.
   const arrow = drawAscii("--->\n");
   assert.ok(arrow);
   assert.match(arrow, /<polygon class="h"/u, "a dash then > is an arrowhead");

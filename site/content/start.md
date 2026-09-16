@@ -180,7 +180,7 @@ Honest constraints
 | Themes are yours to write | Eight constructs come styled by the default stylesheet. Author classes beyond the reserved ones mean whatever your stylesheet says, and you write that stylesheet. |
 | The vocabulary is closed | There are eight constructs and an unknown name is an error. If you need a ninth, the answer is a class and a theme rule, not a new directive. |
 | Nothing executes | No expressions, no includes, no components. A document is data. If you need computation, it happens before the document exists. |
-| Diagrams need a drawer | An ASCII fence is drawn out of the box. Any other diagram language — mermaid, graphviz — is a code block until you name a command that draws it, and stays a readable code block if you never do. |
+| Diagrams need an engine | An ASCII fence is drawn out of the box. Any other diagram language — mermaid, graphviz — is a code block until you name a command that draws it, and stays a readable code block if you never do. |
 :::
 
 {.tick}

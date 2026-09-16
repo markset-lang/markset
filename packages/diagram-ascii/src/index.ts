@@ -1,13 +1,13 @@
 /**
  * ASCII diagram to SVG (spec §10).
  *
- * This is a *drawer*, not part of the renderer: `@markset/render-html` ships no
+ * This is a *engine*, not part of the renderer: `@markset/render-html` ships no
  * engine and draws nothing on its own. It is a pure string-to-string function
  * with no dependencies and no I/O, which is what lets it sit in a format whose
  * fourth invariant is that nothing evaluates anything — there is no evaluation
  * here, only the same kind of transformation the downgrade renderer performs.
  *
- * Why ASCII gets a drawer in this repository when nothing else does: §10's
+ * Why ASCII gets an engine in this repository when nothing else does: §10's
  * closing argument. Every other diagram source falls back to its own source
  * code, which is honest but is not a diagram. ASCII falls back to a diagram,
  * because it already is one. It is the only common diagram source whose naive
@@ -31,14 +31,14 @@ const PAD = 6;
 
 const H_LINE = new Set(["-", "+"]);
 const V_LINE = new Set(["|", "+"]);
-/** Every character the drawer can consume, plus the space that separates them. */
+/** Every character the engine can consume, plus the space that separates them. */
 const DRAWING = new Set(["-", "|", "+", "/", "\\", ">", "<", "^", "v", " "]);
 
 /**
  * A character that belongs to a word rather than to the drawing.
  *
  * This exists for one case, found by a real diagram: a lone hyphen inside a
- * label. "region: us-east" has a dash between two letters, and a drawer that
+ * label. "region: us-east" has a dash between two letters, and an engine that
  * takes every dash for a line turns the label into "us" and "east" joined by a
  * rule. So a single - or | with word characters on both sides is text. Two or
  * more in a row is still a line, because nobody writes "a--b" in a label and
