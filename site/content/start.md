@@ -11,7 +11,7 @@ Getting started
 # Enrich the Markdown you already have
 
 {.lead}
-Markset is not a new format to migrate to. A Markset file is a Markdown file, so the way in is to keep the documents you have and start using constructs in the pages that need them. This page covers when that is worth doing, and the four ways to fit it into something you already run.
+Markset is not a new format to migrate to. A Markset file is a Markdown file, so the way in is to keep the documents you have and start using constructs in the pages that need them. This page covers when that is worth doing, and the five ways to fit it into something you already run.
 
 {.tick}
 ***
@@ -52,7 +52,7 @@ Markset is the other answer. You name the layout instead of building it, and the
 {.eyebrow}
 Fitting it in
 
-## Four ways to adopt it
+## Five ways to adopt it
 
 :::steps
 1. ### Author in it and change nothing else
@@ -85,7 +85,24 @@ Fitting it in
 
    You keep the structured source and lose only the layout, which is the same trade the fallback makes anywhere else.
 
-4. ### Call it as a library
+4. ### Add it to the remark pipeline you already run
+
+   If your site runs on Astro, Next, Eleventy, Gatsby or anything else built on [remark](https://unifiedjs.com), this is one plugin and no other change. Markset is micromark and mdast underneath, so it joins the pipeline you have rather than replacing it.
+
+   ```js
+   import remarkMarkset from "@markset-lang/remark-markset";
+   import { marksetHandlers } from "@markset-lang/render-html";
+
+   unified()
+     .use(remarkParse)
+     .use(remarkMarkset)
+     .use(remarkRehype, { handlers: marksetHandlers() })
+     .use(rehypeStringify);
+   ```
+
+   Constructs become typed mdast nodes, attributes are carried as `hProperties`, and diagnostics arrive as ordinary vfile messages — so a pipeline that already reports those reports Markset's without being taught anything. It turns on Markset and nothing else: tables stay `remark-gfm` and frontmatter stays `remark-frontmatter`.
+
+5. ### Call it as a library
 
    For a generator you control, skip the process boundary. The parse result is mdast plus a few node types, so anything in the unified ecosystem can walk it.
 
