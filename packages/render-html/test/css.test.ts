@@ -157,3 +157,33 @@ test("a figure is border-box, so a theme can pad it without pushing the page sid
   assert.match(rule[1], /box-sizing:\s*border-box/u);
   assert.match(rule[1], /width:\s*var\(--ms-width/u, "and it still takes its width from the token");
 });
+
+test("a construct after a heading gets the same air it gets after a paragraph", async () => {
+  // The gap above `steps` was ten pixels, which is what a sentence gets, under
+  // a column of numbered markers heavier than any sentence. Every construct was
+  // affected; steps is only where it shows. Deliberately a separate rule from
+  // the boxed-sequence one above, which is about two borders in a row and
+  // excludes steps and columns for drawing none.
+  const css = await readFile(defaultStylesheetPath, "utf8");
+  const rule =
+    /\.ms-document > :is\(h1, h2, h3, h4, h5, h6\) \+ :is\(([^)]*)\) \{\n\s*margin-top: calc\(var\(--ms-space\) \* 1\.5\);/.exec(
+      css,
+    );
+  assert.ok(rule, "a construct after a heading has its own gap");
+  for (const c of [
+    ".ms-callout",
+    ".ms-card",
+    ".ms-metrics",
+    ".ms-tabs",
+    ".ms-grid",
+    ".ms-steps",
+    ".ms-columns",
+    ".ms-figure",
+  ]) {
+    assert.ok(rule[1].includes(c), `${c} is a construct and should not crowd the heading above it`);
+  }
+  // It must beat the generic "anything after a heading" gap, which is the rule
+  // that was giving a construct a sentence's worth of space.
+  const generic = css.indexOf(".ms-document > :is(h1, h2, h3, h4, h5, h6) + * {");
+  assert.ok(generic >= 0 && css.indexOf(rule[0]) > generic, "and comes after it, so order cannot undo specificity");
+});
