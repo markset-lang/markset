@@ -75,6 +75,11 @@ site/       static site generator (build.ts) and content; every page is Markset 
             the canonical cases in tests/, so it cannot drift from the grammar, the reference or the suite. An example with `toggles: true` in EXAMPLES gets every top-level construct
             wrapped in a Result/Markdown tabs pair, with the source sliced from the file by node
             position, so the panes cannot drift and the toggle needs no script.
+editors/vscode/  the VS Code extension: diagnostics, a scripting-off preview, completions, snippets and a grammar
+            injection, over the same packages. core.ts is the part node can test and extension.ts the glue.
+            build.ts bundles it with esbuild as CommonJS (.cjs, since the manifest is an ES module for tsc)
+            and derives snippets from tests/ with the same selectSnippet the playground palette uses.
+            `npm run vscode:package` makes the .vsix; publishing to the marketplace needs a publisher account.
 docs/       background analysis, prior art, design rationale
             future-requirements.md — open register of things real documents asked for; the
             open counterpart to spec §8, which is the closed list of deferred constructs
@@ -141,6 +146,12 @@ in commit order, which is the wrong order for finding the work.
       Registry reads lag publication by minutes. The workflow log printing `+ name@version` is the authoritative
       signal; `dist-tags` said 0.2.0 for packages that had just gone out, which has now twice looked like a failure
       and twice been nothing.
+      **It happened again on 0.3.1, 2026-09-17, on `chart-table`.** It had been published by hand at 0.3.0 and its
+      trusted publisher was never configured afterwards, so the run published `parser` and `diagram-ascii` and
+      stopped with `ENEEDAUTH` at the third. The fix is the same: configure the publisher on npmjs.com, re-run the
+      workflow, and the two already out are skipped. **Stopping at the first failure is the right design, not
+      luck**, as long as the list is in dependency order: every package published points only at versions that
+      exist, because its dependencies went out before it. A test now holds that order.
 - [ ] Nothing. The playground was the last open item; see the entry at the end of the done list.
 
 **Done,** in the order it landed.
@@ -284,3 +295,16 @@ in commit order, which is the wrong order for finding the work.
       nothing in §2 or §4: rule cards are `card` around a labeled list, the wireframe is `steps` inside `card`,
       and the tones are reserved classes on spans. Register entry 7 counts its author classes: four of its own
       and `.tick`, now in seven of eight examples, which still fails the second half of the criterion.
+- [x] **VS Code extension, 2026-09-17** (`editors/vscode/`, a private workspace, not an npm package). The reference
+      implementation inside the editor: diagnostics from `parseDocument` with `document.positionAt` doing the
+      line arithmetic the CLI and playground each had to write; a preview webview with `enableScripts: false`
+      and a CSP that allows inline style and data-URI images and nothing else; a command for the downgrade;
+      completions after `:::` and `> [!`; snippets derived from the suite by the same rule as the palette, which
+      moved into `site/playground/vocabulary.ts` along with `CONSTRUCTS` and `BLURB` so the two cannot differ.
+      **Only files declaring `markset:` in frontmatter are checked**, because every Markdown file is valid Markset
+      and a reader whose `:::` means something else never opted in; `markset.checkAllMarkdown` widens it.
+      Two things the bundle taught: the renderer computes `defaultStylesheetPath` from `import.meta.url` at
+      load, which a CommonJS bundle shims to undefined and `new URL` then throws on activation, so build.ts
+      defines it from `__filename`; and a manifest with `"type": "module"` makes node read `dist/extension.js`
+      as ESM, so the bundle is `.cjs`. Packaged with `vsce` at 122 KB, ten files. Not on the marketplace: that
+      needs a publisher account under `markset-lang`, which is a human's to create.

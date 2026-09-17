@@ -55,6 +55,7 @@ test("every copy of the version agrees with package.json", async () => {
 
   const manifests = [
     "site/package.json",
+    "editors/vscode/package.json",
     ...(await readdir(join(root, "packages"))).map((p) => `packages/${p}/package.json`),
   ];
   for (const file of manifests) {
@@ -276,6 +277,27 @@ test("the release names every published package, and nothing else", async () => 
   const named = [...release.matchAll(/--workspace (@markset-lang\/[a-z-]+)/gu)].map((m) => m[1]);
   assert.deepEqual(named.sort(), PUBLISHED.map((n) => `@markset-lang/${n}`).sort());
   assert.doesNotMatch(release, /--workspaces\b/u, "never the sweep-everything form");
+});
+
+test("the release publishes each package after everything it depends on", async () => {
+  // The publish step stops at the first failure, and that is the right design
+  // only because of this order: a package that goes out points only at versions
+  // that already exist, because its dependencies went out before it. The 0.3.1
+  // run stopped at the third package with two published, and nothing installed
+  // from the registry was broken. Reorder the list and a stop would strand a
+  // package whose dependency never arrived.
+  const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as { scripts: Record<string, string> };
+  const named = [...pkg.scripts.release.matchAll(/--workspace @markset-lang\/([a-z-]+)/gu)].map((m) => m[1]);
+  for (const [i, name] of named.entries()) {
+    const d = JSON.parse(await readFile(join(root, "packages", name, "package.json"), "utf8")) as {
+      dependencies?: Record<string, string>;
+    };
+    for (const dep of Object.keys(d.dependencies ?? {})) {
+      if (!dep.startsWith("@markset-lang/")) continue;
+      const j = named.indexOf(dep.slice("@markset-lang/".length));
+      assert.ok(j !== -1 && j < i, `${name} depends on ${dep}, which must be released before it`);
+    }
+  }
 });
 
 test("the release workflow proves the build before it publishes", async () => {

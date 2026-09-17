@@ -174,3 +174,43 @@ export function insertInto(
   const start = before.length + lead.length;
   return { text: `${before}${lead}${snippet}${tail}${after}`, start, end: start + snippet.length };
 }
+
+/** The eight constructs, in the order the reference lists them. The parser's closed vocabulary is the authority. */
+export const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
+export type ConstructName = (typeof CONSTRUCTS)[number];
+
+/** One line per construct. Printed by the reference index, the palette and the editor extension. */
+export const BLURB: Record<ConstructName, string> = {
+  callout: "GitHub-style alerts with optional title and fold.",
+  card: "A titled surface around any content.",
+  grid: "A list whose items become cards.",
+  columns: "Side-by-side regions with an optional ratio.",
+  tabs: "Headings become tab labels; no JavaScript.",
+  steps: "A numbered procedure from an ordered list.",
+  metrics: "Big numbers with deltas from a table.",
+  figure: "An image, table, or code block with a caption.",
+};
+
+/**
+ * The case to show for a section.
+ *
+ * `canonical` by default, because that is the suite's own word for the minimal
+ * correct form. The exception is a case that points at a file: figure's
+ * canonical one is an image, and inserting it would render a broken image in
+ * the preview -- so a self-contained case from the same section is taken
+ * instead. Derived rather than hardcoded, so a future section with the same
+ * shape is handled without anyone noticing it needed to be. Shared by the
+ * playground's palette and the editor extension's snippets, so the two cannot
+ * offer different text for the same construct.
+ */
+export function selectSnippet(
+  cases: ReadonlyArray<{ name?: string; valid: boolean; markset: string }>,
+  section: string,
+): string {
+  const list = cases.filter((c) => c.valid);
+  const selfContained = (markset: string): boolean => !/\]\((?!#)[^)]+\)/u.test(markset);
+  const canonical = list.find((c) => c.name?.startsWith("canonical"));
+  const chosen = canonical && selfContained(canonical.markset) ? canonical : list.find((c) => selfContained(c.markset));
+  if (!chosen) throw new Error(`no self-contained case in tests/${section}.json`);
+  return chosen.markset.replace(/\n+$/u, "");
+}

@@ -9,7 +9,13 @@
 import { mkdir, readdir, readFile, rename, rm, writeFile, cp } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { build as esbuildBundle } from "esbuild";
-import type { VocabularyEntry, VocabularyGroup } from "./playground/vocabulary.ts";
+import {
+  BLURB,
+  CONSTRUCTS,
+  selectSnippet,
+  type VocabularyEntry,
+  type VocabularyGroup,
+} from "./playground/vocabulary.ts";
 import type { Heading, Nodes, Root } from "mdast";
 import {
   addHeadingIds,
@@ -248,7 +254,6 @@ export const EXAMPLES: Array<{
   },
 ];
 
-const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
 /**
  * Diagram engines for this site (spec §10).
  *
@@ -588,17 +593,6 @@ async function referenceIndex(): Promise<Page> {
   };
 }
 
-const BLURB: Record<(typeof CONSTRUCTS)[number], string> = {
-  callout: "GitHub-style alerts with optional title and fold.",
-  card: "A titled surface around any content.",
-  grid: "A list whose items become cards.",
-  columns: "Side-by-side regions with an optional ratio.",
-  tabs: "Headings become tab labels; no JavaScript.",
-  steps: "A numbered procedure from an ordered list.",
-  metrics: "Big numbers with deltas from a table.",
-  figure: "An image, table, or code block with a caption.",
-};
-
 /**
  * The examples each reference page shows, in order, with a line saying what to look
  * at. Named rather than sliced, so a page shows a chosen progression from the
@@ -838,25 +832,7 @@ ${diags}
 export async function vocabularyGroups(): Promise<VocabularyGroup[]> {
   const cases = await loadCases();
 
-  /**
-   * The case to show for a section.
-   *
-   * `canonical` by default, because that is the suite's own word for the
-   * minimal correct form. The exception is a case that points at a file:
-   * figure's canonical one is an image, and inserting it would render a broken
-   * image in the preview -- so a self-contained case from the same section is
-   * taken instead. Derived rather than hardcoded, so a future section with the
-   * same shape is handled without anyone noticing it needed to be.
-   */
-  const snippet = (section: string): string => {
-    const list = (cases[section] ?? []).filter((c) => c.valid);
-    const selfContained = (markset: string): boolean => !/\]\((?!#)[^)]+\)/u.test(markset);
-    const canonical = list.find((c) => c.name?.startsWith("canonical"));
-    const chosen =
-      canonical && selfContained(canonical.markset) ? canonical : list.find((c) => selfContained(c.markset));
-    if (!chosen) throw new Error(`playground: no self-contained case in tests/${section}.json`);
-    return chosen.markset.replace(/\n+$/u, "");
-  };
+  const snippet = (section: string): string => selectSnippet(cases[section] ?? [], section);
 
   const construct = (name: (typeof CONSTRUCTS)[number]): VocabularyEntry => ({
     id: name,
