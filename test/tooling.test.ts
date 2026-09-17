@@ -233,6 +233,16 @@ test("every published package asks to be public", async () => {
   }
 });
 
+test("every published package has a README that names it", async () => {
+  // npm shows the README as the package page. Six packages shipped 0.3.0 with
+  // none, so the page an adopter lands on first was blank; an eighth package
+  // must not repeat that.
+  for (const name of PUBLISHED) {
+    const readme = await readFile(join(root, "packages", name, "README.md"), "utf8").catch(() => "");
+    assert.match(readme, new RegExp(`^# @markset-lang/${name}$`, "m"), `${name} has no README naming it`);
+  }
+});
+
 test("the manifests are already in the form npm would rewrite them into", async () => {
   // npm silently "auto-corrects" a manifest on publish and warns that it did.
   // A warning on every release that says errors were corrected is a warning
