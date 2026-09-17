@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.3.1 — 2026-09-17
+
+**Two stylesheet defects found by a document, a ninth example, and a README for every package.** Nothing in the grammar or the spec changed; everything here is output or documentation, which is what v0 allows.
 
 - **A right-aligned table column is right-aligned.** GFM's `---:` reached the HTML as `align="right"` on every cell and then did nothing, because that is a presentational hint and the default stylesheet's own `th, td { text-align: left }` beats it. Two rules in `markset.css` now honor `align`. Found by writing a change set whose tables have a column of day counts: they came out flush left, with no diagnostic anywhere to say so, which is the kind of defect only a rendered page finds.
 - **A ninth example, `examples/keystone-baseline.md` with `examples/ledger.css`.** The change-set genre: a proposal to alter a system, written to be executed rather than read once. It is the published twin of a real document, describing an invented tracker, and it is the one that found the alignment defect above. Four automation rules are `card` blocks whose body is a list of labeled parts, the report wireframe is `steps` inside a `card`, and every tone in its tables is a reserved class on a span. It invented four author classes and shares a fifth, `.tick`, with seven other examples; register entry 7 counts them and still promotes nothing.

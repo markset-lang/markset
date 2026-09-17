@@ -1,6 +1,6 @@
 {
   "name": "@markset-lang/parser",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Markset parser: CommonMark base plus the Markset grammar extensions, producing an AST.",
   "license": "MIT",
   "type": "module",
