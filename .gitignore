@@ -3,3 +3,7 @@ dist/
 dist.staging-*/
 dist.previous-*/
 packages/*/dist/
+
+# Staged into the suite package at build time; tests/ and spec/ are canonical.
+packages/conformance-suite/cases/
+packages/conformance-suite/schema.json
