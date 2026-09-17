@@ -11,11 +11,25 @@ after(async () => {
   await rm(dist, { recursive: true, force: true });
 });
 
+/**
+ * The page's own contents, not the whole rail. The rail carries two blocks now
+ * — the section a page sits in, and what is on the page — and matching the
+ * aside counts sibling pages as though they were sections of this one, which
+ * every assertion below would then pass for the wrong reason.
+ */
 async function rail(page: string): Promise<string[]> {
   const html = await readFile(join(dist, page), "utf8");
-  const aside = /<aside class="site-toc">([\s\S]*?)<\/aside>/u.exec(html);
-  if (!aside) return [];
-  return [...aside[1].matchAll(/<a href="#[^"]*">([^<]*)<\/a>/gu)].map((m) => m[1]);
+  const contents = /<nav aria-label="Contents">([\s\S]*?)<\/nav>/u.exec(html);
+  if (!contents) return [];
+  return [...contents[1].matchAll(/<a href="#[^"]*">([^<]*)<\/a>/gu)].map((m) => m[1]);
+}
+
+/** The sibling pages offered in the rail, as hrefs. */
+async function section(page: string): Promise<string[]> {
+  const html = await readFile(join(dist, page), "utf8");
+  const nav = /<nav class="site-rail"[^>]*>([\s\S]*?)<\/nav>/u.exec(html);
+  if (!nav) return [];
+  return [...nav[1].matchAll(/<a href="([^"]*)"/gu)].map((m) => m[1]);
 }
 
 test("a rail appears on the pages long enough to want one, and nowhere else", async () => {
@@ -90,4 +104,36 @@ test("the reference index lists its generated section too", async () => {
     `generated section missing from the rail: ${entries.join(", ")}`,
   );
   assert.ok(entries.includes("The eight constructs"));
+});
+
+test("a page reachable only from a sentence gets a place in the rail", async () => {
+  // The Pages guide was the one genuine orphan on the site: a top-level guide
+  // belonging to no section, linked from three paragraphs and nowhere else. It
+  // is a peer of the adoption page in the rail now, and both say so from the
+  // other's page.
+  const fromStart = await section("start/index.html");
+  assert.ok(
+    fromStart.some((h) => h.endsWith("github-pages/index.html")),
+    `the Pages guide is missing from the adoption page's rail: ${fromStart.join(", ")}`,
+  );
+  const fromGuide = await section("github-pages/index.html");
+  assert.ok(fromGuide.some((h) => h.endsWith("start/index.html")));
+
+  // And the short pages, which have no contents of their own, are no longer
+  // dead ends: a reference page had no route to its siblings but the back
+  // button.
+  const card = await section("reference/card/index.html");
+  assert.deepEqual(await rail("reference/card/index.html"), [], "still no table of contents, correctly");
+  assert.ok(card.length >= 10, `a reference page should offer its siblings, found ${card.length}`);
+  assert.ok(card.some((h) => h.endsWith("reference/grid/index.html")));
+});
+
+test("the rail says which page you are on, exactly once", async () => {
+  for (const page of ["start/index.html", "github-pages/index.html", "reference/card/index.html"]) {
+    const html = await readFile(join(dist, page), "utf8");
+    const nav = /<nav class="site-rail"[^>]*>([\s\S]*?)<\/nav>/u.exec(html);
+    assert.ok(nav, `${page} has no section rail`);
+    const current = [...nav[1].matchAll(/aria-current="page"/gu)];
+    assert.equal(current.length, 1, `${page} marks ${current.length} rail entries as current`);
+  }
 });
