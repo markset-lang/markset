@@ -9,10 +9,12 @@
  * value is used.
  */
 import type { Blockquote, Heading, Nodes, Paragraph, PhrasingContent, Root, RootContent, Text } from "mdast";
+import { CHART_TYPES } from "./ast.ts";
 import type {
   Callout,
   CalloutKind,
   Card,
+  ChartType,
   Column,
   Columns,
   Directive,
@@ -37,6 +39,7 @@ export const ConstructCode = {
   STEPS_CONTENT: "STEPS_CONTENT",
   METRICS_CONTENT: "METRICS_CONTENT",
   FIGURE_CONTENT: "FIGURE_CONTENT",
+  CHART_CONTENT: "CHART_CONTENT",
   COLUMNS_RATIO_MISMATCH: "COLUMNS_RATIO_MISMATCH",
   COLUMNS_SINGLE: "COLUMNS_SINGLE",
   TABS_NO_HEADINGS: "TABS_NO_HEADINGS",
@@ -261,9 +264,14 @@ export function normalizeConstructs(tree: Root, source: string, diagnostics: Dia
   }
 
   function figure(node: Directive): Figure | Directive {
-    const a = readAttributes<{ width: number | null }>(
+    const a = readAttributes<{ width: number | null; chart: ChartType | null }>(
       node.attributes,
       {
+        chart: {
+          parse: (raw: string) => (CHART_TYPES.includes(raw as ChartType) ? (raw as ChartType) : undefined),
+          expected: CHART_TYPES.map((v) => `"${v}"`).join(", "),
+          fallback: null,
+        },
         width: {
           parse: (raw: string) => {
             const m = /^(\d+)%$/.exec(raw);
@@ -291,7 +299,27 @@ export function normalizeConstructs(tree: Root, source: string, diagnostics: Dia
       return node;
     }
     rejectContentAttributes(only, "figure");
-    return { type: "figure", caption: node.argument, width: a.width, ...base(node), children: node.children };
+    // A chart is drawn from the data, so there has to be data. The other two
+    // figure contents carry none: an image is already a picture, and a code
+    // fence is §10's business. Reported rather than ignored, because a figure
+    // that asked to be a chart and silently was not is the worst of the three.
+    if (a.chart !== null && only.type !== "table") {
+      report(
+        ConstructCode.CHART_CONTENT,
+        "error",
+        `a figure with chart="${a.chart}" must contain a table; this one contains a ${only.type}`,
+        fenceSpan(node),
+      );
+      return { type: "figure", caption: node.argument, width: a.width, ...base(node), children: node.children };
+    }
+    return {
+      type: "figure",
+      caption: node.argument,
+      width: a.width,
+      ...(a.chart === null ? {} : { chart: a.chart }),
+      ...base(node),
+      children: node.children,
+    };
   }
 
   function columns(node: Directive): Columns {

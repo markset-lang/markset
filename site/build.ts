@@ -247,6 +247,7 @@ const SECTION_ORDER = [
   ...CONSTRUCTS,
   "frontmatter",
   "diagram",
+  "chart",
 ];
 
 /**

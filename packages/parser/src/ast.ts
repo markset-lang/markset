@@ -188,11 +188,25 @@ export interface Metrics extends ConstructBase {
   children: [Table];
 }
 
+/**
+ * Chart types a figure may ask for (§11). Closed, and deliberately smaller than
+ * it will end up: adding a type is additive and removing one is breaking, so
+ * the set starts at what a real document has asked for and grows on evidence.
+ */
+export const CHART_TYPES = ["line"] as const;
+export type ChartType = (typeof CHART_TYPES)[number];
+
 export interface Figure extends ConstructBase {
   type: "figure";
   caption: PhrasingContent[] | null;
   /** Percentage, 1-100, or null. */
   width: number | null;
+  /**
+   * Set only when the author asked for a chart, and absent otherwise. A figure
+   * that says nothing about charts has the node it always had, which is what
+   * keeps this additive rather than a change to every pinned figure case.
+   */
+  chart?: ChartType;
   children: Array<BlockContent | DefinitionContent>;
 }
 

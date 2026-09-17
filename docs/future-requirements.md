@@ -274,7 +274,7 @@ Observed: raised September 2026, on the grounds that it is likely to be the comm
 
 ### 17. A chart, and which kind
 
-**Class: Additive as recommended below. Breaking if it becomes a ninth construct. Candidate.**
+**Class: Additive. Specified and validated September 2026; no engine yet.**
 
 Section 8 reserved `chart` as "the most differentiating feature and the most work", needing "a data format decision, a rendering library, and a print story". `examples/capacity-review.md` was written to find out which of that is still true. It is a capacity review whose whole argument is quantities, and it was written against v0 with no chart support of any kind, so that what it could not do would be visible rather than imagined. Four places in it want a picture. Three findings came out, and two of them narrow the request considerably.
 
@@ -299,9 +299,17 @@ So the demand is narrower than "charts": it is a series over an ordered axis, wi
 
 **What it would cost, as recommended.** A §11 shaped like §10, with the same seven obligations and one more — the table stays reachable, since unlike a diagram the picture is a lossy view of something the reader could have used. One new `figure` attribute for the chart type, which is the entire grammar change: `chart=line` on a figure specifier is `DIRECTIVE_UNKNOWN_ATTRIBUTE` today, while `.chart` as a class passes clean and reaches the HTML. One workspace package shaped like `diagram-ascii` — a pure function, no dependencies — doing line and multi-series line and nothing else. Conformance cases pinning the undrawn table, as diagram cases pin the undrawn fence. Section 8's three worries do not survive contact: the table is the data format, a line chart from a table is a few hundred lines rather than a library, and an SVG data URI prints.
 
+**What landed, September 2026.** Spec §11, on the design above: a chart is a `figure` holding a table, with eight renderer obligations — §10's seven, plus one that only charts need. Obligation 8 says a drawn chart must not make its table unreachable, because unlike a diagram the picture is a lossy view of data a reader may want exactly, and in a document where the numbers are the argument that reader is not an edge case. Section 8 no longer defers `chart`, and no longer reserves a fenced-code syntax for it.
+
+The grammar change is one attribute, `chart` on `figure`, and the additive property is the part that took care: the AST field is present only when the author sets it, so every figure and diagram case pinned before this change is byte-identical after it. Entry 3 is where that lesson was written down and this is the first time it was applied. Ten conformance cases pin the undrawn form, including the two ways to get it wrong — a type outside the set, and a chart on a figure holding something other than a table (`CHART_CONTENT`).
+
+`line` is the only type. That is smaller than the set will end up, deliberately: adding a type is additive and removing one is breaking, so the asymmetry says start at what a document has asked for. The engine is not built, and is waiting on what an external consumer actually needs to draw — which is the right thing to wait for, because the type set is the one decision here that is expensive to reverse.
+
 **One thing that is not about charts.** The fleet strip in that document has mixed polarity — tenant count rising is growth, stored bytes rising is cost — and `metrics` has no way to say so. `direction` is per-block (§4.7), so a strip is all-normal or all-inverse. Recorded here rather than as its own entry because one document is not yet evidence; if a second review wants it, it is a small additive attribute on the row rather than the block.
 
 Observed: `examples/capacity-review.md`, September 2026, written for this purpose rather than found in one that already existed. Worth flagging as such — the register asks for an originating document, and a document commissioned to originate an entry is weaker evidence than one that wanted the feature on its own. What it is good for is bounding the request, which it did: one of the four wants is already served outright, one is served badly enough to be worth keeping and not worth calling done, and the two that are left are the same shape as each other.
+
+The evidence that moved this from candidate to built is an external consumer waiting on chart support, reported September 2026. That is the originating need the commissioned document could not be, and it is worth recording which of the two actually decided it. It also bounds what is still open: the consumer's own documents are what the type set should be read from, and until they are in hand `line` is the honest size of it.
 
 ## Rejected
 

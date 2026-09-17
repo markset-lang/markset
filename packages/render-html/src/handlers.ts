@@ -194,6 +194,10 @@ export function marksetHandlers(): Handlers {
       const props: Properties = { className: classes("ms-figure", node.classes) };
       if (node.id) props.id = node.id;
       if (node.width !== null) props.style = `--ms-width: ${node.width}%`;
+      // The chart type is a semantic variant, so it goes in a data attribute.
+      // Nothing here draws it: with no engine the table is the output, which is
+      // §11 obligation 1 and the reason this is safe to emit before one exists.
+      if (node.chart) props["data-chart"] = node.chart;
       const [content] = node.children;
       const body = content.type === "paragraph" ? state.all(content) : state.all(node);
       const children = [...body];
