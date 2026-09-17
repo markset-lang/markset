@@ -59,7 +59,16 @@
     {
       // The conformance suite is generated, written by JSON.stringify with two
       // spaces. A formatter that disagrees would fight every regeneration.
-      "includes": ["tests/**/*.json"],
+      //
+      // The second path is the copy staged into the published package. It has
+      // to be byte-identical to the first, so formatting it would break the
+      // thing it exists to be -- and quietly, because the copy is not
+      // committed and a diff would never show it.
+      "includes": [
+        "tests/**/*.json",
+        "packages/conformance-suite/cases/**/*.json",
+        "packages/conformance-suite/schema.json"
+      ],
       "formatter": { "enabled": false }
     }
   ]

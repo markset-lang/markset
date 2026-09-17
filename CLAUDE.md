@@ -43,7 +43,11 @@ packages/
   render-html/      AST -> HTML
   diagram-ascii/    ASCII diagram -> SVG (spec §10). A pure function with no dependencies;
                     render-html uses it by default and takes any other engine from its caller.
-  conformance/      harness: validates tests/*.json against the schema, runs each section's driver
+  conformance/      harness: validates tests/*.json against the schema, runs each section's driver.
+                    Private: its drivers import this implementation, so it measures nothing else.
+  conformance-suite/ the cases as data - tests/*.json and the schema, copied in at build time by
+                    stage.ts and published for implementations that are not this one. No dependencies,
+                    deliberately: it is what an implementation is checked against, so it must not carry one.
   cli/
 tsconfig.build.json  emit settings for publishing; tsconfig.json stays noEmit and is what the editor reads
 site/       static site generator (build.ts) and content; every page is Markset rendered by the packages above.

@@ -1,0 +1,43 @@
+{
+  "name": "@markset-lang/conformance-suite",
+  "version": "0.2.0",
+  "description": "The Markset conformance cases as data (spec §7), for checking any implementation. Carries no implementation of its own.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markset-lang/markset.git",
+    "directory": "packages/conformance-suite"
+  },
+  "homepage": "https://markset-lang.github.io/markset/",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "markset",
+    "conformance",
+    "test-suite",
+    "commonmark"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "cases",
+    "schema.json"
+  ],
+  "exports": {
+    ".": {
+      "markset-source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./schema.json": "./schema.json",
+    "./cases/*.json": "./cases/*.json"
+  },
+  "scripts": {
+    "prepack": "node --conditions=markset-source stage.ts"
+  }
+}
