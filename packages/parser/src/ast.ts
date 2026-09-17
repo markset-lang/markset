@@ -192,8 +192,12 @@ export interface Metrics extends ConstructBase {
  * Chart types a figure may ask for (§11). Closed, and deliberately smaller than
  * it will end up: adding a type is additive and removing one is breaking, so
  * the set starts at what a real document has asked for and grows on evidence.
+ *
+ * `bar` and `column` are one encoding on two axes, not one type with a
+ * decoration: they differ in which axis carries the categories, and §11 defines
+ * the category axis as a property of the data rather than of the picture.
  */
-export const CHART_TYPES = ["line"] as const;
+export const CHART_TYPES = ["line", "bar", "column"] as const;
 export type ChartType = (typeof CHART_TYPES)[number];
 
 export interface Figure extends ConstructBase {

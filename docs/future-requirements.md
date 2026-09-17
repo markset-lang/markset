@@ -305,6 +305,30 @@ The grammar change is one attribute, `chart` on `figure`, and the additive prope
 
 `line` is the only type. That is smaller than the set will end up, deliberately: adding a type is additive and removing one is breaking, so the asymmetry says start at what a document has asked for. The engine is not built, and is waiting on what an external consumer actually needs to draw — which is the right thing to wait for, because the type set is the one decision here that is expensive to reverse.
 
+**The consumer asked for column and bar, September 2026, and for a view of what else is possible.** Both are in: `column` puts the categories across, `bar` puts them down. They are two type names rather than one type and an orientation because which axis carries the categories is a property of the data — long names and ranked lists read down, ordered periods read across — and because a theme could not make the choice even if it were handed it, the drawing being an image the theme cannot see inside. The reasoning is in §11; the reason it is worth reasoning about is that "orientation" is exactly the kind of word that smuggles presentation into a document.
+
+**What else was considered.** Recorded so the next person asking does not have to re-derive it, and so the declines are visible rather than silent.
+
+Available today, at no cost, and worth knowing before anyone asks for a feature:
+
+- **Small multiples.** A `grid` of figures, each holding a chart, is one chart per cell across a shared scale of the reader's own making. Nothing new is needed; `grid` and `figure` already compose.
+- **A target or threshold line.** It is another column in the table, and therefore another series. A chart drawn from a table gets this for free, where a chart configured by options needs an option for it.
+- **Print.** A drawn chart is an SVG, so it prints at the resolution of the paper rather than the screen — which is the thing JavaScript chart libraries are worst at and the reason §8 listed a print story as a worry.
+
+Plausible next, each waiting on a document rather than on a design:
+
+- **Stacked and grouped.** The table already carries N series, so both are readings of data that is already there. The open question is naming, not capability: two more type names (`stacked-bar`), or a modifier attribute that multiplies with the types. A modifier is tempting and should be resisted until something needs it, because it turns a closed list into a matrix.
+- **Scatter.** The one genuinely new thing, and not free: §11 maps the first column to a category axis, and a scatter plot needs it to be a *numeric* axis. That is a fork in the table mapping, not another type, and it should be designed as one.
+
+Declined, with the reason, so it is not raised again without new evidence:
+
+- **Pie and donut.** A chart type earns its place by showing something its table does not, and proportion is the case where that is least true: a reader compares angles badly, compares lengths well, and reads five percentages off a table faster than off a circle. Stacked bar shows the same thing better, and the §3 fallback — the table — is already the better artifact. Adding it would be the first chart type in this set that is worse than doing nothing.
+- **Sparklines in table cells.** Genuinely Markset-shaped and genuinely out of reach: it needs cell-level attributes, which §2 has no syntax for and entry 4 has already recorded as breaking.
+
+**The decision that should be made before the engine is written** is not a chart type at all. A drawn chart arrives as an `<img>` holding an SVG data URI (§10), which means a theme can place and size it but cannot color it — recorded as a known limit for diagrams in `examples/tidewater.css`, where it costs little because a diagram is mostly ink. For charts it costs a great deal: a consumer with a brand palette will want their colors, and today the only way to get them is to fork the engine.
+
+There is a way out that §10 did not have. §10 refused inline SVG because an engine there is an arbitrary command named by the operator, and raw markup from an arbitrary command is a channel documents are denied. A built-in chart engine is not that: it is our own pure function, with the same trust as the downgrade renderer. So inline `<svg>` is defensible for the built-in engine specifically, and it would make chart colors ordinary CSS — `currentColor` and custom properties, themed like everything else in §6. The cost is that the two drawing paths in this repository would then differ in shape, and that §10's “inert by construction” argument would have to be re-made for the inline case rather than inherited. Worth settling deliberately, and before an engine is built on either assumption.
+
 **One thing that is not about charts.** The fleet strip in that document has mixed polarity — tenant count rising is growth, stored bytes rising is cost — and `metrics` has no way to say so. `direction` is per-block (§4.7), so a strip is all-normal or all-inverse. Recorded here rather than as its own entry because one document is not yet evidence; if a second review wants it, it is a small additive attribute on the row rather than the block.
 
 Observed: `examples/capacity-review.md`, September 2026, written for this purpose rather than found in one that already existed. Worth flagging as such — the register asks for an originating document, and a document commissioned to originate an entry is weaker evidence than one that wanted the feature on its own. What it is good for is bounding the request, which it did: one of the four wants is already served outright, one is served badly enough to be worth keeping and not worth calling done, and the two that are left are the same shape as each other.
