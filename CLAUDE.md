@@ -104,6 +104,17 @@ Read these before proposing syntax changes — most ideas have been tried.
 
 <!-- Keep current. This is the first thing to read after the invariants. -->
 
+**Open.** Everything below this is done; these two are not. Kept at the top because the shipped list is long and
+in commit order, which is the wrong order for finding the work.
+
+- [ ] Prove the CI publish by releasing through it. The OIDC path has not yet published anything: every run so far
+      found all five versions already on the registry and skipped them, which exercises the guard and not the
+      authentication. The next release is the first real test, and its fallback is the manual path that worked —
+      `npm login --auth-type=web`, then `npm run release`, in a terminal.
+- [ ] Playground page (needs a bundler such as esbuild, not yet approved)
+
+**Done,** in the order it landed.
+
 - [x] Conformance schema (`spec/conformance.schema.json`) and harness (`packages/conformance`)
 - [x] Grammar: attribute specifier (§2.1, `packages/parser/src/attributes.ts`, 56 cases)
 - [x] Grammar: block directive and separator fence lines (§2.3, §2.4, `packages/parser/src/directives.ts`)
@@ -142,7 +153,6 @@ Read these before proposing syntax changes — most ideas have been tried.
       else. The drawn form is an `<img>` holding an SVG data URI, so it is inert by shape rather than by trust.
       ASCII is the recommended source: it is the only common one whose §3 fallback is still a diagram.
 - [x] Seventh example, `examples/architecture.md` with `examples/tidewater.css`: the diagram-heavy genre, written after §10 to test it. It found three defects no unit test had — a line stopping half a cell short of the box it met, a lone hyphen in a label drawn as a rule, and `.ms-figure` not being `border-box` despite carrying an explicit width, which pushed three figures past a 390px viewport. It invented no author classes.
-- [ ] Playground page (needs a bundler such as esbuild, not yet approved)
 - [x] Six real documents written against the candidate; the last four forced no change to §2 or §4, which is what v0 was waiting on
 - [x] **Publishable, 2026-09-15.** Five packages go to npm — `parser`, `diagram-ascii`, `render-downgrade`,
       `render-html`, `cli` — and `conformance` stays private because nothing consumes it. Sources cannot be shipped
@@ -172,7 +182,3 @@ Read these before proposing syntax changes — most ideas have been tried.
       **The workflow configures no credential, deliberately.** An `.npmrc` with an empty `_authToken` is worse than
       none: npm tries it, is refused, and never reaches the OIDC path. That is not hypothetical — `setup-node`'s
       `registry-url` broke `npm ci` in this very workflow with a 401 about a password, on a runner that never had one.
-- [ ] Prove the CI publish by releasing through it. The OIDC path has not yet published anything: every run so far
-      found all five versions already on the registry and skipped them, which exercises the guard and not the
-      authentication. The next release is the first real test, and its fallback is the manual path that worked —
-      `npm login --auth-type=web`, then `npm run release`, in a terminal.
