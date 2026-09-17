@@ -244,9 +244,8 @@ test("the release names every published package, and nothing else", async () => 
 test("the release workflow proves the build before it publishes", async () => {
   const yaml = await readFile(join(root, ".github", "workflows", "release.yml"), "utf8");
   assert.match(yaml, /tags: \["v\*"\]/u, "a release is a deliberate tag, not every push");
-  assert.match(yaml, /id-token: write/u, "provenance needs it");
+  assert.match(yaml, /id-token: write/u, "trusted publishing and provenance both need it");
   assert.match(yaml, /--provenance/u, "each tarball is tied to the run that built it");
-  assert.match(yaml, /NODE_AUTH_TOKEN: \$\{\{ secrets\.NPM_TOKEN \}\}/u);
   for (const step of ["npm run lint", "npm run typecheck", "npm test", "npm run conformance"]) {
     assert.ok(yaml.includes(step), `the release re-proves ${step}, since a tag can come from anywhere`);
   }
@@ -273,11 +272,14 @@ test("the release workflow can be run a second time without failing", async () =
   // The list it walks is the one the release script names. Two copies of it
   // would be two things to keep in step, and the test above only governs one.
   assert.match(yaml, /scripts\.release\.match/u, "derives the package list rather than repeating it");
-  // registry-url makes setup-node write an .npmrc with always-auth, so every
-  // npm command sends the token -- npm ci included, which fails with a 401 when
-  // the secret is absent. Configure the registry after the gate, not before it.
-  const install = yaml.indexOf("npm ci");
-  assert.ok(yaml.indexOf("registry-url") > install, "the registry is configured after the install, not before");
+  // These packages publish through npm's trusted publishing, so the workflow
+  // configures no credential at all: npm exchanges the OIDC token GitHub mints
+  // for the run. An .npmrc carrying an empty _authToken is worse than none --
+  // npm tries that credential, is refused, and never reaches the OIDC path,
+  // which is precisely how npm ci failed in this workflow once already. Both
+  // spellings of that mistake stay out.
+  assert.doesNotMatch(yaml, /NODE_AUTH_TOKEN/u, "no token: publishing is by OIDC");
+  assert.doesNotMatch(yaml, /registry-url/u, "and nothing writes an .npmrc for one");
 });
 
 test("every dependency resolves to the public registry", async () => {
