@@ -111,10 +111,19 @@ Read these before proposing syntax changes — most ideas have been tried.
 **Open.** Everything below this is done; these two are not. Kept at the top because the shipped list is long and
 in commit order, which is the wrong order for finding the work.
 
-- [ ] Prove the CI publish by releasing through it. The OIDC path has not yet published anything: every run so far
-      found all five versions already on the registry and skipped them, which exercises the guard and not the
-      authentication. The next release is the first real test, and its fallback is the manual path that worked —
-      `npm login --auth-type=web`, then `npm run release`, in a terminal.
+- [x] **Released 0.3.0 from CI, 2026-09-17, and the OIDC path is proved.** Seven packages: the five from 0.2.0
+      plus `remark-markset` and `conformance-suite`. Tagging `v0.3.0` ran the whole gate and published five of them
+      over trusted publishing with provenance and no secret anywhere.
+      **A package npm has never seen cannot be published by CI**, and this is the trap to remember when adding an
+      eighth. Trusted publishing is configured per package on npmjs.com, a package that does not exist cannot have a
+      publisher configured, so the run failed with `ENEEDAUTH` on the first new one and never reached the second.
+      A new package needs one publish by hand — `npm publish --workspace <name>`, in a terminal, with the passkey —
+      and then its trusted publisher configured, after which it releases with the rest. The publish step walks the
+      packages in order and stops at the first failure, so the five that were already established went out first;
+      that ordering is luck rather than design, and the step is idempotent, so the fix was one command.
+      Registry reads lag publication by minutes. The workflow log printing `+ name@version` is the authoritative
+      signal; `dist-tags` said 0.2.0 for packages that had just gone out, which has now twice looked like a failure
+      and twice been nothing.
 - [ ] Playground page (needs a bundler such as esbuild, not yet approved)
 
 **Done,** in the order it landed.
