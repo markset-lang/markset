@@ -187,3 +187,14 @@ test("a construct after a heading gets the same air it gets after a paragraph", 
   const generic = css.indexOf(".ms-document > :is(h1, h2, h3, h4, h5, h6) + * {");
   assert.ok(generic >= 0 && css.indexOf(rule[0]) > generic, "and comes after it, so order cannot undo specificity");
 });
+
+test("a table column aligned in the source stays aligned in the page", async () => {
+  // The renderer emits GFM's `---:` as `align="right"` on every cell of the
+  // column. That is a presentational hint, and any `text-align` rule in a
+  // stylesheet beats it — including the default's own `th, td { text-align:
+  // left }`. Found by rendering a document with a right-aligned column of day
+  // counts, which came out left-aligned with no diagnostic anywhere.
+  const css = await readFile(defaultStylesheetPath, "utf8");
+  assert.match(css, /td\[align="right"\] \{ text-align: right; \}/);
+  assert.match(css, /td\[align="center"\] \{ text-align: center; \}/);
+});

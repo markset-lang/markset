@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **A right-aligned table column is right-aligned.** GFM's `---:` reached the HTML as `align="right"` on every cell and then did nothing, because that is a presentational hint and the default stylesheet's own `th, td { text-align: left }` beats it. Two rules in `markset.css` now honor `align`. Found by writing a change set whose tables have a column of day counts: they came out flush left, with no diagnostic anywhere to say so, which is the kind of defect only a rendered page finds.
+
 ## 0.3.0 — 2026-09-17
 
 **Seven packages now.** `@markset-lang/remark-markset` and `@markset-lang/conformance-suite` join the five from 0.2.0, which is most of what this release is: two ways in from outside, one for a pipeline someone already runs and one for an implementation that is not this one.
