@@ -45,6 +45,12 @@ packages/
                     render-html uses it by default and takes any other engine from its caller.
   conformance/      harness: validates tests/*.json against the schema, runs each section's driver.
                     Private: its drivers import this implementation, so it measures nothing else.
+  remark-markset/   remark plugin: the parser's micromark and mdast extensions, the normalization and
+                    validation parseDocument runs, and diagnostics as vfile messages. Adds Markset and
+                    nothing else - tables and frontmatter stay the caller's choice. It also lowers
+                    attributes onto data.hProperties, which render-html does separately for its own
+                    non-unified path; a test renders one document both ways and compares, so the two
+                    copies cannot drift.
   conformance-suite/ the cases as data - tests/*.json and the schema, copied in at build time by
                     stage.ts and published for implementations that are not this one. No dependencies,
                     deliberately: it is what an implementation is checked against, so it must not carry one.

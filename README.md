@@ -24,7 +24,9 @@ npm i -g @markset-lang/cli          # the command line tool
 npm i @markset-lang/render-html     # or the library
 ```
 
-Six packages are published under the `@markset-lang` scope: `parser`, `diagram-ascii`, `render-downgrade`, `render-html`, `cli`, and `conformance-suite` — the last of which is the test suite as data, for anyone writing a second implementation.
+Seven packages are published under the `@markset-lang` scope: `parser`, `diagram-ascii`, `render-downgrade`, `render-html`, `cli`, `remark-markset`, and `conformance-suite`. The last two are the ways in from outside: a remark plugin for a pipeline you already run, and the test suite as data for anyone writing a second implementation.
+
+Already using remark? `npm i @markset-lang/remark-markset` and add it to the pipeline you have.
 
 ## Working on it
 
@@ -55,6 +57,7 @@ The site at <https://markset-lang.github.io/markset/> is generated from this rep
 | `packages/render-downgrade` | Markset AST to plain CommonMark. |
 | `packages/render-html` | Markset AST to HTML, plus the default stylesheet. |
 | `packages/conformance` | Harness that runs `tests/*.json` against the packages above. |
+| `packages/remark-markset` | remark plugin: Markset in an existing unified pipeline. |
 | `packages/conformance-suite` | `tests/*.json` and the schema, published as data for other implementations. |
 | `packages/cli` | `markset check | html | downgrade | ast | css`. |
 | `site/` | Documentation site, written in Markset and built by the packages above (`npm run site`). |
