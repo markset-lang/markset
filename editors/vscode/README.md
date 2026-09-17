@@ -5,7 +5,7 @@
 ## What it does
 
 - **Diagnostics as you type.** The parser's own validation, with a line and column: an unknown directive is an error, a `grid` holding something other than a list is an error, a `columns` with one column is a warning. Each carries its spec code and a link to the specification.
-- **A live preview** beside the editor, rendered by the same renderer and stylesheet the `markset` command uses, following the editor's light or dark theme. The preview has scripting switched off, because a rendered Markset document never contains a script, and this is where that is a property of the page rather than a claim.
+- **A live preview** on command, beside the editor: run *Markset: Open Preview to the Side* from the Command Palette, click the eye icon in the editor title, or click **Markset** in the status bar, which appears whenever a Markset file is active. It is rendered by the same renderer and stylesheet the `markset` command uses, follows the editor's light or dark theme, and updates as you type. The preview has scripting switched off, because a rendered Markset document never contains a script, and this is where that is a property of the page rather than a claim.
 - **Plain CommonMark on demand.** *Markset: Show as Plain CommonMark* opens the downgraded form — what the document becomes on a target that has never heard of Markset — so you can see what a reader on GitHub sees.
 - **Completions.** Type `:::` at the start of a line and every fenced construct is offered with a working example; type `> [!` and the five callout types are.
 - **Snippets.** `card`, `grid`, `tabs`, `figure`, `diagram`, `chart` and the rest. Every body is a case from the Markset conformance suite, so a snippet can never insert something the parser rejects.

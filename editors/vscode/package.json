@@ -36,7 +36,7 @@
       {
         "command": "markset.openPreview",
         "title": "Markset: Open Preview to the Side",
-        "icon": "$(open-preview)"
+        "icon": "$(eye)"
       },
       {
         "command": "markset.showDowngrade",
