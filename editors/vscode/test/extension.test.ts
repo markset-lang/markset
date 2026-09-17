@@ -175,3 +175,104 @@ test("the extension bundles: one CommonJS file, vscode left external, and the fi
     await rm(out, { recursive: true, force: true });
   }
 });
+
+test("the bundle activates against a stub host without throwing, and registers what the manifest promises", async () => {
+  // The one path no other test here can reach is activate() itself, and it is
+  // where a missing dist file or a host API used at load time would surface --
+  // as a notification the reader has to report, since nothing in this
+  // repository runs an editor. So a stub host stands in: every member activate
+  // touches returns a disposable or a value of the right shape, and the test
+  // asserts the side effects the manifest describes.
+  const out = await mkdtemp(join(tmpdir(), "markset-vscode-"));
+  try {
+    await buildExtension(out);
+    const disposable = { dispose(): void {} };
+    const event = () => disposable;
+    const registered: string[] = [];
+    const statusBar = {
+      text: "",
+      tooltip: "",
+      command: "",
+      shown: false,
+      show(): void {
+        this.shown = true;
+      },
+      hide(): void {
+        this.shown = false;
+      },
+      dispose(): void {},
+    };
+    const stub = {
+      Uri: { parse: (s: string) => ({ toString: () => s }) },
+      Range: class {},
+      Diagnostic: class {},
+      DiagnosticSeverity: { Error: 0, Warning: 1 },
+      ColorThemeKind: { Light: 1, Dark: 2, HighContrast: 3 },
+      StatusBarAlignment: { Left: 1, Right: 2 },
+      CompletionItem: class {},
+      CompletionItemKind: { Snippet: 0, Keyword: 1 },
+      SnippetString: class {},
+      MarkdownString: class {},
+      ViewColumn: { Beside: -2 },
+      languages: {
+        createDiagnosticCollection: () => ({ set(): void {}, delete(): void {}, dispose(): void {} }),
+        registerCompletionItemProvider: () => disposable,
+      },
+      workspace: {
+        textDocuments: [],
+        getConfiguration: () => ({ get: (_key: string, fallback: unknown) => fallback }),
+        onDidOpenTextDocument: event,
+        onDidChangeTextDocument: event,
+        onDidCloseTextDocument: event,
+        onDidChangeConfiguration: event,
+      },
+      window: {
+        activeTextEditor: undefined,
+        activeColorTheme: { kind: 1 },
+        createStatusBarItem: () => statusBar,
+        onDidChangeActiveTextEditor: event,
+        onDidChangeActiveColorTheme: event,
+      },
+      commands: {
+        registerCommand: (id: string) => {
+          registered.push(id);
+          return disposable;
+        },
+      },
+    };
+    const { createRequire } = await import("node:module");
+    const require = createRequire(import.meta.url);
+    const Module = require("node:module") as { _load: (request: string, ...rest: unknown[]) => unknown };
+    const load = Module._load;
+    Module._load = function (request: string, ...rest: unknown[]) {
+      return request === "vscode" ? stub : load.call(this, request, ...rest);
+    };
+    try {
+      const context = { extensionPath: join(out, ".."), subscriptions: [] as unknown[] };
+      // dist/ is read relative to the extension root, so the temporary dir is
+      // the dist and its parent stands in for the root.
+      const { rename, mkdir: mk } = await import("node:fs/promises");
+      const fakeRoot = await mkdtemp(join(tmpdir(), "markset-vscode-root-"));
+      await mk(join(fakeRoot, "dist"), { recursive: true });
+      for (const f of ["extension.cjs", "markset.css", "snippets.json"])
+        await rename(join(out, f), join(fakeRoot, "dist", f));
+      context.extensionPath = fakeRoot;
+      const loaded = require(join(fakeRoot, "dist", "extension.cjs")) as {
+        activate: (context: { extensionPath: string; subscriptions: unknown[] }) => void;
+      };
+      loaded.activate(context);
+      const manifest = JSON.parse(await readFile(join(here, "..", "package.json"), "utf8")) as {
+        contributes: { commands: Array<{ command: string }> };
+      };
+      assert.deepEqual(registered.sort(), manifest.contributes.commands.map((c) => c.command).sort());
+      assert.ok(context.subscriptions.length > 5, "activation registers its listeners for disposal");
+      assert.equal(statusBar.command, "markset.openPreview", "the status bar item opens the preview");
+      assert.equal(statusBar.shown, false, "and stays hidden with no Markset file active");
+      await rm(fakeRoot, { recursive: true, force: true });
+    } finally {
+      Module._load = load;
+    }
+  } finally {
+    await rm(out, { recursive: true, force: true });
+  }
+});

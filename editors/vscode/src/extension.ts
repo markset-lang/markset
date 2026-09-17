@@ -157,6 +157,29 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.window.onDidChangeActiveColorTheme(() => preview?.update()),
   );
 
+  // ---- status bar ---------------------------------------------------------------
+  // A visible sign that the extension is awake on this file, and the shortest
+  // route to the preview: the editor-title icon sits beside the built-in Markdown
+  // preview's and is easy to miss, and a command is easy not to know about.
+  const status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+  status.text = "$(eye) Markset";
+  status.tooltip = "Open the Markset preview to the side";
+  status.command = "markset.openPreview";
+  const showStatus = (editor: vscode.TextEditor | undefined): void => {
+    const document = editor?.document;
+    const checkAll = vscode.workspace.getConfiguration("markset").get<boolean>("checkAllMarkdown", false);
+    if (document?.languageId === "markdown" && shouldCheck(document.getText(), checkAll)) status.show();
+    else status.hide();
+  };
+  showStatus(vscode.window.activeTextEditor);
+  context.subscriptions.push(
+    status,
+    vscode.window.onDidChangeActiveTextEditor(showStatus),
+    vscode.workspace.onDidChangeTextDocument((e) => {
+      if (e.document === vscode.window.activeTextEditor?.document) showStatus(vscode.window.activeTextEditor);
+    }),
+  );
+
   // ---- downgrade ----------------------------------------------------------------
   context.subscriptions.push(
     vscode.commands.registerCommand("markset.showDowngrade", async () => {
