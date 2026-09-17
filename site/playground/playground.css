@@ -100,12 +100,75 @@
   background: var(--ms-tone-danger);
   border-radius: 999px;
 }
+/* display:inline-block above beats the user agent's rule for [hidden], so
+ * without this the badge keeps its width while empty and leaves a gap in the
+ * tab strip that looks like a missing tab. */
+.pg-count[hidden] { display: none; }
+
+/* ---- the insert palette -------------------------------------------------- */
+
+/* Three groups of chips above the editor. The point is not only the clicking:
+ * eight names in one row is the closed vocabulary made countable, which is the
+ * fact about Markset a newcomer is least likely to guess. */
+.pg-insert {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.7rem;
+  padding: 0.5rem 0.55rem;
+  border-bottom: 1px solid var(--ms-border);
+}
+.pg-insert-group { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; }
+.pg-insert-label {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ms-fg-muted);
+  margin-right: 0.15rem;
+}
+.pg-chip {
+  font-family: var(--ms-font-mono);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  cursor: pointer;
+  padding: 0.15rem 0.45rem;
+  color: var(--ms-fg);
+  background: var(--ms-bg);
+  border: 1px solid var(--ms-border);
+  border-radius: 999px;
+}
+.pg-chip:hover { border-color: var(--ms-accent); color: var(--ms-accent); }
+.pg-chip:focus-visible { outline: 2px solid var(--ms-accent); outline-offset: 1px; }
+
+/* ---- the vocabulary tab -------------------------------------------------- */
+
+.pg-vocab { overflow: auto; background: var(--ms-bg); padding: 0.85rem; }
+.pg-vocab-group + .pg-vocab-group { margin-top: 1.4rem; }
+.pg-vocab-group > h3 { margin: 0; font-size: 0.95rem; }
+.pg-vocab-note { margin: 0.2rem 0 0; font-size: 0.8rem; color: var(--ms-fg-muted); max-width: 60ch; }
+.pg-vocab-entry { margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--ms-border); }
+.pg-vocab-entry > h4 { margin: 0; font-size: 0.85rem; }
+.pg-vocab-entry > h4 code { font-size: 0.85rem; background: none; padding: 0; }
+.pg-vocab-entry > p { margin: 0.2rem 0 0; font-size: 0.82rem; color: var(--ms-fg-muted); max-width: 60ch; }
+.pg-vocab-entry .pg-code { margin-top: 0.45rem; border: 1px solid var(--ms-border); border-radius: var(--ms-radius); }
+.pg-vocab-actions { display: flex; align-items: center; gap: 0.7rem; margin-top: 0.45rem !important; }
+.pg-insert-button {
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 0.2rem 0.6rem;
+  color: var(--ms-fg);
+  background: var(--ms-surface);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+}
+.pg-insert-button:hover { border-color: var(--ms-accent); }
+.pg-vocab-actions a { font-size: 0.78rem; }
 
 /* ---- the editor ---------------------------------------------------------- */
 
 #pg-source {
   flex: 1;
-  min-height: var(--pg-h);
+  min-height: calc(var(--pg-h) - 2.5rem);
   resize: vertical;
   font-family: var(--ms-font-mono);
   font-size: 0.82rem;

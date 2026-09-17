@@ -21,6 +21,7 @@ import { parseDocument, type Diagnostic } from "@markset-lang/parser";
 import { bodyAttributes, renderHtml } from "@markset-lang/render-html";
 import { renderDowngrade } from "@markset-lang/render-downgrade";
 import { decodeDocument, encodeDocument, locateAll, summarize } from "./diagnostics.ts";
+import { blockBoundary, inlineAllowed, insertInto, type EntryKind } from "./vocabulary.ts";
 import tour from "./samples/tour.md";
 import steps from "./samples/steps.md";
 import diagram from "./samples/diagram.md";
@@ -222,6 +223,59 @@ shareButton.addEventListener("click", async () => {
     announce("The address bar now holds a link to this document.");
   }
 });
+
+/**
+ * Inserting from the palette.
+ *
+ * The snippet is read out of the page rather than carried in the bundle: the
+ * Vocabulary tab is already displaying it, and one copy is the difference
+ * between a palette that can drift from its own documentation and one that
+ * cannot. Every button, in the bar and in the tab, names an entry by id.
+ *
+ * The inserted text is left selected. A snippet dropped into a long document
+ * is otherwise invisible -- the reader clicks, nothing appears to happen,
+ * because it landed below the fold -- and a selection is also the thing that
+ * makes the next keystroke replace it, which is what you want from an example.
+ */
+function insertEntry(id: string): void {
+  const entry = document.getElementById(`pg-entry-${id}`);
+  const snippet = entry?.querySelector("pre code")?.textContent;
+  const kind = entry?.dataset.kind as EntryKind | undefined;
+  if (!entry || !snippet || !kind) return;
+  const before = source.value;
+  // Parsed again rather than cached from the last render: the reader may have
+  // typed since, and an insertion point from a stale tree is an insertion in
+  // the wrong place -- which is the failure this boundary exists to prevent.
+  const tree = parseDocument(before).ast;
+  const caret = source.selectionStart;
+  const { text, start, end } = insertInto(
+    before,
+    { kind, snippet },
+    caret,
+    blockBoundary(tree, caret),
+    inlineAllowed(tree, caret),
+  );
+  const unchanged = text === before;
+  source.value = text;
+  source.focus();
+  source.setSelectionRange(start, end);
+  // Bring the selection into view. A textarea does not scroll to a programmatic
+  // selection on its own, so a snippet inserted off-screen stays off-screen and
+  // the button looks as though it did nothing.
+  source.blur();
+  source.focus();
+  update();
+  // After update(), which writes the diagnostic summary into the same place.
+  if (unchanged && kind === "frontmatter") {
+    announce("This document already has frontmatter. It is selected above, ready to edit.");
+  } else {
+    announce(`Inserted ${id}, and selected it.`);
+  }
+}
+
+for (const button of document.querySelectorAll<HTMLElement>("[data-insert]")) {
+  button.addEventListener("click", () => insertEntry(button.dataset.insert ?? ""));
+}
 
 /**
  * The tab strip.
