@@ -13,6 +13,9 @@ Give images alt text. The caption describes the figure's role in the document; t
 | Attribute | Values | Default |
 |---|---|---|
 | `width` | A percentage from `1%` to `100%` | full width |
+| `chart` | `line`, `bar`, `column` | unset |
+
+`chart` asks for the figure's table to be drawn as a chart, and is only valid when the content is a table — a chart is drawn from data, and an image carries none. The picture is added in front of the table and never replaces it. See [charts](../charts/index.html).
 
 The argument is the caption and may contain inline markup. Content must be exactly one block: a paragraph holding a single image, a table, or a code block.
 
