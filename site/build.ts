@@ -8,6 +8,7 @@
  */
 import { mkdir, readdir, readFile, rename, rm, writeFile, cp } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve } from "node:path";
+import { build as esbuildBundle } from "esbuild";
 import type { Heading, Nodes, Root } from "mdast";
 import {
   addHeadingIds,
@@ -41,6 +42,14 @@ interface Page {
   themeAttributes?: string;
   /** Extra stylesheet for this page, as a path inside dist/ (spec §6 theme stylesheets). */
   themeCss?: string;
+  /**
+   * Modules to load at the end of the body, as paths inside dist/.
+   *
+   * One page uses this, and the rule it does not break is the one that matters:
+   * nothing goes inside <main>, so a rendered Markset document still carries no
+   * script. See playgroundPage().
+   */
+  scripts?: string[];
 }
 
 interface ConformanceCase {
@@ -57,10 +66,18 @@ interface ConformanceCase {
 const NAV: Array<[string, string]> = [
   ["Home", "index.html"],
   ["Start", "start/index.html"],
+  ["Playground", "playground/index.html"],
   ["Reference", "reference/index.html"],
   ["Spec", "spec/index.html"],
   ["Examples", "examples/index.html"],
 ];
+// Playground is the sixth item, and it costs the bar its no-scroll fit on a
+// phone: measured at 390px, the five links came to exactly the 358px available,
+// and every candidate label overflowed -- "Playground" 422, "Try it" 381, "Try"
+// 369. So the choice was never between scrolling and not scrolling, only
+// between labels, and the clearest one wins. The narrow bar has been a scrolling
+// row with a fade since it was built, which is the rule making this affordable.
+//
 // The bar names sections, and the rail names the pages inside one. So the
 // command line is not here either: it is a page in Get started, linked from the
 // adoption page as one of the two things a reader might go and do, and from the
@@ -324,6 +341,8 @@ async function writeSite(outDir: string): Promise<string[]> {
   for (const example of EXAMPLES) {
     if (example.theme) await cp(join(root, "examples", example.theme), join(out, "css", example.theme));
   }
+  await cp(join(root, "site", "playground", "playground.css"), join(out, "css", "playground.css"));
+  await bundlePlayground(out);
 
   const cases = await loadCases();
   const pages: Page[] = [
@@ -334,6 +353,7 @@ async function writeSite(outDir: string): Promise<string[]> {
     await markdownPage("start/index.html", join(root, "site", "content", "start.md")),
     await markdownPage("cli/index.html", join(root, "site", "content", "cli.md")),
     await markdownPage("github-pages/index.html", join(root, "site", "content", "github-pages.md")),
+    playgroundPage(),
     await specPage(),
     await referenceIndex(),
     await markdownPage(
@@ -794,6 +814,131 @@ ${diags}
 
 // ---------------------------------------------------------------------------
 
+/**
+ * Bundle the playground for the browser.
+ *
+ * The one build step on this site that is not a Markset render, and the reason
+ * it is worth having: every other page shows you what the renderer produced,
+ * and this one hands you the renderer. It resolves through markset-source, so
+ * the bundle is built from the same TypeScript this repository runs -- there is
+ * no dist/ to be stale, and a change to the parser is in the playground the
+ * next time the site builds.
+ *
+ * Only five packages go in, and none of them imports a node builtin. The CLI
+ * and the conformance harness do, which is why neither is here: the library is
+ * the part that runs anywhere, and bundling it is the proof.
+ */
+async function bundlePlayground(out: string): Promise<void> {
+  await esbuildBundle({
+    entryPoints: [join(root, "site", "playground", "app.ts")],
+    outfile: join(out, "js", "playground.js"),
+    bundle: true,
+    format: "esm",
+    target: ["es2022"],
+    minify: true,
+    sourcemap: true,
+    // The sample documents are imported as text, so the starter documents are
+    // the very files markset check runs over rather than copies pasted into an
+    // array -- copies being the things that stop being valid Markset quietly.
+    loader: { ".md": "text" },
+    // The same condition every script in this repo runs under, so the bundle is
+    // built from src/ and never from a dist/ that may not have been rebuilt.
+    conditions: ["markset-source"],
+    logLevel: "silent",
+  });
+}
+
+/**
+ * The playground.
+ *
+ * Built here rather than written as Markset, for the reason the format is proud
+ * of: a Markset document cannot emit raw HTML, and this page is an application
+ * -- a textarea, a tab strip and a frame. The generated pages already work this
+ * way (the conformance browser is the other one), so the mechanism is not new.
+ *
+ * The script is the interesting constraint. Every other page on this site has
+ * exactly one, the shell's scheme-persistence line, and none inside <main>.
+ * This page has two, and still none inside <main>: the module loads at the end
+ * of the body. So the claim the site actually makes -- a rendered Markset
+ * document carries no script -- survives intact, and it survives inside the
+ * preview too, which is sandboxed with scripting off and renders completely
+ * anyway.
+ */
+function playgroundPage(): Page {
+  const views: Array<[string, string, string]> = [
+    [
+      "result",
+      "Result",
+      `<iframe id="pg-result" title="Rendered document" sandbox referrerpolicy="no-referrer"></iframe>`,
+    ],
+    ["html", "HTML", `<pre class="pg-code"><code id="pg-html-code"></code></pre>`],
+    ["markdown", "Markdown", `<pre class="pg-code"><code id="pg-markdown-code"></code></pre>`],
+    ["ast", "AST", `<pre class="pg-code"><code id="pg-ast-code"></code></pre>`],
+    [
+      "problems",
+      `Problems<span class="pg-count" id="pg-problems-count" hidden></span>`,
+      `<div class="pg-problems-body" id="pg-problems-body"></div>`,
+    ],
+  ];
+  const tabs = views
+    .map(
+      ([id, label]) =>
+        `<button type="button" class="pg-tab" role="tab" id="pg-tab-${id}" aria-controls="pg-panel-${id}" aria-selected="false" tabindex="-1">${label}</button>`,
+    )
+    .join("\n");
+  const panels = views
+    .map(
+      ([id, , markup]) =>
+        `<div id="pg-panel-${id}" role="tabpanel" aria-labelledby="pg-tab-${id}" tabindex="0" hidden>${markup}</div>`,
+    )
+    .join("\n");
+
+  const body = `<h1>Playground</h1>
+<p class="lead">Markset, running in your browser: the same parser and the same HTML writer the command line calls, bundled and handed to you. Nothing you type leaves this page.</p>
+<noscript><div class="pg-noscript"><p><strong>The playground needs JavaScript</strong>, because it runs the renderer rather than showing you something it rendered earlier. Every other page on this site works without it.</p>
+<p>The same output, from a terminal:</p>
+<pre class="pg-code"><code>npm i -g @markset-lang/cli
+markset html doc.md -o doc.html</code></pre></div></noscript>
+<div class="pg-controls">
+<label for="pg-sample">Load an example<select id="pg-sample"></select></label>
+<button type="button" id="pg-share">Copy a link to this document</button>
+<span class="pg-status" id="pg-status" role="status"></span>
+</div>
+<div class="pg">
+<section class="pg-pane">
+<div class="pg-pane-head"><span class="pg-label"><label for="pg-source">Markset source</label></span></div>
+<textarea id="pg-source" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="pg-status"></textarea>
+</section>
+<section class="pg-pane">
+<div class="pg-pane-head" role="tablist" aria-label="Output">
+${tabs}
+</div>
+<div class="pg-views">
+${panels}
+</div>
+</section>
+</div>
+<h2>What you are looking at</h2>
+<p>The four tabs beside the result are the four things <code>markset</code> can hand you from a file — <code>html</code>, <code>downgrade</code>, <code>ast</code> and <code>check</code> — and each answers a different question about the document in the editor. They are worth switching between at least once.</p>
+<dl class="pg-notes">
+<dt>Result</dt><dd>The page a reader would get, styled by the default stylesheet and nothing else. It renders inside a frame that is sandboxed with scripting switched off — and renders completely anyway, because a Markset document has no script in it to run.</dd>
+<dt>HTML</dt><dd>What the renderer emitted. Every class is an <code>ms-</code> one and every variant is a <code>data-</code> attribute, which is what a second implementation has to agree with.</dd>
+<dt>Markdown</dt><dd>The same document with every construct taken away — the degradation contract, which is normative and covered by the conformance suite. This is what a reader sees in a pull request, a terminal or a plain-text mail.</dd>
+<dt>AST</dt><dd>The tree, as mdast plus three node types. This is the interface for anything built on top, and the shape the <code>remark-markset</code> plugin hands to a unified pipeline.</dd>
+<dt>Problems</dt><dd>Diagnostics, with the same codes and positions <code>markset check</code> reports. The vocabulary is closed, so an unknown directive name is an error here rather than markup that quietly passes through. Load <em>An invalid document</em> to see it.</dd>
+</dl>
+<p>The share button puts the whole document in the URL fragment. A fragment is never sent to a server, so a link is a complete bug report that reveals the document to nobody but the person you send it to.</p>
+<p>Everything here runs from <a href="../cli/index.html">the same library the command line uses</a>, so anything the playground renders, a build renders the same way.</p>
+`;
+  return {
+    path: "playground/index.html",
+    title: "Playground",
+    body,
+    themeCss: "css/playground.css",
+    scripts: ["js/playground.js"],
+  };
+}
+
 function shell(page: Page): string {
   const depth = page.path.split("/").length - 1;
   const rel = depth === 0 ? "./" : "../".repeat(depth);
@@ -849,7 +994,7 @@ ${rail}<main class="ms-document">
 ${page.body}</main>
 </div>
 <footer class="site-footer">Markset is a strict superset of CommonMark with a closed layout vocabulary. Every page on this site is written in Markset and built by the reference implementation.</footer>
-</body>
+${(page.scripts ?? []).map((src) => `<script type="module" src="${rel}${src}"></script>`).join("\n")}</body>
 </html>
 `;
 }

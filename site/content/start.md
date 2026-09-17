@@ -11,7 +11,7 @@ Getting started
 # Enrich the Markdown you already have
 
 {.lead}
-There is no migration. A Markset file *is* a Markdown file, so the way in is to keep every document you have and reach for a construct only on the pages that need one. Here is the whole idea, in two lines.
+There is no migration. A Markset file *is* a Markdown file, so the way in is to keep every document you have and reach for a construct only on the pages that need one. Here is the whole idea, in two lines — or skip the reading and try it in the [playground](../playground/index.html), which runs the same renderer in your browser.
 
 {.tick}
 ***
