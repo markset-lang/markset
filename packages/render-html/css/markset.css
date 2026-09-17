@@ -230,6 +230,11 @@ hr { border: 0; border-top: 1px solid var(--ms-border); margin-inline: 0; } /* n
 img { max-width: 100%; height: auto; }
 table { border-collapse: collapse; width: 100%; }
 th, td { text-align: left; padding: 0.4em 0.75em; border-bottom: 1px solid var(--ms-border); }
+/* GFM column alignment (`---:` in the delimiter row) arrives as an `align` attribute, a presentational hint that
+ * the rule above beats. Without these two, every table in the default stylesheet is left-aligned whatever the
+ * author wrote. */
+th[align="center"], td[align="center"] { text-align: center; }
+th[align="right"], td[align="right"] { text-align: right; }
 th { font-weight: 600; }
 
 /* ---- reserved classes (§5) -------------------------------------------------- */

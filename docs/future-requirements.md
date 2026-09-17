@@ -136,6 +136,8 @@ The useful finding is the one that was not the question. The document that inven
 
 **Document seven, September 2026: zero.** `examples/architecture.md` invented no author classes at all. Its theme styles `.ms-figure`, `.ms-diagram` and the reserved `.eyebrow`, and the document names nothing else. That is the strongest version of the finding above — the document with the most distinctive look of the seven is the one that asked the vocabulary for the least, because what it needed was a construct's own class and the reserved set. Nothing to promote.
 
+**Document eight, September 2026: five, and one of them is everywhere.** A change set for a project tracker, kept out of the repository because it describes a real one. It invented `.figures`, `.rule`, `.wire` and `.verify`, each particular to it, and `.tick`, which by now seven of the eight examples and six site pages write before a `***`. That clears the first half of the criterion many times over and still fails the second: a thematic break is already the divider, and `.tick` says which kind of divider, which is the theme's decision and not the document's. What the count shows is that documents want a section divider that looks different from a paragraph-level rule, and the default stylesheet could give `.ms-document > hr` more weight without a class at all. Output class, not reserved-set class. Nothing to promote.
+
 Observed: `notification-routing.md` and `strategy-read.md`, September 2026; decided against `incident-review.md` and `showcase.md` in the same month.
 
 ### 8. A responsive breakpoint as a theme token
