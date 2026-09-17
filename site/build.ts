@@ -317,7 +317,10 @@ async function writeSite(outDir: string): Promise<string[]> {
 
   const cases = await loadCases();
   const pages: Page[] = [
-    await markdownPage("index.html", join(root, "site", "content", "index.md")),
+    await markdownPage("index.html", join(root, "site", "content", "index.md"), undefined, false, {
+      cases: String(Object.values(cases).reduce((n, list) => n + list.length, 0)),
+      constructs: String(CONSTRUCTS.length),
+    }),
     await markdownPage("start/index.html", join(root, "site", "content", "start.md")),
     await markdownPage("cli/index.html", join(root, "site", "content", "cli.md")),
     await markdownPage("github-pages/index.html", join(root, "site", "content", "github-pages.md")),
@@ -378,8 +381,22 @@ function withSourceToggles(tree: Root, source: string): Root {
   return { ...tree, children };
 }
 
-async function markdownPage(path: string, file: string, themeCss?: string | false, toggles = false): Promise<Page> {
-  const source = await readFile(file, "utf8");
+async function markdownPage(
+  path: string,
+  file: string,
+  themeCss?: string | false,
+  toggles = false,
+  tokens?: Record<string, string>,
+): Promise<Page> {
+  // A number a page states about the repository is a number that goes stale.
+  // The home page claimed 361 conformance cases while the suite held 376, on
+  // the page whose whole argument is that the cases exist and are counted.
+  // Anything of that kind is written as {{name}} and substituted here from the
+  // thing it describes; a test fails on any token that survives into output.
+  let source = await readFile(file, "utf8");
+  for (const [name, value] of Object.entries(tokens ?? {})) {
+    source = source.replaceAll(`{{${name}}}`, value);
+  }
   const parsed = parseDocument(source);
   const { diagnostics } = parsed;
   failOnErrors(diagnostics, file);

@@ -18,10 +18,42 @@ Markset adds a small, **closed** set of layout constructs to CommonMark: cards, 
 :::metrics{.stats}
 | Measure | Count |
 |---|---|
-| Layout constructs | 8 |
-| Test cases | 361 |
+| Layout constructs | {{constructs}} |
+| Test cases | {{cases}} |
 | JavaScript in the output | None |
 :::
+
+{.eyebrow}
+How it works
+
+## The same source, three ways
+
+::::columns{ratio="1:1"}
+```markdown
+:::metrics
+| Metric  | Value | Δ     |
+|---------|-------|-------|
+| Revenue | $4.2M | +12%  |
+| Churn   | 2.1%  | -0.4% |
+:::
+```
+
+::col
+
+:::metrics
+| Metric  | Value | Δ     |
+|---------|-------|-------|
+| Revenue | $4.2M | +12%  |
+| Churn   | 2.1%  | -0.4% |
+:::
+::::
+
+On the left is what you write: an ordinary Markdown table, wrapped in a fence that names what it is. On the right is the same source rendered by `markset html`, the command line tool in this repository, which turns it into metric tiles and reads the direction of each delta from its sign.
+
+Run that source through `markset downgrade` instead and you get the table back, unchanged. Paste it into anything that has never heard of Markset and you get the table as well. The construct adds meaning without taking the content hostage.
+
+{.small .muted}
+Both commands, and the two others, are described on the [CLI page](cli/index.html). The same trick covers diagrams: an ASCII or mermaid fence is an ordinary code block that a renderer may draw, so a picture needs no construct and no raw HTML — see [diagrams](reference/diagrams/index.html).
 
 {.small .muted}
 Eight constructs is the whole vocabulary, and it is closed. Every one of them is pinned by cases in a shared test suite, so a second implementation can prove it agrees with this one rather than guessing; you can read every case, including the ones that are invalid on purpose, in the [conformance browser](conformance/index.html). Nothing rendered from a Markset document contains a script, which is why tabs work by radio input and a folding callout is a `<details>` element.
@@ -55,38 +87,6 @@ So rich documents reach for raw HTML, and that breaks portability, validation, a
 
 {.tick}
 ***
-
-{.eyebrow}
-How it works
-
-## The same source, three ways
-
-::::columns{ratio="1:1"}
-```markdown
-:::metrics
-| Metric  | Value | Δ     |
-|---------|-------|-------|
-| Revenue | $4.2M | +12%  |
-| Churn   | 2.1%  | -0.4% |
-:::
-```
-
-::col
-
-:::metrics
-| Metric  | Value | Δ     |
-|---------|-------|-------|
-| Revenue | $4.2M | +12%  |
-| Churn   | 2.1%  | -0.4% |
-:::
-::::
-
-On the left is what you write: an ordinary Markdown table, wrapped in a fence that names what it is. On the right is the same source rendered by `markset html`, the command line tool in this repository, which turns it into metric tiles and reads the direction of each delta from its sign.
-
-Run that source through `markset downgrade` instead and you get the table back, unchanged. Paste it into anything that has never heard of Markset and you get the table as well. The construct adds meaning without taking the content hostage.
-
-{.small .muted}
-Both commands, and the two others, are described on the [CLI page](cli/index.html). The same trick covers diagrams: an ASCII or mermaid fence is an ordinary code block that a renderer may draw, so a picture needs no construct and no raw HTML — see [diagrams](reference/diagrams/index.html).
 
 {.tick}
 ***
