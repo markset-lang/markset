@@ -176,6 +176,17 @@ h1, h2, h3, h4, h5, h6 {
 .ms-document > * + h3, .ms-document > * + h4, .ms-document > * + h5, .ms-document > * + h6 { margin-top: 1.5em; }
 .ms-document > :is(h1, h2, h3, h4, h5, h6) + * { margin-top: calc(var(--ms-space) * 0.6); }
 .ms-document > :is(h1, h2, h3, h4, h5, h6) + :is(h1, h2, h3, h4, h5, h6) { margin-top: 0.5em; }
+/* A construct is not prose, and closing it up to the heading the way a
+ * paragraph closes up reads as crowding: the gap above `steps` was the same
+ * ten pixels a sentence gets, under a row of numbered markers that carry more
+ * weight than any sentence does. Constructs take the same 1.5 space they
+ * already take from a paragraph, so the gap above one is the same wherever it
+ * sits. This is deliberately not the rule above: that one is about two boxes in
+ * sequence and excludes `steps` and `columns` for drawing no box, which is true
+ * of their markup and beside the point here. */
+.ms-document > :is(h1, h2, h3, h4, h5, h6) + :is(.ms-callout, .ms-card, .ms-metrics, .ms-tabs, .ms-grid, .ms-steps, .ms-columns, .ms-figure) {
+  margin-top: calc(var(--ms-space) * 1.5);
+}
 /* The same rhythm inside constructs, which hold their own block sequences. */
 .ms-card > * + :is(h1, h2, h3, h4, h5, h6):not(.ms-card-title), .ms-column > * + :is(h1, h2, h3, h4, h5, h6),
 .ms-tabpanel > * + :is(h1, h2, h3, h4, h5, h6), .ms-callout-body > * + :is(h1, h2, h3, h4, h5, h6) { margin-top: 1.5em; }
