@@ -9,6 +9,7 @@
 import { mkdir, readdir, readFile, rename, rm, writeFile, cp } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { build as esbuildBundle } from "esbuild";
+import type { VocabularyEntry, VocabularyGroup } from "./playground/vocabulary.ts";
 import type { Heading, Nodes, Root } from "mdast";
 import {
   addHeadingIds,
@@ -353,7 +354,7 @@ async function writeSite(outDir: string): Promise<string[]> {
     await markdownPage("start/index.html", join(root, "site", "content", "start.md")),
     await markdownPage("cli/index.html", join(root, "site", "content", "cli.md")),
     await markdownPage("github-pages/index.html", join(root, "site", "content", "github-pages.md")),
-    playgroundPage(),
+    await playgroundPage(),
     await specPage(),
     await referenceIndex(),
     await markdownPage(
@@ -815,6 +816,110 @@ ${diags}
 // ---------------------------------------------------------------------------
 
 /**
+ * What the playground offers to insert, assembled from what already exists.
+ *
+ * Nothing here is a list of constructs that someone has to remember to update.
+ * The names come from the parser's closed vocabulary, the descriptions from the
+ * same BLURB the reference index prints, and every snippet is a case out of
+ * tests/ -- so the palette cannot drift from the grammar, from the reference, or
+ * from what the conformance suite proves is valid. A test walks the vocabulary
+ * in both directions and fails if a construct has no entry or an entry has no
+ * construct.
+ */
+export async function vocabularyGroups(): Promise<VocabularyGroup[]> {
+  const cases = await loadCases();
+
+  /**
+   * The case to show for a section.
+   *
+   * `canonical` by default, because that is the suite's own word for the
+   * minimal correct form. The exception is a case that points at a file:
+   * figure's canonical one is an image, and inserting it would render a broken
+   * image in the preview -- so a self-contained case from the same section is
+   * taken instead. Derived rather than hardcoded, so a future section with the
+   * same shape is handled without anyone noticing it needed to be.
+   */
+  const snippet = (section: string): string => {
+    const list = (cases[section] ?? []).filter((c) => c.valid);
+    const selfContained = (markset: string): boolean => !/\]\((?!#)[^)]+\)/u.test(markset);
+    const canonical = list.find((c) => c.name?.startsWith("canonical"));
+    const chosen =
+      canonical && selfContained(canonical.markset) ? canonical : list.find((c) => selfContained(c.markset));
+    if (!chosen) throw new Error(`playground: no self-contained case in tests/${section}.json`);
+    return chosen.markset.replace(/\n+$/u, "");
+  };
+
+  const construct = (name: (typeof CONSTRUCTS)[number]): VocabularyEntry => ({
+    id: name,
+    label: name,
+    kind: "block",
+    blurb: BLURB[name],
+    snippet: snippet(name),
+    href: `../reference/${name}/index.html`,
+  });
+
+  return [
+    {
+      title: "Constructs",
+      note: "The whole vocabulary, and it is closed: these eight and no others. A directive with any other name is an error rather than markup that quietly passes through.",
+      entries: CONSTRUCTS.map(construct),
+    },
+    {
+      title: "Pictures",
+      note: "Neither is a construct. Both are a figure — one holding a code fence, one holding a table — which is why a picture needs no ninth name.",
+      entries: [
+        {
+          id: "diagram",
+          label: "diagram",
+          kind: "block",
+          blurb: "An ASCII fence inside a captioned figure, drawn as a picture.",
+          snippet: snippet("diagram"),
+          href: "../reference/diagrams/index.html",
+        },
+        {
+          id: "chart",
+          label: "chart",
+          kind: "block",
+          blurb: "A figure's table drawn as a line, bar or column chart.",
+          snippet: snippet("chart"),
+          href: "../reference/charts/index.html",
+        },
+      ],
+    },
+    {
+      title: "Grammar",
+      note: "The three pieces that are not blocks. Each is borrowed unchanged from Pandoc, djot or MyST — Markset invented no spelling of its own.",
+      entries: [
+        {
+          id: "attribute-line",
+          label: "{.lead}",
+          kind: "block",
+          blurb: "A line of attributes above a block, to style the block below it.",
+          snippet: snippet("attribute-line"),
+          href: "../reference/index.html",
+        },
+        {
+          id: "span",
+          label: "[text]{.class}",
+          kind: "inline",
+          blurb: "An inline run carrying attributes, for a badge or a keyword.",
+          snippet: snippet("bracketed-span"),
+          href: "../reference/index.html",
+        },
+        {
+          id: "frontmatter",
+          label: "frontmatter",
+          kind: "frontmatter",
+          blurb: "The version key and the seven theme tokens, at the top of the document.",
+          snippet: snippet("frontmatter"),
+          href: "../reference/frontmatter/index.html",
+        },
+      ],
+    },
+  ];
+}
+
+/**
  * Bundle the playground for the browser.
  *
  * The one build step on this site that is not a Markset render, and the reason
@@ -864,7 +969,41 @@ async function bundlePlayground(out: string): Promise<void> {
  * preview too, which is sandboxed with scripting off and renders completely
  * anyway.
  */
-function playgroundPage(): Page {
+async function playgroundPage(): Promise<Page> {
+  const groups = await vocabularyGroups();
+  // Rendered here rather than built by the script, so the snippets exist once:
+  // the buttons read the very text the reader is looking at, which is also the
+  // text a test can read without starting a browser.
+  const catalogue = groups
+    .map(
+      (group) => `<section class="pg-vocab-group">
+<h3>${esc(group.title)}</h3>
+<p class="pg-vocab-note">${esc(group.note)}</p>
+${group.entries
+  .map(
+    (entry) => `<article class="pg-vocab-entry" id="pg-entry-${esc(entry.id)}" data-kind="${esc(entry.kind)}">
+<h4><code>${esc(entry.label)}</code></h4>
+<p>${esc(entry.blurb)}</p>
+<pre class="pg-code"><code>${esc(entry.snippet)}</code></pre>
+<p class="pg-vocab-actions"><button type="button" class="pg-insert-button" data-insert="${esc(entry.id)}">Insert</button> <a href="${esc(entry.href)}">Reference</a></p>
+</article>`,
+  )
+  .join("\n")}
+</section>`,
+    )
+    .join("\n");
+  const bar = groups
+    .map(
+      (group) => `<span class="pg-insert-group"><span class="pg-insert-label">${esc(group.title)}</span>
+${group.entries
+  .map(
+    (entry) =>
+      `<button type="button" class="pg-chip" data-insert="${esc(entry.id)}" title="${esc(entry.blurb)}">${esc(entry.label)}</button>`,
+  )
+  .join("\n")}</span>`,
+    )
+    .join("\n");
+
   const views: Array<[string, string, string]> = [
     [
       "result",
@@ -879,6 +1018,7 @@ function playgroundPage(): Page {
       `Problems<span class="pg-count" id="pg-problems-count" hidden></span>`,
       `<div class="pg-problems-body" id="pg-problems-body"></div>`,
     ],
+    ["vocabulary", "Vocabulary", `<div class="pg-vocab" id="pg-vocab">${catalogue}</div>`],
   ];
   const tabs = views
     .map(
@@ -907,6 +1047,7 @@ markset html doc.md -o doc.html</code></pre></div></noscript>
 <div class="pg">
 <section class="pg-pane">
 <div class="pg-pane-head"><span class="pg-label"><label for="pg-source">Markset source</label></span></div>
+<div class="pg-insert" id="pg-insert">${bar}</div>
 <textarea id="pg-source" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="pg-status"></textarea>
 </section>
 <section class="pg-pane">
@@ -926,7 +1067,11 @@ ${panels}
 <dt>Markdown</dt><dd>The same document with every construct taken away — the degradation contract, which is normative and covered by the conformance suite. This is what a reader sees in a pull request, a terminal or a plain-text mail.</dd>
 <dt>AST</dt><dd>The tree, as mdast plus three node types. This is the interface for anything built on top, and the shape the <code>remark-markset</code> plugin hands to a unified pipeline.</dd>
 <dt>Problems</dt><dd>Diagnostics, with the same codes and positions <code>markset check</code> reports. The vocabulary is closed, so an unknown directive name is an error here rather than markup that quietly passes through. Load <em>An invalid document</em> to see it.</dd>
+<dt>Vocabulary</dt><dd>Everything you are allowed to write, with the source of each and a link to its reference page. The same entries are the chips above the editor, and either one inserts at the cursor.</dd>
 </dl>
+<h2>Where the palette comes from</h2>
+<p>Nobody wrote that list. The names are the parser's own closed vocabulary, so the palette cannot offer a construct the parser rejects or leave one out; the descriptions are the ones the <a href="../reference/index.html">reference index</a> prints; and every snippet is a case from the conformance suite — usually the one the suite calls <em>canonical</em>, which is its word for the minimal correct form. So each is a document that is already proven valid, by the same tests that prove the renderer.</p>
+<p>Where a snippet lands is read off the tree rather than counted in lines. A construct always goes in at the top level, never between another construct's fences, and an inline span goes in only where the document actually has inline content — not into your frontmatter and not into a code fence. A test inserts every entry at every offset of a document and requires the result to still parse.</p>
 <p>The share button puts the whole document in the URL fragment. A fragment is never sent to a server, so a link is a complete bug report that reveals the document to nobody but the person you send it to.</p>
 <p>Everything here runs from <a href="../cli/index.html">the same library the command line uses</a>, so anything the playground renders, a build renders the same way.</p>
 `;

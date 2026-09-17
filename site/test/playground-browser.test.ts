@@ -238,3 +238,82 @@ test("the preview follows the reader's color scheme", { skip: unavailable }, asy
     await browser.close();
   }
 });
+
+test("every palette button inserts something the document accepts", { skip: unavailable }, async () => {
+  const browser = await puppeteer!.launch({ headless: true });
+  try {
+    const { page, problems } = await open(browser);
+    // Start from nothing, then click every chip in the bar in turn. After each
+    // one the document has to still be free of errors -- which is the whole
+    // promise of a palette built from the closed vocabulary and the conformance
+    // cases, checked end to end rather than inferred from the two halves.
+    await page.evaluate(() => {
+      const editor = document.getElementById("pg-source") as HTMLTextAreaElement;
+      editor.value = "";
+      editor.dispatchEvent(new Event("input"));
+    });
+    const ids: string[] = await page.evaluate(() =>
+      [...document.querySelectorAll<HTMLElement>(".pg-insert [data-insert]")].map((b) => b.dataset.insert ?? ""),
+    );
+    assert.ok(ids.length >= 13, `the bar offers only ${ids.length} entries`);
+    for (const id of ids) {
+      await page.click(`.pg-insert [data-insert="${id}"]`);
+      await page.waitForFunction(
+        (name: string) => (document.getElementById("pg-status") as HTMLElement).textContent?.includes(name),
+        {},
+        id,
+      );
+      const count = await page.evaluate(
+        () => (document.getElementById("pg-problems-count") as HTMLElement).textContent,
+      );
+      assert.equal(count, "", `inserting ${id} left a problem behind`);
+    }
+    const seen = await page.evaluate(() => ({
+      source: (document.getElementById("pg-source") as HTMLTextAreaElement).value,
+      preview: document.getElementById("pg-result")?.getAttribute("srcdoc") ?? "",
+    }));
+    assert.deepEqual(problems, []);
+    // Frontmatter was clicked last and still belongs at the top (§6).
+    assert.match(seen.source, /^---\nmarkset: 0\n/u, "frontmatter goes to the top whenever it is added");
+    for (const cls of [
+      "ms-callout",
+      "ms-card",
+      "ms-grid",
+      "ms-columns",
+      "ms-tabs",
+      "ms-steps",
+      "ms-metrics",
+      "ms-figure",
+    ]) {
+      assert.match(seen.preview, new RegExp(cls), `the assembled document is missing ${cls}`);
+    }
+    await page.close();
+  } finally {
+    await browser.close();
+  }
+});
+
+test("the bar and the vocabulary tab offer the same entries", { skip: unavailable }, async () => {
+  const browser = await puppeteer!.launch({ headless: true });
+  try {
+    const { page, problems } = await open(browser);
+    const seen = await page.evaluate(() => {
+      const ids = (selector: string) =>
+        [...document.querySelectorAll<HTMLElement>(selector)].map((b) => b.dataset.insert ?? "");
+      return {
+        bar: ids(".pg-insert [data-insert]"),
+        tab: ids("#pg-vocab [data-insert]"),
+        // One copy of each snippet, read out of the page by both.
+        snippets: [...document.querySelectorAll("#pg-vocab .pg-vocab-entry pre code")].length,
+        references: [...document.querySelectorAll("#pg-vocab .pg-vocab-actions a")].length,
+      };
+    });
+    assert.deepEqual(problems, []);
+    assert.deepEqual(seen.bar, seen.tab, "a chip with no entry has no snippet to insert");
+    assert.equal(seen.snippets, seen.bar.length, "every entry shows its source");
+    assert.equal(seen.references, seen.bar.length, "every entry links to its reference page");
+    await page.close();
+  } finally {
+    await browser.close();
+  }
+});
