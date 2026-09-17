@@ -152,6 +152,23 @@ test("an engine command that fails leaves the code block and says so", async () 
   assert.match(err, /diagram ascii:.*exited 7/);
 });
 
+test("a command that fails without reading the fence still reports its status", async () => {
+  // The same case as above, with a fence far larger than a pipe buffer, so the
+  // write to a command that has already exited is guaranteed to fail rather
+  // than merely likely to. Before the status was preferred, this reported
+  // "spawnSync /bin/sh EPIPE" -- true, useless, and dependent on whether the
+  // fence happened to fit. It passed on a developer machine and failed in CI.
+  const dir = await mkdtemp(join(tmpdir(), "markset-diagram-big-"));
+  const file = join(dir, "doc.md");
+  const big = Array.from({ length: 20_000 }, () => "+--------+").join("\n");
+  await writeFile(file, `---\nmarkset: 0\n---\n\n:::figure[Large.]\n\`\`\`ascii\n${big}\n\`\`\`\n:::\n`);
+  const { code, out, err } = await run(["html", "--fragment", "--diagram", "ascii=exit 7", file]);
+  assert.equal(code, 0, "a failed diagram is not a failed render");
+  assert.match(out, /<pre><code class="language-ascii">/, "and the content stays");
+  assert.match(err, /exited 7/u, "the status, not the broken pipe it caused");
+  assert.doesNotMatch(err, /EPIPE/u);
+});
+
 test("a document cannot name its own engine", async () => {
   // The property that keeps invariant 4 intact: the mapping from info string to
   // command comes from the flag and nowhere else, so nothing in a Markset file

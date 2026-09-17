@@ -207,11 +207,19 @@ export function diagramOptions(specs: string[] | undefined, io: { stderr: (s: st
 function commandEngine(command: string): DiagramEngine {
   return (source) => {
     const result = spawnSync(command, { shell: true, input: source, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
-    if (result.error) throw result.error;
-    if (result.status !== 0) {
-      const detail = result.stderr.trim().split("\n")[0] ?? "";
+    // The exit status comes first, before any spawn error. A command that
+    // rejects a fence without reading it -- which is the normal shape of
+    // failing fast -- exits while we are still writing to its stdin, so the
+    // write fails with EPIPE and spawnSync reports that in preference to the
+    // status it also has. Which one surfaces depends on whether the fence fit
+    // the pipe buffer first, so the same command can report two different
+    // things on two machines, and "EPIPE" is the one that tells the operator
+    // nothing about their engine.
+    if (typeof result.status === "number" && result.status !== 0) {
+      const detail = result.stderr?.trim().split("\n")[0] ?? "";
       throw new Error(`"${command}" exited ${result.status}${detail ? `: ${detail}` : ""}`);
     }
+    if (result.error) throw result.error;
     return result.stdout;
   };
 }
