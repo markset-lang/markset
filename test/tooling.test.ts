@@ -106,7 +106,15 @@ test("the heavy dev dependency stays out of the library", async () => {
 });
 
 /** The packages that go to npm. The conformance harness is not one of them. */
-const PUBLISHED = ["parser", "diagram-ascii", "render-downgrade", "render-html", "cli", "conformance-suite"];
+const PUBLISHED = [
+  "parser",
+  "diagram-ascii",
+  "render-downgrade",
+  "render-html",
+  "cli",
+  "remark-markset",
+  "conformance-suite",
+];
 
 test("every published package is publishable, and says the same version", async () => {
   const rootPkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as { version: string };

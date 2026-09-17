@@ -10,8 +10,8 @@
     "node": ">=22.18"
   },
   "scripts": {
-    "build": "rm -rf packages/*/dist && node --conditions=markset-source packages/conformance-suite/stage.ts && tsc -p packages/parser/tsconfig.build.json && tsc -p packages/diagram-ascii/tsconfig.build.json && tsc -p packages/render-downgrade/tsconfig.build.json && tsc -p packages/render-html/tsconfig.build.json && tsc -p packages/cli/tsconfig.build.json && tsc -p packages/conformance-suite/tsconfig.build.json",
-    "release": "npm run build && npm publish --workspace @markset-lang/parser --workspace @markset-lang/diagram-ascii --workspace @markset-lang/render-downgrade --workspace @markset-lang/render-html --workspace @markset-lang/cli --workspace @markset-lang/conformance-suite",
+    "build": "rm -rf packages/*/dist && node --conditions=markset-source packages/conformance-suite/stage.ts && tsc -p packages/parser/tsconfig.build.json && tsc -p packages/diagram-ascii/tsconfig.build.json && tsc -p packages/render-downgrade/tsconfig.build.json && tsc -p packages/render-html/tsconfig.build.json && tsc -p packages/cli/tsconfig.build.json && tsc -p packages/remark-markset/tsconfig.build.json && tsc -p packages/conformance-suite/tsconfig.build.json",
+    "release": "npm run build && npm publish --workspace @markset-lang/parser --workspace @markset-lang/diagram-ascii --workspace @markset-lang/render-downgrade --workspace @markset-lang/render-html --workspace @markset-lang/cli --workspace @markset-lang/remark-markset --workspace @markset-lang/conformance-suite",
     "markset": "node --conditions=markset-source packages/cli/src/markset.ts",
     "test": "node --conditions=markset-source --test packages/*/test/*.test.ts site/test/*.test.ts test/*.test.ts",
     "conformance": "node --conditions=markset-source packages/conformance/src/cli.ts",
@@ -25,7 +25,11 @@
     "@biomejs/biome": "2.5.13",
     "@mermaid-js/mermaid-cli": "^11.17.0",
     "@types/node": "^26.5.1",
-    "typescript": "^7.0.2"
+    "rehype-stringify": "^10.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "typescript": "^7.0.2",
+    "unified": "^11.0.5"
   },
   "version": "0.2.0",
   "repository": {

@@ -1,0 +1,44 @@
+{
+  "name": "@markset-lang/remark-markset",
+  "version": "0.2.0",
+  "description": "remark plugin: parse Markset constructs in an existing unified pipeline.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markset-lang/markset.git",
+    "directory": "packages/remark-markset"
+  },
+  "homepage": "https://markset-lang.github.io/markset/",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "remark",
+    "remark-plugin",
+    "unified",
+    "mdast",
+    "markset"
+  ],
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "markset-source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@markset-lang/parser": "^0.2.0"
+  },
+  "peerDependencies": {
+    "remark-parse": ">=11",
+    "unified": ">=11"
+  }
+}
