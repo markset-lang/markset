@@ -28,6 +28,24 @@ const puppeteer = await import("puppeteer").then(
 );
 const unavailable = puppeteer ? false : "puppeteer is not installed; it arrives with @mermaid-js/mermaid-cli";
 
+/**
+ * Launch flags, read from the file site/mermaid.ts already passes to mmdc.
+ *
+ * A word of warning, because the two senses of "sandbox" sit a few lines apart
+ * and mean opposite things here. This is Chrome's *process* sandbox, which
+ * needs unprivileged user namespaces that the GitHub runner image restricts, so
+ * the browser refuses to start at all: "No usable sandbox". Turning it off
+ * costs nothing on a runner that is already executing this repository's own
+ * build, which is the same argument mermaid.ts makes for the same file.
+ *
+ * It is not the iframe `sandbox` attribute these tests assert on. That one is
+ * enforced by the renderer inside the page and is unaffected by this flag --
+ * which is worth knowing before anyone reads the two together and concludes the
+ * test has been neutered.
+ */
+const launchArgs = JSON.parse(await readFile(join(import.meta.dirname, "..", "puppeteer.json"), "utf8"))
+  .args as string[];
+
 const TYPES: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -88,7 +106,7 @@ async function open(browser: Awaited<ReturnType<NonNullable<typeof puppeteer>["l
 }
 
 test("the playground renders a document in a browser", { skip: unavailable }, async () => {
-  const browser = await puppeteer!.launch({ headless: true });
+  const browser = await puppeteer!.launch({ headless: true, args: launchArgs });
   try {
     const { page, problems } = await open(browser);
     const seen = await page.evaluate(() => {
@@ -131,7 +149,7 @@ test("the playground renders a document in a browser", { skip: unavailable }, as
 });
 
 test("an invalid document reports problems and still renders", { skip: unavailable }, async () => {
-  const browser = await puppeteer!.launch({ headless: true });
+  const browser = await puppeteer!.launch({ headless: true, args: launchArgs });
   try {
     const { page, problems } = await open(browser);
     await page.select("#pg-sample", "invalid");
@@ -159,7 +177,7 @@ test("an invalid document reports problems and still renders", { skip: unavailab
 });
 
 test("the output tabs switch, by pointer and by arrow key", { skip: unavailable }, async () => {
-  const browser = await puppeteer!.launch({ headless: true });
+  const browser = await puppeteer!.launch({ headless: true, args: launchArgs });
   try {
     const { page, problems } = await open(browser);
     const selected = async () =>
@@ -194,7 +212,7 @@ test("the output tabs switch, by pointer and by arrow key", { skip: unavailable 
 });
 
 test("a shared link opens the document it was made from", { skip: unavailable }, async () => {
-  const browser = await puppeteer!.launch({ headless: true });
+  const browser = await puppeteer!.launch({ headless: true, args: launchArgs });
   try {
     const { encodeDocument } = await import("../playground/diagnostics.ts");
     const shared = "---\nmarkset: 0\n---\n\n# Sent to me\n\n> [!TIP]\n> Non-ASCII survives: ┌─┐ ∑ 🎛\n";
@@ -214,7 +232,7 @@ test("a shared link opens the document it was made from", { skip: unavailable },
 });
 
 test("the preview follows the reader's color scheme", { skip: unavailable }, async () => {
-  const browser = await puppeteer!.launch({ headless: true });
+  const browser = await puppeteer!.launch({ headless: true, args: launchArgs });
   try {
     const { page, problems } = await open(browser);
     // The frame is a separate document, so the control in the bar cannot reach
@@ -240,7 +258,7 @@ test("the preview follows the reader's color scheme", { skip: unavailable }, asy
 });
 
 test("every palette button inserts something the document accepts", { skip: unavailable }, async () => {
-  const browser = await puppeteer!.launch({ headless: true });
+  const browser = await puppeteer!.launch({ headless: true, args: launchArgs });
   try {
     const { page, problems } = await open(browser);
     // Start from nothing, then click every chip in the bar in turn. After each
@@ -294,7 +312,7 @@ test("every palette button inserts something the document accepts", { skip: unav
 });
 
 test("the bar and the vocabulary tab offer the same entries", { skip: unavailable }, async () => {
-  const browser = await puppeteer!.launch({ headless: true });
+  const browser = await puppeteer!.launch({ headless: true, args: launchArgs });
   try {
     const { page, problems } = await open(browser);
     const seen = await page.evaluate(() => {
