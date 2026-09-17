@@ -198,3 +198,20 @@ test("a table column aligned in the source stays aligned in the page", async () 
   assert.match(css, /td\[align="right"\] \{ text-align: right; \}/);
   assert.match(css, /td\[align="center"\] \{ text-align: center; \}/);
 });
+
+test("a wide table's caption stays readable when the rows scroll on a phone", async () => {
+  // The caption is the table's first child (§4.8), so it lives inside the table
+  // wrapper box and takes the table's width. Once the rows are wider than the
+  // lane and the table becomes its own scroll box, that width is the scroll
+  // width: the caption was clipped at the lane edge and slid away with the rows.
+  // Measured at 390px: a 362px lane, a 440px caption. The table is the
+  // container, not the figure: a themed figure border leaves the table two
+  // pixels narrower than the figure, and a caption sized to the figure then
+  // gives every table a two-pixel scrollbar. Sticky keeps it in view.
+  const css = await readFile(defaultStylesheetPath, "utf8");
+  const narrow = /@media \(max-width: 48rem\) \{([\s\S]*?)\n\}/.exec(css);
+  assert.ok(narrow, "no narrow-viewport block");
+  assert.match(narrow[1], /\.ms-document table \{ container-type: inline-size; \}/);
+  assert.match(narrow[1], /\.ms-figure caption \{[^}]*width: 100cqw/);
+  assert.match(narrow[1], /\.ms-figure caption \{[^}]*position: sticky; left: 0/);
+});
