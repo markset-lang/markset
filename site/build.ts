@@ -635,6 +635,7 @@ function conformanceIndex(cases: Record<string, ConformanceCase[]>): Page {
   const body = `<h1 id="conformance-suite">Conformance suite</h1>
 <p>${total} cases in ${Object.keys(cases).length} sections, one JSON file per spec section under <a href="${REPO}/tree/main/tests"><code>tests/</code></a>. Each case pins the parse result, the diagnostics, and the two fallbacks. The pages below render every case live with the reference implementation: what you see in the "Rendered" column is produced at build time from the case's source, not copied from the file.</p>
 <p>Structure (validity, diagnostic codes, AST) is normative for every implementation. The HTML and downgrade strings are reference output; other implementations must be equivalent, not byte-identical. See <a href="../spec/index.html#7-conformance-suite">spec §7</a>.</p>
+<p><strong>Writing an implementation?</strong> The cases are published as <code>@markset-lang/conformance-suite</code>: these ${total} cases and the normative schema, carrying no parser, no renderer and no dependencies at all. The JSON is the artifact, so an implementation in any language reads the files directly — checking a second implementation should not require obtaining the first.</p>
 <table class="site-table"><thead><tr><th>Section</th><th>Cases</th><th>Valid</th><th>Invalid</th></tr></thead><tbody>
 ${rows}
 </tbody></table>

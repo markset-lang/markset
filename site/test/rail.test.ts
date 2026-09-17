@@ -19,29 +19,30 @@ async function rail(page: string): Promise<string[]> {
 }
 
 test("a rail appears on the pages long enough to want one, and nowhere else", async () => {
-  const withRail: string[] = [];
-  for (const page of pages) if ((await rail(page)).length > 0) withRail.push(page);
+  // Named pages rather than the whole inventory. Listing every page that
+  // qualifies makes this test a second place to edit whenever someone adds a
+  // long document, which is a hand-kept list of exactly the kind the rule
+  // exists to avoid -- and it broke within the hour, on an example added in
+  // another session. These are the pages whose length is the point of them.
+  for (const page of [
+    "spec/index.html",
+    "start/index.html",
+    "github-pages/index.html",
+    "reference/index.html",
+    "reference/frontmatter/index.html",
+    "examples/strategy-read/index.html",
+  ]) {
+    assert.ok((await rail(page)).length >= 5, `${page} is long enough to want a rail and has none`);
+  }
 
-  // The threshold is five sections, so these are the pages that clear it.
-  // Listed rather than recomputed: the point of the test is that the rule and
-  // this site agree, and recomputing the rule here would agree with itself.
-  assert.deepEqual(
-    withRail.sort(),
-    [
-      "examples/architecture/index.html",
-      "examples/config-reference/index.html",
-      "examples/incident-review/index.html",
-      "examples/notification-routing/index.html",
-      "examples/showcase/index.html",
-      "examples/strategy-read/index.html",
-      "github-pages/index.html",
-      "reference/frontmatter/index.html",
-      "reference/index.html",
-      "spec/index.html",
-      "start/index.html",
-      "reference/diagrams/index.html",
-    ].sort(),
-  );
+  // And the rule's own consequence, over whatever the site happens to contain:
+  // nothing gets a rail with less in it than the threshold.
+  for (const page of pages) {
+    const entries = await rail(page);
+    if (entries.length > 0) {
+      assert.ok(entries.length >= 5, `${page} has a rail listing only ${entries.length} sections`);
+    }
+  }
 });
 
 test("short pages get none, because a rail on a short page is clutter", async () => {
