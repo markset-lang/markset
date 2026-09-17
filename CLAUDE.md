@@ -87,9 +87,10 @@ docs/       background analysis, prior art, design rationale
 - `build(outDir)` takes an output directory; the tests build into a temporary one so the suite never races `dist/` against a running `site:watch` or a browser.
 - The repository and site URLs live in `package.json` (`repository`, `homepage`) and are read by `site/build.ts`; a test asserts no page or README links anywhere else. Change them there, not in prose.
 - The site draws `ascii` fences by taking the renderer's default rather than configuring anything, so what a reader
-  sees is what any consumer gets. No other language is registered: a `mermaid` fence on this site renders as a code
-  block, which is §10 obligation 1 working. The conformance harness passes `diagrams: false`, because the `html`
-  aspect has to be a form a second implementation could also produce.
+  sees is what any consumer gets. It also draws `mermaid`, through `site/mermaid.ts` rather than through the
+  renderer's engine option, because each diagram is rendered twice for light and dark and spliced into one SVG.
+  Everything else stays a code block, which is §10 obligation 1 working. The conformance harness passes
+  `diagrams: false`, because the `html` aspect has to be a form a second implementation could also produce.
 - `npm run site` builds the documentation site into `dist/` (ignored by git). Each build stages into its own `dist.staging-<tag>/` and renames into place, so a reader never sees a half-built tree, a failed build leaves the previous one intact, and two builds at once (`npm run site` while `site:watch` rebuilds) cannot delete each other's work. `npm run site:watch` serves it at http://localhost:3000 (`-- --port N` to change), rebuilds on change, and reloads open browsers; a stylesheet edit swaps the `<link>` instead of reloading, so the scroll position survives. The reload client is injected as pages are served, never written to `dist/`. The reference and conformance pages are generated from `tests/*.json`, so they never drift from the suite. `.github/workflows/pages.yml` deploys `dist/` to GitHub Pages on push to `main`; Pages must be enabled once in the repository settings with "GitHub Actions" as the source.
 - Adding a section to `tests/` without a driver in `packages/conformance/src/drivers.ts` is fine: the harness reports it as skipped, not failed. Same for `html`/`downgrade` fields before those renderers exist. Register a driver once the code exists so the cases start counting.
 
