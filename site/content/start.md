@@ -208,10 +208,22 @@ Next
 
 ## Where to go from here
 
-:::steps
-1. Read the [reference](../reference/index.html). It starts with the three pieces of syntax every construct is built from, then gives one page per construct with four worked examples each, a page on [frontmatter and theme tokens](../reference/frontmatter/index.html) for the settings a document carries about itself, and a page on [diagrams](../reference/diagrams/index.html) for turning an ASCII or mermaid fence into a picture.
-2. Skim the [CLI page](../cli/index.html) for the four commands and their flags.
-3. Follow [publishing to GitHub Pages](../github-pages/index.html) if what you want is a site: it is one workflow file, two commands, and the three things that are easy to get wrong.
-4. Look at the [examples](../examples/index.html) to see what a long document looks like when it has a theme of its own.
-5. Read the [specification](../spec/index.html) when you want the normative answer. It is short, and it is what a second implementation would be written from.
+Two of these are things to do and three are things to read. Take whichever matches what you came for.
+
+::::columns{ratio="1:1"}
+:::card[Publish a site]{tone=info}
+**[Publishing to GitHub Pages](../github-pages/index.html)** is the whole recipe on one page: a workflow file to copy, two commands, and the three things that are easy to get wrong. This site is built that way, which is the only reason to trust any of it.
 :::
+
+::col
+
+:::card[Render it yourself]
+**[The markset command](../cli/index.html)** is five commands and their flags — check a document, render it, lower it to plain CommonMark, print the tree, or write the stylesheet a site links once.
+:::
+::::
+
+Then, as you need them:
+
+- The [reference](../reference/index.html) starts with the three pieces of syntax every construct is built from, then gives a page per construct with four worked examples each — plus [frontmatter and theme tokens](../reference/frontmatter/index.html) for the settings a document carries about itself, and [diagrams](../reference/diagrams/index.html) for turning an ASCII or mermaid fence into a picture.
+- The [examples](../examples/index.html) are what a long document looks like once it has a theme of its own.
+- The [specification](../spec/index.html) is the normative answer. It is short, and it is what a second implementation would be written from.
