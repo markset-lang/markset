@@ -766,6 +766,352 @@
   },
   {
     "section": "chart",
+    "name": "column, categories across",
+    "markset": ":::figure[Stored volume by tier]{#fig-tier chart=column}\n| Tier | Stored |\n|---|---|\n| Workspace | 116 |\n| Archive | 8430 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "Stored volume by tier"
+            }
+          ],
+          "width": null,
+          "chart": "column",
+          "id": "fig-tier",
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Tier"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Stored"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Workspace"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "116"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Archive"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "8430"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "| Tier      | Stored |\n| --------- | ------ |\n| Workspace | 116    |\n| Archive   | 8430   |\n\n*Stored volume by tier*\n",
+    "html": "<figure class=\"ms-figure\" id=\"fig-tier\" data-chart=\"column\">\n<table>\n<caption>Stored volume by tier</caption>\n<thead>\n<tr>\n<th scope=\"col\">Tier</th>\n<th scope=\"col\">Stored</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Workspace</td>\n<td>116</td>\n</tr>\n<tr>\n<td>Archive</td>\n<td>8430</td>\n</tr>\n</tbody>\n</table>\n</figure>\n"
+  },
+  {
+    "section": "chart",
+    "name": "bar, categories down",
+    "markset": ":::figure[Tenants by stored volume]{chart=bar}\n| Band | Tenants |\n|---|---|\n| under 10 GB | 6140 |\n| over 40 TB | 50 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "Tenants by stored volume"
+            }
+          ],
+          "width": null,
+          "chart": "bar",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Band"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Tenants"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "under 10 GB"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "6140"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "over 40 TB"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "50"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "| Band        | Tenants |\n| ----------- | ------- |\n| under 10 GB | 6140    |\n| over 40 TB  | 50      |\n\n*Tenants by stored volume*\n",
+    "html": "<figure class=\"ms-figure\" data-chart=\"bar\">\n<table>\n<caption>Tenants by stored volume</caption>\n<thead>\n<tr>\n<th scope=\"col\">Band</th>\n<th scope=\"col\">Tenants</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>under 10 GB</td>\n<td>6140</td>\n</tr>\n<tr>\n<td>over 40 TB</td>\n<td>50</td>\n</tr>\n</tbody>\n</table>\n</figure>\n"
+  },
+  {
+    "section": "chart",
+    "name": "bar with two series",
+    "markset": ":::figure[Cost by tier]{chart=bar}\n| Tier | Storage | Per tenant |\n|---|---|---|\n| Workspace | 2.7 | 40.2 |\n| Archive | 59.0 | 32.6 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "Cost by tier"
+            }
+          ],
+          "width": null,
+          "chart": "bar",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Tier"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Storage"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Per tenant"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Workspace"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "2.7"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "40.2"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Archive"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "59.0"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "32.6"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "| Tier      | Storage | Per tenant |\n| --------- | ------- | ---------- |\n| Workspace | 2.7     | 40.2       |\n| Archive   | 59.0    | 32.6       |\n\n*Cost by tier*\n",
+    "html": "<figure class=\"ms-figure\" data-chart=\"bar\">\n<table>\n<caption>Cost by tier</caption>\n<thead>\n<tr>\n<th scope=\"col\">Tier</th>\n<th scope=\"col\">Storage</th>\n<th scope=\"col\">Per tenant</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Workspace</td>\n<td>2.7</td>\n<td>40.2</td>\n</tr>\n<tr>\n<td>Archive</td>\n<td>59.0</td>\n<td>32.6</td>\n</tr>\n</tbody>\n</table>\n</figure>\n"
+  },
+  {
+    "section": "chart",
     "name": "unknown chart type",
     "markset": ":::figure[Slices]{chart=pie}\n| Quarter | us-east | eu-west |\n|---|---|---|\n| Q1 | 120 | 64 |\n| Q2 | 140 | 71 |\n:::\n",
     "ast": {

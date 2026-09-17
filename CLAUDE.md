@@ -113,9 +113,12 @@ in commit order, which is the wrong order for finding the work.
       `npm login --auth-type=web`, then `npm run release`, in a terminal.
 - [ ] A chart engine. §11 is specified and the grammar is in, so a `figure` carrying `chart=line` parses, validates
       and reaches HTML as `data-chart`; nothing draws it yet, which is obligation 1 and is a correct renderer. The
-      engine waits deliberately on an external consumer's own documents, because the chart **type set** is the one
-      decision here that is expensive to reverse: adding a type is additive, removing one is breaking. Shape it like
-      `diagram-ascii` — a pure function, no dependencies — and read the type list off what they need to draw.
+      type set is settled — `line`, `bar`, `column`, asked for by the consumer. Shape it like `diagram-ascii`: a pure
+      function, no dependencies. **Settle the inline-SVG question first** (entry 17): a drawn chart is an `<img>`
+      holding a data URI, so a theme cannot color it, which costs a diagram little and a chart a great deal. §10
+      refused inline SVG because an engine there is an arbitrary command; the built-in chart engine is our own pure
+      function and is not that, so inline markup is defensible for it and would make chart colors ordinary CSS.
+      Load the `dataviz` skill before writing the drawing code.
 - [ ] Playground page (needs a bundler such as esbuild, not yet approved)
 
 **Done,** in the order it landed.
@@ -195,6 +198,8 @@ in commit order, which is the wrong order for finding the work.
       makes the §3 fallback the data itself rather than a gesture at it. §8 no longer defers `chart`.
       One attribute, `chart` on `figure`, present in the AST **only when set**, so every figure and diagram case
       pinned before the change is identical after it — entry 3's lesson about optional fields, first applied.
-      `line` is the only type and the set is closed, unlike §10's open language set: an unknown diagram language is
+      `line`, `bar` and `column` are the types, and the set is closed unlike §10's open language set: an unknown diagram language is
       safe because it falls back to what the author wrote, and an unknown chart type is not, because a renderer that
-      guesses draws a different argument from the same data. Ten cases in `tests/chart.json`.
+      guesses draws a different argument from the same data. `bar` and `column` are two names rather than one type
+      and an orientation, because which axis carries the categories follows from the data and a theme could not make
+      the choice anyway — a drawn chart is an image it cannot see inside. Thirteen cases in `tests/chart.json`.
