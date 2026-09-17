@@ -43,6 +43,10 @@ packages/
   render-html/      AST -> HTML
   diagram-ascii/    ASCII diagram -> SVG (spec §10). A pure function with no dependencies;
                     render-html uses it by default and takes any other engine from its caller.
+  chart-table/      a figure's table -> an SVG chart (spec §11). A pure function with no dependencies,
+                    like diagram-ascii, with two differences: it returns a hast tree rather than a string,
+                    and it emits no color at all — geometry and data-series, with markset.css supplying
+                    every color, so a theme restyles a chart by setting --ms-chart-1.
   conformance/      harness: validates tests/*.json against the schema, runs each section's driver.
                     Private: its drivers import this implementation, so it measures nothing else.
   remark-markset/   remark plugin: the parser's micromark and mdast extensions, the normalization and
@@ -111,14 +115,6 @@ in commit order, which is the wrong order for finding the work.
       found all five versions already on the registry and skipped them, which exercises the guard and not the
       authentication. The next release is the first real test, and its fallback is the manual path that worked —
       `npm login --auth-type=web`, then `npm run release`, in a terminal.
-- [ ] A chart engine. §11 is specified and the grammar is in, so a `figure` carrying `chart=line` parses, validates
-      and reaches HTML as `data-chart`; nothing draws it yet, which is obligation 1 and is a correct renderer. The
-      type set is settled — `line`, `bar`, `column`, asked for by the consumer. Shape it like `diagram-ascii`: a pure
-      function, no dependencies. **Settle the inline-SVG question first** (entry 17): a drawn chart is an `<img>`
-      holding a data URI, so a theme cannot color it, which costs a diagram little and a chart a great deal. §10
-      refused inline SVG because an engine there is an arbitrary command; the built-in chart engine is our own pure
-      function and is not that, so inline markup is defensible for it and would make chart colors ordinary CSS.
-      Load the `dataviz` skill before writing the drawing code.
 - [ ] Playground page (needs a bundler such as esbuild, not yet approved)
 
 **Done,** in the order it landed.
@@ -203,3 +199,19 @@ in commit order, which is the wrong order for finding the work.
       guesses draws a different argument from the same data. `bar` and `column` are two names rather than one type
       and an orientation, because which axis carries the categories follows from the data and a theme could not make
       the choice anyway — a drawn chart is an image it cannot see inside. Thirteen cases in `tests/chart.json`.
+- [x] Chart engine (`packages/chart-table`, 2026-09-16). `line`, `bar` and `column`, drawn by default; `--chart none`
+      or `charts: false` turns it off, and the conformance harness passes that because a drawn chart is this
+      implementation's own SVG. **Inline `<svg>`, not §10's `<img>` data URI**, and the reason generalizes: §10
+      refused inline markup because a diagram engine on the CLI path is an arbitrary command, and raw markup from one
+      is a channel documents are denied. This engine is ours and returns constructed nodes, so there is no markup to
+      parse and no channel to open — obligation 6 is tested rather than inherited from the shape of an `<img>`.
+      What inline buys is a chart a theme can color, which a data URI cannot give at any price.
+      The palette is validated, not chosen by eye: eight categorical hues checked for lightness band, chroma floor,
+      colorblind separation between neighbours and normal-vision separation, in both schemes, against this
+      stylesheet's own surfaces. Three light-mode slots fall below 3:1, which the method allows only where the values
+      are also readable as text — obligation 8 is exactly that guarantee. A ninth series folds back to slot 1 rather
+      than inventing a hue that was never checked.
+      Bars start at zero and lines fit their data: a bar encodes magnitude as length, so a truncated baseline
+      misstates the ratio; a line encodes it as position, and forcing zero flattens the shape the chart exists to
+      show. Found by looking at the rendered page — the projection figure in `capacity-review.md` is the document
+      that asked for charts, and with a zero baseline its crossover was still invisible.

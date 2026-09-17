@@ -6,11 +6,14 @@ import { parseDocument, type Attributes, type Diagnostic, type Frontmatter } fro
 import { marksetHandlers } from "./handlers.ts";
 import { addHeadingIds } from "./heading-ids.ts";
 import { drawDiagrams, resolveEngines, type DiagramOptions } from "./diagrams.ts";
+import { drawCharts, resolveChartEngine, type ChartOptions } from "./charts.ts";
 
 export { marksetHandlers };
 export { addHeadingIds, headingSlug } from "./heading-ids.ts";
 export { drawDiagrams, builtInEngines, resolveEngines } from "./diagrams.ts";
 export type { DiagramEngine, DiagramOptions } from "./diagrams.ts";
+export { drawCharts, builtInChartEngine, resolveChartEngine } from "./charts.ts";
+export type { ChartEngine, ChartOptions } from "./charts.ts";
 
 export interface RenderOptions {
   /**
@@ -30,6 +33,16 @@ export interface RenderOptions {
    * untouched (obligation 5), so neither setting can lose content.
    */
   diagrams?: DiagramOptions | false;
+  /**
+   * Draw a figure's table as a chart (§11).
+   *
+   * On by default, unlike a diagram language: `chart=` is the author asking for
+   * a picture in so many words, where an info string may only be naming a
+   * language. `false` draws nothing. Neither setting can lose content — the
+   * chart is added in front of its table and never replaces it (obligation 8),
+   * so turning drawing off removes a picture and no data.
+   */
+  charts?: ChartOptions | false;
 }
 
 /** Render a parsed tree as an HTML fragment. Non-empty output ends with a newline, as in the CommonMark suite. */
@@ -40,6 +53,8 @@ export function renderHtml(tree: Root, options: RenderOptions = {}): string {
     scopeTableHeaders(hast);
     const diagrams = resolveEngines(options.diagrams);
     if (diagrams) drawDiagrams(hast, diagrams);
+    const charts = resolveChartEngine(options.charts);
+    if (charts) drawCharts(hast, charts);
   }
   const html = toHtml(hast);
   return html === "" ? "" : `${html}\n`;

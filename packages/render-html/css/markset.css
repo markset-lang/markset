@@ -33,6 +33,31 @@ body {
   --ms-tone-warn: light-dark(#9a6700, #d29922);
   --ms-tone-danger: light-dark(#cf222e, #f85149);
 
+  /* Chart series (§11). Every color a drawn chart has: the SVG the engine
+   * returns carries geometry and a series number and no color at all, so a
+   * theme recolors charts by setting these, like any other token.
+   *
+   * A validated categorical order, not a spectrum picked by eye. The eight
+   * hues clear the lightness band, the chroma floor, colorblind separation
+   * between neighbours and the normal-vision floor, in both schemes, measured
+   * against this stylesheet's own surfaces rather than someone else's. The dark
+   * column is the same eight hues stepped for a dark ground, not a flip of the
+   * light one. Slots are assigned in order and never cycled through a generated
+   * hue: a ninth series reuses slot one, which is honest about running out
+   * rather than inventing a color that fails the same checks.
+   *
+   * Three light-mode slots sit below 3:1 against white, which the palette
+   * method permits only where the values are also readable as text. §11
+   * obligation 8 is exactly that guarantee: the table is always there. */
+  --ms-chart-1: light-dark(#2a78d6, #3987e5);
+  --ms-chart-2: light-dark(#eb6834, #d95926);
+  --ms-chart-3: light-dark(#1baf7a, #199e70);
+  --ms-chart-4: light-dark(#eda100, #c98500);
+  --ms-chart-5: light-dark(#e87ba4, #d55181);
+  --ms-chart-6: light-dark(#008300, #008300);
+  --ms-chart-7: light-dark(#4a3aa7, #9085e9);
+  --ms-chart-8: light-dark(#e34948, #e66767);
+
   /* Derived type scale: h6 .. h1 step up from the base. */
   --ms-h6: var(--ms-base);
   --ms-h5: calc(var(--ms-base) * var(--ms-type-scale));
@@ -410,6 +435,31 @@ summary.ms-callout-title { cursor: pointer; }
  * and the reason the page itself still never scrolls sideways. */
 .ms-figure:has(> .ms-diagram) { overflow-x: auto; }
 .ms-diagram { max-width: none; }
+
+/* Charts (§11). The engine emits no color, so everything visible is decided
+ * here. Marks take the series color; text never does — identity comes from the
+ * colored mark beside a label, because a light categorical hue is illegible as
+ * text. Grid and axis are recessive hairlines: the data is the only thing
+ * allowed to be loud. */
+.ms-chart { display: block; width: 100%; height: auto; margin-bottom: calc(var(--ms-space) * 0.75); }
+.ms-chart-grid { stroke: var(--ms-border); stroke-width: 1; opacity: 0.6; }
+.ms-chart-baseline { stroke: var(--ms-border); stroke-width: 1; }
+.ms-chart-tick, .ms-chart-legend { fill: var(--ms-fg-muted); font-family: var(--ms-font-body); font-size: 12px; font-variant-numeric: tabular-nums; }
+/* Identity first: a series number picks a color, for whichever of fill and
+ * stroke the mark below actually uses. These come before the mark rules on
+ * purpose — an attribute selector and a class selector weigh the same, so a
+ * later `fill` here would win, and a line would paint as a filled wedge. */
+[data-series="1"] { fill: var(--ms-chart-1); stroke: var(--ms-chart-1); }
+[data-series="2"] { fill: var(--ms-chart-2); stroke: var(--ms-chart-2); }
+[data-series="3"] { fill: var(--ms-chart-3); stroke: var(--ms-chart-3); }
+[data-series="4"] { fill: var(--ms-chart-4); stroke: var(--ms-chart-4); }
+[data-series="5"] { fill: var(--ms-chart-5); stroke: var(--ms-chart-5); }
+[data-series="6"] { fill: var(--ms-chart-6); stroke: var(--ms-chart-6); }
+[data-series="7"] { fill: var(--ms-chart-7); stroke: var(--ms-chart-7); }
+[data-series="8"] { fill: var(--ms-chart-8); stroke: var(--ms-chart-8); }
+/* Then the mark: which of the two it wears, and how thick. */
+.ms-chart-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.ms-chart-bar, .ms-chart-key, .ms-chart-dot { stroke: none; }
 /* A full unit, not half of one. At half the caption sat against the table's
  * bottom rule and was nearly as far from the block below as from the table it
  * belongs to, so it read as floating between the two. */
