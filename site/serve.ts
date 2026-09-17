@@ -158,10 +158,21 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
  * Run the build in a child process rather than calling build() here: Node
  * caches modules, so an in-process rebuild would keep serving the parser as it
  * was when this server started.
+ *
+ * The child needs `--conditions=markset-source` of its own. Without it the
+ * workspace packages resolve through their published `exports` to `dist/`, and
+ * the server renders the site with whatever was last compiled instead of what
+ * is on disk — silently, because a stale `dist/` is a working build. It cost an
+ * afternoon: charts had landed, every test passed, and the page in the browser
+ * had none, because `packages/render-html/dist` predated them. `process.execArgv`
+ * is not enough on its own, since it is empty when the flag came from an npm
+ * script rather than the command line.
  */
 function rebuild(): Promise<boolean> {
   return new Promise((done) => {
-    const child = spawn(process.execPath, [join(root, "site", "build.ts")], { stdio: ["ignore", "inherit", "pipe"] });
+    const child = spawn(process.execPath, ["--conditions=markset-source", join(root, "site", "build.ts")], {
+      stdio: ["ignore", "inherit", "pipe"],
+    });
     let stderr = "";
     child.stderr.on("data", (chunk) => {
       stderr += String(chunk);

@@ -192,6 +192,17 @@ test("the development workflow asks for source, in every script that runs node",
     compilerOptions: { customConditions?: string[] };
   };
   assert.deepEqual(ts.compilerOptions.customConditions, ["markset-source"]);
+
+  // A script is not the only way this repository starts node. The dev server
+  // spawns the build as a child, and that child needs the condition of its own:
+  // the parent's flags are not inherited, and process.execArgv is empty when the
+  // flag came from an npm script. This assertion exists because it did not, and
+  // site:watch spent an afternoon rendering pages through a dist/ that predated
+  // the feature being looked at -- silently, because a stale dist/ still builds.
+  const serve = await readFile(join(root, "site", "serve.ts"), "utf8");
+  const spawned = /spawn\(\s*process\.execPath,\s*\[([^\]]*)\]/u.exec(serve);
+  assert.ok(spawned, "site/serve.ts spawns node");
+  assert.match(spawned[1], /--conditions=markset-source/u, "the spawned build asks for source too");
 });
 
 test("the formatter leaves build output alone, at any depth", async () => {
