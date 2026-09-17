@@ -209,4 +209,4 @@ That omission is deliberate. A document that pointed at its own stylesheet would
 markset html report.md --theme corporate.css -o report.html
 ```
 
-A document still reads without its theme, because the eight constructs are styled by the default stylesheet and unknown classes are simply inert. The three long [examples](../examples/index.html) each carry one, and the difference between them is the clearest picture of how far appearance moves while the source stays the same shape.
+A document still reads without its theme, because the eight constructs are styled by the default stylesheet and unknown classes are simply inert. The three long [examples](../../examples/index.html) each carry one, and the difference between them is the clearest picture of how far appearance moves while the source stays the same shape.

@@ -228,6 +228,12 @@ async function writeSite(outDir: string): Promise<string[]> {
   await mkdir(join(out, "css"), { recursive: true });
   await cp(defaultStylesheetPath, join(out, "css", "markset.css"));
   await cp(join(root, "site", "site.css"), join(out, "css", "site.css"));
+  // §7 links the normative schema as a sibling of the spec, which is where it
+  // sits in the repository. Copying it here makes that link resolve on the site
+  // too, and means an implementer reading the spec can fetch the schema it is
+  // reading about rather than being told a path into a repository.
+  await mkdir(join(out, "spec"), { recursive: true });
+  await cp(join(root, "spec", "conformance.schema.json"), join(out, "spec", "conformance.schema.json"));
   await mkdir(join(out, "examples", "showcase"), { recursive: true });
   await cp(join(root, "examples", "degrade.svg"), join(out, "examples", "showcase", "degrade.svg"));
   for (const example of EXAMPLES) {
