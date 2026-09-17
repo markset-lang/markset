@@ -25,6 +25,7 @@
     "@biomejs/biome": "2.5.13",
     "@mermaid-js/mermaid-cli": "^11.17.0",
     "@types/node": "^26.5.1",
+    "esbuild": "0.28.2",
     "rehype-stringify": "^10.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",

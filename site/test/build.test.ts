@@ -26,11 +26,15 @@ test("the site builds, every page has the shell, and links stay relative", async
     const html = await readFile(join(dist, page), "utf8");
     assert.match(html, /<nav class="site-nav">/, page);
     assert.doesNotMatch(html, /href="\//, `${page} has a root-relative link`);
-    // One script per page, the shell's scheme-persistence one, and none inside
-    // the document it renders. The second half is the claim the home page makes
-    // and the one that matters: a rendered Markset document carries no script.
+    // The shell's scheme-persistence script, and on the playground the module
+    // that runs the renderer. Nothing else, and on no page anything inside the
+    // document -- which is the half that is a claim rather than a budget: a
+    // rendered Markset document carries no script. The playground is named
+    // rather than allowed by a pattern, so a second application page is a
+    // decision somebody makes here instead of one that arrives by accident.
+    const allowed = page === "playground/index.html" ? 2 : 1;
     const scripts = html.match(/<script/g) ?? [];
-    assert.equal(scripts.length, 1, `${page} has ${scripts.length} scripts; only the shell's belongs`);
+    assert.equal(scripts.length, allowed, `${page} has ${scripts.length} scripts, expected ${allowed}`);
     const main = html.slice(html.indexOf("<main"), html.indexOf("</main>"));
     assert.doesNotMatch(main, /<script/, `${page} renders a script inside the document`);
   }

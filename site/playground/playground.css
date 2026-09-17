@@ -1,0 +1,205 @@
+/* The playground's chrome, layered after site.css the way a theme stylesheet is
+ * layered over a document (spec §6). It styles an application, not a document:
+ * nothing here touches an ms- class, because the rendered document lives in its
+ * own frame with its own copy of markset.css and nothing on this page can reach
+ * it. That separation is the point -- a stylesheet that could leak into the
+ * preview would make the preview a worse answer than the command line. */
+
+.pg {
+  /* The lane rules cap a document's blocks at the reading measure. An editor is
+   * not prose and wants the room. */
+  max-width: none !important;
+  display: grid;
+  gap: var(--ms-space);
+  /* Fill what is left of the viewport under the bar, with a floor so a short
+   * window still gets a usable editor rather than a slot. */
+  --pg-h: max(26rem, calc(100vh - var(--site-header-h) - 15rem));
+}
+@media (min-width: 60rem) {
+  .pg { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+
+.pg-controls {
+  max-width: none !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: calc(var(--ms-space) * -0.25);
+}
+.pg-controls label { font-size: 0.82rem; color: var(--ms-fg-muted); display: flex; align-items: center; gap: 0.4rem; }
+.pg-controls select,
+.pg-controls button {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.6rem;
+  color: var(--ms-fg);
+  background: var(--ms-surface);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+}
+.pg-controls button { cursor: pointer; }
+.pg-controls button:hover { border-color: var(--ms-accent); }
+.pg-status { font-size: 0.82rem; color: var(--ms-fg-muted); margin-left: auto; }
+
+/* ---- panes --------------------------------------------------------------- */
+
+.pg-pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  background: var(--ms-surface);
+  overflow: hidden;
+}
+.pg-pane-head {
+  display: flex;
+  align-items: stretch;
+  gap: 0.15rem;
+  padding: 0 0.3rem;
+  border-bottom: 1px solid var(--ms-border);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.pg-pane-head > .pg-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ms-fg-muted);
+  padding: 0.55rem 0.4rem;
+  align-self: center;
+}
+
+.pg-tab {
+  font: inherit;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  cursor: pointer;
+  color: var(--ms-fg-muted);
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 0.55rem 0.55rem 0.45rem;
+}
+.pg-tab:hover { color: var(--ms-fg); }
+.pg-tab[aria-selected="true"] { color: var(--ms-fg); border-bottom-color: var(--ms-accent); }
+/* Focus has to survive the tab strip's own colors, because arrow keys move the
+ * selection here and the focus ring is the only thing saying where you are. */
+.pg-tab:focus-visible { outline: 2px solid var(--ms-accent); outline-offset: -2px; }
+
+.pg-count {
+  display: inline-block;
+  min-width: 1.15em;
+  margin-left: 0.3rem;
+  padding: 0 0.3em;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--ms-bg);
+  background: var(--ms-tone-danger);
+  border-radius: 999px;
+}
+
+/* ---- the editor ---------------------------------------------------------- */
+
+#pg-source {
+  flex: 1;
+  min-height: var(--pg-h);
+  resize: vertical;
+  font-family: var(--ms-font-mono);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  tab-size: 2;
+  color: var(--ms-fg);
+  background: var(--ms-bg);
+  border: 0;
+  padding: 0.85rem;
+}
+#pg-source:focus-visible { outline: 2px solid var(--ms-accent); outline-offset: -2px; }
+
+/* ---- the output ---------------------------------------------------------- */
+
+.pg-views { flex: 1; display: flex; min-height: var(--pg-h); }
+/* Two levels, because each view sits inside its own tabpanel: the panel fills
+ * the pane and the view fills the panel. Without the second rule the frame
+ * falls back to an iframe's default 300px and renders the document into a
+ * column a third of the width the reader is looking at. */
+.pg-views > [role="tabpanel"] { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pg-views > [role="tabpanel"] > * { flex: 1; min-width: 0; min-height: 0; width: 100%; }
+.pg-views > [hidden] { display: none; }
+[role="tabpanel"]:focus-visible { outline: 2px solid var(--ms-accent); outline-offset: -2px; }
+
+#pg-result {
+  border: 0;
+  display: block;
+  background: var(--ms-bg);
+  /* The frame is a separate document with scripting off, so it cannot report
+   * its own height. A scroll region is the honest answer; sizing it by guess
+   * would clip a long document with no way to see the rest. */
+  height: 100%;
+}
+
+.pg-code {
+  margin: 0;
+  overflow: auto;
+  background: var(--ms-bg);
+  padding: 0.85rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.pg-code code { font-family: var(--ms-font-mono); white-space: pre; background: none; padding: 0; }
+
+.pg-problems-body { overflow: auto; background: var(--ms-bg); padding: 0.6rem; }
+.pg-empty { margin: 0; padding: 0.3rem; font-size: 0.85rem; color: var(--ms-fg-muted); }
+
+.pg-problems { margin: 0; padding: 0; list-style: none; font-size: 0.82rem; }
+.pg-problems li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.45rem 0.3rem;
+  border-bottom: 1px solid var(--ms-border);
+}
+.pg-problems li:last-child { border-bottom: 0; }
+.pg-problems code { font-size: 0.75rem; color: var(--ms-fg-muted); background: none; padding: 0; }
+
+.pg-where {
+  font: inherit;
+  font-family: var(--ms-font-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+  color: var(--ms-accent);
+  background: none;
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.pg-severity { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; }
+[data-severity="error"] .pg-severity { color: var(--ms-tone-danger); }
+[data-severity="warning"] .pg-severity { color: var(--ms-tone-warn); }
+
+/* ---- without a script ---------------------------------------------------- */
+
+/* The only page on this site that needs one. Everything else is a document that
+ * was already rendered; this one renders on the reader's machine, so with
+ * scripting off there is nothing to show and the honest thing is to say which
+ * command does the same job. */
+.pg-noscript {
+  border: 1px solid var(--ms-tone-warn);
+  border-radius: var(--ms-radius);
+  padding: var(--ms-space);
+  background: var(--ms-surface);
+}
+
+@media print {
+  .pg { display: none; }
+}
+
+/* The note list under the tool. A description list because it is one: a term
+ * and what it means, which is exactly what each tab needs. */
+.pg-notes { margin: 0; }
+.pg-notes dt { font-weight: 600; margin-top: 0.8rem; }
+.pg-notes dd { margin: 0.15rem 0 0; color: var(--ms-fg-muted); }
