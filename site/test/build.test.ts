@@ -209,6 +209,17 @@ test("the app bar sticks, and everything that has to clear it uses one token", a
   assert.match(css, /@media print \{\s*\.site-header \{ position: static/, "a printed page has no sticky bar");
 });
 
+test("the built site carries the custom domain", async () => {
+  // Pages serves whatever host the CNAME file at the root names. Without it the
+  // domain lives only in a repository setting, and a deploy that writes the
+  // setting from an artifact with no CNAME drops it -- which turns every link
+  // on npm, in the README and in eight package manifests into a 404 at once.
+  const root = resolve(import.meta.dirname, "..", "..");
+  const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as { homepage: string };
+  const cname = await readFile(join(dist, "CNAME"), "utf8");
+  assert.equal(cname.trim(), new URL(pkg.homepage).host);
+});
+
 test("every link to the repository matches package.json, which matches the remote", async () => {
   const root = resolve(import.meta.dirname, "..", "..");
   const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as {
@@ -225,11 +236,21 @@ test("every link to the repository matches package.json, which matches the remot
       assert.ok(url.startsWith(repo), `${page} links ${url}, not ${repo}`);
     }
   }
-  // The README is not built, so it is checked directly.
+  // The README is not built, so it is checked directly. Match by host rather
+  // than by a github.io shape: the site moved to its own domain, and a pattern
+  // that only recognized the old host would have gone quiet instead of failing.
+  const home = new URL(pkg.homepage);
   const readme = await readFile(join(root, "README.md"), "utf8");
-  for (const url of readme.match(/https:\/\/[a-z0-9-]+\.github\.io\/[^\s>)]+/g) ?? []) {
-    assert.ok(pkg.homepage.startsWith(url) || url.startsWith(pkg.homepage), `README links ${url}, not ${pkg.homepage}`);
+  const siteLinks = readme.match(/https:\/\/[a-z0-9.-]+\.(?:org|io|com|dev)\/[^\s>)]*/g) ?? [];
+  for (const url of siteLinks) {
+    const host = new URL(url).host;
+    if (host === "github.com" || host !== home.host) continue;
+    assert.ok(url.startsWith(pkg.homepage), `README links ${url}, not ${pkg.homepage}`);
   }
+  assert.ok(
+    siteLinks.some((url) => new URL(url).host === home.host),
+    `the README must link the site at ${home.host}, or this check guards nothing`,
+  );
   for (const url of readme.match(/https:\/\/github\.com\/[^\s>)]+/g) ?? []) {
     assert.ok(url.startsWith(repo), `README links ${url}, not ${repo}`);
   }

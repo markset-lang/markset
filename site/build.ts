@@ -24,8 +24,11 @@ const root = resolve(import.meta.dirname, "..");
 /** Repository and site URLs come from package.json so they cannot drift from the remote. */
 const pkg = JSON.parse(await readFile(join(resolve(import.meta.dirname, ".."), "package.json"), "utf8")) as {
   repository: { url: string };
+  homepage: string;
 };
 const REPO = pkg.repository.url.replace(/^git\+/, "").replace(/\.git$/, "");
+/** The host the site is served from, for the CNAME file Pages reads. */
+const SITE_HOST = new URL(pkg.homepage).host;
 
 interface Page {
   /** Output path relative to dist/, e.g. "reference/card/index.html". */
@@ -302,6 +305,12 @@ async function writeSite(outDir: string): Promise<string[]> {
   // got published would be missing whatever the loser had left to write.
   const out = outDir;
   await mkdir(join(out, "css"), { recursive: true });
+  // GitHub Pages reads the custom domain from a CNAME file at the root of what
+  // it serves. The domain is also a repository setting, and the two are the same
+  // switch: whichever was written last wins, so leaving this out means a deploy
+  // can quietly drop the domain and send every published link to a 404. The host
+  // comes from package.json's homepage, so there is one place to change it.
+  await writeFile(join(out, "CNAME"), `${SITE_HOST}\n`);
   await cp(defaultStylesheetPath, join(out, "css", "markset.css"));
   await cp(join(root, "site", "site.css"), join(out, "css", "site.css"));
   // §7 links the normative schema as a sibling of the spec, which is where it

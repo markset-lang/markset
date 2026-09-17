@@ -118,7 +118,10 @@ const PUBLISHED = [
 ];
 
 test("every published package is publishable, and says the same version", async () => {
-  const rootPkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as { version: string };
+  const rootPkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as {
+    version: string;
+    homepage: string;
+  };
   for (const name of PUBLISHED) {
     const d = JSON.parse(await readFile(join(root, "packages", name, "package.json"), "utf8")) as Record<
       string,
@@ -131,6 +134,10 @@ test("every published package is publishable, and says the same version", async 
     assert.ok(d.files?.includes("dist"), `${name} must ship dist`);
     assert.ok(d.files?.includes("src"), `${name} ships src too, so declaration maps lead somewhere`);
     assert.ok(d.repository?.directory, `${name} should say where in the repo it lives`);
+    // The homepage is the link npm shows on the package page, so a stale copy
+    // sends every reader who arrives through npm to the wrong site. It is one
+    // string repeated eight times, which is exactly the shape that drifts.
+    assert.equal(d.homepage, rootPkg.homepage, `${name} homepage must match the root`);
 
     const entry = d.exports["."];
     assert.match(entry["markset-source"], /^\.\/src\/.*\.ts$/u, `${name} resolves to source in this repo`);

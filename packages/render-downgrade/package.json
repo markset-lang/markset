@@ -12,7 +12,7 @@
     "url": "git+https://github.com/markset-lang/markset.git",
     "directory": "packages/render-downgrade"
   },
-  "homepage": "https://markset-lang.github.io/markset/",
+  "homepage": "https://markset.org/",
   "publishConfig": {
     "access": "public"
   },

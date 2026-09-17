@@ -66,7 +66,7 @@ Diagrams are the one place the `html` field deliberately understates what a rend
 
 ## Where the rules are
 
-Spec §7 defines the case format and the two tiers above; the sections it refers to define the constructs. The specification is at <https://markset-lang.github.io/markset/spec/>.
+Spec §7 defines the case format and the two tiers above; the sections it refers to define the constructs. The specification is at <https://markset.org/spec/>.
 
 The canonical copy of these cases is `tests/` in the [Markset repository](https://github.com/markset-lang/markset), and a test there fails if this package's copy differs from it.
 
