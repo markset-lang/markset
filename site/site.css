@@ -117,12 +117,18 @@ body:has(#ms-scheme-dark:checked) { color-scheme: dark; }
 .site-scheme-input:focus-visible + .site-scheme-option { outline: 2px solid var(--ms-accent); outline-offset: 1px; }
 
 .site-layout { max-width: 75rem; margin: 0 auto; }
-.site-layout.has-toc { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: var(--ms-space); }
-.site-layout.has-toc > * { min-width: 0; } /* or a wide block inside main widens the whole grid */
+.site-layout.has-rail { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: var(--ms-space); }
+.site-layout.has-rail > * { min-width: 0; } /* or a wide block inside main widens the whole grid */
 .site-toc { position: sticky; top: var(--site-header-h); align-self: start; max-height: calc(100vh - var(--site-header-h)); overflow-y: auto; padding: calc(var(--ms-space) * 2) var(--ms-space); font-size: 0.875rem; border-right: 1px solid var(--ms-border); }
 .site-toc ul { list-style: none; margin: 0; padding: 0; }
 .site-toc li { margin: 0.25rem 0; }
 .site-toc .toc-3 { padding-left: 1rem; }
+/* The rail carries two things now: where you are in the site, then what is on
+ * the page. A label on each, or the two lists read as one and a reader cannot
+ * tell a sibling page from a section of this one. */
+.site-rail-title { margin: 0 0 0.4rem; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ms-fg-muted); }
+.site-toc nav + nav { margin-top: calc(var(--ms-space) * 1.5); padding-top: var(--ms-space); border-top: 1px solid var(--ms-border); }
+.site-rail a[aria-current="page"] { color: var(--ms-fg); font-weight: 600; }
 .site-toc a { color: var(--ms-fg-muted); text-decoration: none; }
 .site-toc a:hover { color: var(--ms-accent); }
 .site-footer { max-width: var(--ms-measure-wide); margin: 0 auto; padding: calc(var(--ms-space) * 2) var(--ms-space); color: var(--ms-fg-muted); font-size: 0.875rem; border-top: 1px solid var(--ms-border); }
@@ -149,7 +155,7 @@ body:has(#ms-scheme-dark:checked) { color-scheme: dark; }
 .site-preview > *:first-child { margin-top: 0; }
 .site-diagnostics { margin-top: 0.75rem; font-size: 0.875rem; color: var(--ms-fg-muted); }
 @media (max-width: 60rem) {
-  .site-layout.has-toc { grid-template-columns: 1fr; }
+  .site-layout.has-rail { grid-template-columns: 1fr; }
   .site-toc { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--ms-border); }
 }
 

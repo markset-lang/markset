@@ -65,6 +65,62 @@ const NAV: Array<[string, string]> = [
 // than through a bar aimed at someone with a document to write. It is linked
 // from the specification, which is what §7 of that document is about.
 
+/**
+ * The pages that belong together, for the rail.
+ *
+ * A page reached only from a sentence inside another page is a page most
+ * readers never find. The Pages guide was the clearest case: a top-level guide
+ * with no section of its own, linked from three paragraphs and nowhere else.
+ * The bar cannot hold everything, so the rail carries the rest — and it earns
+ * its place on the short pages too, where there is no table of contents to show
+ * and a reader still needs to know what else is here. Before this, a reference
+ * page had no route to its seven siblings except going back to the index.
+ */
+const GET_STARTED: Array<[string, string]> = [
+  ["Adopting Markset", "start/index.html"],
+  ["The markset command", "cli/index.html"],
+  ["Publishing to GitHub Pages", "github-pages/index.html"],
+];
+
+interface RailSection {
+  title: string;
+  items: Array<[string, string]>;
+}
+
+function railSection(path: string): RailSection | undefined {
+  if (GET_STARTED.some(([, href]) => href === path)) return { title: "Get started", items: GET_STARTED };
+  if (path.startsWith("reference/")) {
+    return {
+      title: "Reference",
+      items: [
+        ["Overview", "reference/index.html"],
+        ...CONSTRUCTS.map((name): [string, string] => [name, `reference/${name}/index.html`]),
+        ["Diagrams", "reference/diagrams/index.html"],
+        ["Frontmatter", "reference/frontmatter/index.html"],
+      ],
+    };
+  }
+  if (path.startsWith("examples/")) {
+    return {
+      title: "Examples",
+      items: [
+        ["All examples", "examples/index.html"],
+        ...EXAMPLES.map((e): [string, string] => [e.title, `examples/${e.slug}/index.html`]),
+      ],
+    };
+  }
+  if (path.startsWith("conformance/")) {
+    return {
+      title: "Conformance",
+      items: [
+        ["Overview", "conformance/index.html"],
+        ...SECTION_ORDER.map((name): [string, string] => [name, `conformance/${name}/index.html`]),
+      ],
+    };
+  }
+  return undefined;
+}
+
 /** Documents rendered as their own pages, with the theme stylesheet each one is meant to be read with (spec §6). */
 /**
  * Every document under examples/ and the page it becomes. A test asserts this
@@ -713,6 +769,22 @@ function shell(page: Page): string {
     const title = icon ? ` title="${label}"` : "";
     return `<a href="${rel}${href}"${active ? ' aria-current="page"' : ""}${title}>${body}</a>`;
   }).join("\n");
+  const section = railSection(page.path);
+  // Where am I, then what is on this page. The section comes first because it
+  // answers the question a reader arriving from a search result has.
+  const sectionNav = section
+    ? `<nav class="site-rail" aria-label="${esc(section.title)}"><p class="site-rail-title">${esc(section.title)}</p>\n<ul>\n${section.items
+        .map(([label, href]) =>
+          href === page.path
+            ? `<li><a href="${rel}${href}" aria-current="page">${esc(label)}</a></li>`
+            : `<li><a href="${rel}${href}">${esc(label)}</a></li>`,
+        )
+        .join("\n")}\n</ul></nav>\n`
+    : "";
+  const contentsNav = page.toc
+    ? `<nav aria-label="Contents"><p class="site-rail-title">On this page</p>${page.toc}</nav>\n`
+    : "";
+  const rail = sectionNav || contentsNav ? `<aside class="site-toc">${sectionNav}${contentsNav}</aside>\n` : "";
   const attrs = page.themeAttributes || ' data-preset="technical"';
   return `<!doctype html>
 <html lang="en">
@@ -731,8 +803,8 @@ ${nav}
 <a href="${REPO}" title="GitHub">${ICON_GITHUB}<span class="site-visually-hidden">GitHub</span></a>
 </nav>
 ${SCHEME_CONTROL}</header>
-<div class="site-layout${page.toc ? " has-toc" : ""}">
-${page.toc ? `<aside class="site-toc"><nav aria-label="Contents">${page.toc}</nav></aside>\n` : ""}<main class="ms-document">
+<div class="site-layout${rail ? " has-rail" : ""}">
+${rail}<main class="ms-document">
 ${page.body}</main>
 </div>
 <footer class="site-footer">Markset is a strict superset of CommonMark with a closed layout vocabulary. Every page on this site is written in Markset and built by the reference implementation.</footer>
