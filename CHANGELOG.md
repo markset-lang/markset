@@ -3,6 +3,8 @@
 ## Unreleased
 
 - **A VS Code extension**, in `editors/vscode/`. Diagnostics as you type for documents that declare `markset:`, a live preview with scripting off, the downgrade on demand, completions after `:::` and `> [!`, snippets derived from the conformance suite, and highlighting injected into the Markdown grammar. It is the same packages bundled for the extension host, so what the editor reports is what `markset check` reports. Built and packaged from the repository; it is not on the marketplace yet.
+- **The built-in Markdown preview renders Markset.** The extension contributes a markdown-it plugin: for a file that declares `markset:` the whole source is rendered by this implementation and handed over as one HTML block, and the stylesheet is contributed scoped to `.ms-document`, since the preview is one page for every Markdown file and a bare `table` rule would restyle them all. Every other file is left to markdown-it untouched.
+- **A mark.** Three dots over two lines: a `:::` fence over a card's text. It is the site's favicon, the image beside the wordmark, and the extension's icon, from one SVG.
 - The release list is pinned to dependency order by a test. The publish step stops at the first failure, and that is safe only because every package that goes out points at versions already published.
 
 ## 0.3.1 — 2026-09-17

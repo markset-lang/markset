@@ -4,6 +4,7 @@
   "description": "Diagnostics, a live preview, snippets and highlighting for Markset documents: Markdown with a closed vocabulary of layout constructs.",
   "version": "0.3.1",
   "publisher": "markset-lang",
+  "icon": "icon.png",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -64,6 +65,11 @@
           "type": "string",
           "default": "",
           "description": "A theme stylesheet (spec §6) appended after the default in the preview. A relative path resolves against the file's workspace folder."
+        },
+        "markset.builtInPreview": {
+          "type": "boolean",
+          "default": true,
+          "description": "Render Markset documents in the built-in Markdown preview, so the standard preview icon shows the real rendering. Off, the built-in preview shows plain Markdown and the Markset preview command still works."
         }
       }
     },
@@ -81,6 +87,10 @@
         "language": "markdown",
         "path": "./dist/snippets.json"
       }
+    ],
+    "markdown.markdownItPlugins": true,
+    "markdown.previewStyles": [
+      "./dist/preview.css"
     ]
   },
   "scripts": {

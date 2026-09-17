@@ -71,7 +71,8 @@ body { --site-header-h: 3.25rem; --site-scheme-w: 5.6rem; }
 .ms-document :is(h1, h2, h3, h4, h5, h6) { scroll-margin-top: calc(var(--site-header-h) + 0.5rem); }
 .site-brand { font-family: var(--ms-font-heading); font-weight: 700; font-size: 1.1rem; color: var(--ms-fg); text-decoration: none; letter-spacing: -0.01em; }
 .site-nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
-.site-brand { flex: none; }
+.site-brand { flex: none; display: flex; align-items: center; gap: 0.55rem; }
+.site-mark { width: 1.375rem; height: 1.375rem; border-radius: 0.3rem; }
 .site-nav a { color: var(--ms-fg-muted); text-decoration: none; font-family: var(--ms-font-body); font-size: 0.9rem; }
 .site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--ms-accent); }
 /* The reader's color scheme. The radio inputs hold the state; body:has() reads

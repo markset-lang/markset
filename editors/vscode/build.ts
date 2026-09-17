@@ -8,7 +8,7 @@ import { copyFile, mkdir, readdir, readFile, writeFile } from "node:fs/promises"
 import { basename, join, resolve } from "node:path";
 import { build as esbuildBundle } from "esbuild";
 import { defaultStylesheetPath } from "@markset-lang/render-html";
-import { buildSnippets, type SnippetCase } from "./src/core.ts";
+import { buildSnippets, scopeStylesheet, type SnippetCase } from "./src/core.ts";
 
 const here = import.meta.dirname;
 const root = join(here, "..", "..");
@@ -40,6 +40,9 @@ export async function buildExtension(out: string = join(here, "dist")): Promise<
     logLevel: "silent",
   });
   await copyFile(defaultStylesheetPath, join(out, "markset.css"));
+  // For the built-in Markdown preview, which is one page for every file: the
+  // same stylesheet, reaching only Markset output.
+  await writeFile(join(out, "preview.css"), scopeStylesheet(await readFile(defaultStylesheetPath, "utf8")));
   const cases: Record<string, SnippetCase[]> = {};
   const dir = join(root, "tests");
   for (const file of (await readdir(dir)).filter((f) => f.endsWith(".json"))) {
@@ -48,7 +51,7 @@ export async function buildExtension(out: string = join(here, "dist")): Promise<
   await writeFile(join(out, "snippets.json"), `${JSON.stringify(buildSnippets(cases), null, 2)}\n`);
   // vsce wants a LICENSE beside the manifest; the repository has one, at the root.
   await copyFile(join(root, "LICENSE"), join(here, "LICENSE"));
-  return ["extension.cjs", "extension.cjs.map", "markset.css", "snippets.json"].map((f) => join(out, f));
+  return ["extension.cjs", "extension.cjs.map", "markset.css", "preview.css", "snippets.json"].map((f) => join(out, f));
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === resolve(import.meta.filename)) {
