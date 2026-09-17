@@ -19,7 +19,6 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          registry-url: https://registry.npmjs.org
       # The test suite builds the site, which draws mermaid, which needs the
       # browser mermaid-cli brings. Cached so a release is not a cold download.
       - uses: actions/cache@v4
@@ -53,6 +52,15 @@ jobs:
       # The list comes out of the release script rather than being written
       # again here, so the two cannot disagree about what ships. Every package
       # declares access: public, so no flag is needed for the scope.
+      # The registry is configured here rather than at the top of the job.
+      # setup-node's registry-url writes an .npmrc with always-auth, so every
+      # npm command sends NODE_AUTH_TOKEN -- including npm ci, which then fails
+      # with a 401 when the secret is absent, before anything has been proved.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
       - name: Publish what is not already on the registry
         run: |
           npm run build
