@@ -8,7 +8,7 @@
  */
 import { mkdir, readdir, readFile, rename, rm, writeFile, cp } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve } from "node:path";
-import type { Heading, Root } from "mdast";
+import type { Heading, Nodes, Root } from "mdast";
 import {
   addHeadingIds,
   parseDocument,
@@ -314,6 +314,10 @@ async function markdownPage(path: string, file: string, themeCss?: string | fals
     title: firstHeading(ast) ?? basename(file, ".md"),
     body: renderHtml(ast, { diagrams: DIAGRAMS }),
     themeAttributes: bodyAttributes(ast.frontmatter ?? null),
+    // Measured, not listed. Every content page and every example comes through
+    // here, so a new one gets a rail exactly when it has grown enough to want
+    // one, and nobody has to remember to decide.
+    ...(wantsRail(ast) ? { toc: tableOfContents(ast, 2, 3) } : {}),
     ...(themeCss ? { themeCss } : {}),
   };
 }
@@ -415,25 +419,37 @@ async function referenceIndex(): Promise<Page> {
   const intro = await readFile(join(root, "site", "content", "reference", "index.md"), "utf8");
   const { ast, diagnostics } = parseDocument(intro);
   failOnErrors(diagnostics, "reference/index.md");
-  const list = CONSTRUCTS.map(
-    (name) => `<li><a href="${name}/index.html"><code>${name}</code></a> — ${esc(BLURB[name])}</li>`,
-  ).join("\n");
-  // Two reference pages are not constructs. They used to be trailing notes
-  // under the eight, which is where a reader who is looking for diagrams does
-  // not look: the page existed and was reported as missing. They get a heading
-  // and a list of their own now, so the section is somewhere rather than after.
-  const beyond = [
-    `<li><a href="diagrams/index.html">Diagrams</a> — an ASCII or mermaid fence becomes a picture, why that needs no ninth construct, and what a renderer may and may not do with one.</li>`,
-    `<li><a href="frontmatter/index.html">Frontmatter and theme tokens</a> — the version key, the seven theme tokens, and what each preset changes.</li>`,
+  // Generated as Markset source and parsed with the intro, rather than
+  // assembled as HTML after it. Same reason as the examples index: the page
+  // stays a Markset document. It also makes the generated sections visible to
+  // everything that reads the tree — the rail could not see a hand-built <h2>,
+  // and measuring the page for one would have measured only the prose above it.
+  //
+  // Two of these pages are not constructs. They used to be trailing notes under
+  // the eight, which is where a reader looking for diagrams does not look: the
+  // page existed and was reported as missing. They get a heading of their own.
+  const generated = [
+    "",
+    "{.site-list}",
+    ...CONSTRUCTS.map((name) => `- [\`${name}\`](${name}/index.html) — ${BLURB[name]}`),
+    "",
+    "## Beyond the constructs",
+    "",
+    "Two things a document does that no construct covers.",
+    "",
+    "{.site-list}",
+    "- [Diagrams](diagrams/index.html) — an ASCII or mermaid fence becomes a picture, why that needs no ninth construct, and what a renderer may and may not do with one.",
+    "- [Frontmatter and theme tokens](frontmatter/index.html) — the version key, the seven theme tokens, and what each preset changes.",
+    "",
   ].join("\n");
+  const full = parseDocument(`${intro}\n${generated}`);
+  failOnErrors(full.diagnostics, "reference/index.md");
+  const tree = addHeadingIds(full.ast);
   return {
     path: "reference/index.html",
     title: "Reference",
-    body:
-      `${renderHtml(ast)}<ul class="site-list">\n${list}\n</ul>\n` +
-      `<h2 id="beyond-the-constructs">Beyond the constructs</h2>\n` +
-      `<p>Two things a document does that no construct covers.</p>\n` +
-      `<ul class="site-list">\n${beyond}\n</ul>\n`,
+    body: renderHtml(tree),
+    ...(wantsRail(tree) ? { toc: tableOfContents(tree, 2, 3) } : {}),
   };
 }
 
@@ -810,9 +826,55 @@ const SCHEME_SCRIPT = `<script>
 </script>
 `;
 
+/**
+ * Constructs whose headings are part of the construct rather than sections of
+ * the document. A tab's label is a heading and a step's title is a heading, so
+ * walking into these puts "From source / As a library / In CI" in the rail
+ * beside the real sections. The rail descends through everything else.
+ */
+const OPAQUE_TO_CONTENTS = new Set(["tabs", "tab", "steps", "grid", "card", "figure", "callout", "metrics"]);
+
+/**
+ * Collect the headings a reader would call sections.
+ *
+ * Top-level children are not enough. A document that wraps a section in
+ * `columns` — which is ordinary prose layout, and what both the adoption page
+ * and the strategy memo do — hides every heading inside it. The memo is the
+ * longest document on the site and offered exactly one heading before this
+ * descended.
+ */
+function sectionHeadings(node: Nodes, min: number, max: number, into: Heading[] = []): Heading[] {
+  if (node.type === "heading" && node.depth >= min && node.depth <= max) into.push(node as Heading);
+  if ("children" in node) {
+    for (const child of node.children as Nodes[]) {
+      if (!OPAQUE_TO_CONTENTS.has(child.type)) sectionHeadings(child, min, max, into);
+    }
+  }
+  return into;
+}
+
 function tableOfContents(ast: Root, min: number, max: number): string {
-  const items = ast.children.filter((n): n is Heading => n.type === "heading" && n.depth >= min && n.depth <= max);
+  const items = sectionHeadings(ast, min, max);
   return `<ul>\n${items.map((h) => `<li class="toc-${h.depth}"><a href="#${h.attributes?.id ?? ""}">${esc(text(h))}</a></li>`).join("\n")}\n</ul>`;
+}
+
+/**
+ * Whether a page has enough sections to want a rail, measured rather than
+ * listed. A rail on a short page is clutter, and a hand-kept list of which
+ * pages get one is a decision someone has to remember to revisit.
+ *
+ * Sections alone, with no length test. Length was the obvious second condition
+ * and measuring the site retired it: at nine hundred words it excluded the
+ * Pages guide by eight words and a configuration reference with eight sections
+ * in it, and it excluded nothing that the section count had not already
+ * excluded. Five sections is where this site divides — under it are the
+ * per-construct reference pages at three, over it are the guides, the long
+ * examples and the specification.
+ */
+const RAIL_MIN_SECTIONS = 5;
+
+function wantsRail(ast: Root): boolean {
+  return sectionHeadings(ast, 2, 3).length >= RAIL_MIN_SECTIONS;
 }
 
 function text(node: { type?: string; value?: unknown; children?: unknown[] }): string {

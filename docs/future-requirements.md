@@ -178,11 +178,18 @@ Observed: raised September 2026 while reviewing the site.
 
 ### 12. A left navigation rail on more than the specification
 
-**Class: Output. Recommended.**
+**Class: Output. Done, September 2026.**
 
-The specification page has a sticky table of contents and every other long page does not. The guide index, the CLI page and both long examples are now long enough to want one, and the machinery already exists in the generator.
+The specification page had a sticky table of contents and every other long page did not. Twelve pages have one now, and the collapse on a narrow screen came free: the rail is the shell's, so any page that sets `toc` inherits the behavior the specification already had.
 
-The work is deciding which pages get it, since a rail on a short page is clutter, and making the rail collapse on a narrow screen the way the specification's already does.
+**Which pages get it is measured, not listed.** Five or more sections and the page gets a rail. Length was the obvious second condition and measuring retired it: at nine hundred words it excluded the Pages guide by eight words and a configuration reference with eight sections in it, and excluded nothing the section count had not already excluded. A hand-kept list would have been a decision someone has to remember to revisit; the rule applies itself to a page that grows.
+
+Two things surfaced that a list of pages would have hidden.
+
+- **Reading only the tree's top level is not enough.** A document that wraps a section in `columns` — ordinary prose layout — hides every heading inside it. The strategy memo is the longest document on the site and offered exactly one heading; it offers thirteen now. The rail descends through layout and stops at `tabs`, `steps`, `grid`, `card`, `figure`, `callout` and `metrics`, where a heading belongs to the construct: a tab's label is a heading, and without that stop every page using tabs would list "Result" and "Markdown" among its sections.
+- **The reference index was assembling its generated half as HTML after the markdown**, so nothing that read the tree could see it. The page measured short by eleven words and its last section was missing from any rail built over it. It generates Markset source and parses it with the intro now, the way the examples index already did, and the rendered output is byte-identical — the only change to that page is the rail itself.
+
+The conformance pages get none and never will: they are generated as constructs rather than sections, so there is nothing for a rail to list. That is a property of how they are built, not a threshold that happens to exclude them.
 
 Observed: raised September 2026 while reviewing the site.
 
