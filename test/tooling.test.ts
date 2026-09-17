@@ -279,3 +279,20 @@ test("the release workflow can be run a second time without failing", async () =
   const install = yaml.indexOf("npm ci");
   assert.ok(yaml.indexOf("registry-url") > install, "the registry is configured after the install, not before");
 });
+
+test("every dependency resolves to the public registry", async () => {
+  // A private registry in a contributor's ~/.npmrc is written into the
+  // lockfile as the resolved URL for anything it serves, and npm ci then
+  // sends an empty credential to a host that demands one. It fails with a
+  // 401 about a password, on a machine that never configured a password,
+  // for a package nobody added -- and it fails at install, so nothing else
+  // in the job gets far enough to say anything more useful. It broke every
+  // workflow in this repository for five commits before anyone read a log.
+  const lock = JSON.parse(await readFile(join(root, "package-lock.json"), "utf8")) as {
+    packages: Record<string, { resolved?: string }>;
+  };
+  const foreign = Object.entries(lock.packages)
+    .filter(([, v]) => v.resolved?.startsWith("http") && !v.resolved.startsWith("https://registry.npmjs.org/"))
+    .map(([name, v]) => `${name} -> ${v.resolved}`);
+  assert.deepEqual(foreign, [], "a lockfile entry points somewhere only one machine can reach");
+});
