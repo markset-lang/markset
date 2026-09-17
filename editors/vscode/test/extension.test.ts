@@ -7,10 +7,12 @@ import { parseDocument, BLOCK_DIRECTIVE_NAMES } from "@markset-lang/parser";
 import {
   buildSnippets,
   check,
+  commandEngines,
   declaresMarkset,
   escapeSnippetBody,
   extendMarkdownIt,
   fenceCompletions,
+  handOffMermaid,
   previewDocument,
   previewFragment,
   scopeStylesheet,
@@ -234,10 +236,13 @@ test("the bundle activates against a stub host without throwing, and registers w
         activeTextEditor: undefined,
         activeColorTheme: { kind: 1 },
         createStatusBarItem: () => statusBar,
+        createOutputChannel: () => ({ appendLine(): void {}, dispose(): void {} }),
         onDidChangeActiveTextEditor: event,
         onDidChangeActiveColorTheme: event,
       },
+      extensions: { getExtension: () => undefined },
       commands: {
+        executeCommand: () => Promise.resolve(),
         registerCommand: (id: string) => {
           registered.push(id);
           return disposable;
@@ -370,4 +375,79 @@ test("the fragment carries the theme tokens and scheme the CLI would put on body
     /^<div class="ms-document" data-preset="report" style="--ms-accent: #14607a" data-scheme="light">\n/u,
   );
   assert.doesNotMatch(html, /<script/iu);
+});
+
+const MERMAID_DOC =
+  "---\nmarkset: 0\n---\n\n:::figure[Two boxes]\n```mermaid\ngraph LR\n  A --> B\n```\n:::\n\n```mermaid\ngraph LR\n  C --> D\n```\n";
+
+test("a mermaid fence in a captioned figure is handed to the Mermaid preview extension, and one outside is not", () => {
+  // bierner.markdown-mermaid draws every element with class `mermaid` in the
+  // built-in preview. It never sees our fences, so inside a figure the fence is
+  // re-shaped into that element; outside one there is no text alternative, so
+  // it stays the code block (§10 obligation 7).
+  const plain = previewFragment(MERMAID_DOC, "light");
+  assert.equal((plain.match(/<pre><code class="language-mermaid">/gu) ?? []).length, 2);
+  const handed = previewFragment(MERMAID_DOC, "light", { handOffMermaid: true });
+  assert.equal((handed.match(/<div class="mermaid">graph LR\n {2}A --> B\n<\/div>/gu) ?? []).length, 1);
+  assert.equal((handed.match(/<pre><code class="language-mermaid">graph LR\n {2}C/gu) ?? []).length, 1);
+  assert.equal(
+    handOffMermaid('<pre><code class="language-python">x</code></pre>'),
+    '<pre><code class="language-python">x</code></pre>',
+  );
+});
+
+test("a configured command draws a fence without blocking: a miss declines, the picture arrives on the next render", async () => {
+  const calls: Array<[string, string]> = [];
+  let resolveRun: ((svg: string) => void) | undefined;
+  const run = (command: string, input: string): Promise<string> => {
+    calls.push([command, input]);
+    return new Promise((r) => {
+      resolveRun = r;
+    });
+  };
+  let ready = 0;
+  const options = commandEngines({ mermaid: "mmdc -i /dev/stdin -o /dev/stdout", empty: "  " }, run, () => ready++);
+  assert.ok(options);
+  assert.deepEqual(Object.keys(options.engines), ["mermaid"], "a blank command is no engine");
+  // First render: the command starts, the fence stays a code block.
+  const first = previewFragment(MERMAID_DOC, "light", { render: { diagrams: options } });
+  assert.match(first, /<pre><code class="language-mermaid">graph LR\n {2}A/u);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0][1], "graph LR\n  A --> B\n");
+  // Rendering again while it runs does not start it twice.
+  previewFragment(MERMAID_DOC, "light", { render: { diagrams: options } });
+  assert.equal(calls.length, 1);
+  resolveRun?.('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><rect width="10" height="10"/></svg>');
+  await new Promise((r) => setTimeout(r, 0));
+  assert.equal(ready, 1, "the previews are asked to render again once");
+  const second = previewFragment(MERMAID_DOC, "light", { render: { diagrams: options } });
+  assert.match(second, /<img class="ms-diagram"/u, "the cached picture is drawn");
+  assert.equal(calls.length, 1, "and the command did not run again");
+  // The fence outside a figure is never drawn, so it never runs a command either.
+  assert.match(second, /<pre><code class="language-mermaid">graph LR\n {2}C/u);
+  assert.equal(
+    commandEngines({}, run, () => {}),
+    undefined,
+  );
+});
+
+test("a failing command is remembered as a decline, so it runs once per fence rather than once per keystroke", async () => {
+  let calls = 0;
+  const errors: string[] = [];
+  const options = commandEngines(
+    { mermaid: "false" },
+    () => {
+      calls++;
+      return Promise.reject(new Error("exited 1"));
+    },
+    () => {},
+    (error, language) => errors.push(`${language}: ${error.message}`),
+  );
+  assert.ok(options);
+  previewFragment(MERMAID_DOC, "light", { render: { diagrams: options } });
+  await new Promise((r) => setTimeout(r, 0));
+  const again = previewFragment(MERMAID_DOC, "light", { render: { diagrams: options } });
+  assert.equal(calls, 1);
+  assert.deepEqual(errors, ["mermaid: exited 1"]);
+  assert.match(again, /<pre><code class="language-mermaid">graph LR\n {2}A/u, "the code block stays");
 });

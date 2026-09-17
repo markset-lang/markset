@@ -1,3 +1,4 @@
+| `markset.diagrams` | `{}` | Commands that draw diagram fences by language, as `markset html --diagram lang=command` does. |
 | `markset.builtInPreview` | `true` | Render Markset documents in the built-in Markdown preview. |
 | `markset.preview.theme` | `""` |# Markset for Visual Studio Code
 
@@ -12,6 +13,18 @@
 - **Completions.** Type `:::` at the start of a line and every fenced construct is offered with a working example; type `> [!` and the five callout types are.
 - **Snippets.** `card`, `grid`, `tabs`, `figure`, `diagram`, `chart` and the rest. Every body is a case from the Markset conformance suite, so a snippet can never insert something the parser rejects.
 - **Highlighting** for fence lines, `::col`, attribute lines, bracketed spans and callout markers, layered over the Markdown grammar you already have.
+
+## Diagrams
+
+An `ascii` fence inside a captioned `figure` is drawn as a picture with nothing configured, in both previews. Every other diagram language stays a code block unless you name a command that draws it, exactly as the command line does with `--diagram`:
+
+```json
+"markset.diagrams": { "mermaid": "mmdc -i /dev/stdin -o /dev/stdout -b transparent" }
+```
+
+The fence arrives on the command's standard input and the SVG comes back on its output. The first render of a fence shows the code block while the command runs, and the picture takes its place when it is ready; the result is cached, so editing prose never re-runs it. Nothing in a document can name a command. Only this setting can.
+
+Without a command for `mermaid`, the built-in preview hands mermaid fences in captioned figures to the *Markdown Preview Mermaid Support* extension when it is installed, which draws them in the browser. Fences outside a figure stay code blocks either way, because a drawn picture needs the caption as its text alternative.
 
 ## Which files it checks
 

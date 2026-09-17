@@ -70,6 +70,14 @@
           "type": "boolean",
           "default": true,
           "description": "Render Markset documents in the built-in Markdown preview, so the standard preview icon shows the real rendering. Off, the built-in preview shows plain Markdown and the Markset preview command still works."
+        },
+        "markset.diagrams": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "markdownDescription": "Commands that draw diagram fences, by language, the way `markset html --diagram lang=command` does: the fence arrives on the command's standard input and it prints an SVG. `ascii` is drawn without any of this. Example, with mermaid-cli installed: `{ \"mermaid\": \"mmdc -i /dev/stdin -o /dev/stdout -b transparent\" }`. Nothing in a document can name a command; only this setting can. Without a command for `mermaid`, the built-in preview hands mermaid fences to the *Markdown Preview Mermaid Support* extension when it is installed."
         }
       }
     },
