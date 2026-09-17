@@ -125,7 +125,13 @@ Read these before proposing syntax changes — most ideas have been tried.
 - [x] Three worked examples under `examples/`, each wired into `EXAMPLES` in `site/build.ts`: the construct tour, an analysis document with `dossier.css`, and a strategy memo with `memo.css`. All three describe invented systems; internal material stays out of the repository.
 - [x] Site: per-page theme stylesheets. `EXAMPLES` in `site/build.ts` lists each example document and the theme it is read with; the shell links it after `site.css` so it can override. Adding an example is one entry in that array, and a test requires `examples/*.md` and that array to match exactly, in both directions.
 - [x] Heading ids in the renderer (`addHeadingIds` in `packages/render-html`, on by default, §2.1). Set on the heading node, so a caller that also builds a table of contents reads the same ids it renders.
-- [x] Reader's choice of color scheme with no script. Every color is one `light-dark()` pair resolved through `color-scheme`; `data-scheme` on `<body>` forces it (§6); the site's control is three radio inputs read by `:has()`.
+- [x] Reader's choice of color scheme. Every color is one `light-dark()` pair resolved through `color-scheme`;
+      `data-scheme` on `<body>` forces it (§6); the site's control is three radio inputs read by `:has()`.
+      The control is CSS; carrying the choice to the next page is the one part that cannot be, so the site
+      shell has exactly one script, which restores the saved choice into `data-scheme` before anything paints
+      and records each change. It is chrome, never document output: the rule the tests hold is that nothing
+      inside `<main>` has a script and no page has a second one. With scripting off the control still works
+      for the page it is on.
 - [x] Fourth real document, `examples/incident-review.md` with `examples/incident.css`. Forced nothing in §2 or §4, and is the evidence that `steps` already carries a timeline.
 - [x] Register entry 7 decided by counting: four documents invented 54 author classes and shared two, neither of which clears the bar. `docs/future-requirements.md` also carries the test a proposed ninth construct has to pass.
 - [x] Diagrams (§10, added 2026-09-15). Not a construct: a diagram is a fenced code block whose info string names
