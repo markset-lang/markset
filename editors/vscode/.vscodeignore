@@ -1,0 +1,7 @@
+# The bundle in dist/ is the extension. Nothing else needs to travel.
+src/**
+test/**
+build.ts
+tsconfig*.json
+node_modules/**
+**/*.map

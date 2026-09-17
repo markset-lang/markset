@@ -4,7 +4,8 @@
   "type": "module",
   "workspaces": [
     "packages/*",
-    "site"
+    "site",
+    "editors/vscode"
   ],
   "engines": {
     "node": ">=22.18"
@@ -13,18 +14,22 @@
     "build": "rm -rf packages/*/dist && node --conditions=markset-source packages/conformance-suite/stage.ts && tsc -p packages/parser/tsconfig.build.json && tsc -p packages/diagram-ascii/tsconfig.build.json && tsc -p packages/chart-table/tsconfig.build.json && tsc -p packages/render-downgrade/tsconfig.build.json && tsc -p packages/render-html/tsconfig.build.json && tsc -p packages/cli/tsconfig.build.json && tsc -p packages/remark-markset/tsconfig.build.json && tsc -p packages/conformance-suite/tsconfig.build.json",
     "release": "npm run build && npm publish --workspace @markset-lang/parser --workspace @markset-lang/diagram-ascii --workspace @markset-lang/chart-table --workspace @markset-lang/render-downgrade --workspace @markset-lang/render-html --workspace @markset-lang/cli --workspace @markset-lang/remark-markset --workspace @markset-lang/conformance-suite",
     "markset": "node --conditions=markset-source packages/cli/src/markset.ts",
-    "test": "node --conditions=markset-source --test packages/*/test/*.test.ts site/test/*.test.ts test/*.test.ts",
+    "test": "node --conditions=markset-source --test packages/*/test/*.test.ts site/test/*.test.ts editors/vscode/test/*.test.ts test/*.test.ts",
     "conformance": "node --conditions=markset-source packages/conformance/src/cli.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "biome check .",
     "format": "biome check --write .",
     "site": "node --conditions=markset-source site/build.ts",
-    "site:watch": "node --conditions=markset-source site/serve.ts"
+    "site:watch": "node --conditions=markset-source site/serve.ts",
+    "vscode:build": "npm run build --workspace markset-vscode",
+    "vscode:package": "npm run package --workspace markset-vscode"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.13",
     "@mermaid-js/mermaid-cli": "^11.17.0",
     "@types/node": "^26.5.1",
+    "@types/vscode": "1.95.0",
+    "@vscode/vsce": "^3.9.2",
     "esbuild": "0.28.2",
     "rehype-stringify": "^10.0.1",
     "remark-parse": "^11.0.0",

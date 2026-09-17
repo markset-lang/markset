@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- **A VS Code extension**, in `editors/vscode/`. Diagnostics as you type for documents that declare `markset:`, a live preview with scripting off, the downgrade on demand, completions after `:::` and `> [!`, snippets derived from the conformance suite, and highlighting injected into the Markdown grammar. It is the same packages bundled for the extension host, so what the editor reports is what `markset check` reports. Built and packaged from the repository; it is not on the marketplace yet.
+- The release list is pinned to dependency order by a test. The publish step stops at the first failure, and that is safe only because every package that goes out points at versions already published.
+
 ## 0.3.1 — 2026-09-17
 
 **Two stylesheet defects found by a document, a ninth example, and a README for every package.** Nothing in the grammar or the spec changed; everything here is output or documentation, which is what v0 allows.

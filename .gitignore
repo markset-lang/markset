@@ -10,3 +10,8 @@ packages/conformance-suite/schema.json
 
 # Screenshots for review; never committed.
 .screenshots/
+
+# The editor extension is built into its own dist/, and vsce wants a LICENSE copy beside the manifest.
+editors/vscode/dist/
+editors/vscode/LICENSE
+*.vsix

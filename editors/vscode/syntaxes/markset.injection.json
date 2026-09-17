@@ -1,0 +1,69 @@
+{
+  "scopeName": "markset.injection",
+  "injectionSelector": "L:text.html.markdown -markup.fenced_code.block -markup.raw -comment",
+  "patterns": [
+    { "include": "#directive-open" },
+    { "include": "#directive-close" },
+    { "include": "#separator" },
+    { "include": "#attribute-line" },
+    { "include": "#callout-marker" },
+    { "include": "#span" }
+  ],
+  "repository": {
+    "directive-open": {
+      "match": "^\\s{0,3}(:{3,})([a-z][a-z0-9-]*)(\\[[^\\]]*\\])?(\\{[^}]*\\})?\\s*$",
+      "captures": {
+        "1": { "name": "punctuation.definition.directive.markset" },
+        "2": { "name": "entity.name.tag.directive.markset" },
+        "3": { "name": "string.quoted.other.directive-argument.markset" },
+        "4": { "name": "meta.attributes.markset", "patterns": [{ "include": "#attributes" }] }
+      }
+    },
+    "directive-close": {
+      "match": "^\\s{0,3}(:{3,})\\s*$",
+      "captures": { "1": { "name": "punctuation.definition.directive.markset" } }
+    },
+    "separator": {
+      "match": "^\\s{0,3}(::)(col)(\\{[^}]*\\})?\\s*$",
+      "captures": {
+        "1": { "name": "punctuation.definition.directive.markset" },
+        "2": { "name": "entity.name.tag.separator.markset" },
+        "3": { "name": "meta.attributes.markset", "patterns": [{ "include": "#attributes" }] }
+      }
+    },
+    "attribute-line": {
+      "match": "^\\s{0,3}(\\{[^}]*\\})\\s*$",
+      "captures": { "1": { "name": "meta.attributes.markset", "patterns": [{ "include": "#attributes" }] } }
+    },
+    "callout-marker": {
+      "match": "^\\s{0,3}>\\s*(\\[!(?:[Nn][Oo][Tt][Ee]|[Tt][Ii][Pp]|[Ii][Mm][Pp][Oo][Rr][Tt][Aa][Nn][Tt]|[Ww][Aa][Rr][Nn][Ii][Nn][Gg]|[Cc][Aa][Uu][Tt][Ii][Oo][Nn])\\])([+-])?",
+      "captures": {
+        "1": { "name": "keyword.control.callout.markset" },
+        "2": { "name": "punctuation.definition.fold.markset" }
+      }
+    },
+    "span": {
+      "match": "(\\[)([^\\[\\]]*)(\\])(\\{[^}]*\\})",
+      "captures": {
+        "1": { "name": "punctuation.definition.span.begin.markset" },
+        "2": { "name": "markup.other.span.markset" },
+        "3": { "name": "punctuation.definition.span.end.markset" },
+        "4": { "name": "meta.attributes.markset", "patterns": [{ "include": "#attributes" }] }
+      }
+    },
+    "attributes": {
+      "patterns": [
+        { "match": "#[^\\s.#}]+", "name": "entity.other.attribute-name.id.markset" },
+        { "match": "\\.[^\\s.#}]+", "name": "entity.other.attribute-name.class.markset" },
+        {
+          "match": "([A-Za-z_][\\w-]*)(=)(\"[^\"]*\"|'[^']*'|[^\\s}]+)",
+          "captures": {
+            "1": { "name": "entity.other.attribute-name.markset" },
+            "2": { "name": "keyword.operator.assignment.markset" },
+            "3": { "name": "string.unquoted.attribute-value.markset" }
+          }
+        }
+      ]
+    }
+  }
+}
