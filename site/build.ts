@@ -145,6 +145,15 @@ export const EXAMPLES: Array<{
     blurb:
       "A postmortem in the register of a printed report: an impact strip, a timeline on a rail, a factors table with a real caption, and an action list where the committed items mark themselves.",
   },
+  {
+    slug: "capacity-review",
+    file: "capacity-review.md",
+    title: "Capacity review",
+    theme: "cistern.css",
+    kicker: "Data readout",
+    blurb:
+      "The genre that argues from quantities: a fleet strip, four data tables that carry the whole case, and a distribution drawn as an ASCII plot. Written to find out what a document wants when the numbers are the argument.",
+  },
 ];
 
 const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;

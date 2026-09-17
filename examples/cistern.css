@@ -1,0 +1,132 @@
+/* Theme stylesheet for examples/capacity-review.md (spec §6).
+ *
+ * A capacity review is read by people who will argue with the numbers, so the
+ * numbers are what this theme serves. Tables get lining, tabular figures so
+ * columns of digits line up and a reader can compare down a column without
+ * counting places; the prose around them is kept plain so a table is the only
+ * thing on the page asking to be looked at.
+ *
+ * The document names no color, no width and no alignment. It says "this is a
+ * metrics block about the fleet" and "this figure holds a plot", and every
+ * decision below is this file's answer to that. */
+
+body {
+  --ink: light-dark(#15302c, #dceae6);
+  --rule: light-dark(#cbdedb, #274440);
+  --surface: light-dark(#f4faf8, #101f1d);
+  --quiet: light-dark(#5c7671, #8aa39e);
+}
+
+.ms-document {
+  --ms-fg: var(--ink);
+  --ms-border: var(--rule);
+}
+.ms-document > h1 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.ms-document > h2 {
+  font-weight: 650;
+  letter-spacing: -0.012em;
+}
+.eyebrow {
+  font-family: var(--ms-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+}
+
+/* Every digit in the document, in one declaration. Lining tabular figures are
+ * the whole reason a column of numbers can be compared at a glance, and no
+ * document should have to ask for them. */
+table,
+.ms-metric-value {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* A data table is the argument here, not an illustration of it, so it gets a
+ * surface and room rather than sitting flush in the prose. The caption reads as
+ * a statement about the table, which is why it is not italic. */
+.ms-figure > table {
+  width: 100%;
+  border: 1px solid var(--rule);
+  border-radius: var(--ms-radius);
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--surface);
+}
+.ms-figure > table th {
+  font-size: 0.72rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--quiet);
+}
+/* Numbers right, labels left. The document marks no alignment: which columns
+ * hold quantities is visible from the content, and deciding it here is what
+ * keeps a table portable to a theme that wants something else. */
+.ms-figure > table td:not(:first-child),
+.ms-figure > table th:not(:first-child) {
+  text-align: right;
+}
+.ms-figure > table caption {
+  color: var(--quiet);
+  font-style: normal;
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+/* A row of totals closes a table rather than continuing it. The document says
+ * only that the cells are strong; reading that as a summary row is this file's
+ * interpretation, and it degrades to bold text everywhere else. */
+.ms-figure > table tr:has(strong) {
+  border-top: 2px solid var(--rule);
+  background: light-dark(#e8f3f0, #16302c);
+}
+
+/* The fleet strip carries the four numbers the rest of the review argues
+ * about, so it is given the weight of a headline and set before the prose. */
+.fleet {
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: var(--ms-radius);
+  overflow: hidden;
+}
+.fleet .ms-metric {
+  border: 0;
+  border-radius: 0;
+  background: var(--surface);
+  padding: 1rem 1.15rem;
+}
+.fleet .ms-metric-value {
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+}
+
+/* A plot is a drawn ASCII figure, and the theme can frame it but cannot reach
+ * inside it: the SVG arrives as a data URI and colors its own marks from the
+ * reader's scheme. Centering and the surface are all that is left to decide. */
+.plot {
+  padding: calc(var(--ms-space) * 1.1);
+  border: 1px solid var(--rule);
+  border-radius: var(--ms-radius);
+  background: var(--surface);
+}
+.plot > .ms-diagram {
+  margin-inline: auto;
+}
+.plot > figcaption {
+  margin-top: calc(var(--ms-space) * 0.75);
+  text-align: center;
+  font-style: normal;
+  font-size: 0.85em;
+}
+
+/* When a step happens, set apart from what the step is. Same class and same
+ * job as in examples/incident-review.md, which is worth noticing: two
+ * documents in different genres reached for the same idea independently. */
+.when {
+  font-family: var(--ms-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--quiet);
+}
