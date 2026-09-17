@@ -26,11 +26,12 @@ const out = join(root, "dist");
  * conformance cases the guide is generated from, and the packages that do the
  * rendering.
  */
-const WATCHED = [
+export const WATCHED = [
   "site/build.ts",
   "site/deps.ts",
   "site/site.css",
   "site/content",
+  "site/playground",
   "examples",
   "spec",
   "tests",
