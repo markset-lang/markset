@@ -1,0 +1,1117 @@
+[
+  {
+    "section": "chart",
+    "name": "canonical",
+    "markset": ":::figure[Requests per second by region]{#fig-rps chart=line}\n| Quarter | us-east | eu-west |\n|---|---|---|\n| Q1 | 120 | 64 |\n| Q2 | 140 | 71 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "Requests per second by region"
+            }
+          ],
+          "width": null,
+          "chart": "line",
+          "id": "fig-rps",
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Quarter"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "us-east"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "eu-west"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "120"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "64"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q2"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "140"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "71"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "| Quarter | us-east | eu-west |\n| ------- | ------- | ------- |\n| Q1      | 120     | 64      |\n| Q2      | 140     | 71      |\n\n*Requests per second by region*\n",
+    "html": "<figure class=\"ms-figure\" id=\"fig-rps\" data-chart=\"line\">\n<table>\n<caption>Requests per second by region</caption>\n<thead>\n<tr>\n<th scope=\"col\">Quarter</th>\n<th scope=\"col\">us-east</th>\n<th scope=\"col\">eu-west</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Q1</td>\n<td>120</td>\n<td>64</td>\n</tr>\n<tr>\n<td>Q2</td>\n<td>140</td>\n<td>71</td>\n</tr>\n</tbody>\n</table>\n</figure>\n"
+  },
+  {
+    "section": "chart",
+    "name": "no id, caption only",
+    "markset": ":::figure[Stored volume by quarter]{chart=line}\n| Quarter | us-east | eu-west |\n|---|---|---|\n| Q1 | 120 | 64 |\n| Q2 | 140 | 71 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "Stored volume by quarter"
+            }
+          ],
+          "width": null,
+          "chart": "line",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Quarter"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "us-east"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "eu-west"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "120"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "64"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q2"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "140"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "71"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "| Quarter | us-east | eu-west |\n| ------- | ------- | ------- |\n| Q1      | 120     | 64      |\n| Q2      | 140     | 71      |\n\n*Stored volume by quarter*\n",
+    "html": "<figure class=\"ms-figure\" data-chart=\"line\">\n<table>\n<caption>Stored volume by quarter</caption>\n<thead>\n<tr>\n<th scope=\"col\">Quarter</th>\n<th scope=\"col\">us-east</th>\n<th scope=\"col\">eu-west</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Q1</td>\n<td>120</td>\n<td>64</td>\n</tr>\n<tr>\n<td>Q2</td>\n<td>140</td>\n<td>71</td>\n</tr>\n</tbody>\n</table>\n</figure>\n"
+  },
+  {
+    "section": "chart",
+    "name": "a figure with no chart is unchanged",
+    "markset": ":::figure[Requests per second by region]{#fig-rps}\n| Quarter | us-east | eu-west |\n|---|---|---|\n| Q1 | 120 | 64 |\n| Q2 | 140 | 71 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "Requests per second by region"
+            }
+          ],
+          "width": null,
+          "id": "fig-rps",
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Quarter"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "us-east"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "eu-west"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "120"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "64"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q2"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "140"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "71"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "| Quarter | us-east | eu-west |\n| ------- | ------- | ------- |\n| Q1      | 120     | 64      |\n| Q2      | 140     | 71      |\n\n*Requests per second by region*\n",
+    "html": "<figure class=\"ms-figure\" id=\"fig-rps\">\n<table>\n<caption>Requests per second by region</caption>\n<thead>\n<tr>\n<th scope=\"col\">Quarter</th>\n<th scope=\"col\">us-east</th>\n<th scope=\"col\">eu-west</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Q1</td>\n<td>120</td>\n<td>64</td>\n</tr>\n<tr>\n<td>Q2</td>\n<td>140</td>\n<td>71</td>\n</tr>\n</tbody>\n</table>\n</figure>\n"
+  },
+  {
+    "section": "chart",
+    "name": "chart with no caption parses; drawing it is what obligation 7 forbids",
+    "markset": ":::figure{chart=line}\n| Quarter | us-east | eu-west |\n|---|---|---|\n| Q1 | 120 | 64 |\n| Q2 | 140 | 71 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": null,
+          "width": null,
+          "chart": "line",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Quarter"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "us-east"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "eu-west"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "120"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "64"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q2"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "140"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "71"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "| Quarter | us-east | eu-west |\n| ------- | ------- | ------- |\n| Q1      | 120     | 64      |\n| Q2      | 140     | 71      |\n",
+    "html": "<figure class=\"ms-figure\" data-chart=\"line\">\n<table>\n<thead>\n<tr>\n<th scope=\"col\">Quarter</th>\n<th scope=\"col\">us-east</th>\n<th scope=\"col\">eu-west</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Q1</td>\n<td>120</td>\n<td>64</td>\n</tr>\n<tr>\n<td>Q2</td>\n<td>140</td>\n<td>71</td>\n</tr>\n</tbody>\n</table>\n</figure>\n"
+  },
+  {
+    "section": "chart",
+    "name": "single series",
+    "markset": ":::figure[One series]{chart=line}\n| Quarter | Total |\n|---|---|\n| Q1 | 5 |\n| Q2 | 9 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "One series"
+            }
+          ],
+          "width": null,
+          "chart": "line",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Quarter"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Total"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "5"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q2"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "9"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "| Quarter | Total |\n| ------- | ----- |\n| Q1      | 5     |\n| Q2      | 9     |\n\n*One series*\n",
+    "html": "<figure class=\"ms-figure\" data-chart=\"line\">\n<table>\n<caption>One series</caption>\n<thead>\n<tr>\n<th scope=\"col\">Quarter</th>\n<th scope=\"col\">Total</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Q1</td>\n<td>5</td>\n</tr>\n<tr>\n<td>Q2</td>\n<td>9</td>\n</tr>\n</tbody>\n</table>\n</figure>\n"
+  },
+  {
+    "section": "chart",
+    "name": "a gap in a series is a missing point",
+    "markset": ":::figure[With a gap]{chart=line}\n| Quarter | a | b |\n|---|---|---|\n| Q1 | 1 | |\n| Q2 | 2 | 4 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "With a gap"
+            }
+          ],
+          "width": null,
+          "chart": "line",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Quarter"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q2"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "2"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "4"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "downgrade": "| Quarter | a | b |\n| ------- | - | - |\n| Q1      | 1 |   |\n| Q2      | 2 | 4 |\n\n*With a gap*\n",
+    "html": "<figure class=\"ms-figure\" data-chart=\"line\">\n<table>\n<caption>With a gap</caption>\n<thead>\n<tr>\n<th scope=\"col\">Quarter</th>\n<th scope=\"col\">a</th>\n<th scope=\"col\">b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Q1</td>\n<td>1</td>\n<td></td>\n</tr>\n<tr>\n<td>Q2</td>\n<td>2</td>\n<td>4</td>\n</tr>\n</tbody>\n</table>\n</figure>\n"
+  },
+  {
+    "section": "chart",
+    "name": "unknown chart type",
+    "markset": ":::figure[Slices]{chart=pie}\n| Quarter | us-east | eu-west |\n|---|---|---|\n| Q1 | 120 | 64 |\n| Q2 | 140 | 71 |\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "Slices"
+            }
+          ],
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Quarter"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "us-east"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "eu-west"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "120"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "64"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q2"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "140"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "71"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": false,
+    "diagnostics": [
+      "DIRECTIVE_INVALID_ATTRIBUTE"
+    ],
+    "downgrade": "| Quarter | us-east | eu-west |\n| ------- | ------- | ------- |\n| Q1      | 120     | 64      |\n| Q2      | 140     | 71      |\n\n*Slices*\n",
+    "html": "<figure class=\"ms-figure\">\n<table>\n<caption>Slices</caption>\n<thead>\n<tr>\n<th scope=\"col\">Quarter</th>\n<th scope=\"col\">us-east</th>\n<th scope=\"col\">eu-west</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Q1</td>\n<td>120</td>\n<td>64</td>\n</tr>\n<tr>\n<td>Q2</td>\n<td>140</td>\n<td>71</td>\n</tr>\n</tbody>\n</table>\n</figure>\n"
+  },
+  {
+    "section": "chart",
+    "name": "chart on an image",
+    "markset": ":::figure[A picture]{chart=line}\n![](a.svg)\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "A picture"
+            }
+          ],
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "image",
+                  "title": null,
+                  "url": "a.svg",
+                  "alt": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": false,
+    "diagnostics": [
+      "CHART_CONTENT"
+    ],
+    "downgrade": "![](a.svg)\n\n*A picture*\n",
+    "html": "<figure class=\"ms-figure\">\n<img src=\"a.svg\" alt=\"\">\n<figcaption>A picture</figcaption>\n</figure>\n"
+  },
+  {
+    "section": "chart",
+    "name": "chart on a code block",
+    "markset": ":::figure[Some code]{chart=line}\n```js\nconst a = 1;\n```\n:::\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "Some code"
+            }
+          ],
+          "width": null,
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "code",
+              "lang": "js",
+              "meta": null,
+              "value": "const a = 1;"
+            }
+          ]
+        }
+      ]
+    },
+    "valid": false,
+    "diagnostics": [
+      "CHART_CONTENT"
+    ],
+    "downgrade": "```js\nconst a = 1;\n```\n\n*Some code*\n",
+    "html": "<figure class=\"ms-figure\">\n<pre><code class=\"language-js\">const a = 1;\n</code></pre>\n<figcaption>Some code</figcaption>\n</figure>\n"
+  },
+  {
+    "section": "chart",
+    "name": "unclosed fence",
+    "markset": ":::figure[Requests]{chart=line}\n| Quarter | us-east | eu-west |\n|---|---|---|\n| Q1 | 120 | 64 |\n| Q2 | 140 | 71 |\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "figure",
+          "caption": [
+            {
+              "type": "text",
+              "value": "Requests"
+            }
+          ],
+          "width": null,
+          "chart": "line",
+          "id": null,
+          "classes": [],
+          "children": [
+            {
+              "type": "table",
+              "align": [
+                null,
+                null,
+                null
+              ],
+              "children": [
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Quarter"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "us-east"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "eu-west"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q1"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "120"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "64"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "tableRow",
+                  "children": [
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "Q2"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "140"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "tableCell",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "71"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "valid": true,
+    "diagnostics": [
+      "DIRECTIVE_UNCLOSED"
+    ],
+    "downgrade": "| Quarter | us-east | eu-west |\n| ------- | ------- | ------- |\n| Q1      | 120     | 64      |\n| Q2      | 140     | 71      |\n\n*Requests*\n",
+    "html": "<figure class=\"ms-figure\" data-chart=\"line\">\n<table>\n<caption>Requests</caption>\n<thead>\n<tr>\n<th scope=\"col\">Quarter</th>\n<th scope=\"col\">us-east</th>\n<th scope=\"col\">eu-west</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Q1</td>\n<td>120</td>\n<td>64</td>\n</tr>\n<tr>\n<td>Q2</td>\n<td>140</td>\n<td>71</td>\n</tr>\n</tbody>\n</table>\n</figure>\n"
+  }
+]

@@ -111,6 +111,11 @@ in commit order, which is the wrong order for finding the work.
       found all five versions already on the registry and skipped them, which exercises the guard and not the
       authentication. The next release is the first real test, and its fallback is the manual path that worked —
       `npm login --auth-type=web`, then `npm run release`, in a terminal.
+- [ ] A chart engine. §11 is specified and the grammar is in, so a `figure` carrying `chart=line` parses, validates
+      and reaches HTML as `data-chart`; nothing draws it yet, which is obligation 1 and is a correct renderer. The
+      engine waits deliberately on an external consumer's own documents, because the chart **type set** is the one
+      decision here that is expensive to reverse: adding a type is additive, removing one is breaking. Shape it like
+      `diagram-ascii` — a pure function, no dependencies — and read the type list off what they need to draw.
 - [ ] Playground page (needs a bundler such as esbuild, not yet approved)
 
 **Done,** in the order it landed.
@@ -182,3 +187,14 @@ in commit order, which is the wrong order for finding the work.
       **The workflow configures no credential, deliberately.** An `.npmrc` with an empty `_authToken` is worse than
       none: npm tries it, is refused, and never reaches the OIDC path. That is not hypothetical — `setup-node`'s
       `registry-url` broke `npm ci` in this very workflow with a 401 about a password, on a runner that never had one.
+- [x] Charts (§11, added 2026-09-16). Not a construct, on §10's grounds: a chart is a `figure` holding a table,
+      which independent renderers already agree on, so what was missing was what a renderer may *do* with one. Eight
+      obligations — §10's seven, plus one only charts need: a drawn chart MUST NOT make its table unreachable,
+      because the picture is a lossy view of data a reader may want exactly, and where the numbers are the argument
+      that reader is not an edge case. The source is the table rather than a data-language fence, which is what
+      makes the §3 fallback the data itself rather than a gesture at it. §8 no longer defers `chart`.
+      One attribute, `chart` on `figure`, present in the AST **only when set**, so every figure and diagram case
+      pinned before the change is identical after it — entry 3's lesson about optional fields, first applied.
+      `line` is the only type and the set is closed, unlike §10's open language set: an unknown diagram language is
+      safe because it falls back to what the author wrote, and an unknown chart type is not, because a renderer that
+      guesses draws a different argument from the same data. Ten cases in `tests/chart.json`.
