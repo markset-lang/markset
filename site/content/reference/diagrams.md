@@ -224,6 +224,38 @@ An engine you register is layered over the built-in one, so adding a language ne
 ***
 
 {.eyebrow}
+Other languages
+
+## Drawing mermaid
+
+Yes, and graphviz, and svgbob, and anything else with a command that reads a diagram on stdin and writes SVG on stdout. **Nothing but `ascii` is built in**, which is a deliberate limit rather than a gap: a renderer that shipped a dozen engines would be a renderer nobody could reimplement, and §10 obligation 1 makes a fence with no engine a code block rather than an error.
+
+```sh
+npm i -g @mermaid-js/mermaid-cli
+markset html doc.md --diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"
+```
+
+That is the whole setup. `ascii` keeps drawing alongside it, because an engine you name is layered over the built-in one rather than replacing it.
+
+:::grid{cols=2}
+- ### What it costs
+
+  `mermaid-cli` brings a headless browser with it — a large download, and one that has to run in your build. That is the price of mermaid specifically, not of diagrams: an `ascii` fence is drawn by a pure function with no dependencies and no subprocess.
+
+- ### What you get back if you stop
+
+  The fence. Remove the flag and every mermaid diagram on the page is a `mermaid` code block again, with the document unchanged — the AST never knew (§10 obligation 3). Nothing has to be undone.
+:::
+
+**This page is the worked example.** The sequence diagram above is a `mermaid` fence in this page's source, drawn at build time by `site/mermaid.ts`. It renders each diagram twice, once in mermaid's light theme and once in its dark one, and splices both into a single SVG behind a `prefers-color-scheme` switch — because mermaid bakes a theme into what it emits and has no such switch of its own. A drawn mermaid diagram follows the control in the bar above for the same reason an ASCII one does, and it costs two renders to get there.
+
+> [!TIP] An engine that fails is not the same as a document that breaks
+> If `mmdc` is missing, exits non-zero, or prints something that is not SVG, the code block stays and the failure is reported to stderr (§10 obligation 5). A build that has never heard of mermaid produces a page that is still complete and still readable — which is the property that makes naming an engine a safe thing to do rather than a commitment.
+
+{.tick}
+***
+
+{.eyebrow}
 What gets emitted
 
 ## The drawn form

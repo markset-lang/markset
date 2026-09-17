@@ -47,7 +47,7 @@ Commands
   Reads one or more documents and reports every diagnostic with a file, line and column. Exits with status 1 if any diagnostic is an error, which is what makes it usable in continuous integration. Add `--json` to get the diagnostics as structured data instead of text.
 - ### `markset html`
 
-  Renders a complete HTML page with the default stylesheet inlined, so the output is one self-contained file. Add `--fragment` for the body content alone, `--theme <file>` to append a theme stylesheet, and `--title` to set the page title. ASCII diagram fences are drawn automatically (spec §10), and `--diagram` adds other languages or turns drawing off. What draws a fence is an *engine*: a function built into the renderer, or a command you name.
+  Renders a complete HTML page with the default stylesheet inlined, so the output is one self-contained file. Add `--fragment` for the body content alone, `--theme <file>` to append a theme stylesheet, and `--title` to set the page title. ASCII diagram fences are drawn automatically (spec §10), and `--diagram` adds other languages or turns drawing off — `--diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"` draws mermaid. What draws a fence is an *engine*: a function built into the renderer, or a command you name. See [diagrams](../reference/diagrams/index.html).
 - ### `markset css`
 
   Writes the default stylesheet — tokens, the eight constructs, print rules, light and dark. A site that renders more than one page links it once instead of inlining it into every file, which is the difference between a 24 KB page and a 0.5 KB one. Takes no input file. See [publishing to GitHub Pages](../github-pages/index.html).
