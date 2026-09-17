@@ -146,8 +146,17 @@ Read these before proposing syntax changes — most ideas have been tried.
       Publishing needs a TTY. npm's 2FA is a passkey here, and the browser flow it opens has no headless form —
       `npm login --auth-type=web` first, since a token from a plain `npm login` only offers to take a typed code.
       `--provenance` is CI-only and fails locally with `provider: null`.
-- [ ] Publish from CI. `.github/workflows/release.yml` runs the whole gate on a `v*` tag and publishes only what is
-      not already on the registry, so a re-pushed tag is safe. It still needs credentials: either an `NPM_TOKEN`
-      secret, or — better, and what npm is steering everyone to, since tokens that bypass 2FA are being restricted —
-      trusted publishing, which is OIDC and needs each package configured once on npmjs.com. Until one of those
-      exists, tagging `v0.2.0` runs the gate and publishes nothing, which is correct but is not a release.
+- [x] **Publishing from CI is wired, 2026-09-16.** `.github/workflows/release.yml` runs the whole gate on a `v*`
+      tag and publishes only what is not already on the registry, so a re-pushed tag is safe — proved by dispatching
+      it against an already-released commit and watching all five skip. Authentication is **trusted publishing**,
+      configured once per package on npmjs.com against this repository and `release.yml`: npm exchanges the OIDC
+      token GitHub mints for the run, so there is no secret to store, rotate or leak, and provenance comes with it.
+      Each package is also set to *require 2FA and disallow bypass-2FA tokens*, which costs nothing here — CI uses
+      OIDC and a human uses a passkey — and closes the route npm is restricting anyway.
+      **The workflow configures no credential, deliberately.** An `.npmrc` with an empty `_authToken` is worse than
+      none: npm tries it, is refused, and never reaches the OIDC path. That is not hypothetical — `setup-node`'s
+      `registry-url` broke `npm ci` in this very workflow with a 401 about a password, on a runner that never had one.
+- [ ] Prove the CI publish by releasing through it. The OIDC path has not yet published anything: every run so far
+      found all five versions already on the registry and skipped them, which exercises the guard and not the
+      authentication. The next release is the first real test, and its fallback is the manual path that worked —
+      `npm login --auth-type=web`, then `npm run release`, in a terminal.

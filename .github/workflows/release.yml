@@ -57,30 +57,26 @@ jobs:
       # The list comes out of the release script rather than being written
       # again here, so the two cannot disagree about what ships. Every package
       # declares access: public, so no flag is needed for the scope.
-      # The registry is configured here rather than at the top of the job.
-      # setup-node's registry-url writes an .npmrc with always-auth, so every
-      # npm command sends NODE_AUTH_TOKEN -- including npm ci, which then fails
-      # with a 401 when the secret is absent, before anything has been proved.
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          registry-url: https://registry.npmjs.org
-
+      # Nothing configures a credential, deliberately. These packages use npm's
+      # trusted publishing, so npm exchanges the OIDC token GitHub mints for
+      # this run -- which is why the job asks for id-token: write -- for a
+      # short-lived registry token scoped to this workflow. An .npmrc carrying
+      # an empty _authToken would be worse than none at all: npm would try that
+      # credential, be refused, and never reach the OIDC path. That is exactly
+      # how npm ci failed here before, so it is not a hypothetical.
       - name: Publish what is not already on the registry
         run: |
           npm run build
           version="$(node -p "require('./package.json').version")"
           names="$(node -p "require('./package.json').scripts.release.match(/@markset-lang\/[a-z-]+/g).join(' ')")"
           for name in $names; do
-            # Asked over plain HTTPS rather than through the npm client, which
-            # reads the .npmrc setup-node wrote and fails on a missing or bad
-            # token. That failure would read as "not published", turning a safe
-            # skip into a publish that 403s.
+            # Asked over plain HTTPS rather than through the npm client, so the
+            # check cannot fail for a credential reason. A failure here would
+            # read as "not published" and turn a safe skip into a publish that
+            # 403s -- the one outcome this step exists to prevent.
             if curl -sf -o /dev/null "https://registry.npmjs.org/${name//\//%2f}/$version"; then
               echo "$name@$version is already published"
             else
               npm publish --workspace "$name" --provenance
             fi
           done
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
