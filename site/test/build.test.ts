@@ -1,8 +1,8 @@
 import { after, test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
+import { access, mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { basename, join, resolve } from "node:path";
+import { basename, dirname, join, normalize, resolve } from "node:path";
 import { build, EXAMPLES } from "../build.ts";
 
 /**
@@ -41,6 +41,60 @@ test("the site builds, every page has the shell, and links stay relative", async
   assert.match(home, /<div class="ms-metrics">/, "home renders a live metrics block");
   assert.match(home, /<p class="lead">/, "attribute line applied on the home page");
 });
+
+test("every link the site writes resolves to a page it built", async () => {
+  // A page's links are written relative to where the page is authored, and are
+  // served from where it is built. start.md and cli.md are one directory deep
+  // and had linked as if they sat at the root, so every cross-page link on the
+  // adoption page 404'd — the one page a new reader is most likely to be on.
+  //
+  // Rendered conformance cases are excluded. Their content is example markup,
+  // and it points at files like a.svg on purpose: the case is about the syntax,
+  // not about the image resolving. Code is excluded for the same reason — a
+  // fragment of HTML shown as an example is not a link the site is making.
+  const broken: string[] = [];
+  for (const page of pages) {
+    const html = withoutExamples(await readFile(join(dist, page), "utf8"));
+    for (const [, href] of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
+      if (/^(?:https?:|mailto:|data:|#)/.test(href)) continue;
+      const target = normalize(join(dirname(page), href.split("#")[0]));
+      await access(join(dist, target)).catch(() => broken.push(`${page} -> ${href}`));
+    }
+  }
+  assert.deepEqual(broken, [], `broken links:\n${broken.join("\n")}`);
+});
+
+/**
+ * Strip rendered case previews and code from a page, leaving the links the site
+ * is making on its own behalf. Depth is counted rather than matched by regex,
+ * because a preview contains constructs and those are divs too.
+ */
+function withoutExamples(html: string): string {
+  const open = /<div class="site-preview">/g;
+  let out = "";
+  let at = 0;
+  for (;;) {
+    open.lastIndex = at;
+    const start = open.exec(html);
+    if (!start) {
+      out += html.slice(at);
+      break;
+    }
+    out += html.slice(at, start.index);
+    const tag = /<\/?div\b/g;
+    let depth = 1;
+    let i = start.index + start[0].length;
+    while (depth > 0) {
+      tag.lastIndex = i;
+      const next = tag.exec(html);
+      if (!next) return out;
+      depth += next[0] === "</div" ? -1 : 1;
+      i = next.index + next[0].length;
+    }
+    at = i;
+  }
+  return out.replace(/<pre[\s\S]*?<\/pre>/g, "").replace(/<code[\s\S]*?<\/code>/g, "");
+}
 
 test("an example can carry a theme stylesheet, linked after the site's own", async () => {
   const page = await readFile(join(dist, "examples", "notification-routing", "index.html"), "utf8");
