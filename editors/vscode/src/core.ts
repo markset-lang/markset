@@ -14,10 +14,13 @@ const FRONTMATTER = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/u;
 /**
  * Whether a document says it is Markset.
  *
- * `markset: 0` in frontmatter is how a document activates Markset (spec §6),
- * and it is the only honest trigger an editor has: every Markdown file is a
- * valid Markset document, but a reader whose `:::` means something else does
- * not want to hear about a closed vocabulary they never opted into. Any
+ * A `markset:` line in frontmatter names the specification version a document
+ * is written against -- `markset: 0` for v0 -- and spec §6 makes it the
+ * recommended trigger for treating a file as Markset. It is a version, not a
+ * switch: zero is the zeroth spec, not off. It is also the only honest trigger
+ * an editor has: every Markdown file is a valid Markset document, but a reader
+ * whose `:::` means something else does not want to hear about a closed
+ * vocabulary they never opted into. Any
  * `markset:` key counts, including a wrong version, so the diagnostic for the
  * wrong version can be shown.
  */

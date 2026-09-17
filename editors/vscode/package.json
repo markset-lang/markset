@@ -58,7 +58,7 @@
         "markset.checkAllMarkdown": {
           "type": "boolean",
           "default": false,
-          "description": "Report Markset diagnostics on every Markdown file. Off, only a file whose frontmatter declares `markset:` is checked."
+          "description": "Report Markset diagnostics on every Markdown file. Off, only a file whose frontmatter names a specification version with `markset:` is checked."
         },
         "markset.preview.theme": {
           "type": "string",
