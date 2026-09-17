@@ -9,10 +9,14 @@ import {
   check,
   declaresMarkset,
   escapeSnippetBody,
+  extendMarkdownIt,
   fenceCompletions,
   previewDocument,
+  previewFragment,
+  scopeStylesheet,
   shouldCheck,
   unescapeSnippetBody,
+  type MarkdownItStateLike,
   type SnippetCase,
 } from "../src/core.ts";
 import { buildExtension } from "../build.ts";
@@ -162,8 +166,8 @@ test("the extension bundles: one CommonJS file, vscode left external, and the fi
   try {
     const written = await buildExtension(out);
     const names = (await readdir(out)).sort();
-    assert.deepEqual(names, ["extension.cjs", "extension.cjs.map", "markset.css", "snippets.json"]);
-    assert.equal(written.length, 4);
+    assert.deepEqual(names, ["extension.cjs", "extension.cjs.map", "markset.css", "preview.css", "snippets.json"]);
+    assert.equal(written.length, 5);
     const js = await readFile(join(out, "extension.cjs"), "utf8");
     assert.match(js, /require\("vscode"\)/u, "the host provides vscode; it must not be bundled");
     assert.doesNotMatch(js, /import\.meta/u, "CommonJS has no import.meta, and the host loads CommonJS");
@@ -258,9 +262,16 @@ test("the bundle activates against a stub host without throwing, and registers w
         await rename(join(out, f), join(fakeRoot, "dist", f));
       context.extensionPath = fakeRoot;
       const loaded = require(join(fakeRoot, "dist", "extension.cjs")) as {
-        activate: (context: { extensionPath: string; subscriptions: unknown[] }) => void;
+        activate: (context: { extensionPath: string; subscriptions: unknown[] }) => {
+          extendMarkdownIt: (md: unknown) => unknown;
+        };
       };
-      loaded.activate(context);
+      const api = loaded.activate(context);
+      // The built-in preview asks for the markdown-it plugin through the return value.
+      const rules: string[] = [];
+      const md = { core: { ruler: { before: (_b: string, name: string) => rules.push(name) } } };
+      assert.equal(api.extendMarkdownIt(md), md, "extendMarkdownIt returns the instance it was given");
+      assert.deepEqual(rules, ["markset"]);
       const manifest = JSON.parse(await readFile(join(here, "..", "package.json"), "utf8")) as {
         contributes: { commands: Array<{ command: string }> };
       };
@@ -275,4 +286,88 @@ test("the bundle activates against a stub host without throwing, and registers w
   } finally {
     await rm(out, { recursive: true, force: true });
   }
+});
+
+test("the preview stylesheet reaches only Markset output", async () => {
+  // The built-in preview is one page for every Markdown file, so a bare
+  // `table` or `body` rule from markset.css would restyle every other file's
+  // preview. Every selector must start at .ms-document, which is where the
+  // fragment puts the tokens body carried.
+  const css = await readFile(join(root, "packages", "render-html", "css", "markset.css"), "utf8");
+  const scoped = scopeStylesheet(css);
+  assert.equal((scoped.match(/\{/gu) ?? []).length, (css.replace(/\/\*[\s\S]*?\*\//gu, "").match(/\{/gu) ?? []).length);
+  assert.doesNotMatch(scoped, /(^|[,{}\s])body[\s[{,]/u, "no rule addresses body");
+  const selectors = [...scoped.matchAll(/(?:^|\})\s*([^@{}]+?)\s*\{/gu)].map((m) => m[1]);
+  assert.ok(selectors.length > 100, `only ${selectors.length} selectors found`);
+  for (const list of selectors) {
+    for (const s of list.split(","))
+      assert.match(s.trim(), /^\.ms-document(?![\w-])/u, `unscoped selector: ${s.trim()}`);
+  }
+  assert.equal(
+    scopeStylesheet(
+      'body[data-preset="report"] { --ms-measure: 56rem; }\nth, td { padding: 0; }\n.ms-document > * { x: y; }',
+    ),
+    '.ms-document[data-preset="report"] { --ms-measure: 56rem; }\n.ms-document th, .ms-document td { padding: 0; }\n.ms-document > * { x: y; }',
+  );
+  assert.equal(
+    scopeStylesheet("@media print {\n  a { color: inherit; }\n}"),
+    "@media print {\n  .ms-document a { color: inherit; }\n}",
+  );
+});
+
+test("the markdown-it plugin takes over a Markset document and leaves every other one alone", () => {
+  type Rule = (state: MarkdownItStateLike) => boolean;
+  let rule: Rule | undefined;
+  let before = "";
+  const md = {
+    core: {
+      ruler: {
+        before: (b: string, _n: string, r: Rule) => {
+          before = b;
+          rule = r;
+        },
+      },
+    },
+  };
+  extendMarkdownIt(md, { enabled: () => true, checkAllMarkdown: () => false, scheme: () => "dark" });
+  assert.equal(before, "block", "ahead of the block parser, so it sees the whole source");
+  assert.ok(rule);
+  class Token {
+    content = "";
+    map: [number, number] | null = null;
+  }
+  const markset = { src: "---\nmarkset: 0\n---\n\n:::card[Hi]\nx\n:::\n", tokens: [] as unknown[], Token };
+  assert.equal(rule(markset), true);
+  assert.equal(markset.src, "", "the block parser that follows has nothing left to parse");
+  assert.equal(markset.tokens.length, 1);
+  const token = markset.tokens[0] as { content: string; map: [number, number] };
+  assert.match(token.content, /^<div class="ms-document" data-scheme="dark">\n<section class="ms-card"/u);
+  assert.deepEqual(token.map, [0, 8]);
+  const plain = { src: "# Just Markdown\n\n:::not-markset\n", tokens: [] as unknown[], Token };
+  assert.equal(rule(plain), false);
+  assert.equal(plain.src, "# Just Markdown\n\n:::not-markset\n");
+  assert.deepEqual(plain.tokens, []);
+  const off = {
+    core: {
+      ruler: {
+        before: (_b: string, _n: string, r: Rule) => {
+          rule = r;
+        },
+      },
+    },
+  };
+  extendMarkdownIt(off, { enabled: () => false, checkAllMarkdown: () => true, scheme: () => "light" });
+  assert.equal(rule({ ...markset, src: "---\nmarkset: 0\n---\n", tokens: [] }), false, "the setting turns it off");
+});
+
+test("the fragment carries the theme tokens and scheme the CLI would put on body", () => {
+  const html = previewFragment(
+    '---\nmarkset: 0\ntheme:\n  preset: report\n  accent: "#14607a"\n---\n\n# Hi\n',
+    "light",
+  );
+  assert.match(
+    html,
+    /^<div class="ms-document" data-preset="report" style="--ms-accent: #14607a" data-scheme="light">\n/u,
+  );
+  assert.doesNotMatch(html, /<script/iu);
 });

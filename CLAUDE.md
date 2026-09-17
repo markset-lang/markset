@@ -152,6 +152,10 @@ in commit order, which is the wrong order for finding the work.
       workflow, and the two already out are skipped. **Stopping at the first failure is the right design, not
       luck**, as long as the list is in dependency order: every package published points only at versions that
       exist, because its dependencies went out before it. A test now holds that order.
+      **0.3.1 completed on the third re-run.** `remark-markset` and `conformance-suite` had the same gap as
+      `chart-table`, for the same reason: first published by hand at 0.3.0. Each re-run skipped what was out and
+      stopped at the next unconfigured package, which is the idempotence doing its job. All eight publishers are
+      configured now, so a ninth package is the only way to meet this again.
 - [ ] Nothing. The playground was the last open item; see the entry at the end of the done list.
 
 **Done,** in the order it landed.
@@ -308,3 +312,17 @@ in commit order, which is the wrong order for finding the work.
       defines it from `__filename`; and a manifest with `"type": "module"` makes node read `dist/extension.js`
       as ESM, so the bundle is `.cjs`. Packaged with `vsce` at 122 KB, ten files. Not on the marketplace: that
       needs a publisher account under `markset-lang`, which is a human's to create.
+- [x] **The built-in Markdown preview renders Markset, 2026-09-17.** Asked for after the extension's own preview
+      went unnoticed: it is a command, and the built-in preview icon is what people click. VS Code's Markdown
+      extension exposes `markdown.markdownItPlugins`; `activate` returns `extendMarkdownIt`, which installs a core
+      rule ahead of markdown-it's block parser that, for a document declaring `markset:`, pushes one `html_block`
+      holding this implementation's rendering and empties the source so nothing else parses. Every other file is
+      untouched. The stylesheet goes in through `markdown.previewStyles`, **scoped**: the preview is one page for
+      every Markdown file, so `scopeStylesheet` prefixes every selector with `.ms-document` and rewrites `body`
+      to it, which is where `previewFragment` puts the tokens `body` carried. A prefix rather than `@scope`
+      because the preview's own `.vscode-body table` would beat a scoped bare `table` on specificity and only
+      ties with a prefixed one, where the later stylesheet wins. The first version turned `body {` into
+      `b.ms-document {` by counting trailing whitespace twice; the test that checks every selector caught it.
+      Unverified here: how the real preview treats radio inputs and `style` attributes, since nothing in this
+      repository runs an editor. **The mark** is `site/icon.svg`: three dots over two lines, a fence over a card.
+      Favicon, header image and `editors/vscode/icon.png` (rendered from it at 256px) are the one file.

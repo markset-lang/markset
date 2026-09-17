@@ -123,3 +123,110 @@ export function fenceCompletions(snippets: Record<string, Snippet>): Array<{ nam
 }
 
 export const CALLOUT_TYPES = ["NOTE", "TIP", "IMPORTANT", "WARNING", "CAUTION"] as const;
+
+/**
+ * The rendered document as a fragment for the built-in Markdown preview.
+ *
+ * The preview owns <body>, so the theme tokens the CLI puts on <body> go on
+ * the wrapper instead, along with the editor's color scheme -- the preview is
+ * a webview whose `prefers-color-scheme` does not follow the editor theme, so
+ * §6's `data-scheme` is what keeps a dark editor from showing a light document.
+ */
+export function previewFragment(source: string, scheme: Scheme): string {
+  const { ast } = parseDocument(source);
+  return `<div class="ms-document"${bodyAttributes(ast.frontmatter ?? null)} data-scheme="${scheme}">\n${renderHtml(ast)}</div>\n`;
+}
+
+/**
+ * The default stylesheet, rewritten to reach only Markset output.
+ *
+ * The built-in preview is one page for every Markdown file, and
+ * `markdown.previewStyles` applies to all of it. markset.css styles `body`,
+ * `table`, `code` and the rest bare, so applied as-is it would restyle every
+ * other file's preview. Each selector is prefixed with `.ms-document`, and a
+ * selector that starts with `body` becomes `.ms-document` itself, which is
+ * where previewFragment puts the tokens `body` would have carried. A selector
+ * already starting with `.ms-document` is left alone.
+ *
+ * Specificity is the reason for a prefix rather than `@scope`: the preview's
+ * own `.vscode-body table` would beat a scoped bare `table`, and it ties with
+ * `.ms-document table`, where the later stylesheet -- ours, loaded after the
+ * preview's -- wins.
+ */
+export function scopeStylesheet(css: string): string {
+  const withoutComments = css.replace(/\/\*[\s\S]*?\*\//gu, "");
+  let out = "";
+  let depth = 0;
+  let buffer = "";
+  for (const char of withoutComments) {
+    if (char === "{") {
+      const head = buffer.trim();
+      // Only the leading whitespace is kept: trim() also drops the trailing run
+      // before the brace, and counting both once turned `body {` into `b.ms-document {`.
+      const lead = /^\s*/u.exec(buffer)?.[0] ?? "";
+      out += head.startsWith("@") ? `${buffer}{` : `${lead}${scopeSelectors(head)} {`;
+      buffer = "";
+      depth++;
+    } else if (char === "}") {
+      out += `${buffer}}`;
+      buffer = "";
+      depth--;
+    } else {
+      buffer += char;
+    }
+  }
+  if (depth !== 0) throw new Error("scopeStylesheet: unbalanced braces");
+  return out + buffer;
+}
+
+function scopeSelectors(list: string): string {
+  return list
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0)
+    .map((s) => {
+      if (s.startsWith(".ms-document")) return s;
+      if (/^body(?![\w-])/u.test(s)) return `.ms-document${s.slice("body".length)}`;
+      return `.ms-document ${s}`;
+    })
+    .join(", ");
+}
+
+/** The slice of markdown-it this plugin touches, declared here so the extension carries no dependency on it. */
+export interface MarkdownItLike {
+  core: {
+    ruler: {
+      before(beforeName: string, ruleName: string, rule: (state: MarkdownItStateLike) => boolean): void;
+    };
+  };
+}
+export interface MarkdownItStateLike {
+  src: string;
+  tokens: unknown[];
+  Token: new (type: string, tag: string, nesting: number) => { content: string; map: [number, number] | null };
+}
+
+/**
+ * Teach the built-in Markdown preview to render Markset.
+ *
+ * A core rule ahead of markdown-it's block parser: for a document that is
+ * Markset, the whole source is rendered by this implementation and pushed as
+ * one html_block token, and the source is emptied so the block parser that
+ * follows has nothing to add. Every other document is untouched -- the rule
+ * returns false and markdown-it carries on as if the plugin were not there.
+ */
+export function extendMarkdownIt(
+  md: MarkdownItLike,
+  options: { enabled: () => boolean; checkAllMarkdown: () => boolean; scheme: () => Scheme },
+): MarkdownItLike {
+  md.core.ruler.before("block", "markset", (state) => {
+    if (!options.enabled() || !shouldCheck(state.src, options.checkAllMarkdown())) return false;
+    const token = new state.Token("html_block", "", 0);
+    token.content = previewFragment(state.src, options.scheme());
+    token.map = [0, state.src.split("\n").length];
+    state.tokens.push(token);
+    state.src = "";
+    return true;
+  });
+  return md;
+}

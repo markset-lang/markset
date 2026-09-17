@@ -9,9 +9,11 @@ import { downgrade } from "@markset-lang/render-downgrade";
 import {
   CALLOUT_TYPES,
   check,
+  extendMarkdownIt,
   fenceCompletions,
   previewDocument,
   shouldCheck,
+  type MarkdownItLike,
   type Scheme,
   type Snippet,
 } from "./core.ts";
@@ -19,7 +21,7 @@ import {
 const SPEC = vscode.Uri.parse("https://markset.org/spec/");
 const DEBOUNCE_MS = 200;
 
-export function activate(context: vscode.ExtensionContext): void {
+export function activate(context: vscode.ExtensionContext): { extendMarkdownIt(md: MarkdownItLike): MarkdownItLike } {
   const read = (...path: string[]): string => readFileSync(join(context.extensionPath, ...path), "utf8");
   const stylesheet = read("dist", "markset.css");
   const snippets = JSON.parse(read("dist", "snippets.json")) as Record<string, Snippet>;
@@ -233,6 +235,20 @@ export function activate(context: vscode.ExtensionContext): void {
       "!",
     ),
   );
+  // ---- the built-in preview ----------------------------------------------------
+  // The built-in Markdown preview asks each extension that contributes
+  // `markdown.markdownItPlugins` to extend its markdown-it instance. For a
+  // Markset document the whole source is rendered by this implementation, so
+  // the standard preview icon shows the real rendering; every other file is
+  // left to markdown-it exactly as before.
+  return {
+    extendMarkdownIt: (md) =>
+      extendMarkdownIt(md, {
+        enabled: () => vscode.workspace.getConfiguration("markset").get<boolean>("builtInPreview", true),
+        checkAllMarkdown: () => vscode.workspace.getConfiguration("markset").get<boolean>("checkAllMarkdown", false),
+        scheme: currentScheme,
+      }),
+  };
 }
 
 export function deactivate(): void {}

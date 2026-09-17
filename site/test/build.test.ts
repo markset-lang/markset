@@ -300,3 +300,24 @@ test("a visually hidden label cannot escape its container", async () => {
   assert.doesNotMatch(rule[1], /position:\s*absolute/u, "in flow, so it has nowhere to escape to");
   assert.match(rule[1], /clip-path: inset\(50%\)/u);
 });
+
+test("every page carries the mark: a favicon link, and the image beside the wordmark", async () => {
+  // One SVG is the favicon, the header mark and the source of the extension's
+  // icon.png, so it is copied to the root of the output and every page links it
+  // by a relative path that survives the site being served from a subpath.
+  const icon = await readFile(join(dist, "icon.svg"), "utf8");
+  assert.match(icon, /^<svg /u);
+  for (const page of ["index.html", join("spec", "index.html"), join("examples", "showcase", "index.html")]) {
+    const html = await readFile(join(dist, page), "utf8");
+    // The shell writes ./ for the root page and ../ per level below it.
+    const rel = page.split("/").length === 1 ? "./" : "../".repeat(page.split("/").length - 1);
+    assert.ok(
+      html.includes(`<link rel="icon" type="image/svg+xml" href="${rel}icon.svg">`),
+      `${page} links the favicon`,
+    );
+    assert.ok(
+      html.includes(`<img class="site-mark" src="${rel}icon.svg" alt=""`),
+      `${page} shows the mark in the header`,
+    );
+  }
+});

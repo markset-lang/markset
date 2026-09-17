@@ -345,6 +345,9 @@ async function writeSite(outDir: string): Promise<string[]> {
   await writeFile(join(out, "CNAME"), `${SITE_HOST}\n`);
   await cp(defaultStylesheetPath, join(out, "css", "markset.css"));
   await cp(join(root, "site", "site.css"), join(out, "css", "site.css"));
+  // The mark: the favicon, and the image beside the wordmark in the header. The
+  // extension's icon.png is rendered from this same file.
+  await cp(join(root, "site", "icon.svg"), join(out, "icon.svg"));
   // §7 links the normative schema as a sibling of the spec, which is where it
   // sits in the repository. Copying it here makes that link resolve on the site
   // too, and means an implementer reading the spec can fetch the schema it is
@@ -1108,12 +1111,13 @@ function shell(page: Page): string {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(page.title)} · Markset</title>
+<link rel="icon" type="image/svg+xml" href="${rel}icon.svg">
 <link rel="stylesheet" href="${rel}css/markset.css">
 <link rel="stylesheet" href="${rel}css/site.css">
 ${page.themeCss ? `<link rel="stylesheet" href="${rel}${page.themeCss}">\n` : ""}</head>
 <body${attrs}>
 ${SCHEME_SCRIPT}<header class="site-header">
-<a class="site-brand" href="${rel}index.html">Markset</a>
+<a class="site-brand" href="${rel}index.html"><img class="site-mark" src="${rel}icon.svg" alt="" width="22" height="22">Markset</a>
 <nav class="site-nav">
 ${nav}
 <a href="${REPO}" title="GitHub">${ICON_GITHUB}<span class="site-visually-hidden">GitHub</span></a>

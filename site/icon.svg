@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img">
+  <title>Markset</title>
+  <rect width="128" height="128" rx="28" fill="#2563eb"/>
+  <g fill="#ffffff">
+    <circle cx="38" cy="42" r="8.5"/><circle cx="64" cy="42" r="8.5"/><circle cx="90" cy="42" r="8.5"/>
+    <rect x="29" y="64" width="70" height="9" rx="4.5"/>
+    <rect x="29" y="82" width="46" height="9" rx="4.5" opacity="0.72"/>
+  </g>
+</svg>
