@@ -57,9 +57,13 @@ const NAV: Array<[string, string]> = [
   ["Reference", "reference/index.html"],
   ["CLI", "cli/index.html"],
   ["Spec", "spec/index.html"],
-  ["Conformance", "conformance/index.html"],
   ["Examples", "examples/index.html"],
 ];
+// Conformance is deliberately not in that list. It is a browser of 366 test
+// cases whose index is a hundred and fifty words, and its readers are people
+// writing a second implementation, who arrive through the specification rather
+// than through a bar aimed at someone with a document to write. It is linked
+// from the specification, which is what §7 of that document is about.
 
 /** Documents rendered as their own pages, with the theme stylesheet each one is meant to be read with (spec §6). */
 /**
@@ -411,7 +415,7 @@ async function specPage(): Promise<Page> {
   const meta = ast.children[0]?.type === "yaml" ? ast.children[0].value : "";
   const status = /status:\s*(.+)/.exec(meta)?.[1] ?? "";
   const version = /version:\s*(.+)/.exec(meta)?.[1] ?? "";
-  const banner = `<p class="site-status"><span class="ms-span badge info">${esc(status)}</span> <span class="ms-span badge">${esc(version)}</span> Source: <a href="${REPO}/blob/main/spec/v0.md"><code>spec/v0.md</code></a></p>\n`;
+  const banner = `<p class="site-status"><span class="ms-span badge info">${esc(status)}</span> <span class="ms-span badge">${esc(version)}</span> Source: <a href="${REPO}/blob/main/spec/v0.md"><code>spec/v0.md</code></a> · <a href="../conformance/index.html">Conformance suite</a></p>\n`;
   return { path: "spec/index.html", title: "Markset v0 specification", body: banner + renderHtml(ast), toc };
 }
 
