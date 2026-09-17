@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- **An engine that rejects a fence now reports why.** A command that fails without reading its input — which is the normal shape of failing fast — exits while the fence is still being written to it, so the write fails with a broken pipe and `spawnSync` reports that in preference to the exit status it also has. Which one surfaced depended on whether the fence fit the pipe buffer first, so the same engine reported `exited 7` on one machine and `spawnSync /bin/sh EPIPE` on another. The status now wins wherever there is one. Nothing about §10 obligation 5 changes: a failed diagram already left the code block in place, it just said something useless on the way past.
+- Publishing from CI authenticates with npm's trusted publishing rather than a token, so the workflow stores no secret. It configures no credential at all, deliberately: an `.npmrc` carrying an empty token is worse than no file, because npm tries it, is refused, and never reaches the OIDC exchange.
+- The lockfile pointed one dependency of `mermaid-cli` at a private mirror, because the machine that added mermaid had that scope mapped in its own npm configuration. Every workflow in the repository failed at install with a 401 about a password, for five commits. A test now fails on any lockfile entry resolving outside the public registry.
+
 ## 0.2.0 — 2026-09-16
 
 **The first release published to npm**, under the `@markset-lang` scope. Five packages go out — `parser`, `diagram-ascii`, `render-downgrade`, `render-html` and `cli` — and everything below landed after v0 was declared. It is a minor bump rather than 0.1.0 because `v0.1.0` was already tagged at the commit that declared v0, fifteen commits back, and everything since is additive.
