@@ -39,6 +39,7 @@
   "dependencies": {
     "@markset-lang/parser": "^0.3.0",
     "@markset-lang/diagram-ascii": "^0.3.0",
+    "@markset-lang/chart-table": "^0.3.0",
     "mdast-util-to-hast": "^13.2.0",
     "hast-util-to-html": "^9.0.5"
   }

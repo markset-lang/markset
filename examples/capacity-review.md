@@ -127,23 +127,32 @@ Projection
 
 Volume is the wrong axis to choose a scenario on, and this is where the fleet total stops being merely uninformative and becomes actively misleading.
 
-:::figure[Stored volume by quarter under three FY27 scenarios, with the tenant count each one ends at.]{#fig-scenarios}
+:::figure[Stored petabytes by quarter under three FY27 scenarios.]{#fig-scenarios chart=line}
 | Quarter | Steady | Enterprise-led | Self-serve push |
 |---|---|---|---|
-| FY27 Q1 | 12.4 PB | 12.6 PB | 12.8 PB |
-| FY27 Q2 | 13.5 PB | 14.0 PB | 13.9 PB |
-| FY27 Q3 | 14.7 PB | 15.5 PB | 14.9 PB |
-| FY27 Q4 | 16.0 PB | 17.2 PB | 15.8 PB |
-| FY28 Q1 | 17.4 PB | 19.1 PB | 16.6 PB |
-| FY28 Q2 | 18.9 PB | 21.2 PB | 17.3 PB |
-| FY28 Q3 | 20.6 PB | 23.5 PB | 18.0 PB |
-| FY28 Q4 | 22.4 PB | 26.1 PB | 18.6 PB |
-| **Ending tenants** | **14,800** | **13,900** | **24,000** |
+| FY27 Q1 | 12.4 | 12.6 | 12.8 |
+| FY27 Q2 | 13.5 | 14.0 | 13.9 |
+| FY27 Q3 | 14.7 | 15.5 | 14.9 |
+| FY27 Q4 | 16.0 | 17.2 | 15.8 |
+| FY28 Q1 | 17.4 | 19.1 | 16.6 |
+| FY28 Q2 | 18.9 | 21.2 | 17.3 |
+| FY28 Q3 | 20.6 | 23.5 | 18.0 |
+| FY28 Q4 | 22.4 | 26.1 | 18.6 |
 :::
 
-Read down the last column and the self-serve push is the modest one: it ends at 18.6 PB, four petabytes below Steady and seven below Enterprise-led. Read the final row and it is the expensive one, because it ends with 11,900 more tenants than Steady, each carrying $4.10 a month of fixed overhead that has nothing to do with the bytes they store.
+The three curves cross, and that is the whole finding. Self-serve leads for three quarters on a burst of onboarding, is overtaken by Steady in FY27 Q4, and runs below both for the rest of the period. A reader who checks the first two quarters and a reader who checks the last two come away with opposite impressions, and both of them have read the numbers correctly.
 
-The three curves also cross, which no row of this table announces. Self-serve leads for three quarters on a burst of onboarding, is overtaken by Steady in FY27 Q4, and is below both for the rest of the period. A reader who checks the first two quarters and a reader who checks the last two come away with opposite impressions, and both of them have read the table correctly.
+Volume is also the wrong thing to have been reading. Each scenario ends somewhere different on the measure that actually drives cost:
+
+:::figure[Tenants at the end of the period, by scenario.]{#fig-ending chart=bar}
+| Scenario | Ending tenants |
+|---|---|
+| Steady | 14,800 |
+| Enterprise-led | 13,900 |
+| Self-serve push | 24,000 |
+:::
+
+The self-serve push is the modest scenario by volume — it ends at 18.6 PB, four petabytes below Steady and seven below Enterprise-led — and the expensive one by tenant count, ending with 11,900 more tenants than Steady, each carrying $4.10 a month of fixed overhead that has nothing to do with the bytes they store.
 
 {.tick}
 ***

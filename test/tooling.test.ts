@@ -109,6 +109,7 @@ test("the heavy dev dependency stays out of the library", async () => {
 const PUBLISHED = [
   "parser",
   "diagram-ascii",
+  "chart-table",
   "render-downgrade",
   "render-html",
   "cli",

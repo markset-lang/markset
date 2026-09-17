@@ -27,6 +27,7 @@ options
   --css <mode>           html: inline (default) | none | <href to link>
   --theme <file>         html: append a theme stylesheet after the default (spec §6)
   --diagram <spec>       html: diagram fences (spec §10); repeatable
+  --chart <spec>         html: draw a figure's table as a chart (spec §11); "none" to draw none
                            ascii fences are drawn by default
                            none             draw nothing; keep every fence as code
                            <lang>=<command> run a command: fence on stdin, SVG on stdout
@@ -53,6 +54,7 @@ export async function main(
       css: { type: "string", default: "inline" },
       theme: { type: "string" },
       diagram: { type: "string", multiple: true },
+      chart: { type: "string" },
       title: { type: "string" },
       json: { type: "boolean", default: false },
       positions: { type: "boolean", default: false },
@@ -110,8 +112,16 @@ export async function main(
       const choice = diagramOptions(values.diagram, io);
       if (!choice.ok) return 2;
       const diagrams = choice.diagrams;
+      // Charts draw by default, and the only thing to say is "don't" — unlike
+      // diagrams, there is no engine to name, because the chart type is in the
+      // document and the engine is built in.
+      if (values.chart !== undefined && values.chart !== "none") {
+        io.stderr(`markset: --chart "${values.chart}": the only value is "none"\n`);
+        return 2;
+      }
+      const charts = values.chart === "none" ? (false as const) : undefined;
       if (values.fragment) {
-        await emit(renderHtml(ast, { diagrams }));
+        await emit(renderHtml(ast, { diagrams, charts }));
       } else {
         const stylesheet =
           values.css === "none"
@@ -120,7 +130,7 @@ export async function main(
               ? { inline: await readFile(defaultStylesheetPath, "utf8") }
               : { href: values.css };
         const theme = values.theme ? { inline: await readFile(values.theme, "utf8") } : undefined;
-        await emit(renderPage(ast, { title: values.title, stylesheet, theme, diagrams }));
+        await emit(renderPage(ast, { title: values.title, stylesheet, theme, diagrams, charts }));
       }
       return 0;
     }

@@ -1,0 +1,36 @@
+{
+  "name": "@markset-lang/chart-table",
+  "version": "0.3.0",
+  "description": "Draws a figure's table as a chart (spec §11). An engine, not part of the renderer.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markset-lang/markset.git",
+    "directory": "packages/chart-table"
+  },
+  "homepage": "https://markset-lang.github.io/markset/",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "chart",
+    "svg",
+    "markset",
+    "table"
+  ],
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "markset-source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  }
+}
