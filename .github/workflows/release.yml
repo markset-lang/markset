@@ -34,7 +34,12 @@ jobs:
       - run: npm test
       - run: npm run conformance
 
+      # Only on a tag: on a manual run GITHUB_REF_NAME is the branch, which can
+      # never equal a version, so without this the workflow_dispatch trigger it
+      # advertises could not finish. A manual run publishes whatever version the
+      # checked-out commit declares, which is the point of having the trigger.
       - name: The tag must match the version being published
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           tag="${GITHUB_REF_NAME#v}"
           version="$(node -p "require('./package.json').version")"
