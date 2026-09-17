@@ -1,6 +1,6 @@
 {
   "name": "@markset-lang/conformance",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "type": "module",
   "description": "Conformance harness: validates tests/*.json against spec/conformance.schema.json and runs each section through the parser and renderers.",

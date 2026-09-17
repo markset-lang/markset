@@ -1,7 +1,7 @@
 {
   "name": "@markset-lang/render-html",
-  "version": "0.3.0",
-  "description": "HTML renderer: Markset AST -> HTML with the ms- class vocabulary (spec \u00a74).",
+  "version": "0.3.1",
+  "description": "HTML renderer: Markset AST -> HTML with the ms- class vocabulary (spec §4).",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -37,9 +37,9 @@
     "./css/markset.css": "./css/markset.css"
   },
   "dependencies": {
-    "@markset-lang/parser": "^0.3.0",
-    "@markset-lang/diagram-ascii": "^0.3.0",
-    "@markset-lang/chart-table": "^0.3.0",
+    "@markset-lang/parser": "^0.3.1",
+    "@markset-lang/diagram-ascii": "^0.3.1",
+    "@markset-lang/chart-table": "^0.3.1",
     "mdast-util-to-hast": "^13.2.0",
     "hast-util-to-html": "^9.0.5"
   }

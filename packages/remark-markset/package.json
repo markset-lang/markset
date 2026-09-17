@@ -1,6 +1,6 @@
 {
   "name": "@markset-lang/remark-markset",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "remark plugin: parse Markset constructs in an existing unified pipeline.",
   "license": "MIT",
   "type": "module",
@@ -35,7 +35,7 @@
     }
   },
   "dependencies": {
-    "@markset-lang/parser": "^0.3.0"
+    "@markset-lang/parser": "^0.3.1"
   },
   "peerDependencies": {
     "remark-parse": ">=11",

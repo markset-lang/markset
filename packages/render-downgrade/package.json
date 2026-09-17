@@ -1,7 +1,7 @@
 {
   "name": "@markset-lang/render-downgrade",
-  "version": "0.3.0",
-  "description": "Downgrade renderer: Markset AST -> plain CommonMark (spec \u00a73).",
+  "version": "0.3.1",
+  "description": "Downgrade renderer: Markset AST -> plain CommonMark (spec §3).",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -34,7 +34,7 @@
     }
   },
   "dependencies": {
-    "@markset-lang/parser": "^0.3.0",
+    "@markset-lang/parser": "^0.3.1",
     "mdast-util-to-markdown": "^2.1.2",
     "mdast-util-gfm-table": "^2.0.0",
     "mdast-util-frontmatter": "^2.0.1"

@@ -1,6 +1,6 @@
 {
   "name": "@markset-lang/conformance-suite",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "The Markset conformance cases as data (spec §7), for checking any implementation. Carries no implementation of its own.",
   "license": "MIT",
   "type": "module",
