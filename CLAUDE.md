@@ -29,7 +29,7 @@ These are non-negotiable. If a proposed feature conflicts with one, the feature 
 - HTML output uses the `ms-` class prefix throughout: `ms-card`, `ms-grid-item`, `ms-callout-title`.
 - Semantic variants go in `data-` attributes (`data-tone`, `data-cols`, `data-direction`), not class name suffixes.
 - Conformance tests are JSON, one file per spec section, mirroring the CommonMark spec test layout. Schema is in spec §7.
-- Documents activate Markset via `markset: 0` in frontmatter. The file extension is `.md` — deliberately, so files stay editable and renderable everywhere.
+- Documents name the specification version they are written against with `markset: 0` in frontmatter, and tools use that line to treat a `.md` file as Markset. It is a version, not a flag: zero means the zeroth spec, not off, and the wording everywhere should say "version" so nobody reads it as a switch (a reader did, 2026-09-17). The file extension is `.md` — deliberately, so files stay editable and renderable everywhere.
 
 ## Layout
 

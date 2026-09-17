@@ -69,6 +69,8 @@ markset: 0
 
 **Any other value is an error.** `markset: 1` is `DOCUMENT_VERSION_UNSUPPORTED`, not a forward-compatible hint. A parser that implements v0 refuses to guess at a version it does not have.
 
+**Zero is not off.** The value is a version number, the way `openapi: 3.0` is, and the current specification is the zeroth. A reader who sees `markset: 0` as a switch set to false has read it the way most keys with a zero read, which is why every page here says "version" rather than "enable". When v1 arrives the line becomes `markset: 1` and the confusion goes with it.
+
 {.tick}
 ***
 

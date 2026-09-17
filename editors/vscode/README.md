@@ -13,13 +13,13 @@
 
 ## Which files it checks
 
-A Markset document declares itself with `markset: 0` in its frontmatter, and by default only those files are checked. Everything else is Markdown, and a `:::` in it may mean something else entirely. Set `markset.checkAllMarkdown` to check every Markdown file.
+A Markset document carries a `markset:` line in its frontmatter naming the specification version it is written against — `markset: 0` for v0, the current one. That is a version number, not a switch: zero does not mean off, it means the zeroth specification, the way `openapi: 3.0` names a version rather than a setting. By default only files with that line are checked. Everything else is Markdown, and a `:::` in it may mean something else entirely. Set `markset.checkAllMarkdown` to check every Markdown file.
 
 ## Settings
 
 | Setting | Default | What |
 |---|---|---|
-| `markset.checkAllMarkdown` | `false` | Report diagnostics on every Markdown file, not only those declaring `markset:`. |
+| `markset.checkAllMarkdown` | `false` | Report diagnostics on every Markdown file, not only those with a `markset:` version line. |
 | `markset.preview.theme` | `""` | A theme stylesheet (spec §6) appended after the default in the preview. Relative to the workspace folder. |
 
 ## Commands
