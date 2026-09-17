@@ -261,9 +261,18 @@ test("the release workflow can be run a second time without failing", async () =
   // scope was published by hand and needed exactly that rerun.
   const yaml = await readFile(join(root, ".github", "workflows", "release.yml"), "utf8");
   assert.match(yaml, /curl -sf -o \/dev\/null "https:\/\/registry\.npmjs\.org/u, "asks the registry before it writes");
-  assert.doesNotMatch(yaml, /npm view/u, "over plain HTTPS: npm view fails on a bad token, which would read as not published");
+  assert.doesNotMatch(
+    yaml,
+    /npm view/u,
+    "over plain HTTPS: npm view fails on a bad token, which would read as not published",
+  );
   assert.doesNotMatch(yaml, /npm run release/u, "and not the all-at-once script, which cannot skip");
   // The list it walks is the one the release script names. Two copies of it
   // would be two things to keep in step, and the test above only governs one.
   assert.match(yaml, /scripts\.release\.match/u, "derives the package list rather than repeating it");
+  // registry-url makes setup-node write an .npmrc with always-auth, so every
+  // npm command sends the token -- npm ci included, which fails with a 401 when
+  // the secret is absent. Configure the registry after the gate, not before it.
+  const install = yaml.indexOf("npm ci");
+  assert.ok(yaml.indexOf("registry-url") > install, "the registry is configured after the install, not before");
 });
