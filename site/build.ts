@@ -101,6 +101,7 @@ function railSection(path: string): RailSection | undefined {
         ["Overview", "reference/index.html"],
         ...CONSTRUCTS.map((name): [string, string] => [name, `reference/${name}/index.html`]),
         ["Diagrams", "reference/diagrams/index.html"],
+        ["Charts", "reference/charts/index.html"],
         ["Frontmatter", "reference/frontmatter/index.html"],
       ],
     };
@@ -331,6 +332,7 @@ async function writeSite(outDir: string): Promise<string[]> {
       join(root, "site", "content", "reference", "frontmatter.md"),
     ),
     await markdownPage("reference/diagrams/index.html", join(root, "site", "content", "reference", "diagrams.md")),
+    await markdownPage("reference/charts/index.html", join(root, "site", "content", "reference", "charts.md")),
     ...(await Promise.all(CONSTRUCTS.map((name) => referencePage(name, cases[name] ?? [])))),
     conformanceIndex(cases),
     ...SECTION_ORDER.filter((s) => cases[s]).map((s) => conformancePage(s, cases[s])),
@@ -517,9 +519,10 @@ async function referenceIndex(): Promise<Page> {
   // everything that reads the tree — the rail could not see a hand-built <h2>,
   // and measuring the page for one would have measured only the prose above it.
   //
-  // Two of these pages are not constructs. They used to be trailing notes under
-  // the eight, which is where a reader looking for diagrams does not look: the
-  // page existed and was reported as missing. They get a heading of their own.
+  // Three of these pages are not constructs. They used to be trailing notes
+  // under the eight, which is where a reader looking for diagrams does not
+  // look: the page existed and was reported as missing. They get a heading of
+  // their own, and anything added here goes in it rather than back into a note.
   const generated = [
     "",
     "{.site-list}",
@@ -527,10 +530,11 @@ async function referenceIndex(): Promise<Page> {
     "",
     "## Beyond the constructs",
     "",
-    "Two things a document does that no construct covers.",
+    "Three things a document does that no construct covers.",
     "",
     "{.site-list}",
     "- [Diagrams](diagrams/index.html) — an ASCII or mermaid fence becomes a picture, why that needs no ninth construct, and what a renderer may and may not do with one.",
+    "- [Charts](charts/index.html) — a figure's table drawn as a line, bar or column chart, why the table is the source and stays on the page, and how a theme colors one.",
     "- [Frontmatter and theme tokens](frontmatter/index.html) — the version key, the seven theme tokens, and what each preset changes.",
     "",
   ].join("\n");

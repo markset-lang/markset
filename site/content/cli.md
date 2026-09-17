@@ -79,6 +79,7 @@ Options
 | `--css <mode>` | `html` | `inline` inlines the default stylesheet and is the default. `none` omits it. Any other value is treated as a URL and linked. |
 | `--theme <file>` | `html` | Append a theme stylesheet after the default one, so it can style author classes and override tokens. See spec §6. |
 | `--diagram <spec>` | `html` | Diagram code fences. `ascii` is drawn by default; `none` turns drawing off; `<lang>=<command>` adds a language, running a command with the fence on stdin and SVG on stdout. Repeatable. Only a fence inside a captioned `figure` is drawn, and an engine that fails leaves the code block in place. See spec §10 and the [diagrams reference](../reference/diagrams/index.html). |
+| `--chart <spec>` | `html` | Charts (spec §11). Drawn by default, because `chart=` is the document asking for a picture rather than naming a language; `none` turns drawing off. Only a captioned `figure` holding a table is drawn, and the table is kept either way, so this costs a picture and no data. See the [charts reference](../reference/charts/index.html). |
 | `--title <text>` | `html` | Page title. Defaults to the first level-one heading. |
 | `--json` | `check` | Emit diagnostics as JSON rather than as lines of text. |
 | `--positions` | `ast` | Keep the `position` field on every node. |
