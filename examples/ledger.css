@@ -1,0 +1,121 @@
+/* Ledger — a theme stylesheet for examples/keystone-baseline.md (spec §6).
+ *
+ *   markset html examples/keystone-baseline.md --theme examples/ledger.css
+ *
+ * A change set for a project tracker, in the register of a ledger: a serif body, a sans display face, and
+ * mono for anything that is a field name or a smart value. The document names
+ * four roles of its own — .figures, .rule, .wire and .verify — and this
+ * file decides what each looks like. Everything else it styles is a construct's
+ * own class or a reserved class from §5. */
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+body {
+  --ms-font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --ms-font-heading: Archivo, "Helvetica Neue", Arial, sans-serif;
+  --ms-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ink: light-dark(#101a21, #e2e9ed);
+  --rule: light-dark(#d0d8dd, #25313a);
+  --rule-hi: light-dark(#b4c0c7, #33434e);
+  --paper: light-dark(#eef1f3, #0d1418);
+  --sheet: light-dark(#ffffff, #151f25);
+  --sunk: light-dark(#e4e9ec, #1b262d);
+  --slip: light-dark(#a8471c, #e28a57);
+  --slip-wash: light-dark(#f3e2d8, #3a2418);
+  --pull: light-dark(#2c6a4e, #71c098);
+  --pull-wash: light-dark(#ddebe3, #17301f);
+  --accent-wash: light-dark(#dce9ee, #17313b);
+  font-size: 17px;
+  line-height: 1.62;
+}
+.ms-document { --ms-fg: var(--ink); --ms-bg: var(--paper); --ms-border: var(--rule); --ms-surface: var(--sunk); }
+body { background: var(--paper); }
+
+.ms-document > h1 { font-weight: 700; letter-spacing: -0.025em; line-height: 1.02; }
+.ms-document > h2 { font-weight: 700; letter-spacing: -0.018em; line-height: 1.15; }
+.ms-document > h3 { font-weight: 600; font-size: 1rem; letter-spacing: -0.005em; }
+.ms-document > .lead { color: var(--ms-fg-muted); max-width: 62ch; }
+.ms-document > h1 + .lead { font-size: 1.2rem; }
+.eyebrow { color: var(--ms-accent); letter-spacing: 0.14em; font-size: 0.68rem; }
+/* The step label sits on the heading as a tag rather than above it as a caption. */
+.ms-document > .eyebrow + h2 { margin-top: 0.4em; }
+code { font-size: 0.86em; border-radius: 2px; white-space: nowrap; }
+li code, td code { white-space: normal; overflow-wrap: anywhere; }
+
+/* ---- the masthead figures ------------------------------------------------ */
+/* Four facts in a row with rules between them, not boxes around them. The columns are fixed rather than
+ * auto-fit so the theme knows where a row starts: the first cell in a row is flush with the prose, and
+ * on a phone the strip is two by two with a rule between the rows. */
+.figures { gap: 0; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--rule); border-bottom: 2px solid var(--ink); }
+.figures .ms-metric { border: 0; border-radius: 0; background: none; padding: 1.1rem 1.4rem 1rem 0; }
+.figures .ms-metric + .ms-metric { border-left: 1px solid var(--rule); padding-left: 1.4rem; }
+@media (max-width: 48rem) {
+  .figures { grid-template-columns: repeat(2, 1fr); }
+  .figures .ms-metric:nth-child(odd) { border-left: 0; padding-left: 0; }
+  .figures .ms-metric:nth-child(n + 3) { border-top: 1px solid var(--rule); }
+}
+.figures .ms-metric-label { font-family: var(--ms-font-heading); font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; }
+.figures .ms-metric-value { font-family: var(--ms-font-heading); font-size: 2.1rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+.figures .ms-metric-value .danger { color: var(--slip); }
+
+/* ---- section rules --------------------------------------------------------- */
+.ms-document > hr.tick { margin-top: calc(var(--ms-space) * 3.5); }
+
+/* ---- tables -------------------------------------------------------------- */
+.ms-figure table { font-family: var(--ms-font-heading); font-size: 0.85rem; border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); }
+.ms-figure th { font-size: 0.66rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ms-fg-muted); border-bottom: 1px solid var(--rule-hi); padding: 0.7rem 0.9rem 0.6rem 0; white-space: nowrap; vertical-align: bottom; }
+.ms-figure td { padding: 0.7rem 0.9rem 0.7rem 0; vertical-align: top; border-bottom: 1px solid var(--rule); }
+.ms-figure tr:last-child td { border-bottom: 0; }
+.ms-figure td code { background: none; padding: 0; font-size: 0.8rem; font-weight: 500; white-space: nowrap; }
+.ms-figure td[align="right"] { font-variant-numeric: tabular-nums; white-space: nowrap; padding-right: 1.2rem; }
+.ms-figure th[align="right"] { padding-right: 1.2rem; }
+.ms-figure caption { font-family: var(--ms-font-body); font-size: 0.85rem; max-width: 62ch; }
+/* Tone spans inside a table: slip reads warm, a pull-in reads cool, nothing reads faint. */
+td .danger { color: var(--slip); font-weight: 600; }
+td .success { color: var(--pull); font-weight: 600; }
+.badge { font-size: 0.62rem; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 2px; padding: 0.15em 0.6em; background: var(--sunk); color: var(--ms-fg-muted); }
+.badge.warn { background: var(--slip-wash); color: var(--slip); }
+.badge.success { background: var(--pull-wash); color: var(--pull); }
+
+/* ---- callouts ------------------------------------------------------------ */
+.ms-callout { border-radius: 0; border-left: 3px solid var(--ms-accent); background: var(--accent-wash); max-width: var(--ms-measure); font-size: 0.94rem; }
+.ms-callout-title { font-family: var(--ms-font-heading); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ms-accent); }
+
+/* ---- the automation rules ------------------------------------------------ */
+/* A card whose body is a list of labelled parts: the label hangs in a gutter
+ * and the value runs beside it, so four cards read as one form filled four times. */
+.rule { background: var(--sheet); border: 1px solid var(--rule); border-left: 3px solid var(--ms-accent); border-radius: 0; padding: 1.25rem 1.4rem 1.4rem; }
+.rule + .rule { margin-top: 1.1rem !important; }
+.rule .ms-card-title { font-family: var(--ms-font-heading); font-size: 1.02rem; font-weight: 600; }
+.rule > ul { list-style: none; padding: 0; margin: 0.9rem 0 0; font-size: 0.86rem; line-height: 1.65; }
+.rule > ul > li { position: relative; padding-left: 6.2rem; }
+.rule > ul > li + li { margin-top: 0.65rem; }
+.rule > ul > li > strong:first-child { position: absolute; left: 0; top: 0.25em; font-family: var(--ms-font-heading); font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ms-fg-muted); }
+.rule > ul > li > em { color: var(--ms-fg-muted); }
+.rule ol { margin: 0.2rem 0 0; padding-left: 1.3rem; font-family: var(--ms-font-mono); font-size: 0.78rem; line-height: 1.7; }
+.rule ol li::marker { color: var(--ms-fg-muted); }
+.rule code { white-space: normal; overflow-wrap: anywhere; }
+
+/* ---- the Confluence page, as a wireframe --------------------------------- */
+.wire { background: var(--sheet); border: 1px solid var(--rule); border-radius: 0; padding: 0; }
+.wire > .ms-card-title { background: var(--sunk); border-bottom: 1px solid var(--rule); margin: 0; padding: 0.55rem 1.1rem; font-family: var(--ms-font-mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.03em; color: var(--ms-fg-muted); }
+.wire > .ms-steps { margin: 0.4rem 0; padding: 0; }
+.wire .ms-step { padding: 1rem 1.4rem 1rem 4rem; margin: 0; border-bottom: 1px dashed var(--rule); min-height: 0; }
+.wire .ms-step:last-child { border-bottom: 0; }
+.wire .ms-step::before { content: counter(list-item, decimal-leading-zero); left: 1.4rem; top: 1.15rem; width: auto; height: auto; background: none; border: 0; color: var(--ms-fg-muted); font-family: var(--ms-font-mono); font-size: 0.68rem; font-weight: 700; }
+.wire .ms-step::after { content: none; }
+.wire .ms-step > h3 { font-size: 0.95rem; font-weight: 600; margin: 0; }
+.wire .ms-step > p { font-size: 0.9rem; color: var(--ms-fg-muted); line-height: 1.5; margin-top: 0.2rem !important; }
+.wire .ms-step > p strong { color: var(--ms-fg); }
+
+/* ---- verify list --------------------------------------------------------- */
+.verify { max-width: var(--ms-measure); }
+.verify .ms-step { padding-left: 2.6rem; min-height: 0; }
+.verify .ms-step + .ms-step { margin-top: 1.2rem; }
+.verify .ms-step::before { content: counter(list-item, decimal-leading-zero); left: 0; top: 0.3rem; width: auto; height: auto; background: none; border: 0; color: var(--ms-accent); font-family: var(--ms-font-mono); font-size: 0.72rem; font-weight: 700; }
+.verify .ms-step::after { content: none; }
+.verify .ms-step > h3 { font-size: 0.95rem; font-weight: 600; margin: 0; }
+.verify .ms-step > p { font-size: 0.94rem; color: var(--ms-fg-muted); margin-top: 0.15rem !important; }
+
+/* ---- colophon ------------------------------------------------------------ */
+.ms-document > hr.tick + .small { font-family: var(--ms-font-heading); border-top: 2px solid var(--ink); padding-top: 1.2rem; margin-top: calc(var(--ms-space) * 3.5) !important; font-size: 0.8rem; max-width: var(--ms-measure); }
+.ms-document > hr.tick:has(+ .small) { display: none; }

@@ -345,6 +345,13 @@ summary.ms-callout-title { cursor: pointer; }
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
+  /* A caption belongs to the table wrapper, so once the rows are wider than the lane the caption is too:
+   * clipped at the lane edge and scrolling away with the rows. The table is a block here, so it can be the
+   * container: the caption takes its visible width, not its scroll width, and sticks while the rows scroll.
+   * The figure would be the obvious container and is the wrong one — a theme's border on it leaves the table
+   * two pixels narrower, and a caption two pixels wider than its table gives every table a scrollbar. */
+  .ms-document table { container-type: inline-size; }
+  .ms-figure caption { width: 100cqw; box-sizing: border-box; position: sticky; left: 0; }
 }
 
 /* ---- tabs (§4.5): radio inputs, no JavaScript ------------------------------- */

@@ -277,3 +277,10 @@ in commit order, which is the wrong order for finding the work.
       and one on a `:::card` fence giving `:::[Beta]{.badge}card`. Asking the tree covers what nobody listed.
       The test that found them is the one worth keeping: every entry inserted at every offset of a document
       with frontmatter, a paragraph and a construct, each result required to parse clean.
+- [x] **Ninth example, 2026-09-17.** `examples/keystone-baseline.md` with `examples/ledger.css`: the change-set genre,
+      the published twin of a real document about a project tracker, which stays out of the repository. Writing the
+      original found that GFM column alignment had never reached a rendered page — `align="right"` was emitted and
+      the default stylesheet's `text-align: left` beat it — fixed with two rules and a test. The document forced
+      nothing in §2 or §4: rule cards are `card` around a labeled list, the wireframe is `steps` inside `card`,
+      and the tones are reserved classes on spans. Register entry 7 counts its author classes: four of its own
+      and `.tick`, now in seven of eight examples, which still fails the second half of the criterion.

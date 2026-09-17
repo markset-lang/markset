@@ -237,6 +237,15 @@ export const EXAMPLES: Array<{
     blurb:
       "The genre that argues from quantities: a fleet strip, four data tables that carry the whole case, and a distribution drawn as an ASCII plot. Written to find out what a document wants when the numbers are the argument.",
   },
+  {
+    slug: "keystone-baseline",
+    file: "keystone-baseline.md",
+    title: "Change set",
+    theme: "ledger.css",
+    kicker: "Change set",
+    blurb:
+      "A proposal to change a system, written to be executed: a fact strip, three data tables whose columns line up on the decimal, four automation rules as cards of labeled parts, and a page wireframe that is `steps` inside a `card`. Every tone is a reserved class; the theme supplies the rest.",
+  },
 ];
 
 const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
