@@ -272,6 +272,33 @@ What is left in it is the general lesson rather than the Markset one: documentat
 
 Observed: raised September 2026, on the grounds that it is likely to be the common case.
 
+### 17. A chart, and which kind
+
+**Class: Additive as recommended below. Breaking if it becomes a ninth construct. Candidate.**
+
+Section 8 reserved `chart` as "the most differentiating feature and the most work", needing "a data format decision, a rendering library, and a print story". `examples/capacity-review.md` was written to find out which of that is still true. It is a capacity review whose whole argument is quantities, and it was written against v0 with no chart support of any kind, so that what it could not do would be visible rather than imagined. Four places in it want a picture. Three findings came out, and two of them narrow the request considerably.
+
+**A chart already renders, and no part of the spec had to change for it.** Section 10 says a diagram is a fenced code block whose info string names a language, and that the language set is "open and deliberately unspecified". Nothing in it says a diagram is a node-link picture. So a `barchart` fence inside a captioned figure, with `markset html --diagram barchart=./engine.sh`, produces the drawn `<img class="ms-diagram">` today — measured, not reasoned about. The downgrade is the fence unchanged and the caption becomes the alt text. Whatever is still missing, the plumbing is not it, and the fenced-code syntax §8 wanted to reserve has already been generalized past by §10.
+
+**Single-series comparison is solved, by ASCII.** The distribution in that document, `#fig-dist`, is a horizontal bar chart written as an `ascii` fence: labels, bars, counts, an axis, and an arrow annotating one bucket. Drawn it is a clean chart; undrawn it is the same chart in text, which is the §10 argument for ASCII holding exactly as well for charts as for diagrams. A `bar` chart type in some future engine would buy very little over this, and that is worth knowing before anyone builds one — the obvious first chart type is the one already covered.
+
+**What the document could not do is multi-series over an ordered axis.** Two of its four wants are this, and both had to fall back to a table:
+
+- `#fig-growth` — eight quarters of stored volume against the share held by the largest 340 tenants. The claim is that one is smooth while the other slides, which is a statement about two shapes, and the prose has to assert it because the table cannot show it.
+- `#fig-scenarios` — three FY27 projections over eight quarters. The document states the requirement in its own voice: *"The three curves also cross, which no row of this table announces."* Twenty-four numbers, and the finding — a crossover in FY27 Q4 that reverses which scenario looks smallest — is invisible until a reader computes it. A vertical ASCII plot of this was tried and is not legible; the marks stay characters and scatter.
+
+So the demand is narrower than "charts": it is a series over an ordered axis, with more than one of them.
+
+**The source should be the table, and this is the part that is about Markset rather than about charts.** A diagram's content has no canonical text form, which is why §10 had to settle for the fence degrading to its own source. A chart's does: it is the data, and a reader of a capacity review wants the table anyway. Every figure above is already `figure` wrapping a GFM table, already carries a real `<caption>` (entry 1), and already degrades to the numbers in every target with no engine installed. A `vega-lite` fence would either duplicate that table or replace it with JSON, and both are worse than what the document was going to contain regardless. It also makes obligation 7's analog trivial: a chart drawn from a table can never remove content, because the alternative is the table itself.
+
+**Which means the construct question should be reopened, and the answer looks like no.** The bar at the top of this file says a chart is "the one candidate in §8 that clears" it, on the grounds that the output is computed from the data and a second renderer cannot guess it. That bullet predates §10, and §10's obligation 1 is the counter-argument: a renderer that cannot draw renders the ordinary form, and *that* is the agreement a construct would have been bought for. Two renderers already agree on `figure` wrapping a table. The only thing they do not agree on is whether to draw it, which is a section of renderer obligations, not a ninth name. Recommend rewriting that bullet before any chart work starts, because it is currently the argument someone would cite for the wrong design.
+
+**What it would cost, as recommended.** A §11 shaped like §10, with the same seven obligations and one more — the table stays reachable, since unlike a diagram the picture is a lossy view of something the reader could have used. One new `figure` attribute for the chart type, which is the entire grammar change: `chart=line` on a figure specifier is `DIRECTIVE_UNKNOWN_ATTRIBUTE` today, while `.chart` as a class passes clean and reaches the HTML. One workspace package shaped like `diagram-ascii` — a pure function, no dependencies — doing line and multi-series line and nothing else. Conformance cases pinning the undrawn table, as diagram cases pin the undrawn fence. Section 8's three worries do not survive contact: the table is the data format, a line chart from a table is a few hundred lines rather than a library, and an SVG data URI prints.
+
+**One thing that is not about charts.** The fleet strip in that document has mixed polarity — tenant count rising is growth, stored bytes rising is cost — and `metrics` has no way to say so. `direction` is per-block (§4.7), so a strip is all-normal or all-inverse. Recorded here rather than as its own entry because one document is not yet evidence; if a second review wants it, it is a small additive attribute on the row rather than the block.
+
+Observed: `examples/capacity-review.md`, September 2026, written for this purpose rather than found in one that already existed. Worth flagging as such — the register asks for an originating document, and a document commissioned to originate an entry is weaker evidence than one that wanted the feature on its own. What it is good for is bounding the request, which it did: two of the four wants turned out to be already served.
+
 ## Rejected
 
 | Request | Reason |
