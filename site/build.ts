@@ -55,10 +55,15 @@ const NAV: Array<[string, string]> = [
   ["Home", "index.html"],
   ["Start", "start/index.html"],
   ["Reference", "reference/index.html"],
-  ["CLI", "cli/index.html"],
   ["Spec", "spec/index.html"],
   ["Examples", "examples/index.html"],
 ];
+// The bar names sections, and the rail names the pages inside one. So the
+// command line is not here either: it is a page in Get started, linked from the
+// adoption page as one of the two things a reader might go and do, and from the
+// home page. It ends up better connected than the specification, which is in
+// the bar and is reached from prose alone.
+//
 // Conformance is deliberately not in that list. It is a browser of 366 test
 // cases whose index is a hundred and fifty words, and its readers are people
 // writing a second implementation, who arrive through the specification rather
@@ -762,8 +767,13 @@ function shell(page: Page): string {
   const depth = page.path.split("/").length - 1;
   const rel = depth === 0 ? "./" : "../".repeat(depth);
   const nav = NAV.map(([label, href]) => {
+    // A bar item is current for its whole section, not just its own page, or
+    // the bar goes blank the moment a reader follows the rail into one.
+    const inGetStarted = href === "start/index.html" && GET_STARTED.some(([, h]) => h === page.path);
     const active =
-      page.path === href || (href !== "index.html" && page.path.startsWith(href.replace("index.html", "")));
+      page.path === href ||
+      inGetStarted ||
+      (href !== "index.html" && page.path.startsWith(href.replace("index.html", "")));
     const icon = NAV_ICONS[label];
     const body = icon ? `${icon}<span class="site-visually-hidden">${label}</span>` : label;
     const title = icon ? ` title="${label}"` : "";

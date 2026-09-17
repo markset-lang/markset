@@ -137,3 +137,41 @@ test("the rail says which page you are on, exactly once", async () => {
     assert.equal(current.length, 1, `${page} marks ${current.length} rail entries as current`);
   }
 });
+
+test("every page is reachable from the home page, and none of them is far", async () => {
+  // The invariant behind both the rail and what is in the bar. The bar holds
+  // five things and the site has forty-one pages, so the rest are found by
+  // following links -- and a page nothing links to is a page nobody reads.
+  // This is what let the command line leave the bar without becoming harder to
+  // find, and what would have caught the Pages guide being reachable only from
+  // three sentences.
+  const linked = new Map<string, Set<string>>();
+  for (const page of pages) {
+    const html = await readFile(join(dist, page), "utf8");
+    const out = new Set<string>();
+    for (const [, href] of html.matchAll(/href="([^"#?]*)"/gu)) {
+      if (href.startsWith("http") || /\.(css|json|svg|png)$/u.test(href)) continue;
+      const from = page.includes("/") ? page.slice(0, page.lastIndexOf("/")) : "";
+      const target = join(from, href).replace(/^\.\//u, "");
+      if (pages.includes(target) && target !== page) out.add(target);
+    }
+    linked.set(page, out);
+  }
+
+  const hops = new Map([["index.html", 0]]);
+  const queue = ["index.html"];
+  while (queue.length > 0) {
+    const current = queue.shift() as string;
+    for (const next of linked.get(current) ?? []) {
+      if (!hops.has(next)) {
+        hops.set(next, (hops.get(current) as number) + 1);
+        queue.push(next);
+      }
+    }
+  }
+
+  const unreachable = pages.filter((p) => !hops.has(p));
+  assert.deepEqual(unreachable, [], "a page nothing links to is a page nobody reads");
+  const worst = Math.max(...hops.values());
+  assert.ok(worst <= 3, `the furthest page is ${worst} hops from home`);
+});
