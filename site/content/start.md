@@ -11,7 +11,72 @@ Getting started
 # Enrich the Markdown you already have
 
 {.lead}
-Markset is not a new format to migrate to. A Markset file is a Markdown file, so the way in is to keep the documents you have and start using constructs in the pages that need them. This page covers when that is worth doing, and the five ways to fit it into something you already run.
+There is no migration. A Markset file *is* a Markdown file, so the way in is to keep every document you have and reach for a construct only on the pages that need one. Here is the whole idea, in two lines.
+
+{.tick}
+***
+
+{.eyebrow}
+The smallest useful change
+
+## Two lines
+
+Take a page that is already in your repository. This one is fine as it is, and it is the shape most documentation is in:
+
+::::columns{ratio="1:1"}
+```markdown
+## Deployment
+
+Three environments, in order.
+
+- Staging, deployed on merge
+- Canary, one percent of traffic
+- Production, manual promotion
+
+Rollback takes about four minutes.
+```
+
+::col
+
+:::card[What it costs you]{tone=info}
+Nothing. That page is plain CommonMark, which means it is already a valid Markset document. You have adopted nothing and lost nothing.
+:::
+::::
+
+Now declare the version and turn the list into tiles. Two lines changed, and the second one is a fence:
+
+::::columns{ratio="1:1"}
+```markdown
+---
+markset: 0
+---
+
+## Deployment
+
+Three environments, in order.
+
+:::grid{cols=3}
+- **Staging** — deployed on merge
+- **Canary** — one percent of traffic
+- **Production** — manual promotion
+:::
+
+Rollback takes about four minutes.
+```
+
+::col
+
+:::grid{cols=3}
+- **Staging** — deployed on merge
+- **Canary** — one percent of traffic
+- **Production** — manual promotion
+:::
+
+{.small .muted}
+Rendered with `markset html`. Paste that same source into a pull request and the three bullets come back, in order, with the fence lines showing as text. Nothing is lost where the layout cannot follow — that is the contract, and every construct has one.
+::::
+
+The `markset: 0` line says which version of the specification the document is written against. The parser does not require it; tools read it to decide that a `.md` file is meant to be Markset, which protects files using `:::` for something else.
 
 {.tick}
 ***
@@ -19,28 +84,18 @@ Markset is not a new format to migrate to. A Markset file is a Markdown file, so
 {.eyebrow}
 When it helps
 
-## The problem it solves
+## Whether this is for you
 
-You have Markdown that has outgrown Markdown. A page needs three things side by side, or a set of tiles, or a procedure that reads as a procedure. The usual answer is to drop into raw HTML, and the moment you do, the file stops being portable: it will not paste into an issue, it will not typeset to print, and a future renderer has to cope with whatever tags you left behind.
-
-Markset is the other answer. You name the layout instead of building it, and the name has a defined fallback, so the file keeps working everywhere it used to work.
+You have Markdown that has outgrown Markdown: a page that needs three things side by side, a set of tiles, a procedure that should read as a procedure. The usual answer is to drop into raw HTML, and the moment you do, the file stops being portable — it will not paste into an issue, it will not typeset to print, and a future renderer has to cope with whatever tags you left behind.
 
 :::grid{cols=2}
-- ### An internal documentation site
+- ### Worth it
 
-  The common case, and the one this project was written for. Pages are Markdown in a repository, a generator turns them into a site, and some of them want to be richer than a wall of prose. You keep the repository, the review process and the file format, and the pages that need more get it.
+  Documentation in a repository that a generator turns into a site. Analyses and incident write-ups that get pasted into issues and chat. Anything that has to outlive the tool rendering it — a closed vocabulary with a specification and a test suite means a second implementation can be written from the document alone.
 
-- ### A public site or GitHub Pages
+- ### Not worth it
 
-  Same shape, published. The site you are reading is the worked example: every page is a Markset document, built by the reference implementation, deployed by a workflow. There is no framework underneath it, and the whole recipe — one workflow file and two commands — is on the [GitHub Pages page](../github-pages/index.html).
-
-- ### Documents that get pasted around
-
-  Analyses, incident write-ups, proposals. These end up in issues, pull requests and chat, where nothing renders your layout. A Markset document degrades to readable Markdown in those places rather than to a soup of angle brackets.
-
-- ### Content that has to outlive its renderer
-
-  A closed vocabulary with a specification and a test suite means a second implementation can be written from the document alone. That is a different promise from a template language tied to one generator.
+  A page that is fine as prose. Markset earns its place where layout carries meaning, and nowhere else. If no page in your repository wants three columns, you do not need this.
 :::
 
 > [!NOTE]
@@ -116,74 +171,6 @@ Fitting it in
    ```
 :::
 
-{.tick}
-***
-
-{.eyebrow}
-A first page
-
-## Enriching a page you already have
-
-Take a page that is already in your repository. This one is fine as it is, and it is the shape most documentation is in:
-
-::::columns{ratio="1:1"}
-```markdown
-## Deployment
-
-Three environments, in order.
-
-- Staging, deployed on merge
-- Canary, one percent of traffic
-- Production, manual promotion
-
-Rollback takes about four minutes.
-```
-
-::col
-
-:::card[What it costs you]{tone=info}
-Nothing yet. The page above is plain CommonMark, which means it is already a valid Markset document. You have not adopted anything.
-:::
-::::
-
-Now declare the version and turn the list into tiles. Two lines changed:
-
-::::columns{ratio="1:1"}
-```markdown
----
-markset: 0
----
-
-## Deployment
-
-Three environments, in order.
-
-:::grid{cols=3}
-- **Staging** — deployed on merge
-- **Canary** — one percent of traffic
-- **Production** — manual promotion
-:::
-
-Rollback takes about four minutes.
-```
-
-::col
-
-:::grid{cols=3}
-- **Staging** — deployed on merge
-- **Canary** — one percent of traffic
-- **Production** — manual promotion
-:::
-
-{.small .muted}
-Rendered with `markset html`. Paste the same source into a pull request and you get the three bullets back, in order, with the fence lines showing as text.
-::::
-
-The `markset: 0` line declares which version of the specification the document is written against. The parser does not require it; tools use it to decide that a `.md` file is meant to be Markset, which protects files that use `:::` for something else.
-
-{.tick}
-***
-
 {.eyebrow}
 Honest constraints
 
@@ -199,9 +186,6 @@ Honest constraints
 | Nothing executes | No expressions, no includes, no components. A document is data. If you need computation, it happens before the document exists. |
 | Diagrams need an engine | An ASCII fence is drawn out of the box. Any other diagram language — mermaid, graphviz — is a code block until you name a command that draws it, and stays a readable code block if you never do. |
 :::
-
-{.tick}
-***
 
 {.eyebrow}
 Next
