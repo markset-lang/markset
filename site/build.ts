@@ -509,7 +509,7 @@ async function specPage(): Promise<Page> {
 
 async function referenceIndex(): Promise<Page> {
   const intro = await readFile(join(root, "site", "content", "reference", "index.md"), "utf8");
-  const { ast, diagnostics } = parseDocument(intro);
+  const { diagnostics } = parseDocument(intro);
   failOnErrors(diagnostics, "reference/index.md");
   // Generated as Markset source and parsed with the intro, rather than
   // assembled as HTML after it. Same reason as the examples index: the page
