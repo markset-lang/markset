@@ -7,7 +7,7 @@
  * thing on the page asking to be looked at.
  *
  * The document names no color, no width and no alignment. It says "this is a
- * metrics block about the fleet" and "this figure holds a plot", and every
+ * metrics block about the fleet" and "this figure is a bar chart", and every
  * decision below is this file's answer to that. */
 
 body {
@@ -100,25 +100,6 @@ table,
 .fleet .ms-metric-value {
   font-size: 1.6rem;
   letter-spacing: -0.02em;
-}
-
-/* A plot is a drawn ASCII figure, and the theme can frame it but cannot reach
- * inside it: the SVG arrives as a data URI and colors its own marks from the
- * reader's scheme. Centering and the surface are all that is left to decide. */
-.plot {
-  padding: calc(var(--ms-space) * 1.1);
-  border: 1px solid var(--rule);
-  border-radius: var(--ms-radius);
-  background: var(--surface);
-}
-.plot > .ms-diagram {
-  margin-inline: auto;
-}
-.plot > figcaption {
-  margin-top: calc(var(--ms-space) * 0.75);
-  text-align: center;
-  font-style: normal;
-  font-size: 0.85em;
 }
 
 /* When a step happens, set apart from what the step is. Same class and same

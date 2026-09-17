@@ -65,16 +65,16 @@ The finding
 
 Stored volume per tenant is not distributed around a center. It has two of them, roughly two orders of magnitude apart, with the arithmetic mean sitting in the gap between.
 
-:::figure[Tenants by stored volume. The mean, 945 GB, falls in the 250 GB to 1 TB band — the emptiest bucket in the fleet.]{#fig-dist .plot}
-```ascii
-  under 10 GB   |################################  6,140
-  10 to 50 GB   |###################               3,660
-  50 to 250 GB  |####                                760
-  250 GB to 1 TB|##      <- the mean lives here      390
-  1 to 8 TB     |####                                810
-  8 to 40 TB    |#                                   290
-  over 40 TB    |                                     50
-```
+:::figure[Tenants by stored volume. The mean, 945 GB, falls in the 250 GB to 1 TB band — the emptiest bucket in the fleet.]{#fig-dist chart=bar}
+| Band | Tenants |
+|---|---|
+| under 10 GB | 6,140 |
+| 10 to 50 GB | 3,660 |
+| 50 to 250 GB | 760 |
+| 250 GB to 1 TB | 390 |
+| 1 to 8 TB | 810 |
+| 8 to 40 TB | 290 |
+| over 40 TB | 50 |
 :::
 
 ::::columns{ratio="3:2"}
