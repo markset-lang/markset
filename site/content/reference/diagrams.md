@@ -64,6 +64,152 @@ Both halves already existed. A fenced code block is CommonMark, and `figure` has
 ***
 
 {.eyebrow}
+Drawing them
+
+## Rendering with the command line
+
+**`ascii` fences are drawn by default.** The reference implementation ships one engine and uses it without being asked, because an ASCII fence that is drawn and an ASCII fence that is not are the same picture — drawing it changes how it looks, not what it says. Every other language needs a command, and `--diagram none` turns drawing off entirely for a fence that is meant to stay selectable text.
+
+:::tabs
+### Built-in ASCII
+
+```sh
+markset html doc.md -o doc.html      # ascii fences are drawn
+markset html doc.md --diagram none   # and this keeps them as code
+```
+
+The reference implementation ships one built-in engine, for `ascii`. It is a pure function with no dependencies: it reads the grid, joins the runs of `-` and `|`, puts an arrowhead where a line actually arrives, and sets everything else as text.
+
+### Any other engine
+
+```sh
+markset html doc.md --diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"
+markset html doc.md --diagram bob="svgbob"
+```
+
+The fence's contents go to the command on stdin; SVG comes back on stdout. A command that exits non-zero, or prints something that is not SVG, leaves the code block in place and reports to stderr. Naming a language here adds it; `ascii` keeps drawing alongside it.
+
+### As a library
+
+```js
+import { renderHtml } from "@markset-lang/render-html";
+
+renderHtml(ast);                                        // ascii is drawn
+renderHtml(ast, { diagrams: false });                   // nothing is drawn
+renderHtml(ast, { diagrams: { engines: { mermaid } } }); // ascii and mermaid
+```
+
+An engine you register is layered over the built-in one, so adding a language never silently takes `ascii` away.
+:::
+
+> [!IMPORTANT] A document never names its own engine
+> The mapping from info string to command comes from the flag and nowhere else, and the fence's contents reach the command on stdin rather than being pasted into it. Nothing written in a Markset file can cause anything to run. Invariant 4 is intact: choosing a build step is the operator's decision, exactly as running `markset` at all already was.
+
+{.tick}
+***
+
+{.eyebrow}
+Other languages
+
+## Drawing mermaid
+
+Yes, and graphviz, and svgbob, and anything else with a command that reads a diagram on stdin and writes SVG on stdout. **Nothing but `ascii` is built in**, which is a deliberate limit rather than a gap: a renderer that shipped a dozen engines would be a renderer nobody could reimplement, and §10 obligation 1 makes a fence with no engine a code block rather than an error.
+
+```sh
+npm i -g @mermaid-js/mermaid-cli
+markset html doc.md --diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"
+```
+
+That is the whole setup. `ascii` keeps drawing alongside it, because an engine you name is layered over the built-in one rather than replacing it.
+
+:::grid{cols=2}
+- ### What it costs
+
+  `mermaid-cli` brings a headless browser with it — a large download, and one that has to run in your build. That is the price of mermaid specifically, not of diagrams: an `ascii` fence is drawn by a pure function with no dependencies and no subprocess.
+
+- ### What you get back if you stop
+
+  The fence. Remove the flag and every mermaid diagram on the page is a `mermaid` code block again, with the document unchanged — the AST never knew (§10 obligation 3). Nothing has to be undone.
+:::
+
+**This page is the worked example.** The mermaid flowchart on it is a `mermaid` fence in its own source, drawn at build time by `site/mermaid.ts`. It renders each diagram twice, once in mermaid's light theme and once in its dark one, and splices both into a single SVG behind a `prefers-color-scheme` switch — because mermaid bakes a theme into what it emits and has no such switch of its own. A drawn mermaid diagram follows the control in the bar above for the same reason an ASCII one does, and it costs two renders to get there.
+
+> [!TIP] An engine that fails is not the same as a document that breaks
+> If `mmdc` is missing, exits non-zero, or prints something that is not SVG, the code block stays and the failure is reported to stderr (§10 obligation 5). A build that has never heard of mermaid produces a page that is still complete and still readable — which is the property that makes naming an engine a safe thing to do rather than a commitment.
+
+{.tick}
+***
+
+{.eyebrow}
+Obligation 7
+
+## A drawn diagram must be captioned
+
+The rule with teeth, and the one most likely to surprise. **A diagram fence that is not the content of a captioned `figure` is rendered as a code block**, however capable the renderer is.
+
+The reason is worth spelling out. An undrawn diagram is a code block, so a reader using a screen reader gets its source: mediocre, but present. Draw it with no text alternative and that reader gets nothing at all — so drawing would *remove* content for them while adding it for everyone else. The caption is the alternative, and `figure` is the only place in the grammar a fence can carry one.
+
+::::columns{ratio="1:1"}
+:::card[Drawn]{tone=info}
+Inside a `figure` with a caption. The caption becomes the picture's `alt` text as well as its visible label.
+:::
+
+::col
+
+:::card[Left as a code block]
+A bare fence, or a `figure` with no caption argument. Nothing is lost and nothing is claimed.
+:::
+::::
+
+This is the same move as the [tabs](../tabs/index.html) page's refusal to emit tab roles: the output claims only what it can keep true.
+
+{.tick}
+***
+
+{.eyebrow}
+The supported subset
+
+## What the built-in engine understands
+
+:::figure[Everything the ASCII engine recognizes. Anything else on the line is set as text.]
+| Characters | Meaning |
+|---|---|
+| `-` | Horizontal line |
+| `\|` | Vertical line |
+| `+` | Corner or junction, where lines meet |
+| `/` `\` | Diagonal |
+| `>` `<` `^` `v` | Arrowhead, but only where a line actually arrives |
+| anything else | Text, positioned on the character grid |
+:::
+
+The last two rows are the ones that matter in practice. An arrowhead is only an arrowhead where a line arrives at it, which is what stops the `v` in "very" from sprouting a triangle. And there is no layout pass: a diagram is drawn exactly where you put it, cell by cell, so the alignment in the rendered picture is the alignment in your file.
+
+:::figure[Diagonals and junctions, drawn from the same grid.]
+```ascii
+        +----+
+        | in |
+        +----+
+          |
+     +----+----+
+     |         |
+     v         v
+  +-----+   +-----+
+  |  a  |   |  b  |
+  +-----+   +-----+
+     \         /
+      \       /
+       +-----+
+       | out |
+       +-----+
+```
+:::
+
+{.small .muted}
+The engine is deliberately small and deliberately not `svgbob`. If you want rounded corners, shape detection and styling hints, point `--diagram` at a tool that does those things — that is what the flag is for.
+{.tick}
+***
+
+{.eyebrow}
 Why ASCII
 
 ## The fallback is already a diagram
@@ -153,109 +299,6 @@ Obligation 1 is the one that keeps the language set open. There is no list of ap
 ***
 
 {.eyebrow}
-Obligation 7
-
-## A drawn diagram must be captioned
-
-The rule with teeth, and the one most likely to surprise. **A diagram fence that is not the content of a captioned `figure` is rendered as a code block**, however capable the renderer is.
-
-The reason is worth spelling out. An undrawn diagram is a code block, so a reader using a screen reader gets its source: mediocre, but present. Draw it with no text alternative and that reader gets nothing at all — so drawing would *remove* content for them while adding it for everyone else. The caption is the alternative, and `figure` is the only place in the grammar a fence can carry one.
-
-::::columns{ratio="1:1"}
-:::card[Drawn]{tone=info}
-Inside a `figure` with a caption. The caption becomes the picture's `alt` text as well as its visible label.
-:::
-
-::col
-
-:::card[Left as a code block]
-A bare fence, or a `figure` with no caption argument. Nothing is lost and nothing is claimed.
-:::
-::::
-
-This is the same move as the [tabs](../tabs/index.html) page's refusal to emit tab roles: the output claims only what it can keep true.
-
-{.tick}
-***
-
-{.eyebrow}
-Drawing them
-
-## Rendering with the command line
-
-**`ascii` fences are drawn by default.** The reference implementation ships one engine and uses it without being asked, because an ASCII fence that is drawn and an ASCII fence that is not are the same picture — drawing it changes how it looks, not what it says. Every other language needs a command, and `--diagram none` turns drawing off entirely for a fence that is meant to stay selectable text.
-
-:::tabs
-### Built-in ASCII
-
-```sh
-markset html doc.md -o doc.html      # ascii fences are drawn
-markset html doc.md --diagram none   # and this keeps them as code
-```
-
-The reference implementation ships one built-in engine, for `ascii`. It is a pure function with no dependencies: it reads the grid, joins the runs of `-` and `|`, puts an arrowhead where a line actually arrives, and sets everything else as text.
-
-### Any other engine
-
-```sh
-markset html doc.md --diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"
-markset html doc.md --diagram bob="svgbob"
-```
-
-The fence's contents go to the command on stdin; SVG comes back on stdout. A command that exits non-zero, or prints something that is not SVG, leaves the code block in place and reports to stderr. Naming a language here adds it; `ascii` keeps drawing alongside it.
-
-### As a library
-
-```js
-import { renderHtml } from "@markset-lang/render-html";
-
-renderHtml(ast);                                        // ascii is drawn
-renderHtml(ast, { diagrams: false });                   // nothing is drawn
-renderHtml(ast, { diagrams: { engines: { mermaid } } }); // ascii and mermaid
-```
-
-An engine you register is layered over the built-in one, so adding a language never silently takes `ascii` away.
-:::
-
-> [!IMPORTANT] A document never names its own engine
-> The mapping from info string to command comes from the flag and nowhere else, and the fence's contents reach the command on stdin rather than being pasted into it. Nothing written in a Markset file can cause anything to run. Invariant 4 is intact: choosing a build step is the operator's decision, exactly as running `markset` at all already was.
-
-{.tick}
-***
-
-{.eyebrow}
-Other languages
-
-## Drawing mermaid
-
-Yes, and graphviz, and svgbob, and anything else with a command that reads a diagram on stdin and writes SVG on stdout. **Nothing but `ascii` is built in**, which is a deliberate limit rather than a gap: a renderer that shipped a dozen engines would be a renderer nobody could reimplement, and §10 obligation 1 makes a fence with no engine a code block rather than an error.
-
-```sh
-npm i -g @mermaid-js/mermaid-cli
-markset html doc.md --diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"
-```
-
-That is the whole setup. `ascii` keeps drawing alongside it, because an engine you name is layered over the built-in one rather than replacing it.
-
-:::grid{cols=2}
-- ### What it costs
-
-  `mermaid-cli` brings a headless browser with it — a large download, and one that has to run in your build. That is the price of mermaid specifically, not of diagrams: an `ascii` fence is drawn by a pure function with no dependencies and no subprocess.
-
-- ### What you get back if you stop
-
-  The fence. Remove the flag and every mermaid diagram on the page is a `mermaid` code block again, with the document unchanged — the AST never knew (§10 obligation 3). Nothing has to be undone.
-:::
-
-**This page is the worked example.** The sequence diagram above is a `mermaid` fence in this page's source, drawn at build time by `site/mermaid.ts`. It renders each diagram twice, once in mermaid's light theme and once in its dark one, and splices both into a single SVG behind a `prefers-color-scheme` switch — because mermaid bakes a theme into what it emits and has no such switch of its own. A drawn mermaid diagram follows the control in the bar above for the same reason an ASCII one does, and it costs two renders to get there.
-
-> [!TIP] An engine that fails is not the same as a document that breaks
-> If `mmdc` is missing, exits non-zero, or prints something that is not SVG, the code block stays and the failure is reported to stderr (§10 obligation 5). A build that has never heard of mermaid produces a page that is still complete and still readable — which is the property that makes naming an engine a safe thing to do rather than a commitment.
-
-{.tick}
-***
-
-{.eyebrow}
 What gets emitted
 
 ## The drawn form
@@ -270,46 +313,3 @@ The reference implementation draws to SVG and embeds it as a `data:` URI rather 
 
 The built-in engine carries its own `prefers-color-scheme` block, which resolves against the page's color scheme, so a diagram follows the [light and dark control](../../index.html) in the bar above like everything else on the page. Try it: the picture at the top of this page changes with it.
 
-{.tick}
-***
-
-{.eyebrow}
-The supported subset
-
-## What the built-in engine understands
-
-:::figure[Everything the ASCII engine recognizes. Anything else on the line is set as text.]
-| Characters | Meaning |
-|---|---|
-| `-` | Horizontal line |
-| `\|` | Vertical line |
-| `+` | Corner or junction, where lines meet |
-| `/` `\` | Diagonal |
-| `>` `<` `^` `v` | Arrowhead, but only where a line actually arrives |
-| anything else | Text, positioned on the character grid |
-:::
-
-The last two rows are the ones that matter in practice. An arrowhead is only an arrowhead where a line arrives at it, which is what stops the `v` in "very" from sprouting a triangle. And there is no layout pass: a diagram is drawn exactly where you put it, cell by cell, so the alignment in the rendered picture is the alignment in your file.
-
-:::figure[Diagonals and junctions, drawn from the same grid.]
-```ascii
-        +----+
-        | in |
-        +----+
-          |
-     +----+----+
-     |         |
-     v         v
-  +-----+   +-----+
-  |  a  |   |  b  |
-  +-----+   +-----+
-     \         /
-      \       /
-       +-----+
-       | out |
-       +-----+
-```
-:::
-
-{.small .muted}
-The engine is deliberately small and deliberately not `svgbob`. If you want rounded corners, shape detection and styling hints, point `--diagram` at a tool that does those things — that is what the flag is for.
