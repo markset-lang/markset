@@ -688,7 +688,7 @@ function shell(page: Page): string {
 <link rel="stylesheet" href="${rel}css/site.css">
 ${page.themeCss ? `<link rel="stylesheet" href="${rel}${page.themeCss}">\n` : ""}</head>
 <body${attrs}>
-<header class="site-header">
+${SCHEME_SCRIPT}<header class="site-header">
 <a class="site-brand" href="${rel}index.html">Markset</a>
 <nav class="site-nav">
 ${nav}
@@ -708,14 +708,15 @@ ${page.body}</main>
 /**
  * Reader's choice of color scheme, as three radio inputs and their labels.
  *
- * No script, which is the constraint rather than an accident: a test asserts
- * that no built page contains one, and the home page says as much. The inputs
- * carry the state, body:has() in site.css reads it, and markset.css resolves
- * every color from color-scheme, so the whole control is one CSS property.
+ * The control itself is CSS: the inputs carry the state, body:has() in site.css
+ * reads it, and markset.css resolves every color from color-scheme, so forcing
+ * one is a single property. Auto is checked, so a reader who never touches it
+ * keeps their system preference.
  *
- * Auto is checked, so a reader who never touches it keeps their system
- * preference. The choice lives in the markup, which means it does not survive
- * a page load; persisting it is what would need a script.
+ * The state lives in the markup, which means it does not outlive the document
+ * — and carrying a choice across page loads is the one part of this no CSS can
+ * do. SCHEME_SCRIPT is that part and nothing else; see its comment for why the
+ * page still works without it.
  */
 /**
  * Inline icons for the app bar.
@@ -746,6 +747,61 @@ const SCHEME_CONTROL = `<div class="site-scheme-slot"><div class="site-scheme" r
 <input type="radio" name="ms-scheme" id="ms-scheme-dark" class="site-scheme-input">
 <label class="site-scheme-option" for="ms-scheme-dark" title="Dark">${ICON_DARK}<span class="site-visually-hidden">Dark</span></label>
 </div></div>
+`;
+
+/**
+ * The only script on a built page, and the only thing it does is carry the
+ * reader's scheme choice from one page to the next.
+ *
+ * Everything else about the control is CSS. This exists because the state has
+ * to outlive the document, and a static site has no server to set a cookie.
+ * The rule the site keeps is narrower than "no script anywhere" but is the one
+ * that matters: nothing rendered *from a Markset document* contains a script,
+ * which is what the home page claims and what makes a rendered document safe
+ * to paste anywhere. This is chrome, outside <main>, and a test pins that.
+ *
+ * With scripting off the control still works for the page it is on, because
+ * the radios and body:has() are the mechanism and this only restores and
+ * records what they hold. It writes data-scheme on <body> — the hook markset.css
+ * already publishes (§6) — rather than inventing a second one, and it runs as
+ * the first thing in <body> so the scheme is in force before anything paints.
+ */
+const SCHEME_SCRIPT = `<script>
+(function () {
+  var key = "ms-scheme";
+  var read = function () {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null; // private mode, blocked storage, file://
+    }
+  };
+  var apply = function (value) {
+    if (value === "light" || value === "dark") document.body.dataset.scheme = value;
+    else delete document.body.dataset.scheme;
+  };
+  apply(read());
+  // Delegated, so it is listening before the control it listens for is parsed.
+  document.addEventListener("change", function (event) {
+    var input = event.target;
+    if (!input || input.name !== key) return;
+    var value = input.id.slice(key.length + 1);
+    apply(value);
+    try {
+      if (value === "auto") localStorage.removeItem(key);
+      else localStorage.setItem(key, value);
+    } catch (e) {}
+  });
+  document.addEventListener("DOMContentLoaded", function () {
+    // Collapsed, the control shows the checked option's icon, so the radio has
+    // to agree with the scheme in force or it reports the wrong one. Setting
+    // checked fires no change event, so this cannot loop.
+    var value = read();
+    var input = document.getElementById(key + "-" + (value === "light" || value === "dark" ? value : "auto"));
+    if (input) input.checked = true;
+  });
+})();
+</script>
 `;
 
 function tableOfContents(ast: Root, min: number, max: number): string {

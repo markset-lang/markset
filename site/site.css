@@ -74,10 +74,13 @@ body { --site-header-h: 3.25rem; --site-scheme-w: 5.6rem; }
 .site-brand { flex: none; }
 .site-nav a { color: var(--ms-fg-muted); text-decoration: none; font-family: var(--ms-font-body); font-size: 0.9rem; }
 .site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--ms-accent); }
-/* The reader's color scheme, with no script anywhere. The radio inputs hold the
- * state; body:has() reads it; markset.css resolves every color through
- * color-scheme, so forcing a scheme is one property. The inputs are clipped
- * rather than display:none, which would take them out of the tab order. */
+/* The reader's color scheme. The radio inputs hold the state; body:has() reads
+ * it; markset.css resolves every color through color-scheme, so forcing a
+ * scheme is one property. The inputs are clipped rather than display:none,
+ * which would take them out of the tab order. The shell's one script carries
+ * the choice to the next page by setting data-scheme on <body>, which these
+ * rules agree with rather than fight: both say the same thing, and with the
+ * script blocked these alone still work for the page they are on. */
 body:has(#ms-scheme-light:checked) { color-scheme: light; }
 body:has(#ms-scheme-dark:checked) { color-scheme: dark; }
 /* Icon-only controls in the bar. The word they replace stays in the

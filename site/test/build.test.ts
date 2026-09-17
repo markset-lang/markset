@@ -26,7 +26,13 @@ test("the site builds, every page has the shell, and links stay relative", async
     const html = await readFile(join(dist, page), "utf8");
     assert.match(html, /<nav class="site-nav">/, page);
     assert.doesNotMatch(html, /href="\//, `${page} has a root-relative link`);
-    assert.doesNotMatch(html, /<script/, `${page} contains a script`);
+    // One script per page, the shell's scheme-persistence one, and none inside
+    // the document it renders. The second half is the claim the home page makes
+    // and the one that matters: a rendered Markset document carries no script.
+    const scripts = html.match(/<script/g) ?? [];
+    assert.equal(scripts.length, 1, `${page} has ${scripts.length} scripts; only the shell's belongs`);
+    const main = html.slice(html.indexOf("<main"), html.indexOf("</main>"));
+    assert.doesNotMatch(main, /<script/, `${page} renders a script inside the document`);
   }
   const spec = await readFile(join(dist, "spec", "index.html"), "utf8");
   assert.match(spec, /<aside class="site-toc">/);
@@ -95,11 +101,11 @@ test("every document under examples/ is published, and every published one exist
   assert.deepEqual(onDisk, listed, "examples/ and EXAMPLES in site/build.ts must match exactly");
 });
 
-test("the reader can choose a color scheme, and no page gained a script for it", async () => {
-  // The no-script property is the constraint, not an accident: it is what lets
-  // the same page render safely anywhere, and the home page says so. The test
-  // above already asserts no page contains a script; this one asserts the
-  // control that would most obviously have needed one does not have it.
+test("the reader can choose a color scheme, and it survives the next page", async () => {
+  // The control is CSS; only carrying the choice across a page load is not, and
+  // that is all the script does. So both halves are pinned here: the radios and
+  // body:has() have to be the mechanism, and the script has to write the hook
+  // markset.css already publishes rather than a second one of its own.
   const home = await readFile(join(dist, "index.html"), "utf8");
   assert.match(home, /<div class="site-scheme" role="group" aria-label="Color scheme">/);
   assert.match(
@@ -112,6 +118,15 @@ test("the reader can choose a color scheme, and no page gained a script for it",
   const css = await readFile(join(dist, "css", "site.css"), "utf8");
   assert.match(css, /body:has\(#ms-scheme-light:checked\) \{ color-scheme: light; \}/);
   assert.match(css, /body:has\(#ms-scheme-dark:checked\) \{ color-scheme: dark; \}/);
+  // The script runs as the first thing in <body>, so nothing paints in the
+  // wrong scheme, and it sets data-scheme, which markset.css already honors.
+  assert.match(home, /<body[^>]*>\n<script>/, "the scheme script must run before anything paints");
+  assert.match(home, /localStorage\.setItem\(key, value\)/, "the choice is stored");
+  assert.match(home, /document\.body\.dataset\.scheme = value/, "and applied through the §6 hook");
+  assert.ok(
+    home.indexOf("</script>") < home.indexOf('<header class="site-header"'),
+    "the script belongs to the shell, ahead of the chrome it restores",
+  );
 });
 
 test("the section divider is spaced the same above and below", async () => {
