@@ -1,6 +1,6 @@
 {
   "name": "@markset-lang/render-html",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "HTML renderer: Markset AST -> HTML with the ms- class vocabulary (spec \u00a74).",
   "license": "MIT",
   "type": "module",
@@ -37,8 +37,8 @@
     "./css/markset.css": "./css/markset.css"
   },
   "dependencies": {
-    "@markset-lang/parser": "^0.2.0",
-    "@markset-lang/diagram-ascii": "^0.2.0",
+    "@markset-lang/parser": "^0.3.0",
+    "@markset-lang/diagram-ascii": "^0.3.0",
     "mdast-util-to-hast": "^13.2.0",
     "hast-util-to-html": "^9.0.5"
   }
