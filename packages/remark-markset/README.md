@@ -1,6 +1,6 @@
 # @markset-lang/remark-markset
 
-A [remark](https://github.com/remarkjs/remark) plugin that teaches an existing [unified](https://unifiedjs.com) pipeline to read [Markset](https://markset-lang.github.io/markset/).
+A [remark](https://github.com/remarkjs/remark) plugin that teaches an existing [unified](https://unifiedjs.com) pipeline to read [Markset](https://markset.org/).
 
 If you already run remark — in Astro, Next, Eleventy, Gatsby, a lint step, a script — this is how you get Markset's constructs without replacing any of it.
 

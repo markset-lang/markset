@@ -43,7 +43,7 @@ npm run conformance     # per-section conformance report
 
 ## Documentation
 
-The site at <https://markset-lang.github.io/markset/> is generated from this repository: a reference with one page per construct, the specification with a table of contents, and a conformance browser that renders every case live. Build it locally with `npm run site` and open `dist/index.html`.
+The site at <https://markset.org/> is generated from this repository: a reference with one page per construct, the specification with a table of contents, and a conformance browser that renders every case live. Build it locally with `npm run site` and open `dist/index.html`.
 
 ## Layout
 
