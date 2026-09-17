@@ -6,7 +6,7 @@
  * because it is the part no test in this repository can run.
  */
 import { parseDocument, type Diagnostic } from "@markset-lang/parser";
-import { bodyAttributes, renderHtml } from "@markset-lang/render-html";
+import { bodyAttributes, renderHtml, type DiagramOptions, type RenderOptions } from "@markset-lang/render-html";
 import { BLURB, CONSTRUCTS, selectSnippet } from "../../../site/playground/vocabulary.ts";
 
 const FRONTMATTER = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/u;
@@ -50,7 +50,13 @@ export type Scheme = "light" | "dark";
  * ever emitted a script it could not run. The webview is also created with
  * scripting off; the policy is the second lock on the same door.
  */
-export function previewDocument(source: string, stylesheet: string, theme: string | null, scheme: Scheme): string {
+export function previewDocument(
+  source: string,
+  stylesheet: string,
+  theme: string | null,
+  scheme: Scheme,
+  render: RenderOptions = {},
+): string {
   const { ast } = parseDocument(source);
   const csp = "default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:";
   const themeTag = theme ? `<style>\n${theme}\n</style>\n` : "";
@@ -60,7 +66,7 @@ export function previewDocument(source: string, stylesheet: string, theme: strin
     `<meta name="viewport" content="width=device-width, initial-scale=1">\n` +
     `<style>\n${stylesheet}\n</style>\n${themeTag}</head>\n` +
     `<body${bodyAttributes(ast.frontmatter ?? null)} data-scheme="${scheme}">\n` +
-    `<main class="ms-document">\n${renderHtml(ast)}</main>\n</body>\n</html>\n`
+    `<main class="ms-document">\n${renderHtml(ast, render)}</main>\n</body>\n</html>\n`
   );
 }
 
@@ -132,9 +138,84 @@ export const CALLOUT_TYPES = ["NOTE", "TIP", "IMPORTANT", "WARNING", "CAUTION"] 
  * a webview whose `prefers-color-scheme` does not follow the editor theme, so
  * §6's `data-scheme` is what keeps a dark editor from showing a light document.
  */
-export function previewFragment(source: string, scheme: Scheme): string {
+export function previewFragment(
+  source: string,
+  scheme: Scheme,
+  options: { render?: RenderOptions; handOffMermaid?: boolean } = {},
+): string {
   const { ast } = parseDocument(source);
-  return `<div class="ms-document"${bodyAttributes(ast.frontmatter ?? null)} data-scheme="${scheme}">\n${renderHtml(ast)}</div>\n`;
+  const html = renderHtml(ast, options.render ?? {});
+  const body = options.handOffMermaid ? handOffMermaid(html) : html;
+  return `<div class="ms-document"${bodyAttributes(ast.frontmatter ?? null)} data-scheme="${scheme}">\n${body}</div>\n`;
+}
+
+/**
+ * Hand mermaid fences to the Mermaid preview extension, when it is installed.
+ *
+ * That extension (bierner.markdown-mermaid) draws every element with class
+ * `mermaid` in the built-in preview, reading its text. It never sees a fence
+ * in a Markset document, because the whole document arrives as one rendered
+ * block, so the fence is re-shaped here into the element it looks for. Only a
+ * fence inside a captioned figure is handed over, which is §10 obligation 7:
+ * the caption is the text alternative a drawn picture needs. Everywhere else
+ * the fence stays the code block the renderer made.
+ */
+export function handOffMermaid(html: string): string {
+  return html.replace(/<figure class="ms-figure[^"]*"[^>]*>[\s\S]*?<\/figure>/gu, (figure) =>
+    figure.replace(
+      /<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/gu,
+      (_m, source: string) => `<div class="mermaid">${source}</div>`,
+    ),
+  );
+}
+
+/** Runs one diagram command: the fence on stdin, SVG on stdout, a rejection when it fails. */
+export type CommandRunner = (command: string, input: string) => Promise<string>;
+
+/**
+ * Diagram engines from a language-to-command map, the way the CLI takes
+ * `--diagram lang=command`, but without blocking: a command such as mermaid-cli
+ * launches a browser and takes seconds, and the extension host must not wait
+ * for it on every keystroke. An engine answers from its cache, and on a miss
+ * starts the command and declines for now -- the code block stays, which is
+ * §10 obligation 5 -- then `onReady` asks the previews to render again once
+ * the picture exists. A failure is cached too, as a decline, so a broken
+ * command runs once per fence rather than once per keystroke.
+ */
+export function commandEngines(
+  commands: Record<string, string>,
+  run: CommandRunner,
+  onReady: () => void,
+  onError?: (error: Error, language: string) => void,
+): DiagramOptions | undefined {
+  const languages = Object.keys(commands).filter((l) => commands[l].trim().length > 0);
+  if (languages.length === 0) return undefined;
+  const cache = new Map<string, string | null>();
+  const pending = new Set<string>();
+  const engines: DiagramOptions["engines"] = {};
+  for (const language of languages) {
+    engines[language] = (source) => {
+      const key = `${language}\n${source}`;
+      if (cache.has(key)) return cache.get(key) ?? null;
+      if (!pending.has(key)) {
+        pending.add(key);
+        run(commands[language], source).then(
+          (svg) => {
+            pending.delete(key);
+            cache.set(key, svg);
+            onReady();
+          },
+          (error: unknown) => {
+            pending.delete(key);
+            cache.set(key, null);
+            onError?.(error instanceof Error ? error : new Error(String(error)), language);
+          },
+        );
+      }
+      return null;
+    };
+  }
+  return { engines, onError };
 }
 
 /**
@@ -217,12 +298,21 @@ export interface MarkdownItStateLike {
  */
 export function extendMarkdownIt(
   md: MarkdownItLike,
-  options: { enabled: () => boolean; checkAllMarkdown: () => boolean; scheme: () => Scheme },
+  options: {
+    enabled: () => boolean;
+    checkAllMarkdown: () => boolean;
+    scheme: () => Scheme;
+    render?: () => RenderOptions;
+    handOffMermaid?: () => boolean;
+  },
 ): MarkdownItLike {
   md.core.ruler.before("block", "markset", (state) => {
     if (!options.enabled() || !shouldCheck(state.src, options.checkAllMarkdown())) return false;
     const token = new state.Token("html_block", "", 0);
-    token.content = previewFragment(state.src, options.scheme());
+    token.content = previewFragment(state.src, options.scheme(), {
+      render: options.render?.(),
+      handOffMermaid: options.handOffMermaid?.(),
+    });
     token.map = [0, state.src.split("\n").length];
     state.tokens.push(token);
     state.src = "";

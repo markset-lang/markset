@@ -326,3 +326,13 @@ in commit order, which is the wrong order for finding the work.
       Unverified here: how the real preview treats radio inputs and `style` attributes, since nothing in this
       repository runs an editor. **The mark** is `site/icon.svg`: three dots over two lines, a fence over a card.
       Favicon, header image and `editors/vscode/icon.png` (rendered from it at 256px) are the one file.
+- [x] **Diagrams in the extension, 2026-09-17.** `examples/architecture.md` opened in the extension showed its
+      mermaid fence as code, which is §10 obligation 1 working and not what the site had taught the reader to
+      expect. Two routes, neither of which ships mermaid or a script. `markset.diagrams` is the CLI's
+      `--diagram lang=command` as a setting, but **asynchronous and cached** (`commandEngines` in core.ts): a
+      miss leaves the code block and starts the command, a finished picture asks both previews to render again,
+      and a failure is cached as a decline so a broken command runs once per fence. The extension host must not
+      block on a Chromium launch per keystroke. And when `bierner.markdown-mermaid` is installed and no mermaid
+      command is set, the built-in preview gets each mermaid fence inside a captioned figure as
+      `<div class="mermaid">`, which is the one shape that extension's preview script draws (read from its
+      source: `querySelectorAll('.mermaid')`, text content). Outside a figure the fence stays code, obligation 7.

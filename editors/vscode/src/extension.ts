@@ -2,6 +2,7 @@
  * The VS Code glue. Thin on purpose: every decision that can be made without
  * the editor is made in core.ts, where node can test it.
  */
+import { exec } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { isAbsolute, join } from "node:path";
 import * as vscode from "vscode";
@@ -9,11 +10,13 @@ import { downgrade } from "@markset-lang/render-downgrade";
 import {
   CALLOUT_TYPES,
   check,
+  commandEngines,
   extendMarkdownIt,
   fenceCompletions,
   previewDocument,
   shouldCheck,
   type MarkdownItLike,
+  type CommandRunner,
   type Scheme,
   type Snippet,
 } from "./core.ts";
@@ -77,6 +80,49 @@ export function activate(context: vscode.ExtensionContext): { extendMarkdownIt(m
   );
   for (const d of vscode.workspace.textDocuments) refresh(d);
 
+  // ---- diagrams ------------------------------------------------------------------
+  // Engines from the markset.diagrams setting, rebuilt when it changes so the
+  // cache empties with it. The command runs with the fence on stdin, like the
+  // CLI, and never blocks: a miss leaves the code block and a finished picture
+  // asks both previews to render again.
+  const runCommand: CommandRunner = (command, input) =>
+    new Promise((resolvePromise, reject) => {
+      const child = exec(command, { maxBuffer: 64 * 1024 * 1024 }, (error, stdout, stderr) => {
+        if (error) reject(new Error(stderr.trim().split("\n")[0] || error.message));
+        else resolvePromise(stdout);
+      });
+      child.stdin?.on("error", () => {});
+      child.stdin?.end(input);
+    });
+  const output = vscode.window.createOutputChannel("Markset");
+  let diagrams = buildDiagrams();
+  function buildDiagrams() {
+    const commands = vscode.workspace.getConfiguration("markset").get<Record<string, string>>("diagrams", {});
+    return commandEngines(
+      commands,
+      runCommand,
+      () => {
+        preview?.update();
+        if (vscode.workspace.getConfiguration("markset").get<boolean>("builtInPreview", true)) {
+          void vscode.commands.executeCommand("markdown.preview.refresh");
+        }
+      },
+      (error, language) => output.appendLine(`diagram ${language}: ${error.message}`),
+    );
+  }
+  const renderOptions = () => (diagrams ? { diagrams } : {});
+  const mermaidHandOff = (): boolean =>
+    !diagrams?.engines.mermaid && vscode.extensions.getExtension("bierner.markdown-mermaid") !== undefined;
+  context.subscriptions.push(
+    output,
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration("markset.diagrams")) {
+        diagrams = buildDiagrams();
+        preview?.update();
+      }
+    }),
+  );
+
   // ---- preview ----------------------------------------------------------------
   let preview: Preview | undefined;
 
@@ -111,7 +157,7 @@ export function activate(context: vscode.ExtensionContext): { extendMarkdownIt(m
       const scheme = currentScheme();
       const theme = themeStylesheet(this.document);
       this.panel.title = `Preview: ${basename(this.document)}`;
-      this.panel.webview.html = previewDocument(this.document.getText(), stylesheet, theme, scheme);
+      this.panel.webview.html = previewDocument(this.document.getText(), stylesheet, theme, scheme, renderOptions());
     }
 
     reveal(): void {
@@ -247,6 +293,8 @@ export function activate(context: vscode.ExtensionContext): { extendMarkdownIt(m
         enabled: () => vscode.workspace.getConfiguration("markset").get<boolean>("builtInPreview", true),
         checkAllMarkdown: () => vscode.workspace.getConfiguration("markset").get<boolean>("checkAllMarkdown", false),
         scheme: currentScheme,
+        render: renderOptions,
+        handOffMermaid: mermaidHandOff,
       }),
   };
 }
