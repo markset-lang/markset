@@ -208,6 +208,51 @@ A table works too. When the content is a table the caption is emitted as the tab
 ***
 
 {.eyebrow}
+figure · chart
+
+## A table that is also a picture
+
+A chart is not a ninth construct. It is a `figure` holding a table, with `chart=` naming how to draw it — so the source of a chart is the data, and the data stays on the page underneath it. Turn drawing off and nothing is lost but the picture.
+
+`line` draws each column after the first as a series over the categories in the first.
+
+:::figure[Stored petabytes by quarter, under three planning scenarios.]{chart=line}
+| Quarter | Steady | Enterprise-led | Self-serve |
+|---|---|---|---|
+| Q1 | 12.4 | 12.6 | 12.8 |
+| Q2 | 13.5 | 14.0 | 13.9 |
+| Q3 | 14.7 | 15.5 | 14.9 |
+| Q4 | 16.0 | 17.2 | 15.8 |
+:::
+
+`column` draws the same mapping as bars from a zero baseline, grouped where there is more than one series. A line may start where its data does, because it encodes value as position; a bar may not, because it encodes value as length.
+
+:::figure[Monthly cost by tier, split into storage and the fixed cost of serving a tenant.]{chart=column}
+| Tier | Storage | Per tenant |
+|---|---|---|
+| Workspace | 2,700 | 40,200 |
+| Team | 1,700 | 5,200 |
+| Scale | 28,500 | 22,700 |
+| Archive | 59,000 | 32,600 |
+:::
+
+`bar` is the same encoding with the categories down the side, which is what long names and ranked lists want. One series needs no legend, because the caption already says what is plotted.
+
+:::figure[Tenants by stored volume. Most of the fleet is in the first two bands.]{chart=bar}
+| Band | Tenants |
+|---|---|
+| under 10 GB | 6,140 |
+| 10 to 50 GB | 3,660 |
+| 250 GB to 1 TB | 390 |
+| over 8 TB | 340 |
+:::
+
+Every color above comes from the stylesheet rather than the drawing, so a theme restyles a chart by setting `--ms-chart-1` and the rest. A cell that is not a number is a gap rather than a zero, and a figure with no caption is left as a plain table — the caption is what says what the picture shows.
+
+{.tick}
+***
+
+{.eyebrow}
 callout
 
 ## Advice that stands apart
