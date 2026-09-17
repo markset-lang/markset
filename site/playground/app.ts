@@ -127,7 +127,17 @@ function renderProblems(text: string, diagnostics: Diagnostic[]): void {
 
 let lastFailure = "";
 
+// Rendering is fast enough to do on every keystroke for a short document and
+// not for a long one, so it waits for a pause in typing. The preview is never
+// more than a moment behind, and the browser is never busy while a key is down.
+let pending = 0;
+
 function update(): void {
+  // Supersede anything the debounce has queued. Without this a render that was
+  // scheduled by a keystroke lands a moment after an explicit update and
+  // overwrites what it put in the status line -- so the confirmation of an
+  // insert made within a keystroke of typing vanished before it was read.
+  window.clearTimeout(pending);
   const text = source.value;
   try {
     const { ast, diagnostics } = parseDocument(text);
@@ -179,10 +189,6 @@ function announce(text: string): void {
   statusTimer = window.setTimeout(() => update(), 2500);
 }
 
-// Rendering is fast enough to do on every keystroke for a short document and
-// not for a long one, so it waits for a pause in typing. The preview is never
-// more than a moment behind, and the browser is never busy while a key is down.
-let pending = 0;
 function scheduleUpdate(): void {
   window.clearTimeout(pending);
   pending = window.setTimeout(update, 120);
