@@ -56,7 +56,7 @@ test("every copy of the version agrees with package.json", async () => {
   const manifests = [
     "site/package.json",
     "editors/vscode/package.json",
-    ...(await readdir(join(root, "packages"))).map((p) => `packages/${p}/package.json`),
+    ...(await packageDirs()).map((p) => `packages/${p}/package.json`),
   ];
   for (const file of manifests) {
     const pkg = JSON.parse(await readFile(join(root, file), "utf8"));
@@ -88,8 +88,7 @@ test("the heavy dev dependency stays out of the library", async () => {
   // site/mermaid.ts and nothing else, and CLAUDE.md says so; this keeps that
   // true. A package that reached for it would put a browser in the install
   // path of anyone consuming the renderer.
-  const dirs = await readdir(join(root, "packages"));
-  for (const dir of dirs) {
+  for (const dir of await packageDirs()) {
     const manifest = JSON.parse(await readFile(join(root, "packages", dir, "package.json"), "utf8")) as {
       dependencies?: Record<string, string>;
       devDependencies?: Record<string, string>;
@@ -107,6 +106,16 @@ test("the heavy dev dependency stays out of the library", async () => {
 });
 
 /** The packages that go to npm. The conformance harness is not one of them. */
+/**
+ * The workspace packages, by directory. Filtered to directories because a
+ * .DS_Store that Finder drops into packages/ is not a package, and two tests
+ * failed on exactly that on 2026-09-17.
+ */
+async function packageDirs(): Promise<string[]> {
+  const entries = await readdir(join(root, "packages"), { withFileTypes: true });
+  return entries.filter((e) => e.isDirectory()).map((e) => e.name);
+}
+
 const PUBLISHED = [
   "parser",
   "diagram-ascii",
