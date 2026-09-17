@@ -251,6 +251,9 @@ test("the release workflow proves the build before it publishes", async () => {
     assert.ok(yaml.includes(step), `the release re-proves ${step}, since a tag can come from anywhere`);
   }
   assert.match(yaml, /does not match package version/u, "the tag must match the version it claims");
+  // ...but only on a tag. GITHUB_REF_NAME is the branch on a manual run, so an
+  // unconditional check makes the workflow_dispatch trigger above unusable.
+  assert.match(yaml, /if: startsWith\(github\.ref, 'refs\/tags\/'\)/u, "and only when there is one");
 });
 
 test("the release workflow can be run a second time without failing", async () => {
