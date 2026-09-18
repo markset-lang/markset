@@ -1,7 +1,9 @@
 name: Release
 on:
   push:
-    tags: ["v*"]
+    # A digit after the v, so the extension's tags (vscode-v0.3.2) do not start a
+    # run that the version check then refuses. Only a package release is a v-tag.
+    tags: ["v[0-9]*"]
   workflow_dispatch:
 
 # id-token lets npm attach provenance, which ties each published tarball to the
