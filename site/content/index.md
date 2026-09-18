@@ -120,13 +120,14 @@ The syntax is the convergent one. Attribute specifiers `{#id .class key=value}`,
 {.eyebrow}
 Start here
 
-## Four ways in
+## Five ways in
 
 :::steps
-1. Open the [playground](playground/index.html) and type. It runs this implementation in your browser, and it shows you the rendered page, the HTML, the plain-Markdown downgrade and the diagnostics side by side. Nothing to install and nothing leaves the page.
-2. Read the [reference](reference/index.html) for one page per construct, each with live examples pulled straight from the test suite, plus [diagrams](reference/diagrams/index.html) and [frontmatter](reference/frontmatter/index.html).
-3. Read the [specification](spec/index.html). It is short, and it is the source of truth: when the code and the spec disagree, the spec wins.
-4. Read the [CLI page](cli/index.html) if you would rather start by running something, or go straight to [publishing to GitHub Pages](github-pages/index.html), which is how this site is built.
+1. Install the [editor extension](editor/index.html) for Visual Studio Code. It checks a document as you type, renders it in the Markdown preview you already use, and offers every construct after `:::`.
+2. Open the [playground](playground/index.html) and type. It runs this implementation in your browser, and it shows you the rendered page, the HTML, the plain-Markdown downgrade and the diagnostics side by side. Nothing to install and nothing leaves the page.
+3. Read the [reference](reference/index.html) for one page per construct, each with live examples pulled straight from the test suite, plus [diagrams](reference/diagrams/index.html) and [frontmatter](reference/frontmatter/index.html).
+4. Read the [specification](spec/index.html). It is short, and it is the source of truth: when the code and the spec disagree, the spec wins.
+5. Read the [CLI page](cli/index.html) if you would rather start by running something, or go straight to [publishing to GitHub Pages](github-pages/index.html), which is how this site is built.
 :::
 
 :::card[Try it locally]{tone=info}
@@ -137,7 +138,7 @@ markset html doc.md -o doc.html
 :::
 
 :::card[See it at length]
-Three complete documents, not fragments.
+Complete documents, not fragments: eight of them, every one an artifact first.
 
 The [construct tour](examples/showcase/index.html) uses every one of the eight constructs exactly once, on the default stylesheet, so you can see the whole vocabulary at its real size.
 

@@ -48,6 +48,14 @@ A Markset document carries a `markset:` line in its frontmatter naming the speci
 
 Releases go to the marketplace by hand; `PUBLISHING.md` beside this file has every step.
 
+## Installing
+
+Search for **Markset** in the Extensions view, or:
+
+```
+ext install markset-lang.markset-vscode
+```
+
 ## Installing from source
 
 The extension is built from the [Markset repository](https://github.com/markset-lang/markset):
