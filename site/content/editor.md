@@ -13,7 +13,7 @@ Editor
 {.lead}
 The reference implementation, running inside the editor. It checks a document as you type, renders it in the preview you already use, and offers every construct at the cursor. One install, nothing to configure.
 
-[Marketplace](https://marketplace.visualstudio.com/items?itemName=markset-lang.markset-vscode){.badge .success} [Free]{.badge} [No scripts in the preview]{.badge}
+[On the marketplace]{.badge .success} [Free]{.badge} [No scripts in the preview]{.badge}
 
 {.tick}
 ***

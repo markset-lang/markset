@@ -356,6 +356,16 @@ Observed: `examples/capacity-review.md`, September 2026, written for this purpos
 
 The evidence that moved this from candidate to built is an external consumer waiting on chart support, reported September 2026. That is the originating need the commissioned document could not be, and it is worth recording which of the two actually decided it. It also bounds what is still open: the consumer's own documents are what the type set should be read from, and until they are in hand `line` is the honest size of it.
 
+### 18. Attributes on a link
+
+**Class: Breaking. Observed, not recommended yet.**
+
+The editor page wanted a badge that is also a link: `[Marketplace](url){.badge}`. Section 2.2 attaches attributes to bracketed spans only, so the braces rendered as literal text beside a working link, and the page was published that way for a few minutes before a screenshot caught it. The fix on the page was to make the badge plain and keep the link in prose.
+
+Pandoc accepts exactly this spelling, so invariant 5 is satisfied and the grammar change is small. It is breaking because `{...}` after a link is text today, and a document that has one changes meaning. A span wrapping a link, `[[text](url)]{.badge}`, would be additive if the parser took it, and is worth trying first if a second document asks.
+
+Observed: `site/content/editor.md`, September 2026.
+
 ## Rejected
 
 | Request | Reason |
