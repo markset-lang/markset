@@ -53,11 +53,11 @@ test("every copy of the version agrees with package.json", async () => {
   const version = JSON.parse(await readFile(join(root, "package.json"), "utf8")).version as string;
   assert.match(version, /^\d+\.\d+\.\d+(-rc\.\d+)?$/, version);
 
-  const manifests = [
-    "site/package.json",
-    "editors/vscode/package.json",
-    ...(await packageDirs()).map((p) => `packages/${p}/package.json`),
-  ];
+  // The editor extension is deliberately absent: it is published by hand to a
+  // different registry on its own schedule, and every upload there needs a new
+  // version. Tying it to this one would force an npm release of eight unchanged
+  // packages to ship an extension fix.
+  const manifests = ["site/package.json", ...(await packageDirs()).map((p) => `packages/${p}/package.json`)];
   for (const file of manifests) {
     const pkg = JSON.parse(await readFile(join(root, file), "utf8"));
     assert.equal(pkg.version, version, `${file} is on ${pkg.version}`);

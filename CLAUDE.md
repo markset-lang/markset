@@ -79,7 +79,9 @@ editors/vscode/  the VS Code extension: diagnostics, a scripting-off preview, co
             injection, over the same packages. core.ts is the part node can test and extension.ts the glue.
             build.ts bundles it with esbuild as CommonJS (.cjs, since the manifest is an ES module for tsc)
             and derives snippets from tests/ with the same selectSnippet the playground palette uses.
-            `npm run vscode:package` makes the .vsix; publishing to the marketplace needs a publisher account.
+            `npm run vscode:package` makes the .vsix. PUBLISHING.md there is the manual marketplace release, step by
+            step, and the extension carries its own version: an upload needs a new one, and an extension fix must
+            not force an npm release of eight unchanged packages.
 docs/       background analysis, prior art, design rationale
             future-requirements.md — open register of things real documents asked for; the
             open counterpart to spec §8, which is the closed list of deferred constructs

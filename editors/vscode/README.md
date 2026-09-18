@@ -44,6 +44,10 @@ A Markset document carries a `markset:` line in its frontmatter naming the speci
 | Markset: Open Preview to the Side | Also the preview icon in the editor title of any Markdown file. |
 | Markset: Show as Plain CommonMark | The downgraded document in a new editor. |
 
+## Publishing
+
+Releases go to the marketplace by hand; `PUBLISHING.md` beside this file has every step.
+
 ## Installing from source
 
 The extension is built from the [Markset repository](https://github.com/markset-lang/markset):
