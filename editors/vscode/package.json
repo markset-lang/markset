@@ -2,7 +2,7 @@
   "name": "markset-vscode",
   "displayName": "Markset",
   "description": "Diagnostics, a live preview, snippets and highlighting for Markset documents: Markdown with a closed vocabulary of layout constructs.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "publisher": "markset-lang",
   "icon": "icon.png",
   "private": true,
