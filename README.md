@@ -23,6 +23,7 @@ Node 22.18 or later.
 
 ```sh
 npm i -g @markset-lang/cli          # the command line tool
+code --install-extension markset-lang.markset-vscode   # the VS Code extension, also on the marketplace
 npm i @markset-lang/render-html     # or the library
 ```
 

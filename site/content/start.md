@@ -114,7 +114,7 @@ Fitting it in
 
    The cheapest option, and a real one. Write constructs in your Markdown and let your existing renderer show the fallback: a grid is a list, a card is a heading and its body, a metrics block is a table. You get a document that is better organized at the source level today, and rich when you decide to render it properly.
 
-   The only thing to add is validation, so a typo fails in review rather than shipping:
+   The only thing to add is validation, so a typo fails in review rather than shipping. In Visual Studio Code the [extension](../editor/index.html) does this as you type; anywhere else it is one command:
 
    ```sh
    markset check docs/*.md
@@ -192,10 +192,16 @@ Next
 
 ## Where to go from here
 
-Two of these are things to do and three are things to read. Take whichever matches what you came for.
+Three of these are things to do and three are things to read. Take whichever matches what you came for.
 
-::::columns{ratio="1:1"}
-:::card[Publish a site]{tone=info}
+::::columns{ratio="1:1:1"}
+:::card[Write it in your editor]{tone=info}
+**[The Visual Studio Code extension](../editor/index.html)** checks a document as you type, renders it in the Markdown preview you already use, and offers every construct after `:::`. Install it from the marketplace and nothing else changes.
+:::
+
+::col
+
+:::card[Publish a site]
 **[Publishing to GitHub Pages](../github-pages/index.html)** is the whole recipe on one page: a workflow file to copy, two commands, and the three things that are easy to get wrong. This site is built that way, which is the only reason to trust any of it.
 :::
 

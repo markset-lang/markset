@@ -312,8 +312,9 @@ in commit order, which is the wrong order for finding the work.
       Two things the bundle taught: the renderer computes `defaultStylesheetPath` from `import.meta.url` at
       load, which a CommonJS bundle shims to undefined and `new URL` then throws on activation, so build.ts
       defines it from `__filename`; and a manifest with `"type": "module"` makes node read `dist/extension.js`
-      as ESM, so the bundle is `.cjs`. Packaged with `vsce` at 122 KB, ten files. Not on the marketplace: that
-      needs a publisher account under `markset-lang`, which is a human's to create.
+      as ESM, so the bundle is `.cjs`. Packaged with `vsce` at 122 KB, ten files. **On the marketplace since 2026-09-17** as
+      `markset-lang.markset-vscode`, uploaded by hand per `editors/vscode/PUBLISHING.md`; `site/content/editor.md`
+      is its page on the site, linked from the home page's ways in and the start page.
 - [x] **The built-in Markdown preview renders Markset, 2026-09-17.** Asked for after the extension's own preview
       went unnoticed: it is a command, and the built-in preview icon is what people click. VS Code's Markdown
       extension exposes `markdown.markdownItPlugins`; `activate` returns `extendMarkdownIt`, which installs a core
