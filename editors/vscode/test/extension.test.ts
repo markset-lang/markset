@@ -451,3 +451,13 @@ test("a failing command is remembered as a decline, so it runs once per fence ra
   assert.deepEqual(errors, ["mermaid: exited 1"]);
   assert.match(again, /<pre><code class="language-mermaid">graph LR\n {2}A/u, "the code block stays");
 });
+
+test("the changelog has a section for the extension's own version, since the marketplace shows it", async () => {
+  const manifest = JSON.parse(await readFile(join(here, "..", "package.json"), "utf8")) as { version: string };
+  const changelog = await readFile(join(here, "..", "CHANGELOG.md"), "utf8");
+  assert.match(
+    changelog,
+    new RegExp(`^## ${manifest.version.replace(/\./gu, "\\.")} — `, "mu"),
+    `CHANGELOG.md has no section for ${manifest.version}; PUBLISHING.md step 2`,
+  );
+});
