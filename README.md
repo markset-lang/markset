@@ -24,7 +24,7 @@ npm i -g @markset-lang/cli          # the command line tool
 npm i @markset-lang/render-html     # or the library
 ```
 
-Seven packages are published under the `@markset-lang` scope: `parser`, `diagram-ascii`, `render-downgrade`, `render-html`, `cli`, `remark-markset`, and `conformance-suite`. The last two are the ways in from outside: a remark plugin for a pipeline you already run, and the test suite as data for anyone writing a second implementation.
+Eight packages are published under the `@markset-lang` scope: `parser`, `diagram-ascii`, `chart-table`, `render-downgrade`, `render-html`, `cli`, `remark-markset`, and `conformance-suite`. The two drawing engines, `diagram-ascii` and `chart-table`, are pure functions with no dependencies. The last two are the ways in from outside: a remark plugin for a pipeline you already run, and the test suite as data for anyone writing a second implementation.
 
 Already using remark? `npm i @markset-lang/remark-markset` and add it to the pipeline you have.
 
