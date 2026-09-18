@@ -461,3 +461,23 @@ test("the changelog has a section for the extension's own version, since the mar
     `CHANGELOG.md has no section for ${manifest.version}; PUBLISHING.md step 2`,
   );
 });
+
+test("the README the marketplace shows starts with its title and documents every setting", async () => {
+  // 0.3.1 went out with three settings rows ahead of the title, because an
+  // edit anchored on a table row's pipes matched at the start of the file. The
+  // marketplace renders this file as the listing, so it is checked as a whole:
+  // it opens with the title, and every setting the manifest contributes has a
+  // row in the settings table.
+  const readme = await readFile(join(here, "..", "README.md"), "utf8");
+  assert.match(readme, /^# Markset for Visual Studio Code\n/u);
+  const manifest = JSON.parse(await readFile(join(here, "..", "package.json"), "utf8")) as {
+    contributes: { configuration: { properties: Record<string, unknown> } };
+  };
+  for (const setting of Object.keys(manifest.contributes.configuration.properties)) {
+    assert.match(
+      readme,
+      new RegExp(`^\\| \`${setting.replace(/\./gu, "\\.")}\` \\|`, "mu"),
+      `${setting} has no row in the README's settings table`,
+    );
+  }
+});

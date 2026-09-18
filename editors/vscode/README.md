@@ -1,6 +1,4 @@
-| `markset.diagrams` | `{}` | Commands that draw diagram fences by language, as `markset html --diagram lang=command` does. |
-| `markset.builtInPreview` | `true` | Render Markset documents in the built-in Markdown preview. |
-| `markset.preview.theme` | `""` |# Markset for Visual Studio Code
+# Markset for Visual Studio Code
 
 [Markset](https://markset.org/) is Markdown with a small, closed vocabulary of layout constructs — cards, grids, columns, tabs, steps, metrics, figures, callouts — and every valid Markdown file is already a valid Markset document. This extension is the reference implementation running inside the editor.
 
@@ -35,6 +33,8 @@ A Markset document carries a `markset:` line in its frontmatter naming the speci
 | Setting | Default | What |
 |---|---|---|
 | `markset.checkAllMarkdown` | `false` | Report diagnostics on every Markdown file, not only those with a `markset:` version line. |
+| `markset.builtInPreview` | `true` | Render Markset documents in the built-in Markdown preview. |
+| `markset.diagrams` | `{}` | Commands that draw diagram fences by language, as `markset html --diagram lang=command` does. |
 | `markset.preview.theme` | `""` | A theme stylesheet (spec §6) appended after the default in the preview. Relative to the workspace folder. |
 
 ## Commands
