@@ -103,7 +103,7 @@
   },
   "scripts": {
     "build": "node --conditions=markset-source build.ts",
-    "package": "npm run build && vsce package --no-dependencies"
+    "package": "npm run build && vsce package --no-dependencies --baseContentUrl https://github.com/markset-lang/markset/blob/HEAD/editors/vscode/ --baseImagesUrl https://github.com/markset-lang/markset/raw/HEAD/editors/vscode/"
   },
   "dependencies": {
     "@markset-lang/parser": "*",

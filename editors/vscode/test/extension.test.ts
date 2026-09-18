@@ -481,3 +481,25 @@ test("the README the marketplace shows starts with its title and documents every
     );
   }
 });
+
+test("packaging rewrites the README's relative links against this directory, not the repository root", async () => {
+  // vsce rewrites `media/preview.png` to a GitHub URL so the marketplace can
+  // show it, and it ignores repository.directory when it does: the first
+  // package pointed at <repo>/raw/HEAD/media/preview.png, which is a 404. The
+  // base URLs in the package script are what make the listing's image load.
+  const manifest = JSON.parse(await readFile(join(here, "..", "package.json"), "utf8")) as {
+    scripts: { package: string };
+  };
+  assert.ok(
+    manifest.scripts.package.includes(
+      "--baseImagesUrl https://github.com/markset-lang/markset/raw/HEAD/editors/vscode/",
+    ),
+    "images are read from editors/vscode/ on GitHub",
+  );
+  assert.ok(
+    manifest.scripts.package.includes(
+      "--baseContentUrl https://github.com/markset-lang/markset/blob/HEAD/editors/vscode/",
+    ),
+    "and links are rewritten the same way",
+  );
+});
