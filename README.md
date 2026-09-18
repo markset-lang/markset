@@ -1,5 +1,7 @@
 # Markset
 
+Markset began with two things worth keeping: the look of a document rendered as a Claude artifact, with its cards, metric strips and columns, and the plainness of Markdown, which diffs, renders everywhere and is easy to keep correct. Artifacts are HTML and cannot be maintained; Markdown cannot say "these belong side by side." Markset is Markdown that can.
+
 Markset extends Markdown with a small, closed vocabulary of layout constructs and a theme token model. It is a strict superset of CommonMark: every valid CommonMark document is a valid Markset document with identical output, and every Markset construct degrades to plain CommonMark by rule.
 
 ```markdown
