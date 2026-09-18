@@ -5,3 +5,4 @@ build.ts
 tsconfig*.json
 node_modules/**
 **/*.map
+media/**
