@@ -2,7 +2,7 @@
 
 ## 0.3.2 — 2026-09-17
 
-The README the marketplace shows began with three stray settings rows ahead of its title, an editing slip in 0.3.1. Fixed, with a test that the README starts with its title. No change to the extension itself.
+The README the marketplace shows began with three stray settings rows ahead of its title, an editing slip in 0.3.1. Fixed, with a test that the README starts with its title. The listing now leads with what a reader gets, the preview rendering their document, rather than with the checker. No change to the extension itself.
 
 ## 0.3.1 — 2026-09-17
 

@@ -196,7 +196,7 @@ Three of these are things to do and three are things to read. Take whichever mat
 
 ::::columns{ratio="1:1:1"}
 :::card[Write it in your editor]{tone=info}
-**[The Visual Studio Code extension](../editor/index.html)** checks a document as you type, renders it in the Markdown preview you already use, and offers every construct after `:::`. Install it from the marketplace and nothing else changes.
+**[The Visual Studio Code extension](../editor/index.html)** renders your document with its layout in the Markdown preview you already use, offers every construct after `:::`, and underlines a mistake as you type. Install it from the marketplace and nothing else changes.
 :::
 
 ::col

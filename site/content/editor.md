@@ -11,7 +11,7 @@ Editor
 # Markset in Visual Studio Code
 
 {.lead}
-The reference implementation, running inside the editor. It checks a document as you type, renders it in the preview you already use, and offers every construct at the cursor. One install, nothing to configure.
+Your Markdown, rendered with its cards, grids and tabs in the preview you already use. Every construct is offered at the cursor, and a mistake is underlined as you type. One install, nothing to configure.
 
 [On the marketplace]{.badge .success} [Free]{.badge} [No scripts in the preview]{.badge}
 

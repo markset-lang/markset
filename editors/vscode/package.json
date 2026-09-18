@@ -1,7 +1,7 @@
 {
   "name": "markset-vscode",
   "displayName": "Markset",
-  "description": "Diagnostics, a live preview, snippets and highlighting for Markset documents: Markdown with a closed vocabulary of layout constructs.",
+  "description": "Markdown with cards, grids, columns, tabs, steps, metrics, figures and callouts, rendered in the preview you already use, with completions and checking as you type.",
   "version": "0.3.2",
   "publisher": "markset-lang",
   "icon": "icon.png",
