@@ -311,7 +311,11 @@ test("the release publishes each package after everything it depends on", async 
 
 test("the release workflow proves the build before it publishes", async () => {
   const yaml = await readFile(join(root, ".github", "workflows", "release.yml"), "utf8");
-  assert.match(yaml, /tags: \["v\*"\]/u, "a release is a deliberate tag, not every push");
+  assert.match(
+    yaml,
+    /tags: \["v\[0-9\]\*"\]/u,
+    "a release is a deliberate v-tag; vscode-v* tags belong to the extension and must not start a run",
+  );
   assert.match(yaml, /id-token: write/u, "trusted publishing and provenance both need it");
   assert.match(yaml, /--provenance/u, "each tarball is tied to the run that built it");
   for (const step of ["npm run lint", "npm run typecheck", "npm test", "npm run conformance"]) {
