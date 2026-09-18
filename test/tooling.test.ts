@@ -366,3 +366,16 @@ test("every dependency resolves to the public registry", async () => {
     .map(([name, v]) => `${name} -> ${v.resolved}`);
   assert.deepEqual(foreign, [], "a lockfile entry points somewhere only one machine can reach");
 });
+
+test("the README names every published package, so its count cannot go stale", async () => {
+  // It said "seven packages" and listed six of them, after chart-table had
+  // been on the registry for a day. A reader arriving from npm counts.
+  const readme = await readFile(join(root, "README.md"), "utf8");
+  const sentence = /^(\w+) packages are published under the `@markset-lang` scope: (.*)$/mu.exec(readme);
+  assert.ok(sentence, "the README has the sentence that lists the published packages");
+  const words: Record<string, number> = { five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
+  assert.equal(words[sentence[1].toLowerCase()], PUBLISHED.length, `the count says ${sentence[1]}`);
+  for (const name of PUBLISHED) {
+    assert.ok(sentence[2].includes(`\`${name}\``), `the README does not name ${name}`);
+  }
+});
