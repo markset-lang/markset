@@ -9,7 +9,7 @@ The extension has its own version, separate from the npm packages: every upload 
 Do this the first time only. If the publisher exists, skip to the next section.
 
 1. Open a private browser window, so a work account's single sign-on does not choose the account for you, and go to <https://marketplace.visualstudio.com/manage>.
-2. Sign in with the Microsoft account the publisher should belong to. This is a permanent choice: the publisher, and any token later, must be this account.
+2. Sign in with the Microsoft account the publisher should belong to. Whichever account creates the publisher owns it, and a token later must come from an owner too. If the wrong account creates it, do not delete and recreate: on the publisher page under **Members**, add the right account as an **Owner** (it must be a Microsoft account; any address can become one at <https://signup.live.com>), sign in as that account, and remove the first one once it has uploaded successfully. The publisher, its ID and the listing are unaffected. This happened on 2026-09-17, when the publisher was created under a work account and the personal account saw no publisher to update.
 3. Choose **Create publisher**.
    - **ID:** `markset-lang`. It has to match `"publisher"` in `package.json` exactly, or the marketplace refuses the package.
    - **Name:** `Markset`.
