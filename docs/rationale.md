@@ -6,6 +6,16 @@ date: 2026-09-13
 
 # Expanding Markdown for Rich Document Layout
 
+## 0. Where this started
+
+Markset started with two things I did not want to give up.
+
+Documents rendered as Claude artifacts were the best-looking documents I had ever had produced for me. Cards, metric strips, columns, tabs and callouts appeared where they helped and nowhere else, and the result read like something a designer had laid out. They were also HTML, often React and Tailwind: a wall of markup that could not be edited without care, could not be reviewed in a diff, and could not be carried to any other tool or target. A week later, changing one sentence in one of them meant finding it inside the markup.
+
+Markdown is the opposite in every respect. It is plain text, it diffs, it renders everywhere, and it stays correct because there is so little of it to get wrong. And it has no way to say "these three things belong side by side," or "this number is the one that matters," or "these steps are a procedure." Everyone who has wanted that has reached for raw HTML, which gives up exactly what made Markdown worth using.
+
+So the question this document set out to answer was narrow: which small set of layout ideas makes those artifacts feel rich, and could that set be added to Markdown as a fixed vocabulary rather than an escape hatch, so that the document stays plain text and every renderer agrees on what it means? The analysis below is the answer. The nine example documents in the repository were the test: each was an artifact first, rebuilt in Markset to find out whether the vocabulary could carry it. It could, and the places where it could not are recorded in `future-requirements.md` and, where they warranted it, in the specification.
+
 ## 1. What Claude artifacts actually do
 
 It's worth being precise about the baseline, because it reframes the problem.

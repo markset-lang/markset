@@ -64,7 +64,11 @@ Eight constructs is the whole vocabulary, and it is closed. Every one of them is
 {.eyebrow}
 Why it exists
 
-## Markdown has no attributes and no generic container
+## Two things I did not want to give up
+
+Documents rendered as Claude artifacts were the best-looking documents I had ever had produced for me, with cards, metric strips, columns and tabs where they helped. They were also HTML: hard to edit, harder to review in a diff, and impossible to carry anywhere else. Markdown is the opposite. It is plain text, it diffs, it renders everywhere, and it has no way to say "these three things belong side by side." I wanted to keep writing Markdown and be able to say that. The [example documents](examples/index.html) on this site were all artifacts first, rebuilt in Markset to find out whether a closed vocabulary could carry them. It could, and where it could not, the specification changed.
+
+### Markdown has no attributes and no generic container
 
 So rich documents reach for raw HTML, and that breaks portability, validation, and every output target that is not a browser. Pandoc, djot, Quarto, MyST, Markdoc and MDX each solved some of the *syntax*. None of them produced a set of components that independent renderers can agree on. That set is what Markset is.
 
