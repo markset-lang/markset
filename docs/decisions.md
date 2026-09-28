@@ -154,3 +154,29 @@ The alternative — nested full `:::col` fences inside a longer outer fence — 
 Token names are normative; how a renderer maps them to output is implementation-defined. A document with no `theme` block must still render well.
 
 This is the piece nothing in the market standardizes, and the default stylesheet that makes the vocabulary look good with zero configuration is probably the single highest-leverage artifact in the project. Unglamorous, and easy to defer past the point where it should have shipped.
+
+---
+
+## D14 — Writing Markset back: a patching serializer over the mdast, not a concrete syntax tree
+
+**2026-09-28**
+
+Nothing turned a Markset tree back into Markset source, and the TipTap editor (`docs/briefs/tiptap.md`) needs that before anything else, under one requirement: editing must not damage the file. An unedited document comes back byte for byte, and an edit touches only its own lines, because the output is committed to Git and reviewed as a diff.
+
+`serializeDocument(tree, { original })` in `packages/parser` does it in two modes.
+
+- **Without an original** it writes the canonical form: the §3 serialization choices (`-` bullets, `*` emphasis, fenced code), defaults left unwritten, outer fences one colon longer than anything inside them, and a blank line after a fence where §3 needs one.
+- **With one** it writes a patch. The edited tree is matched against the original parse by structure — a longest common subsequence over each list of children, then same-type pairing between the anchors — and every node that is still there unchanged is copied from its source slice, with the prefixes of the containers above it (`> `, a list item's indent) taken off each line so they can be put back. A changed construct keeps its original fence line, `::col` line, callout marker line or tab heading when its own fields are unchanged, and keeps its fence length when that still fits. The text between two blocks that are still adjacent is the original text, so whatever sat there that the tree does not hold, such as an orphaned attribute line, survives. A changed list keeps its marker, changed emphasis its `*` or `_`, a changed code block its fence character, a changed table every row it did not change.
+
+**Nothing in it trusts itself.** The output is parsed again and compared with the tree it was asked to write. A patch that does not reproduce the tree is retried block by block — every untouched top-level block still copied, changed ones written canonically — then written canonically, and a canonical form that does not reproduce the tree is an error. Writing a file that says something other than the tree would be worse than refusing to write it.
+
+Matching at save time means the editor carries nothing: no offsets on its nodes and no source slices in its state. A host gives `serializeDocument` the tree and the text it loaded, and nothing else.
+
+**Rejected:**
+
+- **A lossless or concrete-syntax-tree mode in the parser.** It is a second tree shape to keep in step with the §7 AST, every consumer would have to carry its tokens through edits — which a ProseMirror document does not — and it still needs a canonical writer for everything the author adds. The mdast already carries positions, which is all a patch needs.
+- **Reusing only unchanged top-level blocks**, the brief's first suggestion. It is kept, as the middle fallback, but not as the primary: a card is one top-level block, and editing one paragraph in a sixty-line card would rewrite the other fifty-nine.
+- **Source slices stored on the editor's nodes.** They go stale under collaborative editing, where the host (not this package) decides whether Yjs is involved, and they put offsets into state a host persists.
+- **A round-trip conformance aspect.** The spec does not require an implementation to write source, so a second implementation could not be held to it. The checks run in `packages/parser/test/serialize.test.ts` instead, over every document in `tests/` and every example: byte identity unedited, a canonical form that parses back and is a fixed point, an edit to any text changing only the lines of its block, and one structural edit per construct with the exact lines that differ.
+
+**Known limits,** each confined to the block that changed. A document that already carries warnings may be repaired where it is edited: an unclosed fence gains its close. A changed setext heading is re-underlined to its new length. The lines of a changed blockquote or list item take the canonical prefix (`> `, the marker's width), so an item indented four spaces by its author is indented two once it is edited.

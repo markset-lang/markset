@@ -38,7 +38,8 @@ spec/       v0.md — the specification
             conformance.schema.json — normative schema for tests/*.json (spec §7)
 tests/      conformance JSON, one file per section
 packages/
-  parser/           CommonMark base + Markset extensions -> AST
+  parser/           CommonMark base + Markset extensions -> AST, and back: serializeDocument writes a tree as Markset
+                    source, canonically or as a patch against the source it was parsed from (D14)
   render-downgrade/ AST -> plain CommonMark
   render-html/      AST -> HTML
   diagram-ascii/    ASCII diagram -> SVG (spec §10). A pure function with no dependencies;
@@ -158,7 +159,9 @@ in commit order, which is the wrong order for finding the work.
       `chart-table`, for the same reason: first published by hand at 0.3.0. Each re-run skipped what was out and
       stopped at the next unconfigured package, which is the idempotence doing its job. All eight publishers are
       configured now, so a ninth package is the only way to meet this again.
-- [ ] Nothing. The playground was the last open item; see the entry at the end of the done list.
+- [ ] **`@markset-lang/tiptap`, WYSIWYG editing** (`docs/briefs/tiptap.md`). Started 2026-09-28 with the part
+      every editor needs: `serializeDocument` in the parser, D14. The TipTap package itself waits on approval of its
+      dependencies.
 
 **Done,** in the order it landed.
 
