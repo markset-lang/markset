@@ -1,0 +1,73 @@
+/*
+ * Markset in a TipTap editor. Load it after markset.css.
+ *
+ * The editor draws each construct with the renderer's ms- classes, so
+ * markset.css styles most of it unchanged. Four constructs have a different
+ * shape while they are being edited, because the rendered page replaces their
+ * content and the editor cannot: a grid and steps hold their list, metrics its
+ * table, and tabs show every panel at once. These rules give those shapes the
+ * look of the rendered page. Everything is scoped to .ProseMirror, the class
+ * TipTap puts on the editable element, so a page that also renders Markset is
+ * untouched.
+ */
+
+/* A grid's list items are its cells. */
+.ProseMirror .ms-grid > :is(ul, ol) { display: contents; }
+.ProseMirror .ms-grid > :is(ul, ol) > li {
+  list-style: none;
+  min-width: 0;
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  background: var(--ms-surface);
+  padding: var(--ms-space);
+}
+.ProseMirror .ms-grid > :is(ul, ol) > li > * + * { margin-top: calc(var(--ms-space) / 2); }
+
+/* Steps: the ordered list inside, drawn as the rendered page draws .ms-step. */
+.ProseMirror .ms-steps > ol { list-style: none; padding: 0; margin: 0; }
+.ProseMirror .ms-steps > ol > li { position: relative; padding-left: 3rem; min-height: 2.25rem; }
+.ProseMirror .ms-steps > ol > li + li { margin-top: var(--ms-space); }
+.ProseMirror .ms-steps > ol > li::before {
+  content: counter(list-item);
+  position: absolute; left: 0; top: 0;
+  width: 2rem; height: 2rem;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--ms-accent); color: #fff;
+  font-family: var(--ms-font-heading); font-weight: 600; font-size: 0.9em;
+}
+
+/* Metrics: the table is what gets edited, so it stays a table. */
+.ProseMirror .ms-metrics { display: block; }
+
+/* Tabs: every panel, one under another, each under its label. */
+.ProseMirror .ms-tab-editor { padding: var(--ms-space); }
+.ProseMirror .ms-tab-editor + .ms-tab-editor { border-top: 1px solid var(--ms-border); }
+.ProseMirror .ms-tab-editor > .ms-tab {
+  display: block;
+  padding: 0 0 0.35em;
+  margin-bottom: calc(var(--ms-space) / 2);
+  border-bottom: 2px solid var(--ms-accent);
+  width: fit-content;
+  color: var(--ms-fg);
+  cursor: text;
+}
+.ProseMirror .ms-tab-editor > * + * { margin-top: calc(var(--ms-space) / 2); }
+
+/* An empty title shows what the rendered page would put there. */
+.ProseMirror .ms-callout-title:has(> br:only-child)::before { color: var(--ms-fg-muted); }
+.ProseMirror .ms-callout[data-type="note"] > .ms-callout-title:has(> br:only-child)::before { content: "Note"; }
+.ProseMirror .ms-callout[data-type="tip"] > .ms-callout-title:has(> br:only-child)::before { content: "Tip"; }
+.ProseMirror .ms-callout[data-type="important"] > .ms-callout-title:has(> br:only-child)::before { content: "Important"; }
+.ProseMirror .ms-callout[data-type="warning"] > .ms-callout-title:has(> br:only-child)::before { content: "Warning"; }
+.ProseMirror .ms-callout[data-type="caution"] > .ms-callout-title:has(> br:only-child)::before { content: "Caution"; }
+.ProseMirror .ms-callout > * + * { margin-top: calc(var(--ms-space) / 2); }
+.ProseMirror .ms-card > * + * { margin-top: calc(var(--ms-space) / 2); }
+
+/* The parser's diagnostics, on the blocks they are about. */
+.ProseMirror .ms-diagnostic { outline: 2px solid var(--ms-tone-danger); outline-offset: 2px; }
+.ProseMirror .ms-diagnostic[data-severity="warning"] { outline-color: var(--ms-tone-warn); }
+
+/* What the editor keeps but does not let you edit as text. */
+.ProseMirror .ms-frontmatter { display: none; }
+.ProseMirror :is(.ms-html, .ms-definition, .ms-separator) { color: var(--ms-fg-muted); font-family: var(--ms-font-mono); font-size: 0.9em; }

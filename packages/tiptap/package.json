@@ -26,7 +26,8 @@
   ],
   "files": [
     "dist",
-    "src"
+    "src",
+    "css"
   ],
   "exports": {
     ".": {
@@ -38,7 +39,8 @@
       "markset-source": "./src/react.ts",
       "types": "./dist/react.d.ts",
       "default": "./dist/react.js"
-    }
+    },
+    "./css/editor.css": "./css/editor.css"
   },
   "dependencies": {
     "@markset-lang/parser": "^0.3.1"

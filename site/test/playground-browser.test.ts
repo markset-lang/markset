@@ -335,3 +335,79 @@ test("the bar and the vocabulary tab offer the same entries", { skip: unavailabl
     await browser.close();
   }
 });
+
+// ---------------------------------------------------------------------------
+// The live editor on "Editing visually", the site's other application page.
+
+test("the editing page runs a live editor whose saved file changes only the edited lines", {
+  skip: unavailable,
+}, async () => {
+  const browser = await puppeteer!.launch({ headless: true, args: launchArgs });
+  try {
+    const page = await browser.newPage();
+    const problems: string[] = [];
+    page.on("pageerror", (error: unknown) => {
+      problems.push(`uncaught: ${error instanceof Error ? error.message : String(error)}`);
+    });
+    await page.goto(`${origin}/tiptap/`, { waitUntil: "networkidle0" });
+    await page.waitForSelector(".te-demo .ProseMirror", { timeout: 20_000 });
+
+    const status = () => page.$eval(".te-status", (e: Element) => e.textContent);
+    const changed = () => page.$$eval(".te-changed", (lines: Element[]) => lines.map((line) => line.textContent));
+    const saved = () =>
+      page.$eval(".te-code code", (e: Element) => [...e.children].map((line) => line.textContent).join("\n"));
+    assert.match(String(await status()), /^Unchanged/);
+    assert.deepEqual(await changed(), []);
+    // What the pane shows unedited is the sample, byte for byte.
+    const sample = await readFile(join(import.meta.dirname, "..", "tiptap-demo", "sample.md"), "utf8");
+    assert.equal(`${(await saved()).replaceAll("​", "")}\n`, sample);
+
+    // Type at the end of the first paragraph: one line changes, and only that one.
+    await page.evaluate(() => {
+      const paragraph = document.querySelector(".te-demo .ProseMirror p") as HTMLElement;
+      const range = document.createRange();
+      range.selectNodeContents(paragraph);
+      range.collapse(false);
+      getSelection()?.removeAllRanges();
+      getSelection()?.addRange(range);
+    });
+    await page.focus(".te-demo .ProseMirror");
+    await page.keyboard.type(" Out now.");
+    await page.waitForFunction(() => document.querySelectorAll(".te-changed").length > 0);
+    assert.deepEqual(await changed(), ["Release notes for _Harbor_ 2.4, the version that works offline. Out now."]);
+    assert.match(String(await status()), /^1 line changed; the other \d+ as written$/);
+
+    // Insert a construct from the toolbar: its lines are new, and nothing else moves.
+    await page.$$eval(".te-button", (buttons: Element[]) => {
+      (buttons.find((b) => b.textContent === "card") as HTMLButtonElement).click();
+    });
+    await page.waitForFunction(() => document.querySelectorAll(".te-changed").length > 1);
+    assert.ok((await changed()).includes(":::card[Title]"), (await changed()).join("\n"));
+
+    // Reset puts the file back.
+    await page.$$eval(".te-button", (buttons: Element[]) => {
+      (buttons.find((b) => b.textContent === "Reset") as HTMLButtonElement).click();
+    });
+    await page.waitForFunction(() => document.querySelectorAll(".te-changed").length === 0);
+    assert.match(String(await status()), /^Unchanged/);
+    assert.deepEqual(problems, []);
+  } finally {
+    await browser.close();
+  }
+});
+
+test("without JavaScript the editing page still shows the sample, rendered beside its source", async () => {
+  // The build writes the fallback into the page; the script only replaces it.
+  const html = await readFile(join(dist || (await builtOnce()), "tiptap", "index.html"), "utf8");
+  const main = html.slice(html.indexOf("<main"), html.indexOf("</main>"));
+  assert.match(main, /<div class="ms-columns" id="try-editor"/);
+  assert.match(main, /class="ms-grid"/, "the sample is rendered");
+  assert.match(main, /<code class="language-markdown">/, "and its source is beside it");
+});
+
+/** A build for the tests that run without a browser, when the browser tests were skipped. */
+async function builtOnce(): Promise<string> {
+  dist = await mkdtemp(join(tmpdir(), "markset-browser-"));
+  await build(dist);
+  return dist;
+}

@@ -32,6 +32,7 @@ export const WATCHED = [
   "site/site.css",
   "site/content",
   "site/playground",
+  "site/tiptap-demo",
   "examples",
   "spec",
   "tests",
@@ -39,6 +40,8 @@ export const WATCHED = [
   "packages/render-downgrade/src",
   "packages/render-html/src",
   "packages/render-html/css",
+  "packages/tiptap/src",
+  "packages/tiptap/css",
 ];
 
 const TYPES: Record<string, string> = {

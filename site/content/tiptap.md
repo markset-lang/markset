@@ -19,6 +19,18 @@ Library
 ***
 
 {.eyebrow}
+Try it
+
+## Edit it here
+
+This is the editor, running in your browser. Change anything on the left, or insert a construct from the toolbar. The right is the Markset file it saves, and the highlighted lines are the only ones your edits have changed. Everything else is exactly what its author wrote, down to the `*` bullets and the padding in the table.
+
+{{demo}}
+
+{.tick}
+***
+
+{.eyebrow}
 The promise
 
 ## Editing must not damage the file
@@ -67,18 +79,6 @@ const saved = toMarkset(editor.getJSON(), source);
 Passing the original `source` to `toMarkset` is what makes the diffs small: everything the editor did not change is copied from it. Without it, you get valid Markset in the reference implementation's formatting.
 
 `Markset` replaces TipTap's StarterKit rather than joining it. Its CommonMark nodes keep StarterKit's names, so toolbar commands such as `toggleBold` still work.
-
-{.tick}
-***
-
-{.eyebrow}
-What a save looks like
-
-## One edit to each construct
-
-Each of these was made by the package while this page was built: the sample loaded, changed the way an editor would change it, and saved. What you see is the diff it produced, so the page cannot promise more than the package does.
-
-{{edits}}
 
 {.tick}
 ***

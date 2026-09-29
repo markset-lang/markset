@@ -27,7 +27,6 @@ import {
   type Diagnostic,
 } from "./deps.ts";
 import { drawMermaid } from "./mermaid.ts";
-import { editDemos } from "./edits.ts";
 
 const root = resolve(import.meta.dirname, "..");
 /** Repository and site URLs come from package.json so they cannot drift from the remote. */
@@ -363,6 +362,7 @@ async function writeSite(outDir: string): Promise<string[]> {
   }
   await cp(join(root, "site", "playground", "playground.css"), join(out, "css", "playground.css"));
   await bundlePlayground(out);
+  await bundleEditorDemo(out);
 
   const cases = await loadCases();
   const pages: Page[] = [
@@ -373,9 +373,7 @@ async function writeSite(outDir: string): Promise<string[]> {
     await markdownPage("start/index.html", join(root, "site", "content", "start.md")),
     await markdownPage("cli/index.html", join(root, "site", "content", "cli.md")),
     await markdownPage("editor/index.html", join(root, "site", "content", "editor.md")),
-    await markdownPage("tiptap/index.html", join(root, "site", "content", "tiptap.md"), undefined, false, {
-      edits: editDemos(),
-    }),
+    await tiptapPage(),
     await markdownPage("github-pages/index.html", join(root, "site", "content", "github-pages.md")),
     await playgroundPage(),
     await specPage(),
@@ -945,6 +943,60 @@ async function bundlePlayground(out: string): Promise<void> {
     conditions: ["markset-source"],
     logLevel: "silent",
   });
+}
+
+/**
+ * The live editor on the "Editing visually" page, bundled like the playground:
+ * from src/ through markset-source, so it is the package as it stands. Its CSS
+ * is the package's own editor.css followed by the demo's layout, as one file,
+ * because a page has one theme stylesheet.
+ */
+async function bundleEditorDemo(out: string): Promise<void> {
+  await esbuildBundle({
+    entryPoints: [join(root, "site", "tiptap-demo", "app.ts")],
+    outfile: join(out, "js", "editor-demo.js"),
+    bundle: true,
+    format: "esm",
+    target: ["es2022"],
+    minify: true,
+    sourcemap: true,
+    conditions: ["markset-source"],
+    logLevel: "silent",
+  });
+  const css = await Promise.all([
+    readFile(join(root, "packages", "tiptap", "css", "editor.css"), "utf8"),
+    readFile(join(root, "site", "tiptap-demo", "demo.css"), "utf8"),
+  ]);
+  await writeFile(join(out, "css", "editor-demo.css"), css.join("\n"));
+}
+
+/**
+ * "Editing visually": a Markset page whose demo section is the sample document
+ * rendered beside its own source, which is what a reader without JavaScript
+ * keeps. The module at the end of the body replaces that pair with a live
+ * editor and the file it saves. The sample is one file, checked like any other
+ * document, and the script reads it back out of the source column, so it exists
+ * on the page once.
+ */
+async function tiptapPage(): Promise<Page> {
+  const sample = await readFile(join(root, "site", "tiptap-demo", "sample.md"), "utf8");
+  failOnErrors(parseDocument(sample).diagnostics, "site/tiptap-demo/sample.md");
+  if (/^~{4,}/m.test(sample) || /^:{5,}/m.test(sample)) throw new Error("the demo sample would close its own wrapper");
+  const demo = [
+    "::::::columns{#try-editor}",
+    sample.trimEnd(),
+    "",
+    "::col",
+    "",
+    "~~~~markdown",
+    sample.trimEnd(),
+    "~~~~",
+    "::::::",
+  ].join("\n");
+  const page = await markdownPage("tiptap/index.html", join(root, "site", "content", "tiptap.md"), undefined, false, {
+    demo,
+  });
+  return { ...page, themeCss: "css/editor-demo.css", scripts: ["js/editor-demo.js"] };
 }
 
 /**
