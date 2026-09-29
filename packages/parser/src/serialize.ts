@@ -434,14 +434,25 @@ function patchHints(
     let fromJ = 0;
     for (const [toI, toJ] of anchors) {
       let next = fromJ;
+      const paired = new Set<number>();
       for (let x = fromI; x < toI; x++) {
         for (let y = next; y < toJ; y++) {
           if (edited[x].type === old[y].type) {
             changed(edited[x], old[y]);
+            paired.add(x).add(-1 - y);
             next = y + 1;
             break;
           }
         }
+      }
+      // A block that changed type (a paragraph made a heading) is new content,
+      // but it still stands where the old one stood, so it keeps that spacing.
+      const leftEdited: Node[] = [];
+      const leftOld: Node[] = [];
+      for (let x = fromI; x < toI; x++) if (!paired.has(x)) leftEdited.push(edited[x]);
+      for (let y = fromJ; y < toJ; y++) if (!paired.has(-1 - y)) leftOld.push(old[y]);
+      if (leftEdited.length === leftOld.length) {
+        for (const [i, node] of leftEdited.entries()) spacingOnly.set(node, leftOld[i]);
       }
       if (toI < n) same(edited[toI], old[toJ]);
       fromI = toI + 1;
@@ -525,14 +536,14 @@ function patchHints(
     },
     afterOpening(node, first) {
       const old = origin(node);
-      const oldFirst = origin(first);
+      const oldFirst = origin(first) ?? spacingOnly.get(first as Node);
       const where = oldFirst && place.get(oldFirst);
       if (!old || !where || where.parent !== old || where.index !== 0) return undefined;
       return between(openingEnd(old), startOffset(oldFirst!), where.prefixed);
     },
     beforeClosing(node, last) {
       const old = origin(node);
-      const oldLast = origin(last);
+      const oldLast = origin(last) ?? spacingOnly.get(last as Node);
       const where = oldLast && place.get(oldLast);
       const line = old && closingLine(old);
       if (!where || line === undefined || where.parent !== old || where.index !== where.list.length - 1)

@@ -60,6 +60,11 @@ packages/
                     stage.ts and published for implementations that are not this one. No dependencies,
                     deliberately: it is what an implementation is checked against, so it must not carry one.
   cli/
+  tiptap/           TipTap extensions for editing a document visually (D14). convert.ts is Markset <-> ProseMirror JSON
+                    and needs no DOM; extensions.ts is the schema, commands and guards; model.ts is the node and
+                    attribute table both read; react.ts is the optional `/react` entry. A block the editor did not
+                    change is recognised by its JSON on save and given back its original mdast, because marks
+                    cannot say how `***a***` nested. Tests run the editor in happy-dom.
 tsconfig.build.json  emit settings for publishing; tsconfig.json stays noEmit and is what the editor reads
 site/       static site generator (build.ts) and content; every page is Markset rendered by the packages above.
             Nav lives in NAV and the page list in build(). The examples index generates Markset source and renders it,
@@ -94,6 +99,10 @@ docs/       background analysis, prior art, design rationale
 - The CommonMark base is **micromark + mdast** (`micromark`, `mdast-util-from-markdown`, the GFM table pair, and the `micromark-util-*` helpers), chosen 2026-09-13. Markset's three grammar constructs are a micromark syntax extension in `packages/parser/src/syntax.ts` and an mdast compiler extension in `from-markdown.ts`. The Markset AST is mdast plus `directive`, `separator`, and `span` nodes (`ast.ts`), so any unified tooling can consume it. Tokenizers find boundaries only; fence lines and attribute specifiers are parsed by the line grammar, so there is one grammar to keep in sync with the spec.
 - `npm install` once, to link the workspace packages. Then `npm test` (unit tests plus the full conformance suite) and `npm run conformance` for the per-section report (`--section <name>`, `--verbose`).
 - `npm run typecheck` runs `tsc --noEmit`. `typescript`, `@types/node` (approved 2026-09-14), `@biomejs/biome` (approved 2026-09-15) and `@mermaid-js/mermaid-cli` (approved 2026-09-15) are the dev dependencies. **There is a build step now, but only for publishing:** `npm run build` compiles each publishable package to `dist/` (JS, `.d.ts`, and both map kinds) with `tsconfig.build.json`. Nothing in the development workflow uses it — node still runs the `.ts` sources directly. mermaid-cli is the heavy one — it pulls puppeteer and a Chromium download — and it is used by nothing but `site/mermaid.ts`, which draws the site's mermaid fences. Nothing in `packages/` depends on it, and a consumer of the library never installs it.
+- `@tiptap/core`, `@tiptap/pm`, `@tiptap/react`, `react`, `react-dom` and `happy-dom` (approved 2026-09-28) are
+  root dev dependencies for `packages/tiptap`, which declares the TipTap pair as peers and the React three as optional
+  peers. `happy-dom` is the tests' DOM and nothing ships with it. `.tsx` is not erasable, so the React entry uses
+  `createElement`.
 - `esbuild` (approved 2026-09-17) bundles `site/playground/app.ts` for the browser, and nothing else uses it.
   It resolves through `markset-source`, so the bundle is built from `src/` and a stale `dist/` cannot reach a
   reader. It is also a guard with no extra cost: five packages go into the bundle and none may import a node
@@ -159,9 +168,12 @@ in commit order, which is the wrong order for finding the work.
       `chart-table`, for the same reason: first published by hand at 0.3.0. Each re-run skipped what was out and
       stopped at the next unconfigured package, which is the idempotence doing its job. All eight publishers are
       configured now, so a ninth package is the only way to meet this again.
-- [ ] **`@markset-lang/tiptap`, WYSIWYG editing** (`docs/briefs/tiptap.md`). Started 2026-09-28 with the part
-      every editor needs: `serializeDocument` in the parser, D14. The TipTap package itself waits on approval of its
-      dependencies.
+- [ ] **`@markset-lang/tiptap`, WYSIWYG editing** (`docs/briefs/tiptap.md`), 2026-09-28. Done: `serializeDocument`
+      in the parser (D14), and the package — schema, commands, guards, diagnostics, React views — with byte-identical
+      round trips over every suite document and example, through a live editor as well as through JSON. Open: **the
+      first publish is by hand** (`npm publish --workspace @markset-lang/tiptap` with the passkey, then its trusted
+      publisher on npmjs.com, or the next CI release stops at it with `ENEEDAUTH`), and a site page if one earns its
+      place. It is last in the release list, so an unconfigured publisher strands nothing.
 
 **Done,** in the order it landed.
 

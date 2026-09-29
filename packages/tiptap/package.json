@@ -1,0 +1,64 @@
+{
+  "name": "@markset-lang/tiptap",
+  "version": "0.3.1",
+  "description": "TipTap extensions that edit a Markset document visually and save it back as Markset source, touching only the lines an edit changed.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markset-lang/markset.git",
+    "directory": "packages/tiptap"
+  },
+  "homepage": "https://markset.org/",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "markset",
+    "markdown",
+    "tiptap",
+    "prosemirror",
+    "editor",
+    "wysiwyg"
+  ],
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "markset-source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./react": {
+      "markset-source": "./src/react.ts",
+      "types": "./dist/react.d.ts",
+      "default": "./dist/react.js"
+    }
+  },
+  "dependencies": {
+    "@markset-lang/parser": "^0.3.1"
+  },
+  "peerDependencies": {
+    "@tiptap/core": "^3.0.0",
+    "@tiptap/pm": "^3.0.0",
+    "@tiptap/react": "^3.0.0",
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "@tiptap/react": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  }
+}
