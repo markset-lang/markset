@@ -172,8 +172,12 @@ in commit order, which is the wrong order for finding the work.
       parser (D14), and the package — schema, commands, guards, diagnostics, React views — with byte-identical round
       trips over every suite document and example, through a live editor as well as through JSON. **Published by hand
       at 0.3.1 and its trusted publisher configured**, so the next release carries it from CI. The site page,
-      `site/content/tiptap.md`, shows one edit per construct as a diff that `site/edits.ts` makes with the package at
-      build time, and fails the build if a sample does not round-trip unedited.
+      `site/content/tiptap.md`, is the site's second application page: `tiptapPage()` renders the sample in
+      `site/tiptap-demo/sample.md` beside its own source, which is what a reader without JavaScript keeps, and
+      `site/tiptap-demo/app.ts` replaces that pair with a live editor and the file it saves, the changed lines
+      highlighted. It is named beside the playground in the test that counts scripts. The bundle is about 450 KB
+      minified, TipTap and ProseMirror being most of it. The package ships `css/editor.css` for the four constructs
+      whose editing shape differs from the rendered one (grid, steps, metrics, tabs); the page uses it too.
       **A shell whose working directory is spelled with the wrong case** (`~/github/...` for `~/GitHub/...`) fails
       `npm run build` at this package with TS1149: macOS resolves both spellings, tsc sees `@types/mdast` twice.
       `cd` to the real spelling; CI on Linux cannot meet it.

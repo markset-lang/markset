@@ -32,7 +32,9 @@ test("the site builds, every page has the shell, and links stay relative", async
     // rendered Markset document carries no script. The playground is named
     // rather than allowed by a pattern, so a second application page is a
     // decision somebody makes here instead of one that arrives by accident.
-    const allowed = page === "playground/index.html" ? 2 : 1;
+    // "Editing visually" is the second, decided 2026-09-28: a page about an
+    // editor that shows no editor asks the reader to take its word for it.
+    const allowed = page === "playground/index.html" || page === "tiptap/index.html" ? 2 : 1;
     const scripts = html.match(/<script/g) ?? [];
     assert.equal(scripts.length, allowed, `${page} has ${scripts.length} scripts, expected ${allowed}`);
     const main = html.slice(html.indexOf("<main"), html.indexOf("</main>"));

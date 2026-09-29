@@ -1,0 +1,24 @@
+/* The live editor on the "Editing visually" page: an editor pane and the file it saves, side by side. */
+.te-demo { border: 1px solid var(--ms-border); border-radius: var(--ms-radius); background: var(--ms-bg); max-width: none; }
+.te-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; padding: 0.5rem; border-bottom: 1px solid var(--ms-border); background: var(--ms-surface); }
+.te-group { margin-left: 0.5rem; font-size: 0.8em; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ms-fg-muted); }
+.te-button { font: inherit; font-size: 0.85em; padding: 0.2em 0.6em; border: 1px solid var(--ms-border); border-radius: var(--ms-radius); background: var(--ms-bg); color: var(--ms-fg); cursor: pointer; }
+.te-button:hover { border-color: var(--ms-accent); }
+.te-button[aria-pressed="true"] { background: var(--ms-accent); border-color: var(--ms-accent); color: #fff; }
+.te-reset { margin-left: auto; }
+.te-panes { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+.te-pane { min-width: 0; }
+.te-editor { padding: var(--ms-space); border-right: 1px solid var(--ms-border); }
+.te-editor .ProseMirror { outline: none; min-height: 20rem; }
+.te-editor .ProseMirror > * + * { margin-top: var(--ms-space); }
+.te-source { display: flex; flex-direction: column; background: var(--ms-surface); }
+.te-source-head { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; justify-content: space-between; padding: 0.5rem var(--ms-space); border-bottom: 1px solid var(--ms-border); font-size: 0.8em; }
+.te-file { font-family: var(--ms-font-mono); font-weight: 600; }
+.te-status { color: var(--ms-fg-muted); }
+.te-code { margin: 0; padding: 0.5rem 0; overflow-x: auto; font-size: 0.8em; line-height: 1.55; background: none; border: 0; }
+.te-line { display: block; padding: 0 var(--ms-space); white-space: pre-wrap; overflow-wrap: anywhere; border-left: 3px solid transparent; }
+.te-changed { background: color-mix(in srgb, var(--ms-tone-success) 16%, transparent); border-left-color: var(--ms-tone-success); }
+@media (max-width: 48rem) {
+  .te-panes { grid-template-columns: minmax(0, 1fr); }
+  .te-editor { border-right: 0; border-bottom: 1px solid var(--ms-border); }
+}
