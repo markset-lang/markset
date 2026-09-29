@@ -121,7 +121,10 @@ test("undo takes an edit back to the original bytes, and redo restores it", asyn
 test("deleting everything leaves a document that still saves", async ({ page }) => {
   await open(page, CARD);
   await page.locator(".ProseMirror").click();
-  await page.keyboard.press("ControlOrMeta+a");
+  // Select all through the editor rather than the platform's key: WebKit's
+  // Linux build does not deliver Ctrl+A to the page under Playwright, so the
+  // key tested the runner's platform and not the editor. Backspace is real.
+  await page.evaluate(() => window.harness.selectAll());
   await page.keyboard.press("Backspace");
   const saved = await save(page);
   expect(saved.trim()).toBe("");
@@ -177,6 +180,7 @@ declare global {
       pasteHTML(html: string): void;
       pasteText(text: string): void;
       selectionSettled(): boolean;
+      selectAll(): void;
       copy(type: string): string;
     };
   }
