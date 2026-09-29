@@ -216,4 +216,5 @@ Then, as you need them:
 
 - The [reference](../reference/index.html) starts with the three pieces of syntax every construct is built from, then gives a page per construct with four worked examples each — plus [frontmatter and theme tokens](../reference/frontmatter/index.html) for the settings a document carries about itself, and [diagrams](../reference/diagrams/index.html) for turning an ASCII or mermaid fence into a picture.
 - The [examples](../examples/index.html) are what a long document looks like once it has a theme of its own.
+- [Editing visually](../tiptap/index.html) is for an application that lets people edit Markset without seeing the syntax: a TipTap editor that saves back to the file and changes only the lines that were edited.
 - The [specification](../spec/index.html) is the normative answer. It is short, and it is what a second implementation would be written from.

@@ -168,12 +168,16 @@ in commit order, which is the wrong order for finding the work.
       `chart-table`, for the same reason: first published by hand at 0.3.0. Each re-run skipped what was out and
       stopped at the next unconfigured package, which is the idempotence doing its job. All eight publishers are
       configured now, so a ninth package is the only way to meet this again.
-- [ ] **`@markset-lang/tiptap`, WYSIWYG editing** (`docs/briefs/tiptap.md`), 2026-09-28. Done: `serializeDocument`
-      in the parser (D14), and the package — schema, commands, guards, diagnostics, React views — with byte-identical
-      round trips over every suite document and example, through a live editor as well as through JSON. Open: **the
-      first publish is by hand** (`npm publish --workspace @markset-lang/tiptap` with the passkey, then its trusted
-      publisher on npmjs.com, or the next CI release stops at it with `ENEEDAUTH`), and a site page if one earns its
-      place. It is last in the release list, so an unconfigured publisher strands nothing.
+- [x] **`@markset-lang/tiptap`, WYSIWYG editing** (`docs/briefs/tiptap.md`), 2026-09-28. `serializeDocument` in the
+      parser (D14), and the package — schema, commands, guards, diagnostics, React views — with byte-identical round
+      trips over every suite document and example, through a live editor as well as through JSON. **Published by hand
+      at 0.3.1 and its trusted publisher configured**, so the next release carries it from CI. The site page,
+      `site/content/tiptap.md`, shows one edit per construct as a diff that `site/edits.ts` makes with the package at
+      build time, and fails the build if a sample does not round-trip unedited.
+      **A shell whose working directory is spelled with the wrong case** (`~/github/...` for `~/GitHub/...`) fails
+      `npm run build` at this package with TS1149: macOS resolves both spellings, tsc sees `@types/mdast` twice.
+      `cd` to the real spelling; CI on Linux cannot meet it.
+- [ ] Nothing.
 
 **Done,** in the order it landed.
 
