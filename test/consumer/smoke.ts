@@ -57,7 +57,7 @@ try {
   // accepted, so an install right after publishing is retried rather than failed.
   for (let attempt = 1; ; attempt++) {
     try {
-      run("npm", ["install", "--no-audit", "--no-fund", "--loglevel=error", ...specs, ...PEERS]);
+      run("npm", ["install", "--prefer-online", "--no-audit", "--no-fund", "--loglevel=error", ...specs, ...PEERS]);
       break;
     } catch (error) {
       if (mode !== "--registry" || attempt === 10) throw error;
