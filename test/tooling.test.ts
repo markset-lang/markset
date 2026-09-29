@@ -289,6 +289,28 @@ test("the release names every published package, and nothing else", async () => 
   assert.doesNotMatch(release, /--workspaces\b/u, "never the sweep-everything form");
 });
 
+test("every package asks for its siblings at the version being released", async () => {
+  // 0.3.1 of tiptap was published by hand asking for parser ^0.3.1, which the
+  // registry answered with a parser that predates serializeDocument, so the
+  // package could not save from the day it shipped. Every test here passed,
+  // because inside the workspace a sibling is always the local copy. The rule
+  // that makes the range mean what the workspace means: a package asks for its
+  // siblings at exactly the version they are all released at together.
+  const version = JSON.parse(await readFile(join(root, "package.json"), "utf8")).version as string;
+  for (const dir of PUBLISHED) {
+    const manifest = JSON.parse(await readFile(join(root, "packages", dir, "package.json"), "utf8")) as Record<
+      string,
+      Record<string, string> | undefined
+    >;
+    for (const field of ["dependencies", "peerDependencies", "optionalDependencies"]) {
+      for (const [name, range] of Object.entries(manifest[field] ?? {})) {
+        if (!name.startsWith("@markset-lang/")) continue;
+        assert.equal(range, `^${version}`, `packages/${dir} ${field} asks for ${name}@${range}, not ^${version}`);
+      }
+    }
+  }
+});
+
 test("the release publishes each package after everything it depends on", async () => {
   // The publish step stops at the first failure, and that is the right design
   // only because of this order: a package that goes out points only at versions
@@ -319,10 +341,22 @@ test("the release workflow proves the build before it publishes", async () => {
   );
   assert.match(yaml, /id-token: write/u, "trusted publishing and provenance both need it");
   assert.match(yaml, /--provenance/u, "each tarball is tied to the run that built it");
-  for (const step of ["npm run lint", "npm run typecheck", "npm test", "npm run conformance"]) {
+  for (const step of [
+    "npm run lint",
+    "npm run typecheck",
+    "npm test",
+    "npm run conformance",
+    "npm run e2e",
+    "npm run smoke:packed",
+  ]) {
     assert.ok(yaml.includes(step), `the release re-proves ${step}, since a tag can come from anywhere`);
   }
   assert.match(yaml, /does not match package version/u, "the tag must match the version it claims");
+  assert.ok(
+    yaml.indexOf("npm run smoke:packed") < yaml.indexOf("npm publish") &&
+      yaml.indexOf("npm run smoke:registry") > yaml.indexOf("npm publish"),
+    "the packed install is proved before publishing, and the registry install after",
+  );
   // ...but only on a tag. GITHUB_REF_NAME is the branch on a manual run, so an
   // unconditional check makes the workflow_dispatch trigger above unusable.
   assert.match(yaml, /if: startsWith\(github\.ref, 'refs\/tags\/'\)/u, "and only when there is one");

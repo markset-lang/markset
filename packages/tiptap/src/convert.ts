@@ -553,7 +553,7 @@ class Writer {
   inline(content: JSONNode[]): PhrasingContent[] {
     const root: { children: PhrasingContent[] } = { children: [] };
     const stack: Array<{ mark: JSONMark | null; node: { children: PhrasingContent[] } }> = [{ mark: null, node: root }];
-    for (const item of mergeText(content.map(withDefaults))) {
+    for (const item of expelWhitespace(mergeText(content.map(withDefaults)))) {
       const marks = (item.marks ?? []).filter((mark) => mark.type !== "code").sort(byRank);
       const code = (item.marks ?? []).some((mark) => mark.type === "code");
       let keep = 0;
@@ -573,6 +573,42 @@ class Writer {
     }
     return root.children;
   }
+}
+
+/** Marks CommonMark's flanking rules apply to: `** Bold**` is not strong, so a space cannot sit just inside one. */
+const ATTENTION = new Set(["bold", "italic"]);
+
+/**
+ * Move whitespace at the edge of a bold or italic run to outside it. An editor
+ * lets a reader switch bold on and type " Bold", and the only Markset that
+ * says what they meant is ` **Bold**`.
+ */
+function expelWhitespace(items: JSONNode[]): JSONNode[] {
+  const has = (node: JSONNode | undefined, mark: JSONMark) =>
+    (node?.marks ?? []).some((other) => sameMark(other, mark));
+  const out: JSONNode[] = [];
+  items.forEach((item, index) => {
+    const marks = item.marks ?? [];
+    if (item.type !== "text" || !marks.some((mark) => ATTENTION.has(mark.type))) {
+      out.push(item);
+      return;
+    }
+    const [, lead, core, trail] = /^(\s*)([\s\S]*?)(\s*)$/.exec(item.text ?? "")!;
+    const keep = (neighbour: JSONNode | undefined) =>
+      marks.filter((mark) => !ATTENTION.has(mark.type) || has(neighbour, mark));
+    const piece = (text: string, kept: JSONMark[]) => {
+      if (text !== "") out.push(kept.length > 0 ? { type: "text", text, marks: kept } : { type: "text", text });
+    };
+    if (core === "") {
+      const kept = keep(items[index - 1]).filter((mark) => keep(items[index + 1]).includes(mark));
+      piece(item.text ?? "", kept);
+      return;
+    }
+    piece(lead, keep(items[index - 1]));
+    piece(core, marks);
+    piece(trail, keep(items[index + 1]));
+  });
+  return mergeText(out);
 }
 
 function byRank(a: JSONMark, b: JSONMark): number {

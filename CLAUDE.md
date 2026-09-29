@@ -103,6 +103,16 @@ docs/       background analysis, prior art, design rationale
   root dev dependencies for `packages/tiptap`, which declares the TipTap pair as peers and the React three as optional
   peers. `happy-dom` is the tests' DOM and nothing ships with it. `.tsx` is not erasable, so the React entry uses
   `createElement`.
+- `@playwright/test` (approved 2026-09-28) runs `packages/tiptap/e2e/` in Chromium, Firefox and WebKit: `npm run e2e`,
+  after `npx playwright install chromium firefox webkit` once. `global-setup.ts` bundles `harness.ts` from src/ with
+  esbuild, and the specs drive it with the browser's own keyboard, selection and paste. Wait for
+  `harness.selectionSettled()` after moving the caret: a browser reports a moved caret on its own schedule, and a
+  command run before then acts on the old selection. It found three bugs on its first run that 300 happy-dom tests had
+  not: a space typed inside bold made the file unsavable, the kit had no keys at all, and `setContent` puts a load in
+  the undo history.
+- `test/consumer/smoke.ts` installs the nine packages into an empty project and uses every entry point:
+  `npm run smoke:packed` from tarballs, `npm run smoke:registry -- <version>` from npm. The release runs the first
+  before publishing and the second after, which is the check tiptap 0.3.1 needed.
 - `esbuild` (approved 2026-09-17) bundles `site/playground/app.ts` for the browser, and nothing else uses it.
   It resolves through `markset-source`, so the bundle is built from `src/` and a stale `dist/` cannot reach a
   reader. It is also a guard with no extra cost: five packages go into the bundle and none may import a node

@@ -25,3 +25,31 @@ test("without the original, the editor's document still saves to source that par
     );
   }
 });
+
+test("a space typed just inside bold or italic is written outside it, where Markset can say it", () => {
+  const paragraph = (content: unknown[]) => ({ type: "doc", content: [{ type: "paragraph", content }] }) as never;
+  const bold = [{ type: "bold" }];
+  const italic = [{ type: "italic" }];
+  assert.equal(
+    toMarkset(
+      paragraph([
+        { type: "text", text: "Plain." },
+        { type: "text", text: " Bold ", marks: bold },
+        { type: "text", text: "end" },
+      ]),
+    ),
+    "Plain. **Bold** end\n",
+  );
+  assert.equal(
+    toMarkset(
+      paragraph([
+        { type: "text", text: "a" },
+        { type: "text", text: " ", marks: italic },
+        { type: "text", text: "b" },
+      ]),
+    ),
+    "a b\n",
+  );
+  // Between two runs that share the mark, the space stays inside it.
+  assert.equal(toMarkset(paragraph([{ type: "text", text: "two words", marks: bold }])), "**two words**\n");
+});

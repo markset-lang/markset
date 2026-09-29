@@ -29,7 +29,13 @@ const saved = toMarkset(editor.getJSON(), source);
 
 `fromMarkset` also returns `frontmatter`, the parsed §6 block, and `diagnostics`. The frontmatter's raw text is kept on the document's first node and written back as it was.
 
+Pass the document to the editor's constructor, as above, rather than loading it later with `setContent`: content set after the editor exists is an edit like any other, and a reader's first undo takes it away.
+
 `Markset` replaces TipTap's StarterKit. Its CommonMark nodes use StarterKit's names (`paragraph`, `bulletList`, `bold`, `italic`, `code`, `link`), so toolbar commands such as `toggleBold` keep working, but the two cannot be installed together.
+
+## Keys
+
+The kit brings the keys StarterKit would have: <kbd>Mod</kbd>+<kbd>B</kbd>, <kbd>I</kbd> and <kbd>E</kbd> for bold, italic and code; <kbd>Enter</kbd> in a list item makes a new item, and <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> nest and un-nest it; <kbd>Shift</kbd>+<kbd>Enter</kbd> is a hard line break; <kbd>Enter</kbd> in a construct's title moves into its body, because a title is one line. Undo and redo are included; pass `Markset.configure({ undoRedo: false })` when the host brings its own history, as a Yjs editor does.
 
 ## Commands
 
@@ -55,7 +61,7 @@ refreshDiagnostics(editor, source); // parse what the editor holds now and mark 
 
 ## Styling and node views
 
-Nodes render with the HTML renderer's conventions: `ms-` classes and `data-` attributes, so `markset.css` or your own theme styles the editor. One difference is deliberate: every tab panel is shown while editing, as `.ms-tab-editor`.
+Nodes render with the HTML renderer's conventions: `ms-` classes and `data-` attributes, so `markset.css` or your own theme styles the editor. Load `@markset-lang/tiptap/css/editor.css` after it: four constructs have a different shape while they are edited — a grid and steps hold their list, metrics its table, and every tab panel is shown at once — and that stylesheet gives them the rendered page's look.
 
 Any node's rendering can be replaced:
 

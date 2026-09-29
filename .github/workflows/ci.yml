@@ -18,3 +18,14 @@ jobs:
       - run: npm run build
       - run: npm test
       - run: npm run conformance
+      # The editor in the three engines readers use. The package's own tests
+      # run it in happy-dom, which checks the model and not the browser.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run e2e
+      # Installs the packed packages into an empty project and uses them, which
+      # is the one place a package meets the dependencies npm resolves for it.
+      - run: node test/consumer/smoke.ts --packed
