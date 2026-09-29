@@ -373,7 +373,8 @@ test("the editing page runs a live editor whose saved file changes only the edit
     });
     await page.focus(".te-demo .ProseMirror");
     await page.keyboard.type(" Out now.");
-    await page.waitForFunction(() => document.querySelectorAll(".te-changed").length > 0);
+    // Wait for the render that follows the last keystroke, not merely the first.
+    await page.waitForFunction(() => document.querySelector(".te-changed")?.textContent?.endsWith("Out now."));
     assert.deepEqual(await changed(), ["Release notes for _Harbor_ 2.4, the version that works offline. Out now."]);
     assert.match(String(await status()), /^1 line changed; the other \d+ as written$/);
 
