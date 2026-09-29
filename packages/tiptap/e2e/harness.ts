@@ -34,6 +34,10 @@ const harness = {
     if (!dom?.anchorNode || !editor.view.dom.contains(dom.anchorNode)) return false;
     return editor.view.posAtDOM(dom.anchorNode, dom.anchorOffset) === editor.state.selection.head;
   },
+  selectAll(): void {
+    editor.commands.focus();
+    editor.commands.selectAll();
+  },
   /** What copying the first node of a type puts on the clipboard, made the way the editor's own copy makes it. */
   copy(type: string): string {
     let found = -1;
