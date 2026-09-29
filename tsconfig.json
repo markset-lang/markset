@@ -12,5 +12,12 @@
     "types": ["node"],
     "skipLibCheck": true
   },
-  "include": ["packages/*/src/**/*.ts", "packages/*/test/**/*.ts", "site/**/*.ts", "editors/vscode/**/*.ts"]
+  "include": [
+    "packages/*/src/**/*.ts",
+    "packages/*/test/**/*.ts",
+    "site/**/*.ts",
+    "editors/vscode/**/*.ts",
+    "packages/*/e2e/**/*.ts",
+    "playwright.config.ts"
+  ]
 }

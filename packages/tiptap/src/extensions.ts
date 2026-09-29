@@ -13,7 +13,8 @@
  */
 import { Extension, Mark, Node, type AnyExtension, type NodeViewRenderer } from "@tiptap/core";
 import type { Node as PMNode, DOMOutputSpec } from "@tiptap/pm/model";
-import { Plugin, PluginKey, type Transaction } from "@tiptap/pm/state";
+import { Plugin, PluginKey, Selection, TextSelection, type Transaction } from "@tiptap/pm/state";
+import { history, redo, undo } from "@tiptap/pm/history";
 import { Decoration, DecorationSet } from "@tiptap/pm/view";
 import { diagnose, fromMarkset, type EditorDiagnostic } from "./convert.ts";
 import {
@@ -746,12 +747,70 @@ const Diagnostics = Extension.create({
 // ---------------------------------------------------------------------------
 // The kit
 
+// ---------------------------------------------------------------------------
+// Keys. The kit replaces StarterKit, so it brings the keys StarterKit would have.
+
+const TITLES = new Set(["calloutTitle", "cardTitle", "tabLabel", "figureCaption", "directiveArgument"]);
+const HARD_BREAK_IN = new Set(["paragraph", "heading", "tableCell"]);
+
+const Keys = Extension.create({
+  name: "marksetKeys",
+  // Ahead of TipTap's own Enter, which would split a title into two titles.
+  priority: 1000,
+  addKeyboardShortcuts() {
+    return {
+      "Mod-b": () => this.editor.commands.toggleMark("bold"),
+      "Mod-i": () => this.editor.commands.toggleMark("italic"),
+      "Mod-e": () => this.editor.commands.toggleMark("code"),
+      "Shift-Enter": () =>
+        HARD_BREAK_IN.has(this.editor.state.selection.$from.parent.type.name) &&
+        this.editor.commands.insertContent({ type: "hardBreak" }),
+      // A title is one line (§2.3), so Enter leaves it for the construct's body,
+      // making a first paragraph there if the body is empty.
+      Enter: () => {
+        const { state, view } = this.editor;
+        const { $from } = state.selection;
+        if (!TITLES.has($from.parent.type.name)) return this.editor.commands.splitListItem("listItem");
+        const after = $from.after();
+        const tr = state.tr;
+        const next = tr.doc.resolve(after).nodeAfter;
+        if (!next) {
+          const paragraph = state.schema.nodes.paragraph.create();
+          if (!$from.node(-1).canReplaceWith($from.index(-1) + 1, $from.index(-1) + 1, paragraph.type)) return true;
+          tr.insert(after, paragraph);
+          tr.setSelection(TextSelection.create(tr.doc, after + 1));
+        } else {
+          tr.setSelection(Selection.near(tr.doc.resolve(after + 1)));
+        }
+        view.dispatch(tr.scrollIntoView());
+        return true;
+      },
+      Tab: () => this.editor.commands.sinkListItem("listItem"),
+      "Shift-Tab": () => this.editor.commands.liftListItem("listItem"),
+    };
+  },
+});
+
+const UndoRedo = Extension.create({
+  name: "marksetUndoRedo",
+  addProseMirrorPlugins: () => [history()],
+  addKeyboardShortcuts() {
+    const run = (command: typeof undo) => () => command(this.editor.state, this.editor.view.dispatch);
+    return { "Mod-z": run(undo), "Shift-Mod-z": run(redo), "Mod-y": run(redo) };
+  },
+});
+
 export interface MarksetOptions {
   /**
    * Node views by node name, replacing the default rendering: a host supplies
    * its own card, tabs or callout. `@markset-lang/tiptap/react` has a set to start from.
    */
   nodeViews: Partial<Record<NodeName, NodeViewRenderer>>;
+  /**
+   * Undo and redo, on by default. Turn it off when the host brings its own, as
+   * a Yjs editor does: two histories over one document undo each other's steps.
+   */
+  undoRedo: boolean;
 }
 
 const Commands = Extension.create({
@@ -819,14 +878,15 @@ const Commands = Extension.create({
 
 export const Markset = Extension.create<MarksetOptions>({
   name: "markset",
-  addOptions: () => ({ nodeViews: {} }),
+  addOptions: () => ({ nodeViews: {}, undoRedo: true }),
   addExtensions() {
     const views = this.options.nodeViews;
     const withViews = nodes.map((extension) => {
       const view = views[extension.name as NodeName];
       return view ? extension.configure({ nodeView: view }) : extension;
     });
-    return [...withViews, ...marks, Commands, Guards, Diagnostics] as AnyExtension[];
+    const extras = this.options.undoRedo ? [UndoRedo] : [];
+    return [...withViews, ...marks, Commands, Keys, ...extras, Guards, Diagnostics] as AnyExtension[];
   },
 });
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.3 — 2026-09-28
+
+**The editor, tested in three browsers, and the three bugs that found.** `@markset-lang/tiptap` 0.3.2 was never published; this is its first release that works from the registry.
+
+- **A space typed just inside bold or italic no longer makes the document unsavable.** Switching bold on and typing " Bold" put the space inside the mark, and `** Bold**` is not bold in any CommonMark parser, so saving threw. Whitespace at the edge of a bold or italic run is now written outside it.
+- **The kit has keys.** It replaces StarterKit and had brought none of StarterKit's: Enter in a list item makes an item, Tab and Shift+Tab nest it, Mod+B, I and E toggle bold, italic and code, Shift+Enter is a hard break, and Enter in a construct's title moves into its body. Undo and redo are included, with `undoRedo: false` for a host that brings its own history.
+- **Browser tests.** `npm run e2e` drives the editor in Chromium, Firefox and WebKit with Playwright: typing, Enter, Tab, undo, paste and copy, and every construct inserted and removed, each saved and compared byte for byte. CI and the release run it.
+- **An install test.** The release installs the packed packages into an empty project and uses every entry point before it publishes, and does the same against the registry after. A tooling test also requires every package to ask for its siblings at the version being released.
+
 ## 0.3.2 — 2026-09-28
 
 **A ninth package, `@markset-lang/tiptap`, and the serializer it stands on.** Nothing in the grammar or the spec changed.

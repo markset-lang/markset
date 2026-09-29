@@ -15,3 +15,7 @@ packages/conformance-suite/schema.json
 editors/vscode/dist/
 editors/vscode/LICENSE
 *.vsix
+
+test-results/
+playwright-report/
+packages/tiptap/e2e/.build/
