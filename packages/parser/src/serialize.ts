@@ -707,10 +707,24 @@ function patchHints(
     // A cell's position includes its pipes, so a cell is never copied whole; its inline content still is.
     const cell = bases.get("tableCell")!;
     const exit = state.enter("table");
+    // An author who padded the table to its columns gets a rewritten row padded
+    // the same way, where its cells still fit. The delimiter row says how wide
+    // each column was: `|---------|` is a seven-character column with a space each side.
+    const widths = /^\|(?:[ :-]+\|)+$/.test(delimiter.trim())
+      ? delimiter
+          .trim()
+          .slice(1, -1)
+          .split("|")
+          .map((part) => part.length - 2)
+      : [];
     const lines = rows.map((row) => {
       const copy = unchanged.has(row) ? verbatim(originOf.get(row)!) : undefined;
       if (copy !== undefined) return copy;
-      const cells = (row.children ?? []).map((child) => cell(child as Nodes, row as never, state, info));
+      const cells = (row.children ?? []).map((child, i) => {
+        const value = cell(child as Nodes, row as never, state, info);
+        const width = widths[i] ?? 0;
+        return value.length < width ? value.padEnd(width) : value;
+      });
       return `| ${cells.join(" | ")} |`;
     });
     exit();

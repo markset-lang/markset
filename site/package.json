@@ -7,6 +7,7 @@
   "dependencies": {
     "@markset-lang/parser": "*",
     "@markset-lang/render-downgrade": "*",
-    "@markset-lang/render-html": "*"
+    "@markset-lang/render-html": "*",
+    "@markset-lang/tiptap": "*"
   }
 }

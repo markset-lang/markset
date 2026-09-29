@@ -27,6 +27,7 @@ import {
   type Diagnostic,
 } from "./deps.ts";
 import { drawMermaid } from "./mermaid.ts";
+import { editDemos } from "./edits.ts";
 
 const root = resolve(import.meta.dirname, "..");
 /** Repository and site URLs come from package.json so they cannot drift from the remote. */
@@ -111,6 +112,7 @@ const NAV: Array<[string, string]> = [
 const GET_STARTED: Array<[string, string]> = [
   ["Adopting Markset", "start/index.html"],
   ["The markset command", "cli/index.html"],
+  ["Editing visually", "tiptap/index.html"],
   ["Publishing to GitHub Pages", "github-pages/index.html"],
 ];
 
@@ -371,6 +373,9 @@ async function writeSite(outDir: string): Promise<string[]> {
     await markdownPage("start/index.html", join(root, "site", "content", "start.md")),
     await markdownPage("cli/index.html", join(root, "site", "content", "cli.md")),
     await markdownPage("editor/index.html", join(root, "site", "content", "editor.md")),
+    await markdownPage("tiptap/index.html", join(root, "site", "content", "tiptap.md"), undefined, false, {
+      edits: editDemos(),
+    }),
     await markdownPage("github-pages/index.html", join(root, "site", "content", "github-pages.md")),
     await playgroundPage(),
     await specPage(),

@@ -165,6 +165,17 @@ test("an outer fence is always longer than any fence line inside it", () => {
   assert.equal(output, ":::::::card\n::::::card\n```\n:::::\n```\n::::::\n:::::::\n");
 });
 
+test("a rewritten row of a padded table is padded to the same columns", () => {
+  const source = "| Metric  | Value |\n|---------|-------|\n| Revenue | $4.2M |\n| Churn   | 2.1%  |\n";
+  const output = patch(source, (tree) => {
+    const table = tree.children[0] as unknown as {
+      children: Array<{ children: Array<{ children: Array<{ value: string }> }> }>;
+    };
+    table.children[2].children[1].children[0].value = "3%";
+  });
+  assert.equal(output, "| Metric  | Value |\n|---------|-------|\n| Revenue | $4.2M |\n| Churn   | 3%    |\n");
+});
+
 test("text that would open a construct is escaped", () => {
   const tree: Root = {
     type: "root",
