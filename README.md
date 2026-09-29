@@ -27,7 +27,7 @@ code --install-extension markset-lang.markset-vscode   # the VS Code extension, 
 npm i @markset-lang/render-html     # or the library
 ```
 
-Eight packages are published under the `@markset-lang` scope: `parser`, `diagram-ascii`, `chart-table`, `render-downgrade`, `render-html`, `cli`, `remark-markset`, and `conformance-suite`. The two drawing engines, `diagram-ascii` and `chart-table`, are pure functions with no dependencies. The last two are the ways in from outside: a remark plugin for a pipeline you already run, and the test suite as data for anyone writing a second implementation.
+Nine packages are published under the `@markset-lang` scope: `parser`, `diagram-ascii`, `chart-table`, `render-downgrade`, `render-html`, `cli`, `remark-markset`, `conformance-suite`, and `tiptap`. The two drawing engines, `diagram-ascii` and `chart-table`, are pure functions with no dependencies. `remark-markset` and `conformance-suite` are the ways in from outside: a remark plugin for a pipeline you already run, and the test suite as data for anyone writing a second implementation. `tiptap` edits a document visually and saves it back touching only the lines an edit changed.
 
 Already using remark? `npm i @markset-lang/remark-markset` and add it to the pipeline you have.
 

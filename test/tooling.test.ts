@@ -125,6 +125,7 @@ const PUBLISHED = [
   "cli",
   "remark-markset",
   "conformance-suite",
+  "tiptap",
 ];
 
 test("every published package is publishable, and says the same version", async () => {
