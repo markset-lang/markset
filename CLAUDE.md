@@ -171,7 +171,10 @@ in commit order, which is the wrong order for finding the work.
 - [x] **`@markset-lang/tiptap`, WYSIWYG editing** (`docs/briefs/tiptap.md`), 2026-09-28. `serializeDocument` in the
       parser (D14), and the package — schema, commands, guards, diagnostics, React views — with byte-identical round
       trips over every suite document and example, through a live editor as well as through JSON. **Published by hand
-      at 0.3.1 and its trusted publisher configured**, so the next release carries it from CI. The site page,
+      at 0.3.1 and its trusted publisher configured**, so the next release carries it from CI. **That 0.3.1 does not
+      work installed from the registry:** it needs `serializeDocument`, which the parser on npm at 0.3.1 predates, and
+      the packed-tarball check that passed installed the local parser rather than the registry's. 0.3.2 is the first
+      release that works; the check to run before calling a new package done is an install from the registry. The site page,
       `site/content/tiptap.md`, is the site's second application page: `tiptapPage()` renders the sample in
       `site/tiptap-demo/sample.md` beside its own source, which is what a reader without JavaScript keeps, and
       `site/tiptap-demo/app.ts` replaces that pair with a live editor and the file it saves, the changed lines

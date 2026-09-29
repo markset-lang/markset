@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.3.2 — 2026-09-28
+
+**A ninth package, `@markset-lang/tiptap`, and the serializer it stands on.** Nothing in the grammar or the spec changed.
 
 - **Markset source from a tree.** `serializeDocument` in `@markset-lang/parser` writes a Markset tree back as Markset source. Given the source the tree was parsed from, it writes a patch rather than a reformat: every part still unchanged is copied from the original, so an unedited tree gives back the same bytes and an edit changes only its own lines. Every result is parsed again and compared with the tree before it is returned. D14 records how and what was rejected.
 - **A site page for it**, *Editing visually*, in Get started, with the editor running on it: edit the sample and the Markset file it saves updates beside it, with the changed lines highlighted. Without JavaScript the page shows the sample rendered beside its source.
