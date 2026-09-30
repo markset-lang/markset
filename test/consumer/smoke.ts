@@ -53,14 +53,15 @@ try {
   } else {
     throw new Error("usage: smoke.ts --packed | --registry <version>");
   }
-  // The registry can take minutes to answer for a version it has just
-  // accepted, so an install right after publishing is retried rather than failed.
+  // The registry can take many minutes to serve every version it has just
+  // accepted, and not all at once: after 0.3.3 and 0.3.4 it was still missing a
+  // different package on each try five minutes on. Twenty minutes, then fail.
   for (let attempt = 1; ; attempt++) {
     try {
       run("npm", ["install", "--prefer-online", "--no-audit", "--no-fund", "--loglevel=error", ...specs, ...PEERS]);
       break;
     } catch (error) {
-      if (mode !== "--registry" || attempt === 10) throw error;
+      if (mode !== "--registry" || attempt === 40) throw error;
       console.log(`consumer: the registry does not have every package yet; waiting (attempt ${attempt})`);
       execFileSync("sleep", ["30"]);
     }
