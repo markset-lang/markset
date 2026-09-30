@@ -62,6 +62,62 @@ Eight constructs is the whole vocabulary, and it is closed. Every one of them is
 ***
 
 {.eyebrow}
+Tools
+
+## Where you can use it
+
+:::grid{cols=3}
+- **In VS Code**
+
+  The Markdown preview you already use renders the layout, every construct is offered after `:::`, and a mistake is underlined as you type.
+
+  [Marketplace]{.badge .success} [Set up the extension](editor/index.html)
+
+- **In your own app**
+
+  A TipTap editor for people who should never see the syntax. Saving writes Markset back and changes only the lines they edited.
+
+  [npm]{.badge} [Try the editor](tiptap/index.html)
+
+- **In your browser**
+
+  The playground runs the parser and both renderers on your machine: the page, its HTML, the plain-Markdown fallback and the diagnostics, side by side.
+
+  [Nothing to install]{.badge} [Open the playground](playground/index.html)
+
+- **From the command line**
+
+  Check a document, render it to HTML, lower it to plain CommonMark, or print its tree. One command, no configuration file.
+
+  [npm]{.badge} [The markset command](cli/index.html)
+
+- **In a remark pipeline**
+
+  Add Markset to the Astro, Next or Eleventy build you already run, as one remark plugin, without replacing anything around it.
+
+  [npm]{.badge} [On npm](https://www.npmjs.com/package/@markset-lang/remark-markset)
+
+- **On GitHub Pages**
+
+  Publish a folder of Markset documents as a site with one workflow file. This site is built that way.
+
+  [One workflow file]{.badge} [The recipe](github-pages/index.html)
+:::
+
+To read rather than run: the [reference](reference/index.html) has a page per construct with live examples from the test suite, the [specification](spec/index.html) is short and is the source of truth, and [Adopting Markset](start/index.html) is for bringing it into a project that already has Markdown in it.
+
+:::card[See it at length]
+Complete documents, not fragments: eight of them, every one an artifact first.
+
+The [construct tour](examples/showcase/index.html) uses every one of the eight constructs exactly once, on the default stylesheet, so you can see the whole vocabulary at its real size.
+
+The [analysis document](examples/notification-routing/index.html) and the [strategy memo](examples/strategy-read/index.html) are long documents of the kind Markset is actually for. Each adds a theme stylesheet of its own, and the difference between the two shows how far appearance can move while the source stays the same shape.
+:::
+
+{.tick}
+***
+
+{.eyebrow}
 Why it exists
 
 ## Two things I did not want to give up
@@ -90,9 +146,6 @@ Documents rendered as Claude artifacts were the best-looking documents I had eve
 {.tick}
 ***
 
-{.tick}
-***
-
 {.eyebrow}
 Prior art
 
@@ -113,34 +166,3 @@ The syntax is the convergent one. Attribute specifiers `{#id .class key=value}`,
 
 {.small .muted}
 "Portable" means another implementation can render the same document from the specification alone. "Inert" means nothing in a document is evaluated in order to render it.
-
-{.tick}
-***
-
-{.eyebrow}
-Start here
-
-## Five ways in
-
-:::steps
-1. Install the [editor extension](editor/index.html) for Visual Studio Code. Your document renders with its layout in the Markdown preview you already use, every construct is offered after `:::`, and a mistake is underlined as you type.
-2. Open the [playground](playground/index.html) and type. It runs this implementation in your browser, and it shows you the rendered page, the HTML, the plain-Markdown downgrade and the diagnostics side by side. Nothing to install and nothing leaves the page.
-3. Read the [reference](reference/index.html) for one page per construct, each with live examples pulled straight from the test suite, plus [diagrams](reference/diagrams/index.html) and [frontmatter](reference/frontmatter/index.html).
-4. Read the [specification](spec/index.html). It is short, and it is the source of truth: when the code and the spec disagree, the spec wins.
-5. Read the [CLI page](cli/index.html) if you would rather start by running something, or go straight to [publishing to GitHub Pages](github-pages/index.html), which is how this site is built.
-:::
-
-:::card[Try it locally]{tone=info}
-```sh
-npm i -g @markset-lang/cli
-markset html doc.md -o doc.html
-```
-:::
-
-:::card[See it at length]
-Complete documents, not fragments: eight of them, every one an artifact first.
-
-The [construct tour](examples/showcase/index.html) uses every one of the eight constructs exactly once, on the default stylesheet, so you can see the whole vocabulary at its real size.
-
-The [analysis document](examples/notification-routing/index.html) and the [strategy memo](examples/strategy-read/index.html) are long documents of the kind Markset is actually for. Each adds a theme stylesheet of its own, and the difference between the two shows how far appearance can move while the source stays the same shape.
-:::
