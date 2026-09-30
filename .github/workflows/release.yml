@@ -35,6 +35,10 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run conformance
+      # The same cases against micromark's development build, which asserts its
+      # tokenizer contract where the production build does not. Vite and Vitest
+      # resolve that build by default, so a consumer's dev server runs it.
+      - run: npm run conformance:development
       # The editor in the three engines readers use. The package's own tests
       # run it in happy-dom, which checks the model and not the browser.
       - uses: actions/cache@v4

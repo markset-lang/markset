@@ -67,6 +67,9 @@ try {
   }
   copyFileSync(join(import.meta.dirname, "consumer.mjs"), join(project, "consumer.mjs"));
   process.stdout.write(run("node", ["consumer.mjs"]));
+  // Again under the development condition, which is how a consumer's dev
+  // server resolves every package, micromark's development build included.
+  process.stdout.write(run("node", ["--conditions=development", "consumer.mjs"]));
 } finally {
   rmSync(project, { recursive: true, force: true });
 }

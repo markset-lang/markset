@@ -110,6 +110,12 @@ docs/       background analysis, prior art, design rationale
   command run before then acts on the old selection. It found three bugs on its first run that 300 happy-dom tests had
   not: a space typed inside bold made the file unsavable, the kit had no keys at all, and `setContent` puts a load in
   the undo history.
+- **Everything runs under two export conditions.** micromark ships a development build that asserts its tokenizer
+  contract and a production build that does not, and Vite, Vitest and Next resolve the development one by default.
+  0.3.3's parser passed every test here under production and threw on any link under development, because every
+  script passed `--conditions=markset-source` alone. `npm test` ends with `test:development`, `conformance:development`
+  runs beside `conformance`, and the Playwright harness is bundled with `development`. A lookahead run by
+  `effects.check` still has to enter a token before it consumes, and may not leave one empty.
 - `test/consumer/smoke.ts` installs the nine packages into an empty project and uses every entry point:
   `npm run smoke:packed` from tarballs, `npm run smoke:registry -- <version>` from npm. The release runs the first
   before publishing and the second after, which is the check tiptap 0.3.1 needed.

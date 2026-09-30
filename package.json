@@ -14,8 +14,10 @@
     "build": "rm -rf packages/*/dist && node --conditions=markset-source packages/conformance-suite/stage.ts && tsc -p packages/parser/tsconfig.build.json && tsc -p packages/diagram-ascii/tsconfig.build.json && tsc -p packages/chart-table/tsconfig.build.json && tsc -p packages/render-downgrade/tsconfig.build.json && tsc -p packages/render-html/tsconfig.build.json && tsc -p packages/cli/tsconfig.build.json && tsc -p packages/remark-markset/tsconfig.build.json && tsc -p packages/conformance-suite/tsconfig.build.json && tsc -p packages/tiptap/tsconfig.build.json",
     "release": "npm run build && npm publish --workspace @markset-lang/parser --workspace @markset-lang/diagram-ascii --workspace @markset-lang/chart-table --workspace @markset-lang/render-downgrade --workspace @markset-lang/render-html --workspace @markset-lang/cli --workspace @markset-lang/remark-markset --workspace @markset-lang/conformance-suite --workspace @markset-lang/tiptap",
     "markset": "node --conditions=markset-source packages/cli/src/markset.ts",
-    "test": "node --conditions=markset-source --test packages/*/test/*.test.ts site/test/*.test.ts editors/vscode/test/*.test.ts test/*.test.ts",
+    "test": "node --conditions=markset-source --test packages/*/test/*.test.ts site/test/*.test.ts editors/vscode/test/*.test.ts test/*.test.ts && npm run test:development",
+    "test:development": "node --conditions=markset-source --conditions=development --test packages/*/test/*.test.ts editors/vscode/test/*.test.ts",
     "conformance": "node --conditions=markset-source packages/conformance/src/cli.ts",
+    "conformance:development": "node --conditions=markset-source --conditions=development packages/conformance/src/cli.ts",
     "e2e": "playwright test",
     "smoke:packed": "npm run build && node --conditions=markset-source test/consumer/smoke.ts --packed",
     "smoke:registry": "node --conditions=markset-source test/consumer/smoke.ts --registry",
@@ -49,7 +51,7 @@
     "typescript": "^7.0.2",
     "unified": "^11.0.5"
   },
-  "version": "0.3.3",
+  "version": "0.3.4",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/markset-lang/markset.git"

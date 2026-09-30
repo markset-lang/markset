@@ -188,5 +188,24 @@ function escapeHtml(value: string): string {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-/** Absolute path of the default stylesheet shipped with this package. */
-export const defaultStylesheetPath: string = new URL("../css/markset.css", import.meta.url).pathname;
+/**
+ * Absolute path of the default stylesheet shipped with this package.
+ *
+ * The relative path is assembled at run time on purpose. Bundlers read
+ * a URL made from a string literal and import.meta.url as an asset import and try to resolve
+ * it, and Turbopack fails the whole build when it cannot, although the file is
+ * published; they leave a URL built from a variable alone. The stylesheet is
+ * also exported as `@markset-lang/render-html/css/markset.css`, which is the way
+ * a bundled application should reach it.
+ *
+ * The path is decoded here rather than by node:url's fileURLToPath, because this
+ * module is also bundled for the browser, where no node builtin may appear: a
+ * raw `.pathname` keeps `%20` for a space and a leading slash before a Windows
+ * drive letter, and either makes the path unreadable.
+ */
+export const defaultStylesheetPath: string = stylesheetPath(["..", "css", "markset.css"].join("/"));
+
+function stylesheetPath(relative: string): string {
+  const path = decodeURIComponent(new URL(relative, import.meta.url).pathname);
+  return /^\/[A-Za-z]:\//.test(path) ? path.slice(1) : path;
+}

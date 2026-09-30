@@ -346,6 +346,7 @@ test("the release workflow proves the build before it publishes", async () => {
     "npm run typecheck",
     "npm test",
     "npm run conformance",
+    "npm run conformance:development",
     "npm run e2e",
     "npm run smoke:packed",
   ]) {
