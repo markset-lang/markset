@@ -258,12 +258,28 @@ function tokenizeDirectiveContainer(this: TokenizeContext, effects: Effects, ok:
   }
 }
 
+/**
+ * Lookaheads below run under `effects.check`, which throws their events away,
+ * so the token they enter is never seen. They enter one anyway: micromark
+ * requires every consumed code to belong to an open token, and its development
+ * build asserts it. Vite and Vitest resolve that build by default.
+ */
+const LOOKAHEAD = "marksetLookahead";
+
 /** Succeeds when only spaces and tabs remain before the line ends. */
 function tokenizeRestIsBlank(effects: Effects, ok: State, nok: State): State {
+  // Opened at the first space, because a token may not be empty either: a line
+  // that ends right here consumes nothing and needs no token at all.
+  let open = false;
   return check;
   function check(code: Code): State | undefined {
-    if (code === codes.eof || markdownLineEnding(code)) return ok(code);
+    if (code === codes.eof || markdownLineEnding(code)) {
+      if (open) effects.exit(LOOKAHEAD);
+      return ok(code);
+    }
     if (markdownSpace(code)) {
+      if (!open) effects.enter(LOOKAHEAD);
+      open = true;
       effects.consume(code);
       return check;
     }
@@ -274,7 +290,11 @@ function tokenizeRestIsBlank(effects: Effects, ok: State, nok: State): State {
 /** From a `[`, succeeds when a matching `]` (nesting and escapes honored) occurs before the line ends. */
 function tokenizeArgumentIsTerminated(effects: Effects, ok: State, nok: State): State {
   let depth = 0;
-  return inside;
+  return start;
+  function start(code: Code): State | undefined {
+    effects.enter(LOOKAHEAD);
+    return inside(code);
+  }
   function inside(code: Code): State | undefined {
     if (code === codes.eof || markdownLineEnding(code)) return nok(code);
     if (code === codes.backslash) {
@@ -284,6 +304,7 @@ function tokenizeArgumentIsTerminated(effects: Effects, ok: State, nok: State): 
     if (code === codes.leftSquareBracket) depth++;
     if (code === codes.rightSquareBracket && --depth === 0) {
       effects.consume(code);
+      effects.exit(LOOKAHEAD);
       return ok;
     }
     effects.consume(code);
@@ -461,7 +482,12 @@ function tokenizeSpanLookahead(effects: Effects, ok: State, nok: State): State {
   let depth = 0;
   let quoted = false;
   let previousCode: Code = null;
-  return text;
+  return start;
+
+  function start(code: Code): State | undefined {
+    effects.enter(LOOKAHEAD);
+    return text(code);
+  }
 
   function text(code: Code): State | undefined {
     if (code === codes.eof) return nok(code);
@@ -503,6 +529,7 @@ function tokenizeSpanLookahead(effects: Effects, ok: State, nok: State): State {
     }
     if (code === codes.rightCurlyBrace) {
       effects.consume(code);
+      effects.exit(LOOKAHEAD);
       return ok;
     }
     if (code === codes.quotationMark && previousCode === codes.equalsTo) quoted = true;

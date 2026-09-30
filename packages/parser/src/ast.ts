@@ -103,6 +103,7 @@ declare module "micromark-util-types" {
     marksetSpanMarker: "marksetSpanMarker";
     marksetSpanAttributes: "marksetSpanAttributes";
     marksetAttributeLine: "marksetAttributeLine";
+    marksetLookahead: "marksetLookahead";
   }
 }
 

@@ -11,7 +11,10 @@ export default async function globalSetup(): Promise<void> {
     bundle: true,
     format: "iife",
     target: ["es2022"],
-    conditions: ["markset-source"],
+    // development as well: it is what a Vite or Next dev server resolves, and
+    // micromark's development build asserts what its production build does not.
+    // The site's own editor bundle covers the production build.
+    conditions: ["markset-source", "development"],
     logLevel: "silent",
   });
 }

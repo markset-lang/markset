@@ -215,3 +215,12 @@ test("a wide table's caption stays readable when the rows scroll on a phone", as
   assert.match(narrow[1], /\.ms-figure caption \{[^}]*width: 100cqw/);
   assert.match(narrow[1], /\.ms-figure caption \{[^}]*position: sticky; left: 0/);
 });
+
+test("no bundler reads the stylesheet path as an asset import, and the path is readable", async () => {
+  // Turbopack treats `new URL("<literal>", import.meta.url)` as an asset to
+  // resolve and failed to build any Next app that imported this package.
+  const { readFile: read } = await import("node:fs/promises");
+  const source = await read(new URL("../src/index.ts", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /new URL\(\s*["'`][^"'`]*["'`]\s*,\s*import\.meta\.url\s*\)/u);
+  assert.match(await read(defaultStylesheetPath, "utf8"), /--ms-accent/u);
+});

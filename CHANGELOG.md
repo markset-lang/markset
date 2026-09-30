@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.4 — 2026-09-30
+
+**The parser runs under micromark's development build, and render-html bundles.** Both reported from Streamlane, where the first broke a Vite test run and the second a Next.js build. Nothing in the grammar or the spec changed.
+
+- **The parser no longer throws under the `development` export condition**, which Vite, Vitest and Next resolve by default. Three lookaheads in `syntax.ts` consumed codes without an open token, which micromark forbids and only its development build checks, so any inline link, callout or directive argument threw there: `Assertion: expected last token to be open`. Every test ran the production build, where the check is compiled out. `npm test` and `npm run conformance` now run under both conditions, the browser tests bundle the editor under `development`, and the install check runs both ways. The TipTap editor was affected too, since it parses: under the development build, eleven of its nineteen browser tests failed.
+- **`render-html` no longer breaks a Turbopack build.** Its stylesheet path was written as a URL from a string literal and `import.meta.url`, which bundlers take for an asset import and Turbopack failed to resolve. The path is now assembled at run time, and it is decoded, so an install path with a space or a Windows drive letter reads correctly too. `defaultStylesheetPath` is unchanged as an API.
+
 ## 0.3.3 — 2026-09-28
 
 **The editor, tested in three browsers, and the three bugs that found.** `@markset-lang/tiptap` 0.3.2 was never published; this is its first release that works from the registry.
