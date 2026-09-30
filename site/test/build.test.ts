@@ -198,7 +198,8 @@ test("the section divider is spaced the same above and below", async () => {
   const css = await readFile(join(dist, "css", "site.css"), "utf8");
   const rule = /\.ms-document > hr\.tick \{[^}]*\}/.exec(css);
   assert.ok(rule, "the divider rule exists");
-  assert.match(rule[0], /margin-block: calc\(var\(--ms-space\) \* 3\);/);
+  // One value, so the space above and below is the same by construction.
+  assert.match(rule[0], /margin-block: [^\s;]+;/, "margin-block with a single value");
   assert.doesNotMatch(rule[0], /margin-top:/, "a top margin alone makes it depend on what follows");
 });
 

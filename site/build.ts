@@ -109,6 +109,7 @@ const NAV: Array<[string, string]> = [
  * page had no route to its seven siblings except going back to the index.
  */
 const GET_STARTED: Array<[string, string]> = [
+  ["Why Markset", "why/index.html"],
   ["Adopting Markset", "start/index.html"],
   ["The markset command", "cli/index.html"],
   ["Editing visually", "tiptap/index.html"],
@@ -370,6 +371,7 @@ async function writeSite(outDir: string): Promise<string[]> {
       cases: String(Object.values(cases).reduce((n, list) => n + list.length, 0)),
       constructs: String(CONSTRUCTS.length),
     }),
+    await markdownPage("why/index.html", join(root, "site", "content", "why.md")),
     await markdownPage("start/index.html", join(root, "site", "content", "start.md")),
     await markdownPage("cli/index.html", join(root, "site", "content", "cli.md")),
     await markdownPage("editor/index.html", join(root, "site", "content", "editor.md")),
@@ -1346,8 +1348,9 @@ function text(node: { type?: string; value?: unknown; children?: unknown[] }): s
   return (node.children ?? []).map((c) => text(c as { value?: unknown })).join("");
 }
 
+/** The page's title: its first level-1 heading, including one inside a layout construct such as a hero's columns. */
 function firstHeading(ast: Root): string | null {
-  const h = ast.children.find((n) => n.type === "heading" && n.depth === 1);
+  const h = sectionHeadings(ast, 1, 1)[0];
   return h ? text(h) : null;
 }
 

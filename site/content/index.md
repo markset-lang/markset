@@ -5,30 +5,21 @@ theme:
   accent: "#2563eb"
 ---
 
+::::columns{.hero ratio="11:9"}
 {.eyebrow}
-Specification · Reference implementation · Conformance suite
+Markdown, with layout
 
-# Markdown for rich documents, without leaving Markdown
+# Rich documents, without leaving Markdown
 
 {.lead}
-Markset adds a small, **closed** set of layout constructs to CommonMark: cards, grids, columns, tabs, steps, metrics, figures and callouts. Every valid CommonMark document is already a valid Markset document. Every Markset construct has a defined plain-CommonMark form it falls back to.
+Cards, grids, tabs, metrics and callouts, written as plain Markdown. A Markset file is still a Markdown file, and reads as one wherever Markset is not supported.
+
+[[Open the playground](playground/index.html)]{.button .primary} [[Get started](start/index.html)]{.button}
 
 [v0]{.badge .success} [0.3.4]{.badge} [CommonMark superset]{.badge}
 
-:::metrics{.stats}
-| Measure | Count |
-|---|---|
-| Layout constructs | {{constructs}} |
-| Test cases | {{cases}} |
-| JavaScript in the output | None |
-:::
+::col
 
-{.eyebrow}
-How it works
-
-## The same source, three ways
-
-::::columns{ratio="1:1"}
 ```markdown
 :::metrics
 | Metric  | Value | Δ     |
@@ -38,8 +29,6 @@ How it works
 :::
 ```
 
-::col
-
 :::metrics
 | Metric  | Value | Δ     |
 |---------|-------|-------|
@@ -48,18 +37,17 @@ How it works
 :::
 ::::
 
-On the left is what you write: an ordinary Markdown table, wrapped in a fence that names what it is. On the right is the same source rendered by `markset html`, the command line tool in this repository, which turns it into metric tiles and reads the direction of each delta from its sign.
+:::::card{.band}
+:::metrics{.stats}
+| Measure | Count |
+|---|---|
+| Layout constructs | {{constructs}} |
+| Test cases | {{cases}} |
+| JavaScript in the output | None |
+:::
 
-Run that source through `markset downgrade` instead and you get the table back, unchanged. Paste it into anything that has never heard of Markset and you get the table as well. The construct adds meaning without taking the content hostage.
-
-{.small .muted}
-Both commands, and the two others, are described on the [CLI page](cli/index.html). The same trick covers diagrams: an ASCII or mermaid fence is an ordinary code block that a renderer may draw, so a picture needs no construct and no raw HTML — see [diagrams](reference/diagrams/index.html).
-
-{.small .muted}
-Eight constructs is the whole vocabulary, and it is closed. Every one of them is pinned by cases in a shared test suite, so a second implementation can prove it agrees with this one rather than guessing; you can read every case, including the ones that are invalid on purpose, in the [conformance browser](conformance/index.html). Nothing rendered from a Markset document contains a script, which is why tabs work by radio input and a folding callout is a `<details>` element.
-
-{.tick}
-***
+The example above is the whole idea: a Markdown table in a fence that names what it is. Rendered, it becomes metric tiles. Anywhere else, it is the same table. The construct adds meaning without taking the content hostage.
+:::::
 
 {.eyebrow}
 Tools
@@ -71,98 +59,83 @@ Tools
 
   The Markdown preview you already use renders the layout, every construct is offered after `:::`, and a mistake is underlined as you type.
 
-  [Marketplace]{.badge .success} [Set up the extension](editor/index.html)
+  [[Set up the extension](editor/index.html)]{.button .small}
 
 - **In your own app**
 
   A TipTap editor for people who should never see the syntax. Saving writes Markset back and changes only the lines they edited.
 
-  [npm]{.badge} [Try the editor](tiptap/index.html)
+  [[Try the editor](tiptap/index.html)]{.button .small}
 
 - **In your browser**
 
-  The playground runs the parser and both renderers on your machine: the page, its HTML, the plain-Markdown fallback and the diagnostics, side by side.
+  The playground runs the parser and both renderers on your machine: the page, its HTML, the plain-Markdown fallback and the diagnostics.
 
-  [Nothing to install]{.badge} [Open the playground](playground/index.html)
+  [[Open the playground](playground/index.html)]{.button .small}
 
 - **From the command line**
 
   Check a document, render it to HTML, lower it to plain CommonMark, or print its tree. One command, no configuration file.
 
-  [npm]{.badge} [The markset command](cli/index.html)
+  [[The markset command](cli/index.html)]{.button .small}
 
 - **In a remark pipeline**
 
   Add Markset to the Astro, Next or Eleventy build you already run, as one remark plugin, without replacing anything around it.
 
-  [npm]{.badge} [On npm](https://www.npmjs.com/package/@markset-lang/remark-markset)
+  [[On npm](https://www.npmjs.com/package/@markset-lang/remark-markset)]{.button .small}
 
 - **On GitHub Pages**
 
   Publish a folder of Markset documents as a site with one workflow file. This site is built that way.
 
-  [One workflow file]{.badge} [The recipe](github-pages/index.html)
+  [[The recipe](github-pages/index.html)]{.button .small}
 :::
 
-To read rather than run: the [reference](reference/index.html) has a page per construct with live examples from the test suite, the [specification](spec/index.html) is short and is the source of truth, and [Adopting Markset](start/index.html) is for bringing it into a project that already has Markdown in it.
-
-:::card[See it at length]
-Complete documents, not fragments: eight of them, every one an artifact first.
-
-The [construct tour](examples/showcase/index.html) uses every one of the eight constructs exactly once, on the default stylesheet, so you can see the whole vocabulary at its real size.
-
-The [analysis document](examples/notification-routing/index.html) and the [strategy memo](examples/strategy-read/index.html) are long documents of the kind Markset is actually for. Each adds a theme stylesheet of its own, and the difference between the two shows how far appearance can move while the source stays the same shape.
-:::
-
-{.tick}
-***
-
+:::::card{.band}
 {.eyebrow}
-Why it exists
+Principles
 
-## Two things I did not want to give up
-
-Documents rendered as Claude artifacts were the best-looking documents I had ever had produced for me, with cards, metric strips, columns and tabs where they helped. They were also HTML: hard to edit, harder to review in a diff, and impossible to carry anywhere else. Markdown is the opposite. It is plain text, it diffs, it renders everywhere, and it has no way to say "these three things belong side by side." I wanted to keep writing Markdown and be able to say that. The [example documents](examples/index.html) on this site were all artifacts first, rebuilt in Markset to find out whether a closed vocabulary could carry them. It could, and where it could not, the specification changed.
-
-**Markdown has no attributes and no generic container.** So rich documents reach for raw HTML, and that breaks portability, validation, and every output target that is not a browser. Pandoc, djot, Quarto, MyST, Markdoc and MDX each solved some of the *syntax*. None of them produced a set of components that independent renderers can agree on. That set is what Markset is.
+## Three rules it does not bend
 
 :::grid{cols=3}
-- ### Semantic, never presentational
+- **Semantic, never presentational**
 
-  Authors name what a thing *is*, not how it looks. Whether a card has a border is decided by the theme: a handful of named settings in the document's frontmatter, such as a preset, an accent color and a density. No inline CSS and no pixel values in source.
+  Authors name what a thing is, not how it looks. The theme decides whether a card has a border.
 
-- ### Every construct degrades
+- **Every construct degrades**
 
-  Each one wraps an ordinary CommonMark block and has a defined fallback. Paste a Markset file into a GitHub comment and it still reads, top to bottom, with nothing lost.
+  Each one wraps an ordinary Markdown block and has a defined fallback. Paste a file into a GitHub comment and it still reads.
 
-- ### Closed vocabulary
+- **Closed vocabulary**
 
-  There are eight constructs and there will not quietly be a ninth. An unknown directive is a reported error, not silent passthrough, so a document can be checked before it ships.
+  Eight constructs, and an unknown one is a reported error rather than silent passthrough, so a document can be checked before it ships.
 :::
 
-> [!NOTE]
-> **Nothing here executes.** Interactivity is out of scope for the core specification, permanently. Tabs switch with radio inputs, callouts fold with `<details>`, and a document is data rather than code. That is what lets the same file render safely anywhere.
-
-{.tick}
-***
+[Why Markset exists](why/index.html), and how it compares with Pandoc, Quarto, MyST, Markdoc and MDX.
+:::::
 
 {.eyebrow}
-Prior art
+Next
 
-## Reuse, don't invent
+## Read further
 
-The syntax is the convergent one. Attribute specifiers `{#id .class key=value}`, fenced directives `:::name` and bracketed spans `[text]{.class}` already exist across Pandoc, djot, MyST and remark-directive, and callouts use GitHub's `> [!NOTE]` unchanged. Nothing here is a new spelling of an old idea. What is new is the closed set of constructs on top, and the rule that every one of them has a defined plain-CommonMark form.
+:::grid{cols=3}
+- **The reference**
 
-{.compare}
-| Project | Attributes | Generic container | Portable component vocabulary | Document stays inert |
-|---|---|---|---|---|
-| Pandoc | `{#id .class}` | fenced divs | [None]{.badge} | [Yes]{.badge .success} |
-| djot | native | native divs | [None]{.badge} | [Yes]{.badge .success} |
-| Quarto | `{.class}` | fenced divs | [Product-specific]{.badge .warn} | [Executes code]{.badge .danger} |
-| MyST | directives | directives | [Open and extensible]{.badge .warn} | [Executes code]{.badge .danger} |
-| Markdoc | typed tags | typed tags | [Defined per project]{.badge .warn} | [Yes]{.badge .success} |
-| MDX | JSX props | JSX | [Your components]{.badge .danger} | [Executes code]{.badge .danger} |
-| **Markset** | `{#id .class}` | `:::name` | [Closed and portable]{.badge .success} | [Yes]{.badge .success} |
+  A page per construct, with live examples taken from the test suite.
 
-{.small .muted}
-"Portable" means another implementation can render the same document from the specification alone. "Inert" means nothing in a document is evaluated in order to render it.
+  [Read the reference](reference/index.html)
+
+- **The specification**
+
+  Short, and the source of truth: when the code and the spec disagree, the spec wins.
+
+  [Read the spec](spec/index.html)
+
+- **The examples**
+
+  Complete documents, each with a theme of its own, showing how far appearance moves while the source stays plain.
+
+  [See the examples](examples/index.html)
+:::
