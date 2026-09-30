@@ -2,52 +2,108 @@
  * is layered over a document (spec §6). Two jobs: the chrome (header, TOC, case
  * panes) and the handful of author classes the site's pages use, which are the
  * reserved ones from §5 plus .tick, .stats and .compare. */
-@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 /* ---- identity ------------------------------------------------------------ */
-body { --ms-font-heading: "Source Serif 4", Charter, Georgia, "Times New Roman", serif; }
-.ms-document > h1 { font-size: clamp(2.1rem, 4.2vw, 2.9rem); line-height: 1.06; letter-spacing: -0.022em; text-wrap: balance; }
-.ms-document > h2 { font-size: clamp(1.4rem, 2.4vw, 1.75rem); letter-spacing: -0.015em; text-wrap: balance; }
-.ms-document > h1 code { background: none; padding: 0; font-size: 0.82em; }
-.ms-document > .lead { max-width: 60ch; color: var(--ms-fg-muted); }
-.ms-document > .lead strong { color: var(--ms-fg); }
-.eyebrow { font-family: var(--ms-font-body); color: var(--ms-accent); letter-spacing: 0.12em; }
-.badge { font-family: var(--ms-font-body); }
-/* A run of badges under the title reads as one status line, not four blocks. */
-.ms-document > p > .ms-span.badge + .ms-span.badge { margin-left: 0.3rem; }
-
-/* Ruler-edge divider between major sections: {.tick} on a thematic break. */
-.ms-document > hr.tick {
-  max-width: none;
-  height: 13px;
-  border-top: 1px solid var(--ms-border);
-  background-image: repeating-linear-gradient(to right, var(--ms-border) 0 1px, transparent 1px 12px);
-  background-size: 100% 5px;
-  background-repeat: no-repeat;
-  /* Both sides, not just the top. With a top margin alone the rule sat three
-   * units below the section it closed and one above the next one, and looked
-   * symmetric only because an eyebrow follows almost every rule on this site
-   * and brings a matching top margin of its own. The colophon is the one place
-   * nothing follows it, and that is where the lopsidedness showed. */
-  margin-block: calc(var(--ms-space) * 3);
+/* One sans face, ink text and quiet surfaces. The palette overrides markset.css's
+ * tokens rather than adding a second set, so every construct on every page
+ * picks it up; dark mode is a warm charcoal with surfaces a step apart, not
+ * near-black with faint borders, and links are ink with an accent underline
+ * rather than saturated blue text. */
+body {
+  --ms-font-body: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ms-font-heading: var(--ms-font-body);
+  --ms-base: 1.0625rem;
+  --ms-fg: light-dark(#152029, #e3e6ea);
+  --ms-fg-muted: light-dark(#56636d, #a0a8b1);
+  --ms-bg: light-dark(#ffffff, #15181c);
+  --ms-surface: light-dark(#f4f6f8, #1d2126);
+  --ms-border: light-dark(#e2e7eb, #2c3238);
+  --site-band: light-dark(#f4f6f8, #1a1d22);
+  --site-accent-text: light-dark(var(--ms-accent), color-mix(in oklab, var(--ms-accent), white 40%));
+  --site-section: clamp(3rem, 6vw, 4.5rem);
+  line-height: 1.65;
 }
+html { overflow-x: clip; }
+.ms-document { max-width: min(75rem, 100%); padding-inline: clamp(1rem, 3vw, 1.5rem); }
+.ms-document h1, .ms-document h2, .ms-document h3 { font-weight: 700; letter-spacing: -0.02em; }
+.ms-document h1 { font-size: clamp(2.3rem, 4.4vw, 3.3rem); line-height: 1.08; letter-spacing: -0.03em; text-wrap: balance; }
+.ms-document h2 { font-size: clamp(1.55rem, 2.6vw, 2rem); line-height: 1.2; text-wrap: balance; }
+.ms-document h1 code { background: none; padding: 0; font-size: 0.82em; }
+.ms-document > .lead, .hero .lead { max-width: 60ch; font-size: 1.2rem; color: var(--ms-fg-muted); }
+.ms-document > .lead strong { color: var(--ms-fg); }
+.ms-document > * + h2 { margin-top: var(--site-section); }
+.ms-document > * + .eyebrow { margin-top: var(--site-section); }
+.eyebrow { font-family: var(--ms-font-body); font-size: 0.78rem; color: var(--site-accent-text); letter-spacing: 0.1em; }
+.badge { font-family: var(--ms-font-body); }
+/* A run of badges reads as one status line, not four blocks. */
+.ms-span.badge + .ms-span.badge { margin-left: 0.3rem; }
 
-/* A metrics block as a dense fact strip: {.stats}. */
-.stats { gap: 1px; background: var(--ms-border); border: 1px solid var(--ms-border); border-radius: var(--ms-radius); overflow: hidden; }
-.stats .ms-metric { border: 0; border-radius: 0; padding: 0.9rem 1.1rem; }
-.stats .ms-metric-value { font-family: var(--ms-font-heading); }
+/* Links: ink text with an accent underline, which reads on both grounds. */
+.ms-document a { color: inherit; text-decoration-line: underline; text-decoration-color: color-mix(in oklab, var(--ms-accent), transparent 35%); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.ms-document a:hover { text-decoration-color: var(--ms-fg); }
 
-/* A grid item that leads with a heading: the heading is a label, not a section. */
-.ms-grid-item > h3:first-child { font-size: 1.02rem; letter-spacing: -0.01em; }
+/* Buttons: a link inside a span classed .button, [[Start](start/)]{.button}. */
+.ms-span.button > a { display: inline-flex; align-items: center; padding: 0.6rem 1.1rem; border: 1px solid var(--ms-border); border-radius: 0.5rem; background: var(--ms-bg); color: var(--ms-fg); font-weight: 600; font-size: 0.95rem; line-height: 1.2; text-decoration: none; }
+.ms-span.button > a:hover { border-color: var(--ms-fg-muted); }
+.ms-span.button.primary > a { background: var(--ms-fg); border-color: var(--ms-fg); color: var(--ms-bg); }
+.ms-span.button.primary > a:hover { background: color-mix(in oklab, var(--ms-fg), var(--ms-bg) 18%); }
+.ms-span.button.small > a { padding: 0.35rem 0.75rem; font-size: 0.85rem; }
+.ms-span.button + .ms-span.button { margin-left: 0.5rem; }
+
+/* The hero: the pitch beside the thing it describes. */
+.ms-columns.hero { align-items: center; gap: clamp(2rem, 5vw, 4rem); padding-block: clamp(1.5rem, 5vw, 3.5rem) calc(var(--site-section) * 0.6); }
+.hero .ms-column > * + * { margin-top: 1.1rem; }
+.hero .ms-column > h1 + * { margin-top: 1.1rem; }
+.hero .ms-column > .eyebrow + h1 { margin-top: 0.6rem; }
+.hero .ms-column > p:has(> .button) { margin-top: 1.6rem; }
+.hero pre { font-size: 0.85rem; margin: 0; }
+
+/* Grid items are text, not boxes: the grid's alignment does the grouping. */
+.ms-grid-item { border: 0; background: none; padding: 0; }
+.ms-grid-item > p:first-child > strong:only-child { display: block; font-size: 1.05rem; letter-spacing: -0.01em; }
+.ms-grid-item > * + * { margin-top: 0.5rem; }
+.ms-grid-item > p:first-child:has(> strong:only-child) + * { margin-top: 0.3rem; }
+.ms-grid-item > p:last-child:has(> .button, > a:only-child) { margin-top: 0.9rem; }
+.ms-grid-item > h3:first-child { font-size: 1.05rem; letter-spacing: -0.01em; }
 .ms-grid-item > h3:first-child + * { margin-top: 0.45rem !important; }
+.ms-grid { row-gap: calc(var(--ms-space) * 2.25); column-gap: calc(var(--ms-space) * 2.25); }
+
+/* Cards: a quiet surface, no rule. */
+.ms-card { border: 0; background: var(--ms-surface); border-radius: 0.75rem; padding: calc(var(--ms-space) * 1.4); }
+.ms-card[data-tone]:not([data-tone="neutral"]) { box-shadow: inset 3px 0 0 var(--ms-tone); }
+.ms-callout { border: 0; background: var(--ms-surface); box-shadow: inset 3px 0 0 var(--ms-tone); border-radius: 0.6rem; }
+.ms-metric { border: 0; background: var(--ms-surface); border-radius: 0.6rem; }
+
+/* A band: a section set apart by a full-width tinted ground. A card classed
+ * .band, so the section is one block; the rules below it give it the ground. */
+.ms-document > .ms-card.band { max-width: none; background: none; border-radius: 0; padding: var(--site-section) 0; margin-block: 0; box-shadow: none; }
+.ms-document > .ms-card.band + * { margin-top: 0; }
+.ms-document > * + .ms-card.band { margin-top: calc(var(--site-section) * 0.4); }
+.ms-card.band > * + * { margin-top: var(--ms-space); }
+.ms-card.band > * + h2 { margin-top: 0.3em; }
+.ms-document > .ms-card.band {
+  background: var(--site-band);
+  /* Full width without changing the layout: the ground extends sideways and is clipped to the band's own height. */
+  box-shadow: 0 0 0 100vmax var(--site-band);
+  clip-path: inset(0 -100vmax);
+}
+.ms-document > .ms-card.band + * { margin-top: calc(var(--site-section) * 0.9); }
+
+/* Ruler divider between major sections: {.tick} on a thematic break, now a plain hairline. */
+.ms-document > hr.tick { max-width: none; border: 0; border-top: 1px solid var(--ms-border); margin-block: var(--site-section); }
+
+/* A metrics block as a fact strip: {.stats}. */
+.stats { gap: 0; }
+.stats .ms-metric { background: none; padding: 0.25rem 0; }
+.stats .ms-metric-value { font-size: 2.1rem; letter-spacing: -0.03em; }
 
 /* A comparison table: {.compare}. */
-.compare { font-size: 0.9rem; border: 1px solid var(--ms-border); border-radius: var(--ms-radius); border-collapse: separate; border-spacing: 0; background: var(--ms-surface); }
-.compare th { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ms-fg-muted); padding: 1rem 0.75rem 0.55rem; }
+.compare { font-size: 0.9rem; border-collapse: separate; border-spacing: 0; }
+.compare th { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ms-fg-muted); padding: 0.75rem 0.75rem 0.55rem; }
 .compare td { padding: 0.7rem 0.75rem; vertical-align: middle; }
-.compare tr:last-child td { border-bottom: 0; }
 .compare td:first-child { font-weight: 600; white-space: nowrap; }
-.compare tr:last-child { background: var(--ms-bg); }
+.compare tr:last-child td { border-bottom: 0; background: var(--ms-surface); }
 
 /* ---- chrome -------------------------------------------------------------- */
 /* The app bar follows the page. Its height is a token rather than a measured
@@ -65,7 +121,8 @@ body { --site-header-h: 3.25rem; --site-scheme-w: 5.6rem; }
   min-height: var(--site-header-h);
   padding: 0.75rem var(--ms-space);
   border-bottom: 1px solid var(--ms-border);
-  background: var(--ms-surface);
+  background: color-mix(in oklab, var(--ms-bg), transparent 12%);
+  backdrop-filter: blur(8px);
 }
 /* An anchor target must clear the bar instead of hiding behind it. */
 .ms-document :is(h1, h2, h3, h4, h5, h6) { scroll-margin-top: calc(var(--site-header-h) + 0.5rem); }
@@ -74,7 +131,7 @@ body { --site-header-h: 3.25rem; --site-scheme-w: 5.6rem; }
 .site-brand { flex: none; display: flex; align-items: center; gap: 0.55rem; }
 .site-mark { width: 1.375rem; height: 1.375rem; border-radius: 0.3rem; }
 .site-nav a { color: var(--ms-fg-muted); text-decoration: none; font-family: var(--ms-font-body); font-size: 0.9rem; }
-.site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--ms-accent); }
+.site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--site-accent-text); }
 /* The reader's color scheme. The radio inputs hold the state; body:has() reads
  * it; markset.css resolves every color through color-scheme, so forcing a
  * scheme is one property. The inputs are clipped rather than display:none,
@@ -131,7 +188,7 @@ body:has(#ms-scheme-dark:checked) { color-scheme: dark; }
 .site-toc nav + nav { margin-top: calc(var(--ms-space) * 1.5); padding-top: var(--ms-space); border-top: 1px solid var(--ms-border); }
 .site-rail a[aria-current="page"] { color: var(--ms-fg); font-weight: 600; }
 .site-toc a { color: var(--ms-fg-muted); text-decoration: none; }
-.site-toc a:hover { color: var(--ms-accent); }
+.site-toc a:hover { color: var(--site-accent-text); }
 .site-footer { max-width: var(--ms-measure-wide); margin: 0 auto; padding: calc(var(--ms-space) * 2) var(--ms-space); color: var(--ms-fg-muted); font-size: 0.875rem; border-top: 1px solid var(--ms-border); }
 .site-status { color: var(--ms-fg-muted); }
 .site-list li + li { margin-top: 0.4rem; }

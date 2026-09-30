@@ -19,15 +19,20 @@ body {
   /* Each color is written once, light value first. light-dark() resolves it
    * against the element's color-scheme, so following the reader's system
    * preference and forcing a scheme are the same mechanism: set color-scheme.
-   * A theme overriding any of these with a flat color still works. */
+   * A theme overriding any of these with a flat color still works.
+   *
+   * The dark half is a warm charcoal rather than near-black, with the surface a
+   * visible step above the ground and borders kept quiet, so a page of cards is
+   * not a stack of barely different dark rectangles. Text is 14:1 on the ground
+   * and muted text 7:1. */
   color-scheme: light dark;
-  --ms-fg: light-dark(#1f2328, #e6edf3);
-  --ms-fg-muted: light-dark(#59636e, #9198a1);
-  --ms-bg: light-dark(#ffffff, #0d1117);
-  --ms-surface: light-dark(#f6f8fa, #161b22);
-  --ms-border: light-dark(#d0d7de, #30363d);
+  --ms-fg: light-dark(#1f2328, #e3e6ea);
+  --ms-fg-muted: light-dark(#59636e, #a0a8b1);
+  --ms-bg: light-dark(#ffffff, #15181c);
+  --ms-surface: light-dark(#f6f8fa, #1d2126);
+  --ms-border: light-dark(#d0d7de, #2c3238);
 
-  --ms-tone-neutral: light-dark(#59636e, #9198a1);
+  --ms-tone-neutral: light-dark(#59636e, #a0a8b1);
   --ms-tone-info: light-dark(#0969da, #4493f8);
   --ms-tone-success: light-dark(#1a7f37, #3fb950);
   --ms-tone-warn: light-dark(#9a6700, #d29922);
@@ -40,7 +45,9 @@ body {
    * A validated categorical order, not a spectrum picked by eye. The eight
    * hues clear the lightness band, the chroma floor, colorblind separation
    * between neighbours and the normal-vision floor, in both schemes, measured
-   * against this stylesheet's own surfaces rather than someone else's. The dark
+   * against this stylesheet's own surfaces rather than someone else's. Checked
+   * again when the dark ground moved to #15181c and the surface to #1d2126:
+   * every dark slot stays above 3:1 on both, the lowest being slot 6 at 3.27. The dark
    * column is the same eight hues stepped for a dark ground, not a flip of the
    * light one. Slots are assigned in order and never cycled through a generated
    * hue: a ninth series reuses slot one, which is honest about running out

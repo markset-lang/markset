@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- **A calmer dark palette in the default stylesheet.** The dark half of `markset.css` was GitHub's: near-black, with surfaces and borders so close to the ground that a page of cards read as a stack of dark rectangles. It is now a warm charcoal with the surface a visible step above it and quieter borders. Text keeps 14:1 contrast and muted text 7:1, and every dark chart color stays above 3:1 on both new grounds. Light mode is unchanged.
+- **The site is redesigned**, over the same Markset: one sans face, real buttons, fewer boxes, full-width bands, and a short home page with a two-column hero. The essay and the comparison with prior art moved to a *Why Markset* page.
+
 ## 0.3.4 — 2026-09-30
 
 **The parser runs under micromark's development build, and render-html bundles.** Both reported from Streamlane, where the first broke a Vite test run and the second a Next.js build. Nothing in the grammar or the spec changed.
