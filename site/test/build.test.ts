@@ -24,7 +24,7 @@ test("the site builds, every page has the shell, and links stay relative", async
   assert.ok(pages.length >= 25, `only ${pages.length} pages`);
   for (const page of pages) {
     const html = await readFile(join(dist, page), "utf8");
-    assert.match(html, /<nav class="site-nav">/, page);
+    assert.match(html, /<nav class="site-nav" aria-label="Main">/, page);
     assert.doesNotMatch(html, /href="\//, `${page} has a root-relative link`);
     // The shell's scheme-persistence script, and on the playground the module
     // that runs the renderer. Nothing else, and on no page anything inside the
@@ -216,17 +216,46 @@ test("the section divider is spaced the same above and below", async () => {
   assert.doesNotMatch(rule[0], /margin-top:/, "a top margin alone makes it depend on what follows");
 });
 
-test("the app bar sticks, and everything that has to clear it uses one token", async () => {
-  // Three rules depend on the bar's height: the bar reserves it, the sticky
-  // table of contents starts below it, and an anchored heading scrolls clear of
-  // it. If one of them stops reading --site-header-h they drift apart silently.
+test("tab titles follow the family's pattern: the home page names Markset first, every other page last", async () => {
+  // Streamlane's, and intentset.org's and coralreefventures.com's since
+  // 2026-10-03, so the four sites read alike in a row of tabs.
+  const home = await readFile(join(dist, "index.html"), "utf8");
+  assert.match(home, /<title>Markset · Rich documents, without leaving Markdown<\/title>/);
+  for (const page of pages.filter((p) => p !== "index.html")) {
+    const html = await readFile(join(dist, page), "utf8");
+    assert.match(html, /<title>[^<]*[^.] · Markset<\/title>/, page);
+  }
+});
+
+test("the header is held to the page's width and scrolls away, as on intentset.org", async () => {
+  // It used to be a full-width sticky bar, the one header of the three sibling
+  // sites that was. Now it shares the page's box, draws its rule inside the
+  // gutters, and nothing has to clear it: the rail sticks to the top of the
+  // viewport and an anchored heading needs only a little air.
   const css = await readFile(join(dist, "css", "site.css"), "utf8");
-  assert.match(css, /--site-header-h:/, "the bar's height is a token");
-  assert.match(css, /\.site-header \{[^}]*position: sticky;[^}]*top: 0;/, "the app bar is sticky");
-  assert.match(css, /\.site-header \{[^}]*min-height: var\(--site-header-h\)/);
-  assert.match(css, /\.site-toc \{[^}]*top: var\(--site-header-h\)/, "the TOC starts below the bar");
-  assert.match(css, /scroll-margin-top: calc\(var\(--site-header-h\)/, "anchors clear the bar");
-  assert.match(css, /@media print \{\s*\.site-header \{ position: static/, "a printed page has no sticky bar");
+  const header = /\.site-header \{[^}]*\}/.exec(css)?.[0] ?? "";
+  assert.doesNotMatch(header, /position: sticky/, "the header is not sticky");
+  assert.match(
+    css,
+    /\.site-header, \.site-footer \{[^}]*max-width: 75rem;[^}]*margin-inline: auto;/,
+    "held to the page's width",
+  );
+  assert.match(header, /calc\(100% - 2 \* var\(--site-gutter\)\) 1px/, "its rule starts at the content's edge");
+  assert.match(css, /\.site-toc \{[^}]*position: sticky; top: 0;/, "the rail sticks to the top");
+  assert.doesNotMatch(css, /--site-header-h/, "no height token is left for anything to clear");
+});
+
+test("the wordmark goes home, the bar names sections, and the repository is in the footer", async () => {
+  const home = await readFile(join(dist, "index.html"), "utf8");
+  const header = /<header class="site-header">[\s\S]*?<\/header>/.exec(home)?.[0] ?? "";
+  assert.match(header, /<a class="site-brand" href="\.\/index\.html">/, "the wordmark links home");
+  const nav = /<nav class="site-nav" aria-label="Main">([\s\S]*?)<\/nav>/.exec(header)?.[1] ?? "";
+  const labels = [...nav.matchAll(/>([^<]+)<\/a>/g)].map((m) => m[1]);
+  assert.deepEqual(labels, ["Start", "Playground", "Reference", "Spec", "Examples"]);
+  assert.doesNotMatch(header, /github\.com/, "the repository is not in the header");
+  const footer = /<footer class="site-footer">[\s\S]*?<\/footer>/.exec(home)?.[0] ?? "";
+  assert.match(footer, /<a href="https:\/\/github\.com\/[^"]+">Source on GitHub<\/a>/, "it is in the footer");
+  assert.match(footer, /<svg class="site-family"[^>]*aria-hidden="true"/, "the family mark is decoration");
 });
 
 test("the built site carries the custom domain", async () => {
@@ -276,12 +305,12 @@ test("every link to the repository matches package.json, which matches the remot
   }
 });
 
-test("the icon controls in the app bar still say what they are", async () => {
-  // Home and GitHub are icons now. An icon with no text is a control a screen
-  // reader announces as "link", so each keeps its word in the accessibility
-  // tree, and the SVG itself is hidden from it.
+test("the icon controls in the header still say what they are", async () => {
+  // The scheme options are icons. An icon with no text is a control a screen
+  // reader announces as "radio button", so each keeps its word in the
+  // accessibility tree, and the SVG itself is hidden from it.
   const home = await readFile(join(dist, "index.html"), "utf8");
-  for (const name of ["Home", "GitHub", "Auto", "Light", "Dark"]) {
+  for (const name of ["Auto", "Light", "Dark"]) {
     assert.match(home, new RegExp(`<span class="site-visually-hidden">${name}</span>`), `${name} has a name`);
   }
   assert.match(home, /<svg class="site-icon"[^>]*aria-hidden="true"/, "the icons are decorative");
@@ -308,8 +337,8 @@ test("the scheme control shows one option until it is asked for, and does not mo
 
 test("a visually hidden label cannot escape its container", async () => {
   // It used to be position: absolute, and inside the horizontally scrolling
-  // nav on a phone it resolved against the sticky header rather than its link,
-  // landing past the viewport and pushing every page sideways.
+  // nav the header had on a phone it resolved against the header rather than
+  // its link, landing past the viewport and pushing every page sideways.
   const css = await readFile(join(dist, "css", "site.css"), "utf8");
   const rule = /\.site-visually-hidden \{([^}]*)\}/u.exec(css);
   assert.ok(rule, "the utility exists");

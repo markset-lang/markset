@@ -2,40 +2,54 @@
  * is layered over a document (spec §6). Two jobs: the chrome (header, TOC, case
  * panes) and the handful of author classes the site's pages use, which are the
  * reserved ones from §5 plus .tick, .stats and .compare. */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
-
 /* ---- identity ------------------------------------------------------------ */
-/* One sans face, ink text and quiet surfaces. The palette overrides markset.css's
- * tokens rather than adding a second set, so every construct on every page
- * picks it up; dark mode is a warm charcoal with surfaces a step apart, not
- * near-black with faint borders, and links are ink with an accent underline
- * rather than saturated blue text. */
+/* The same type as intentset.org and the Coral Reef Ventures site: the system
+ * sans, no font loaded from another origin, and one set of sizes, so the three
+ * sites read as one family side by side. Ink text and quiet surfaces. The
+ * palette overrides markset.css's tokens rather than adding a second set, so
+ * every construct on every page picks it up; dark mode is a warm charcoal with
+ * surfaces a step apart, and links are ink with an accent underline.
+ *
+ * The accent is Markset's violet, the one coralreefventures.com gives it. The
+ * light value is that site's violet text color; the dark one is lifted until it
+ * reads as text on the charcoal. Pages set no accent of their own, so this one
+ * holds everywhere except inside an example document, which brings its own. */
 body {
-  --ms-font-body: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ms-font-body: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --ms-font-heading: var(--ms-font-body);
+  --ms-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --ms-base: 1.0625rem;
   --ms-fg: light-dark(#152029, #e3e6ea);
   --ms-fg-muted: light-dark(#56636d, #a0a8b1);
   --ms-bg: light-dark(#ffffff, #15181c);
   --ms-surface: light-dark(#f4f6f8, #1d2126);
   --ms-border: light-dark(#e2e7eb, #2c3238);
-  --site-band: light-dark(#f4f6f8, #1a1d22);
-  --site-accent-text: light-dark(var(--ms-accent), color-mix(in oklab, var(--ms-accent), white 40%));
-  --site-section: clamp(3rem, 6vw, 4.5rem);
+  --ms-accent: light-dark(#664d93, #a993dc);
+  --site-accent-text: light-dark(#664d93, #c2b3e3);
+  --site-accent-bar: light-dark(#9982bc, #ab97d1);
+  /* A violet-tinted panel for the one section the home page sets in color. */
+  --site-band: light-dark(#f6f3fb, #1e1a27);
+  --site-band-border: light-dark(#e4dcf1, #352d47);
+  --site-gutter: clamp(1rem, 3vw, 1.5rem);
+  --site-section: clamp(2.75rem, 6vw, 4.5rem);
   line-height: 1.65;
 }
 html { overflow-x: clip; }
-.ms-document { max-width: min(75rem, 100%); padding-inline: clamp(1rem, 3vw, 1.5rem); }
-.ms-document h1, .ms-document h2, .ms-document h3 { font-weight: 700; letter-spacing: -0.02em; }
-.ms-document h1 { font-size: clamp(2.3rem, 4.4vw, 3.3rem); line-height: 1.08; letter-spacing: -0.03em; text-wrap: balance; }
-.ms-document h2 { font-size: clamp(1.55rem, 2.6vw, 2rem); line-height: 1.2; text-wrap: balance; }
+.ms-document { max-width: min(75rem, 100%); padding-inline: var(--site-gutter); }
+.ms-document h1, .ms-document h2, .ms-document h3 { font-weight: 650; letter-spacing: -0.025em; text-wrap: balance; }
+.ms-document h1 { font-size: clamp(2.4rem, 5vw, 4.25rem); line-height: 1.04; letter-spacing: -0.04em; }
+.ms-document h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.15; }
+.ms-document h3 { font-size: 1.3rem; line-height: 1.3; }
 .ms-document h1 code { background: none; padding: 0; font-size: 0.82em; }
-.ms-document > .lead, .hero .lead { max-width: 60ch; font-size: 1.2rem; color: var(--ms-fg-muted); }
+.ms-document > .lead, .hero .lead { max-width: 60ch; font-size: 1.25rem; line-height: 1.5; color: var(--ms-fg-muted); }
 .ms-document > .lead strong { color: var(--ms-fg); }
 .ms-document > * + h2 { margin-top: var(--site-section); }
 .ms-document > * + .eyebrow { margin-top: var(--site-section); }
-.eyebrow { font-family: var(--ms-font-body); font-size: 0.78rem; color: var(--site-accent-text); letter-spacing: 0.1em; }
-.badge { font-family: var(--ms-font-body); }
+.eyebrow { font-family: var(--ms-font-mono); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; color: var(--site-accent-text); }
+.badge { font-family: var(--ms-font-mono); letter-spacing: 0.04em; }
+/* A step's number sits on the accent. The ground's own color is the one that
+ * reads on the violet in both schemes; white does not on the lighter dark half. */
+.ms-step::before { color: var(--ms-bg); }
 /* A run of badges reads as one status line, not four blocks. */
 .ms-span.badge + .ms-span.badge { margin-left: 0.3rem; }
 
@@ -75,27 +89,48 @@ html { overflow-x: clip; }
 .ms-callout { border: 0; background: var(--ms-surface); box-shadow: inset 3px 0 0 var(--ms-tone); border-radius: 0.6rem; }
 .ms-metric { border: 0; background: var(--ms-surface); border-radius: 0.6rem; }
 
-/* A band: a section set apart by a full-width tinted ground. A card classed
- * .band, so the section is one block; the rules below it give it the ground. */
-.ms-document > .ms-card.band { max-width: none; background: none; border-radius: 0; padding: var(--site-section) 0; margin-block: 0; box-shadow: none; }
-.ms-document > .ms-card.band + * { margin-top: 0; }
-.ms-document > * + .ms-card.band { margin-top: calc(var(--site-section) * 0.4); }
-.ms-card.band > * + * { margin-top: var(--ms-space); }
-.ms-card.band > * + h2 { margin-top: 0.3em; }
-.ms-document > .ms-card.band {
-  background: var(--site-band);
-  /* Full width without changing the layout: the ground extends sideways and is clipped to the band's own height. */
-  box-shadow: 0 0 0 100vmax var(--site-band);
-  clip-path: inset(0 -100vmax);
+/* Boxes, in intentset.org's manner, used sparingly: a page of grey panels
+ * reads as a page of boxes (2026-10-03). Three author classes reach them. A
+ * card classed .demo is the one neutral panel, beside the hero. A card classed
+ * .band is a whole section set in Markset's violet tint. A grid classed .tiles
+ * has open items under a neutral rule, each titled in violet. Inside a panel
+ * the things that were surfaces of their own (a code block, a metric tile)
+ * take the page's ground and a hairline instead, so they read as set on the
+ * panel rather than as a second panel. */
+.ms-card.demo {
+  border: 1px solid var(--ms-border);
+  border-radius: 0.375rem;
+  background: var(--ms-surface);
+  box-shadow: none;
 }
-.ms-document > .ms-card.band + * { margin-top: calc(var(--site-section) * 0.9); }
+.ms-document > .ms-card.band {
+  border: 1px solid var(--site-band-border);
+  border-radius: 0.375rem;
+  background: var(--site-band);
+  box-shadow: none;
+}
+.ms-document > .ms-card.band { max-width: none; padding: clamp(1.5rem, 4vw, 2.75rem); }
+.ms-document > * + .ms-card.band, .ms-document > .ms-card.band + * { margin-top: var(--site-section); }
+.ms-card.band > * + * { margin-top: var(--ms-space); }
+.ms-card.band > .eyebrow + h2 { margin-top: 0.5rem; }
+.ms-card.band > * + .ms-grid { margin-top: 1.75rem; }
+.ms-card.demo { padding: clamp(1.25rem, 3vw, 1.75rem); }
+.ms-card.demo > * + * { margin-top: 1rem; }
+.ms-card.demo :is(pre, .ms-metric) { background: var(--ms-bg); border: 1px solid var(--ms-border); border-radius: 0.375rem; }
+.tiles { gap: 2.25rem 1.5rem; }
+.tiles .ms-grid-item { display: flex; flex-direction: column; padding: 1.25rem 0 0; border-top: 2px solid var(--ms-border); border-radius: 0; }
+.tiles .ms-grid-item > p:first-child > strong:only-child { color: var(--site-accent-text); }
+.tiles .ms-grid-item > p:last-child:has(> .button) { margin-top: auto; padding-top: 0.9rem; }
 
 /* Ruler divider between major sections: {.tick} on a thematic break, now a plain hairline. */
 .ms-document > hr.tick { max-width: none; border: 0; border-top: 1px solid var(--ms-border); margin-block: var(--site-section); }
 
 /* A metrics block as a fact strip: {.stats}. */
-.stats { gap: 0; }
+.stats { gap: 0; padding-block: 1.25rem; border-block: 1px solid var(--ms-border); }
+.ms-document > .stats { max-width: none; }
 .stats .ms-metric { background: none; padding: 0.25rem 0; }
+.stats .ms-metric-value { color: var(--site-accent-text); }
+.ms-document > .stats + p { color: var(--ms-fg-muted); }
 .stats .ms-metric-value { font-size: 2.1rem; letter-spacing: -0.03em; }
 
 /* A comparison table: {.compare}. */
@@ -106,32 +141,30 @@ html { overflow-x: clip; }
 .compare tr:last-child td { border-bottom: 0; background: var(--ms-surface); }
 
 /* ---- chrome -------------------------------------------------------------- */
-/* The app bar follows the page. Its height is a token rather than a measured
- * value, because two other things have to line up under it: the sticky table of
- * contents, and the scroll position of any heading reached by an anchor. */
-body { --site-header-h: 3.25rem; --site-scheme-w: 5.6rem; }
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--ms-space);
-  min-height: var(--site-header-h);
-  padding: 0.75rem var(--ms-space);
-  border-bottom: 1px solid var(--ms-border);
-  background: color-mix(in oklab, var(--ms-bg), transparent 12%);
-  backdrop-filter: blur(8px);
+/* The header is intentset.org's: held to the page's width, with the rule drawn
+ * inside the gutters so it starts at the content's left edge, and it scrolls
+ * away with the page. The wordmark is the way home; the bar names sections. */
+.site-header, .site-footer {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 75rem;
+  margin-inline: auto;
+  padding-inline: var(--site-gutter);
 }
-/* An anchor target must clear the bar instead of hiding behind it. */
-.ms-document :is(h1, h2, h3, h4, h5, h6) { scroll-margin-top: calc(var(--site-header-h) + 0.5rem); }
-.site-brand { font-family: var(--ms-font-heading); font-weight: 700; font-size: 1.1rem; color: var(--ms-fg); text-decoration: none; letter-spacing: -0.01em; }
-.site-nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
-.site-brand { flex: none; display: flex; align-items: center; gap: 0.55rem; }
-.site-mark { width: 1.375rem; height: 1.375rem; border-radius: 0.3rem; }
-.site-nav a { color: var(--ms-fg-muted); text-decoration: none; font-family: var(--ms-font-body); font-size: 0.9rem; }
-.site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--site-accent-text); }
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.5rem;
+  padding-block: 1.25rem;
+  background: linear-gradient(var(--ms-border), var(--ms-border)) no-repeat center bottom / calc(100% - 2 * var(--site-gutter)) 1px;
+}
+.ms-document :is(h1, h2, h3, h4, h5, h6) { scroll-margin-top: 1rem; }
+.site-brand { flex: none; display: inline-flex; align-items: center; gap: 0.6rem; margin-right: auto; padding-block: 0.25rem; font-size: 1.35rem; font-weight: 750; letter-spacing: -0.03em; color: var(--ms-fg); text-decoration: none; }
+.site-mark { width: 1.75rem; height: 1.75rem; border-radius: 0.4rem; }
+.site-nav { display: flex; flex-wrap: wrap; gap: 0 1.5rem; font-size: 0.95rem; }
+.site-nav a { display: inline-block; padding-block: 0.5rem; color: var(--ms-fg-muted); text-decoration: none; }
+.site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--ms-fg); text-decoration: underline; text-decoration-color: var(--ms-accent); text-decoration-thickness: 2px; text-underline-offset: 0.35em; }
 /* The reader's color scheme. The radio inputs hold the state; body:has() reads
  * it; markset.css resolves every color through color-scheme, so forcing a
  * scheme is one property. The inputs are clipped rather than display:none,
@@ -141,16 +174,14 @@ body { --site-header-h: 3.25rem; --site-scheme-w: 5.6rem; }
  * script blocked these alone still work for the page they are on. */
 body:has(#ms-scheme-light:checked) { color-scheme: light; }
 body:has(#ms-scheme-dark:checked) { color-scheme: dark; }
-/* Icon-only controls in the bar. The word they replace stays in the
- * accessibility tree, so an icon link still announces as "Home" or "GitHub". */
-/* Deliberately in flow rather than position: absolute. The usual visually
- * hidden recipe is absolutely positioned, and inside the horizontally
- * scrolling nav on a phone it resolved against the sticky header instead of
- * its link, landing 60px past the viewport and dragging the page's scroll
- * width with it. One pixel in the layout costs nothing and cannot escape. */
+/* Icon-only controls keep their word in the accessibility tree, so the scheme
+ * options still announce as "Auto", "Light" and "Dark". Deliberately in flow
+ * rather than position: absolute: the usual visually hidden recipe is
+ * absolutely positioned, and once resolved against the header instead of its
+ * own control, landing past the viewport and dragging the page's scroll width
+ * with it. One pixel in the layout costs nothing and cannot escape. */
 .site-visually-hidden { display: inline-block; width: 1px; height: 1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .site-icon { display: block; width: 1.05rem; height: 1.05rem; }
-.site-nav a:has(.site-icon) { display: inline-flex; align-items: center; }
 
 /* The scheme control shows only the scheme in use, and opens on hover or on
  * focus. Three options sitting in the bar at all times is three decisions the
@@ -158,6 +189,7 @@ body:has(#ms-scheme-dark:checked) { color-scheme: dark; }
  * one the collapsed state shows. The slot reserves the open width, so opening
  * it does not shove the nav sideways. Focus-within is what makes it work
  * without a pointer: tapping or tabbing to the control opens it too. */
+body { --site-scheme-w: 5.6rem; }
 .site-scheme-slot { flex: none; display: flex; justify-content: flex-end; width: var(--site-scheme-w); }
 .site-scheme { display: flex; align-items: center; gap: 1px; padding: 2px; border: 1px solid var(--ms-border); border-radius: 999px; background: var(--ms-bg); }
 .site-scheme-input { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
@@ -177,7 +209,7 @@ body:has(#ms-scheme-dark:checked) { color-scheme: dark; }
 .site-layout { max-width: 75rem; margin: 0 auto; }
 .site-layout.has-rail { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: var(--ms-space); }
 .site-layout.has-rail > * { min-width: 0; } /* or a wide block inside main widens the whole grid */
-.site-toc { position: sticky; top: var(--site-header-h); align-self: start; max-height: calc(100vh - var(--site-header-h)); overflow-y: auto; padding: calc(var(--ms-space) * 2) var(--ms-space); font-size: 0.875rem; border-right: 1px solid var(--ms-border); }
+.site-toc { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; padding: calc(var(--ms-space) * 2) var(--ms-space); font-size: 0.875rem; border-right: 1px solid var(--ms-border); }
 .site-toc ul { list-style: none; margin: 0; padding: 0; }
 .site-toc li { margin: 0.25rem 0; }
 .site-toc .toc-3 { padding-left: 1rem; }
@@ -189,7 +221,31 @@ body:has(#ms-scheme-dark:checked) { color-scheme: dark; }
 .site-rail a[aria-current="page"] { color: var(--ms-fg); font-weight: 600; }
 .site-toc a { color: var(--ms-fg-muted); text-decoration: none; }
 .site-toc a:hover { color: var(--site-accent-text); }
-.site-footer { max-width: var(--ms-measure-wide); margin: 0 auto; padding: calc(var(--ms-space) * 2) var(--ms-space); color: var(--ms-fg-muted); font-size: 0.875rem; border-top: 1px solid var(--ms-border); }
+/* The footer: what this is, where the source lives, and whose it is. The
+ * figure is the network from coralreefventures.com, drawn small with this
+ * product's nodes in its accent and the other two products' nodes left quiet:
+ * the family's mark, worn by one member. Decoration only, hidden from
+ * assistive technology; the link beside it says the same thing in words. */
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  padding-block: 2rem 3rem;
+  font-size: 0.85rem;
+  color: var(--ms-fg-muted);
+  background: linear-gradient(var(--ms-border), var(--ms-border)) no-repeat center top / calc(100% - 2 * var(--site-gutter)) 1px;
+}
+.site-footer p { margin: 0; max-width: 60ch; }
+.site-footer p + p { margin-top: 0.35rem; }
+.site-footer strong { color: var(--ms-fg); }
+.site-footer a { display: inline-block; padding-block: 0.25rem; color: inherit; text-decoration-color: var(--ms-accent); text-underline-offset: 0.2em; }
+.site-footer a:hover { color: var(--ms-fg); }
+.site-family { flex: none; width: 9.5rem; height: auto; color: color-mix(in oklab, var(--ms-fg-muted), transparent 60%); }
+.site-family path { stroke: currentColor; stroke-width: 1.5; fill: none; }
+.site-family circle { fill: var(--ms-fg-muted); opacity: 0.4; }
+.site-family .own { fill: var(--site-accent-bar); opacity: 1; }
 .site-status { color: var(--ms-fg-muted); }
 .site-list li + li { margin-top: 0.4rem; }
 .site-table td, .site-table th { padding-right: 1.5rem; }
@@ -217,30 +273,14 @@ body:has(#ms-scheme-dark:checked) { color-scheme: dark; }
   .site-toc { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--ms-border); }
 }
 
-/* Narrow: the links would wrap to three rows and the sticky bar would eat a
- * third of the screen, so they become one scrolling row instead. The fade on
- * the right edge is what says there is more of it. */
+/* Narrow: the brand and the scheme control share the first row, and the links
+ * wrap onto their own rows below, as on intentset.org. */
 @media (max-width: 40rem) {
-  /* Brand and scheme control on the first row, links on their own below. Three
-   * things on one row left the links about 140px of it. The height token moves
-   * with the layout, because scroll-margin still reads it. */
-  body { --site-header-h: 5rem; }
-  .site-header { flex-wrap: wrap; row-gap: 0.4rem; padding-block: 0.5rem; }
-  .site-nav {
-    order: 3;
-    flex-basis: 100%;
-    flex-wrap: nowrap;
-    min-width: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-right: 1.25rem;
-    mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent);
-  }
-  .site-nav::-webkit-scrollbar { display: none; }
-  .site-nav a { white-space: nowrap; }
+  .site-header { padding-block: 1rem 0.75rem; gap: 0.25rem 1rem; }
+  .site-nav { order: 3; flex-basis: 100%; gap: 0 1.25rem; font-size: 0.9rem; }
+  .site-family { width: 7rem; }
 }
 
 @media print {
-  .site-header { position: static; }
-  .site-scheme-slot { display: none; }
+  .site-scheme-slot, .site-family { display: none; }
 }

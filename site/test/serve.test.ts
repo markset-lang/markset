@@ -35,11 +35,15 @@ test("the dev server watches every source directory the site has", async () => {
   // appears until you restart. That is how site/playground/ arrived: the whole
   // application was invisible to site:watch, and the only symptom was an edit
   // that seemed to do nothing. Derived rather than listed, so the next one is
-  // caught by the same rule.
+  // caught by the same rule. Files too: the mark, site/icon.svg, was recolored
+  // and the watcher served the old one, because only directories were checked.
+  // The server itself and the workspace manifest are the two exceptions; every
+  // rebuild runs in a fresh process, so anything else the build reads counts.
   const root = resolve(import.meta.dirname, "..", "..");
   const entries = await readdir(join(root, "site"), { withFileTypes: true });
   for (const entry of entries) {
-    if (!entry.isDirectory() || entry.name === "test") continue;
+    // Dotfiles (a Finder .DS_Store) are not sources, and git ignores them.
+    if (entry.name.startsWith(".") || ["test", "serve.ts", "package.json"].includes(entry.name)) continue;
     assert.ok(WATCHED.includes(`site/${entry.name}`), `site/${entry.name} is built from but not watched`);
   }
   // And nothing in the list has been renamed out from under it.
