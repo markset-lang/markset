@@ -115,6 +115,19 @@ test("an example can carry a theme stylesheet, linked after the site's own", asy
   assert.match(index, /notification-routing\/index\.html/);
 });
 
+test("every image an example links to is published beside its page", async () => {
+  // The site copies an example's images separately from the document, so a
+  // missing copy is a broken picture on a page that builds without complaint.
+  for (const example of EXAMPLES) {
+    const page = join("examples", example.slug, "index.html");
+    const html = await readFile(join(dist, page), "utf8");
+    for (const [, src] of html.matchAll(/<img [^>]*src="([^"]+)"/g)) {
+      if (/^(data:|https?:)/.test(src)) continue;
+      await access(join(dist, dirname(page), src)).catch(() => assert.fail(`${page} links ${src}, which is not there`));
+    }
+  }
+});
+
 test("copied SVG assets stay valid XML", async () => {
   // SVG is XML, so a `<` inside <style> is parsed as markup and the whole file
   // fails to render, silently, as a broken image. That happened once.

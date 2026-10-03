@@ -381,3 +381,14 @@ in commit order, which is the wrong order for finding the work.
       command is set, the built-in preview gets each mermaid fence inside a captioned figure as
       `<div class="mermaid">`, which is the one shape that extension's preview script draws (read from its
       source: `querySelectorAll('.mermaid')`, text content). Outside a figure the fence stays code, obligation 7.
+- [x] **Tenth example, a slide deck, 2026-10-03.** `examples/dashboard-access.md` with `examples/lectern.css`: the
+      published twin of a real team demo, eleven slides with speaker notes, describing an invented system (the
+      original stays out of the repository). No construct: a slide is a `card` carrying `.slide` — the cover is a
+      `columns`, because its title sits beside a panel and because the site reads a page's title from an h1 a card
+      would hide — and the notes are a folded callout under each slide. Its four screenshots, in
+      `examples/dashboard-access/`, are of an HTML mock of the invented system, so they agree with the text; the site
+      copies an example's same-named folder beside its page, and a test checks every image an example links to.
+      The theme does the rest: a 16:9 frame fitted to the viewport (it reads the site's `--site-header-h`, falling
+      back to 0), type on a 1920 grid in container units, scroll snapping, a slide-number counter, and one slide
+      per landscape page in print. Below 60rem by 34rem the frames let go and it reads as a document of cards.
+      Register entry 7 counts its seven classes.
