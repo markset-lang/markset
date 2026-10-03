@@ -1,0 +1,239 @@
+/* Console — a theme stylesheet for examples/service-review.md (spec §6).
+ *
+ *   markset html examples/service-review.md --theme examples/console.css
+ *
+ * A weekly service review read as a dashboard: the page is a desk, and every block on it is a panel. The
+ * document names four roles of its own, and nothing about how any of them looks:
+ *
+ *   .masthead   the columns that open the page: the title, and the week's verdict beside it
+ *   .verdict    that verdict
+ *   .kpis       the week's numbers
+ *   .services   the grid of services, each one carrying a status badge
+ *   .log        the timestamped list of what happened
+ *
+ * A service's status is the tone of its badge, a reserved class (§5), and the colored edge on its panel is
+ * read from that badge with :has(). So the document says "Auth: degraded, which is a warning" once, in
+ * words, and the panel follows; a renderer that has never seen this file still shows the words. */
+
+body {
+  --desk: light-dark(#eef1f6, #0d1117);
+  --panel: light-dark(#ffffff, #161c25);
+  --ink: light-dark(#18202c, #e4e9f0);
+  --quiet: light-dark(#5d6878, #97a3b4);
+  --rule: light-dark(#dce1e9, #273141);
+  --ok: light-dark(#1f9d6b, #3cc48d);
+  --watch: light-dark(#3b5bdb, #8197f2);
+  --warn: light-dark(#c27c0e, #e6a940);
+  --bad: light-dark(#c92a2a, #f06262);
+  --ms-bg: var(--desk);
+  background: var(--desk);
+}
+.ms-document {
+  --ms-fg: var(--ink);
+  --ms-fg-muted: var(--quiet);
+  --ms-border: var(--rule);
+  --ms-surface: var(--panel);
+}
+
+/* ---- the masthead ---------------------------------------------------------------------------------- */
+.masthead {
+  gap: clamp(1rem, 3vw, 2rem);
+  align-items: end;
+}
+.masthead .eyebrow {
+  font-family: var(--ms-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+}
+.masthead h1 {
+  margin-top: 0.4rem;
+  font-size: clamp(2.1rem, 4.2vw, 3.2rem);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+}
+.masthead .lead {
+  font-size: 1.05rem;
+  color: var(--quiet);
+}
+
+/* ---- panels ---------------------------------------------------------------------------------------- */
+/* Everything that holds content sits on a panel of the same kind, so the eye reads the page as one board.
+ * Prose between them is kept out of the panels on purpose: it is commentary on the board, not part of it. */
+.verdict,
+.kpis .ms-metric,
+.services .ms-grid-item,
+.ms-column > .ms-figure,
+.ms-column > .ms-card {
+  border: 1px solid var(--rule);
+  border-radius: var(--ms-radius);
+  background: var(--panel);
+  box-shadow: 0 1px 2px light-dark(rgb(24 32 44 / 0.05), rgb(0 0 0 / 0.3));
+}
+.verdict {
+  border-top: 3px solid var(--warn);
+  padding: 1rem 1.15rem;
+}
+.verdict .ms-card-title,
+.ms-column > .ms-card > .ms-card-title {
+  font-family: var(--ms-font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--quiet);
+}
+.verdict.ms-card .ms-card-title {
+  color: var(--warn);
+}
+
+/* Section headings are labels on the desk, not chapter titles: small, ruled, and close to their panels. */
+.ms-document > h2 {
+  margin-top: 2.5rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--ms-font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--quiet);
+}
+.ms-document > h2 + * {
+  margin-top: 0.9rem;
+}
+
+/* ---- the week's numbers ---------------------------------------------------------------------------- */
+.kpis {
+  gap: 0.75rem;
+}
+.kpis .ms-metric {
+  padding: 0.9rem 1.05rem;
+}
+.kpis .ms-metric-label {
+  font-family: var(--ms-font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+}
+.kpis .ms-metric-value {
+  font-size: 1.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- services -------------------------------------------------------------------------------------- */
+.services {
+  gap: 0.75rem;
+}
+.services .ms-grid-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  align-content: start;
+  column-gap: 0.75rem;
+  padding: 0.9rem 1.05rem 1rem;
+  border-top: 3px solid var(--ok);
+}
+.services .ms-grid-item:has(.badge.info) { border-top-color: var(--watch); }
+.services .ms-grid-item:has(.badge.warn) { border-top-color: var(--warn); }
+.services .ms-grid-item:has(.badge.danger) { border-top-color: var(--bad); }
+.services .ms-grid-item > * {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+/* The name and the status share the first line. */
+.services .ms-grid-item > h3 {
+  grid-column: 1;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+.services .ms-grid-item > h3 + p {
+  grid-column: 2;
+}
+.services .ms-grid-item > p:nth-child(3) {
+  margin-top: 0.7rem;
+  color: var(--quiet);
+  font-size: 0.8rem;
+}
+.services .ms-grid-item > p:nth-child(3) strong {
+  color: var(--ink);
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+}
+.services .ms-grid-item > p:nth-child(4) {
+  margin-top: 0.55rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+.services .badge.success { --ms-tone: var(--ok); }
+.services .badge.info { --ms-tone: var(--watch); }
+.services .badge.warn { --ms-tone: var(--warn); }
+
+/* ---- panels in columns ----------------------------------------------------------------------------- */
+/* A row of panels is one height, so the board has a clean lower edge whichever panel holds the most. */
+.ms-document > .ms-columns:not(.masthead) {
+  gap: 0.75rem;
+  align-items: stretch;
+}
+.ms-document > .ms-columns:not(.masthead) > .ms-column {
+  display: flex;
+  flex-direction: column;
+}
+.ms-document > .ms-columns:not(.masthead) > .ms-column > :only-child {
+  flex: 1;
+}
+.ms-column > .ms-figure,
+.ms-column > .ms-card {
+  margin: 0;
+  padding: 1rem 1.05rem;
+}
+
+/* A chart's table stays on the panel, because the numbers are what a reader checks a picture against
+ * (§11, obligation 8). It is set small and quiet under the picture, as the panel's data. */
+.ms-column > .ms-figure > table {
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--quiet);
+}
+.ms-column > .ms-figure > table :is(td, th) {
+  padding: 0.2rem 0.5rem;
+}
+.ms-column > .ms-figure > table :is(td, th):not(:first-child) {
+  text-align: right;
+}
+.ms-column > .ms-figure > table caption {
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-style: normal;
+  line-height: 1.45;
+}
+
+/* ---- the log --------------------------------------------------------------------------------------- */
+.log ul {
+  padding: 0;
+  list-style: none;
+}
+.log li {
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+.log li + li {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--rule);
+}
+.log li strong {
+  display: block;
+  font-family: var(--ms-font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--quiet);
+}
+
+/* The next week's three cards are lists of short lines; the bullets would only add noise to a panel. */
+.ms-column > .ms-card:not(.log) ul {
+  padding-left: 1rem;
+  font-size: 0.88rem;
+}
+.ms-column > .ms-card:not(.log) li + li {
+  margin-top: 0.4rem;
+}

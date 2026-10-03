@@ -15,16 +15,9 @@ body {
   --ms-fg: var(--ink);
   --ms-border: var(--rule);
 }
-.ms-document > h1 {
-  font-weight: 800;
-  letter-spacing: -0.03em;
-}
 .ms-document > h2 {
   font-weight: 700;
   letter-spacing: -0.015em;
-}
-.ms-document > .lead {
-  font-size: 1.1rem;
 }
 .eyebrow {
   font-family: var(--ms-font-mono);
@@ -32,28 +25,102 @@ body {
   letter-spacing: 0.12em;
 }
 
-/* The threshold strip: what the alert fires on, at a glance. */
+/* The opening is the page as it arrived: a banner in the alert's color, the
+ * title on the left and what fired on the right. The document says only that
+ * these are columns carrying .alert, and the thresholds are a metrics block;
+ * the banner, its color in both schemes and the stacked rows are this file. */
+.alert {
+  --alert: light-dark(#8a2d3b, #5e1824);
+  --on-alert: #fff;
+  --on-alert-quiet: #f5d5da;
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: center;
+  padding: clamp(1.25rem, 3.5vw, 2.5rem);
+  background: var(--alert);
+  color: var(--on-alert);
+}
+.alert .eyebrow {
+  color: var(--on-alert-quiet);
+}
+.alert h1 {
+  margin-top: 0.4rem;
+  color: var(--on-alert);
+  font-size: clamp(2.2rem, 4.6vw, 3.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.alert .lead {
+  max-width: 50ch;
+  font-size: 1.1rem;
+  color: var(--on-alert-quiet);
+}
+.alert .lead strong {
+  color: var(--on-alert);
+}
+.alert p:has(> .badge) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.alert .ms-span.badge + .ms-span.badge {
+  margin-left: 0;
+}
+.alert .badge {
+  border-color: rgb(255 255 255 / 0.45);
+  color: var(--on-alert);
+}
+.alert .badge.danger {
+  border-color: var(--on-alert);
+  background: var(--on-alert);
+  color: #8a2d3b;
+}
+.alert .badge.warn {
+  border-color: #f4c95d;
+  color: #f4c95d;
+}
+
+/* What fired, as rows: the signal, its threshold, and how long it has to hold. */
 .first {
+  grid-template-columns: 1fr;
   gap: 0;
-  border: 1px solid var(--rule);
-  border-left: 3px solid var(--ms-accent);
+  border: 1px solid rgb(255 255 255 / 0.28);
+  background: rgb(0 0 0 / 0.16);
 }
 .first .ms-metric {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  column-gap: 1rem;
+  padding: 0.75rem 1rem;
   border: 0;
   border-radius: 0;
-  padding: 0.7rem 1rem;
+  background: none;
 }
 .first .ms-metric + .ms-metric {
-  border-left: 1px solid var(--rule);
+  border-top: 1px solid rgb(255 255 255 / 0.2);
 }
 .first .ms-metric-label {
-  font-size: 0.65rem;
+  color: var(--on-alert-quiet);
+  font-size: 0.68rem;
   letter-spacing: 0.08em;
 }
 .first .ms-metric-value {
+  grid-row: span 2;
+  margin: 0;
+  color: var(--on-alert);
   font-family: var(--ms-font-mono);
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
+}
+.first .ms-metric-delta {
+  margin: 0.15rem 0 0;
+  color: var(--on-alert-quiet);
+  font-family: var(--ms-font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.alert + p {
+  margin-top: 0.75rem;
 }
 
 /* Steps as a checklist rather than a tutorial: square markers, tight rhythm. */

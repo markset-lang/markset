@@ -10,6 +10,7 @@ test("media types cover what the site serves", () => {
   assert.equal(contentType("reference/index.html"), "text/html; charset=utf-8");
   assert.equal(contentType("css/markset.css"), "text/css; charset=utf-8");
   assert.equal(contentType("examples/showcase/degrade.SVG"), "image/svg+xml");
+  assert.equal(contentType("examples/thumbnails/runbook.dark.webp"), "image/webp");
   assert.equal(contentType("unknown.bin"), "application/octet-stream");
 });
 
@@ -37,13 +38,15 @@ test("the dev server watches every source directory the site has", async () => {
   // that seemed to do nothing. Derived rather than listed, so the next one is
   // caught by the same rule. Files too: the mark, site/icon.svg, was recolored
   // and the watcher served the old one, because only directories were checked.
-  // The server itself and the workspace manifest are the two exceptions; every
-  // rebuild runs in a fresh process, so anything else the build reads counts.
+  // The server itself, the thumbnail script (run by hand, never by the build)
+  // and the workspace manifest are the exceptions; every rebuild runs in a
+  // fresh process, so anything else the build reads counts.
   const root = resolve(import.meta.dirname, "..", "..");
   const entries = await readdir(join(root, "site"), { withFileTypes: true });
   for (const entry of entries) {
     // Dotfiles (a Finder .DS_Store) are not sources, and git ignores them.
-    if (entry.name.startsWith(".") || ["test", "serve.ts", "package.json"].includes(entry.name)) continue;
+    if (entry.name.startsWith(".") || ["test", "serve.ts", "thumbnails.ts", "package.json"].includes(entry.name))
+      continue;
     assert.ok(WATCHED.includes(`site/${entry.name}`), `site/${entry.name} is built from but not watched`);
   }
   // And nothing in the list has been renamed out from under it.

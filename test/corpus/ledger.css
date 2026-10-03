@@ -1,6 +1,6 @@
-/* Ledger — a theme stylesheet for examples/keystone-baseline.md (spec §6).
+/* Ledger — a theme stylesheet for test/corpus/keystone-baseline.md (spec §6).
  *
- *   markset html examples/keystone-baseline.md --theme examples/ledger.css
+ *   markset html test/corpus/keystone-baseline.md --theme test/corpus/ledger.css
  *
  * A change set for a project tracker, in the register of a ledger: a serif body, a sans display face, and
  * mono for anything that is a field name or a smart value. The document names

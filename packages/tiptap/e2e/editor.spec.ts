@@ -45,8 +45,10 @@ test("every suite document and example saves byte-identical after loading in thi
       if (c.markset.includes("\n")) documents.push({ name: `${file} #${i}`, source: c.markset });
     }
   }
-  for (const file of readdirSync(join(repo, "examples")).filter((f) => f.endsWith(".md"))) {
-    documents.push({ name: file, source: readFileSync(join(repo, "examples", file), "utf8") });
+  for (const dir of ["examples", join("test", "corpus")]) {
+    for (const file of readdirSync(join(repo, dir)).filter((f) => f.endsWith(".md"))) {
+      documents.push({ name: file, source: readFileSync(join(repo, dir, file), "utf8") });
+    }
   }
   await open(page);
   expect(await page.evaluate((docs) => window.harness.roundTrip(docs), documents)).toEqual([]);

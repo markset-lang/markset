@@ -26,6 +26,7 @@
     "format": "biome check --write .",
     "site": "node --conditions=markset-source site/build.ts",
     "site:watch": "node --conditions=markset-source site/serve.ts",
+    "site:thumbnails": "node --conditions=markset-source site/thumbnails.ts",
     "vscode:build": "npm run build --workspace markset-vscode",
     "vscode:package": "npm run package --workspace markset-vscode"
   },

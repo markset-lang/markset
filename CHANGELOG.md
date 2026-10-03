@@ -4,6 +4,7 @@
 
 - **A calmer dark palette in the default stylesheet.** The dark half of `markset.css` was GitHub's: near-black, with surfaces and borders so close to the ground that a page of cards read as a stack of dark rectangles. It is now a warm charcoal with the surface a visible step above it and quieter borders. Text keeps 14:1 contrast and muted text 7:1, and every dark chart color stays above 3:1 on both new grounds. Light mode is unchanged.
 - **The site is redesigned**, over the same Markset: one sans face, real buttons, fewer boxes, full-width bands, and a short home page with a two-column hero. The essay and the comparison with prior art moved to a *Why Markset* page.
+- **The examples are fewer and more varied.** Seven documents instead of ten, because most had opened the same way. The incident review, the configuration reference and the change set left the site and are kept as test documents in `test/corpus/`; the construct tour is now the *Vocabulary tour*. The runbook opens as an alert banner, the architecture overview as a drawing sheet with a title block, and the capacity review on its chart. A new example, a weekly service dashboard, is a board of panels rather than a column of prose. The examples index shows each document's first screen, in the reader's color scheme.
 
 ## 0.3.4 — 2026-09-30
 

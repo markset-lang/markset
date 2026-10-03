@@ -14,7 +14,7 @@ interface Doc {
   source: string;
 }
 
-/** Every full document in the suite and every example. Line-grammar fragments are not documents. */
+/** Every full document in the suite, every example and the corpus. Line-grammar fragments are not documents. */
 function documents(): Doc[] {
   const docs: Doc[] = [];
   for (const file of readdirSync(`${repo}tests`).sort()) {
@@ -28,8 +28,11 @@ function documents(): Doc[] {
       docs.push({ name: `${file} #${i}${c.name ? ` ${c.name}` : ""}`, source: c.markset });
     });
   }
-  for (const file of readdirSync(`${repo}examples`).sort()) {
-    if (file.endsWith(".md")) docs.push({ name: file, source: readFileSync(`${repo}examples/${file}`, "utf8") });
+  // test/corpus holds documents retired from the site's gallery, which are still real documents worth checking.
+  for (const dir of ["examples", "test/corpus"]) {
+    for (const file of readdirSync(`${repo}${dir}`).sort()) {
+      if (file.endsWith(".md")) docs.push({ name: file, source: readFileSync(`${repo}${dir}/${file}`, "utf8") });
+    }
   }
   return docs;
 }

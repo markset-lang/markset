@@ -235,4 +235,4 @@ Actions
 ***
 
 {.small .muted}
-Ambercourt, Recall, INC-4417 and every name and number in this document are invented; it exists to show what a Markset document looks like at the length real writing runs to. Source: `examples/incident-review.md`, rendered with `examples/incident.css`.
+Ambercourt, Recall, INC-4417 and every name and number in this document are invented; it exists to show what a Markset document looks like at the length real writing runs to. Source: `test/corpus/incident-review.md`, rendered with `test/corpus/incident.css`. It was published as an example until October 2026 and is kept as a test document.

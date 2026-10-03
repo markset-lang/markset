@@ -279,4 +279,4 @@ And a question rather than a recommendation: a hundred and eighteen items carry 
 ***
 
 {.small .muted}
-Northroad, Waypoint, NRT and every field, name and number in this document are invented; it exists to show what a Markset change set looks like when the argument is a set of tables and a set of rules. Nothing here was read from any real tracker. Source: `examples/keystone-baseline.md`, rendered with `examples/ledger.css`.
+Northroad, Waypoint, NRT and every field, name and number in this document are invented; it exists to show what a Markset change set looks like when the argument is a set of tables and a set of rules. Nothing here was read from any real tracker. Source: `test/corpus/keystone-baseline.md`, rendered with `test/corpus/ledger.css`. It was published as an example until October 2026 and is kept as a test document.

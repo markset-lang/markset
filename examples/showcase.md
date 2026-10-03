@@ -1,6 +1,6 @@
 ---
 markset: 0
-title: Markset showcase
+title: Markset vocabulary tour
 theme:
   preset: technical
   accent: "#2563eb"

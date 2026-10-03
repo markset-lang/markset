@@ -23,8 +23,39 @@ body {
 }
 .ms-document > h1 {
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
 }
+
+/* The review's whole argument is one distribution, so the chart opens the page
+ * rather than waiting in the fourth section, drawn across the full width with
+ * its table set beside it rather than under it. The document says only "a
+ * figure carrying .hero"; the panel and the side-by-side are this file. */
+.ms-figure.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(14rem, 4fr);
+  gap: clamp(1rem, 3vw, 2rem);
+  align-items: center;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  border: 1px solid var(--rule);
+  border-radius: var(--ms-radius);
+  background: var(--surface);
+}
+.ms-figure.hero > table {
+  margin: 0;
+  font-size: 0.82rem;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+.ms-figure.hero > table :is(td, th) {
+  padding-block: 0.3rem;
+}
+@media (max-width: 44rem) {
+  .ms-figure.hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .ms-document > h2 {
   font-weight: 650;
   letter-spacing: -0.012em;
@@ -103,7 +134,7 @@ table,
 }
 
 /* When a step happens, set apart from what the step is. Same class and same
- * job as in examples/incident-review.md, which is worth noticing: two
+ * job as in test/corpus/incident-review.md, which is worth noticing: two
  * documents in different genres reached for the same idea independently. */
 .when {
   font-family: var(--ms-font-mono);

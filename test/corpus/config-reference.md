@@ -244,4 +244,4 @@ Changes
 ***
 
 {.small .muted}
-Halyard is invented, as is every key, default and version number on this page. It exists as a Markset example of reference documentation — the genre that is mostly tables and code — and it is the one long example that names no theme of its own, so it is read here on the site's stylesheet exactly as the site's other pages are. Source: `examples/config-reference.md`.
+Halyard is invented, as is every key, default and version number on this page. It exists as a Markset example of reference documentation — the genre that is mostly tables and code — and it names no theme of its own. It was published as an example until October 2026 and is kept as a test document. Source: `test/corpus/config-reference.md`.
