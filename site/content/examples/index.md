@@ -2,7 +2,6 @@
 markset: 0
 theme:
   preset: technical
-  accent: "#2563eb"
 ---
 
 # Examples

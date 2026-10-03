@@ -2,10 +2,9 @@
 markset: 0
 theme:
   preset: technical
-  accent: "#2563eb"
 ---
 
-::::columns{.hero ratio="11:9"}
+::::::columns{.hero ratio="11:9"}
 {.eyebrow}
 Markdown, with layout
 
@@ -19,6 +18,10 @@ Cards, grids, tabs, metrics and callouts, written as plain Markdown. A Markset f
 [v0]{.badge .success} [0.3.4]{.badge} [CommonMark superset]{.badge}
 
 ::col
+
+:::::card{.demo}
+{.eyebrow}
+Markdown source → rendered layout
 
 ```markdown
 :::metrics
@@ -35,9 +38,9 @@ Cards, grids, tabs, metrics and callouts, written as plain Markdown. A Markset f
 | Revenue | $4.2M | +12%  |
 | Churn   | 2.1%  | -0.4% |
 :::
-::::
+:::::
+::::::
 
-:::::card{.band}
 :::metrics{.stats}
 | Measure | Count |
 |---|---|
@@ -47,14 +50,13 @@ Cards, grids, tabs, metrics and callouts, written as plain Markdown. A Markset f
 :::
 
 The example above is the whole idea: a Markdown table in a fence that names what it is. Rendered, it becomes metric tiles. Anywhere else, it is the same table. The construct adds meaning without taking the content hostage.
-:::::
 
 {.eyebrow}
 Tools
 
 ## Where you can use it
 
-:::grid{cols=3}
+:::grid{cols=3 .tiles}
 - **In VS Code**
 
   The Markdown preview you already use renders the layout, every construct is offered after `:::`, and a mistake is underlined as you type.
