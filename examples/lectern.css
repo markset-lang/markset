@@ -1,0 +1,197 @@
+/* Lectern — a theme stylesheet for examples/dashboard-access.md (spec §6).
+ *
+ *   markset html examples/dashboard-access.md --theme examples/lectern.css
+ *
+ * A slide deck. Markset has no slide construct, and this file is the evidence that a deck does not need
+ * one: a slide is a card that carries .slide, and everything that makes it look like a slide is decided
+ * here. The cover is a `columns` rather than a card, because its title sits beside a panel. The document
+ * names seven roles of its own:
+ *
+ *   .slide      one slide
+ *   .cover      the title slide
+ *   .key        the slide the talk turns on
+ *   .spotlight  one person, or one card on a slide, picked out
+ *   .exhibit    a slide of screens, on a quieter ground so the screens read as screens
+ *   .appendix   the reference slide at the end
+ *   .notes      the folded callout after each slide, holding what the speaker says
+ *
+ * On a screen at least 60rem wide and 34rem tall, each slide is a 16:9 frame sized to fit the viewport,
+ * with its type set on a 1920 by 1080 grid in container units, so a slide keeps its composition at any
+ * size. Scroll snapping makes Page Down the next slide; nothing runs. On anything smaller the frames let
+ * go and the deck reads as a document of cards, which is what a phone should get. Printed, it is one
+ * slide per landscape page, with the notes left out.
+ *
+ * One thing is borrowed from the page around the document: --site-header-h, the height of a sticky bar
+ * above it, which the frame leaves room for. A host with no bar never sets it, and it falls back to 0. */
+@import url("https://fonts.googleapis.com/css2?family=Domine:wght@600;700&family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+body {
+  --ms-font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --ms-font-heading: Domine, Georgia, serif;
+  --ms-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+  /* The room the deck is shown in, and an ordinary slide in it. */
+  --stage: light-dark(#dde2dc, #0b0f16);
+  --paper: light-dark(#f6f7f4, #182030);
+  --ink: light-dark(#172033, #e9edf2);
+  --ink-soft: light-dark(#4a5566, #a8b3c2);
+  --box: light-dark(#fdfdfb, #212b3d);
+  --rule: light-dark(#d9dfd8, #2f3b50);
+  --band: light-dark(#eaeee9, #263145);
+  --teal: light-dark(#0f766e, #5ec7b8);
+  --amber: light-dark(#b45309, #f0a957);
+  --exhibit: light-dark(#eaeee9, #131a27);
+  /* The dark slides are dark in both schemes. In dark mode they drop below an ordinary slide rather than
+   * matching it, so they still read as the turns in the talk. */
+  --night: light-dark(#172033, #0d1320);
+  --night-box: light-dark(#22304a, #172137);
+  --spot: light-dark(#0f766e, #0d5d56);
+  --ms-bg: var(--stage);
+}
+body { background: var(--stage); }
+.ms-document { counter-reset: slide; }
+
+/* ---- a slide, at any size ---------------------------------------------------------------------------- */
+/* The sizes are tokens so the frame below can restate them on the 1920 grid. These are the reading sizes. */
+.ms-document > .slide {
+  --t-eyebrow: 0.75rem; --t-title: 2.25rem; --t-h2: 1.55rem; --t-h3: 1.15rem; --t-body: 1rem;
+  --t-lead: 1.25rem; --t-small: 0.85rem; --t-table: 0.9rem; --t-number: 0.75rem;
+  --ms-space: 1rem;
+  --ms-fg: var(--ink); --ms-fg-muted: var(--ink-soft); --ms-border: var(--rule); --ms-surface: var(--box); --ms-accent: var(--teal);
+  counter-increment: slide;
+  position: relative;
+  box-sizing: border-box;
+  max-width: none;
+  margin-top: 2.5rem;
+  padding: 1.75rem 1.25rem 2.5rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 12px 32px -16px rgb(0 0 0 / 0.3);
+  scroll-margin-top: calc(var(--site-header-h, 0px) + 1.5rem);
+}
+.ms-document > .slide:first-child { margin-top: 0; }
+.slide > * { font-size: var(--t-body); }
+.slide p, .slide li { line-height: 1.4; }
+.slide :is(h1, h2) { font-family: var(--ms-font-heading); font-weight: 700; letter-spacing: -0.01em; color: var(--ink); text-wrap: balance; }
+.slide h1 { font-size: var(--t-title); line-height: 1.1; }
+.slide h2 { font-size: var(--t-h2); line-height: 1.15; }
+.slide h3 { font-family: var(--ms-font-body); font-size: var(--t-h3); font-weight: 600; line-height: 1.25; letter-spacing: 0; }
+.slide .eyebrow { font-family: var(--ms-font-body); font-size: var(--t-eyebrow); font-weight: 600; letter-spacing: 0.125em; color: var(--teal); }
+.slide .eyebrow + :is(h1, h2) { margin-top: 0.3em; }
+.slide > h2 + * { margin-top: calc(var(--ms-space) * 1.2); }
+.slide .lead { font-size: var(--t-lead); line-height: 1.35; color: var(--ink-soft); }
+.slide .small { font-size: var(--t-small); color: var(--ink-soft); }
+.slide code { font-size: 0.85em; background: none; padding: 0; color: var(--teal); }
+/* The number in the corner. It repeats what the order already says, so it is given empty alternative
+ * text, with the plain declaration first for a browser that does not know that syntax. */
+.ms-document > .slide:not(.cover)::after {
+  content: counter(slide);
+  /* biome-ignore lint/suspicious/noDuplicateProperties: the pair is the point — the first is the fallback for the second. */
+  content: counter(slide) / "";
+  position: absolute; right: 1.25rem; bottom: 0.9rem;
+  font-size: var(--t-number); color: var(--ink-soft); font-variant-numeric: tabular-nums;
+}
+
+/* Boxes on a slide: grid items and the cover's panel. */
+.slide .ms-grid-item { background: var(--box); border: 1px solid var(--rule); border-radius: var(--ms-radius); padding: var(--ms-space); }
+.slide .ms-grid-item > * + * { margin-top: calc(var(--ms-space) * 0.4); }
+.slide .ms-grid-item.warn h3 { color: var(--amber); }
+.slide .ms-grid-item > p:first-child:has(+ h3) code { font-size: var(--t-eyebrow); font-weight: 500; letter-spacing: 0.08em; }
+
+/* Tables: a tinted header band and hairlines, no box. */
+.slide table { font-size: var(--t-table); }
+.slide :is(th, td) { padding: 0.5em 0.9em; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.slide th { background: var(--band); font-weight: 600; }
+.slide tr:last-child td { border-bottom: 0; }
+
+/* A screenshot is a light screen whatever the scheme, so it takes a hairline and a shadow rather than a
+ * surface of its own: on the dark and teal grounds that is what keeps it reading as a screen. */
+.slide .ms-figure > img { width: 100%; border: 1px solid var(--rule); border-radius: calc(var(--ms-radius) / 2); box-shadow: 0 6px 20px -10px rgb(0 0 0 / 0.35); }
+.slide .ms-figure figcaption { margin-top: 0.6em; font-size: var(--t-small); color: var(--ink-soft); }
+.slide .ms-column > h3 + .ms-figure { margin-top: calc(var(--ms-space) * 0.5); }
+
+/* The dark grounds. Each restates the slide's own tokens, which the mapping above reads. */
+.slide:is(.cover, .key, .appendix) {
+  --paper: var(--night); --box: var(--night-box); --band: var(--night-box); --rule: #2c3b55;
+  --ink: #f6f7f4; --ink-soft: #c9d3df; --teal: #5ec7b8;
+}
+.slide.spotlight, .slide .ms-grid-item.spotlight {
+  --paper: var(--spot); --rule: rgb(246 247 244 / 0.35); --ink: #f6f7f4; --ink-soft: #e6f4f1; --teal: #e6f4f1;
+}
+.slide .ms-grid-item.spotlight { background: var(--spot); border-color: transparent; color: var(--ink); }
+.slide.exhibit { --paper: var(--exhibit); }
+
+/* The cover: title down the left, the panel beside it. */
+.slide.cover { --ms-gap: 5%; align-items: stretch; }
+.cover > .ms-column:first-child { display: flex; flex-direction: column; }
+.cover > .ms-column:first-child > h1 { margin-top: auto; }
+.cover > .ms-column:first-child > .small { margin-top: auto; padding-top: var(--ms-space); }
+.cover > .ms-column:last-child { align-self: center; }
+.cover .ms-card { background: color-mix(in oklab, var(--night), black 30%); border: 1px solid var(--rule); border-radius: var(--ms-radius); padding: calc(var(--ms-space) * 1.1); }
+.cover .ms-card-title { font-family: var(--ms-font-body); font-size: var(--t-eyebrow); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); }
+.cover .ms-card table { font-size: var(--t-body); }
+.cover .ms-card :is(th, td) { border: 0; padding: 0.35em 1em 0.35em 0; }
+.cover .ms-card td:first-child { color: var(--ink-soft); }
+/* The panel's title already says what the columns are, so the header row is kept for a screen reader only. */
+.cover .ms-card thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* A Reports viewer's three steps, as white markers on the teal ground. */
+.slide .ms-steps { font-size: var(--t-h3); }
+.slide .ms-step { padding: 0.3em 0 0 2.75em; min-height: 2em; }
+.slide .ms-step::before { width: 2em; height: 2em; font-size: 1em; background: var(--ink); color: var(--paper); }
+.slide .ms-step:not(:last-child)::after { left: calc(1em - 1px); top: 2.25em; border-color: var(--rule); }
+
+/* Narrow: one lane inside a slide, whatever the source's ratio. */
+.slide.cover, .slide .ms-columns { grid-template-columns: 1fr; }
+.slide.cover > .ms-column + .ms-column { margin-top: 1.5rem; }
+
+/* ---- speaker notes ------------------------------------------------------------------------------------ */
+/* Under each slide, folded, the way a presenter view keeps them under the slide rather than on it. */
+.ms-document > .notes { max-width: none; margin-top: 0.75rem; padding: 0 0.25rem; border: 0; border-radius: 0; background: none; box-shadow: none; color: var(--ink-soft); font-size: 0.95rem; line-height: 1.55; }
+.notes > .ms-callout-title { width: fit-content; font-family: var(--ms-font-body); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+.notes[open] > .ms-callout-title, .notes > .ms-callout-title:hover { color: var(--teal); }
+.notes .ms-callout-body { max-width: 46rem; }
+
+/* ---- the frame ---------------------------------------------------------------------------------------- */
+/* The document is as wide as the tallest 16:9 slide that fits under the bar, so a slide is always seen
+ * whole, and the slide fills the document. That puts the slide's width and the document's content box in
+ * step, which is what lets padding in percent stand in for the 1920 grid on the slide itself. Container
+ * units cannot: a slide is not its own container, so they serve its contents only. */
+@media print, (min-width: 60rem) and (min-height: 34rem) {
+  html { scroll-snap-type: y proximity; }
+  .ms-document {
+    max-width: min(var(--ms-measure-wide), 100%, calc((100svh - var(--site-header-h, 0px) - 6rem) * 16 / 9 + 3rem));
+    padding-inline: 1.5rem;
+  }
+  .ms-document > .slide {
+    --u: calc(100cqi / 1920);
+    --t-eyebrow: calc(24 * var(--u)); --t-title: calc(96 * var(--u)); --t-h2: calc(64 * var(--u));
+    --t-h3: calc(36 * var(--u)); --t-body: calc(30 * var(--u)); --t-lead: calc(40 * var(--u));
+    --t-small: calc(24 * var(--u)); --t-table: calc(27 * var(--u)); --t-number: calc(24 * var(--u));
+    --ms-space: calc(40 * var(--u));
+    --ms-radius: calc(16 * var(--u));
+    container-type: inline-size;
+    aspect-ratio: 16 / 9;
+    padding: 6.667% 6.667% 7.5%;
+    scroll-snap-align: start;
+    scroll-margin-top: calc(var(--site-header-h, 0px) + 2.5rem);
+  }
+  .ms-document > .ms-card.slide { display: flex; flex-direction: column; }
+  .ms-document > .slide:not(.cover)::after { right: 6.667%; bottom: 4.5%; }
+  .slide.cover { grid-template-columns: var(--ms-ratio); }
+  .slide.cover > .ms-column + .ms-column { margin-top: 0; }
+  .slide .ms-columns { grid-template-columns: var(--ms-ratio, repeat(auto-fit, minmax(0, 1fr))); --ms-gap: calc(48 * var(--u)); }
+  .slide .ms-grid[data-cols="3"] { --ms-cols: 3; }
+  .slide .ms-grid { --ms-gap: calc(32 * var(--u)); }
+  .slide table { display: table; }
+}
+
+@media print {
+  @page { size: landscape; margin: 0.4in; }
+  html { scroll-snap-type: none; }
+  body { background: none; }
+  .ms-document { max-width: none; padding: 0; }
+  .ms-document > .notes { display: none; }
+  .ms-document > .slide { margin: 0; box-shadow: none; break-inside: avoid; break-after: page; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}

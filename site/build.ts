@@ -254,6 +254,15 @@ export const EXAMPLES: Array<{
     blurb:
       "A proposal to change a system, written to be executed: a fact strip, three data tables whose columns line up on the decimal, four automation rules as cards of labeled parts, and a page wireframe that is `steps` inside a `card`. Every tone is a reserved class; the theme supplies the rest.",
   },
+  {
+    slug: "dashboard-access",
+    file: "dashboard-access.md",
+    title: "Slide deck",
+    theme: "lectern.css",
+    kicker: "Presentation",
+    blurb:
+      "A team demo in eleven slides, with no slide construct: each slide is a card carrying `.slide`, its speaker notes are a folded callout beneath it, and its screenshots are captioned figures. The theme frames every slide at 16:9, pages with scroll snapping and prints one slide to a page; on a phone the frames let go and it reads as a document.",
+  },
 ];
 
 /**
@@ -360,6 +369,11 @@ async function writeSite(outDir: string): Promise<string[]> {
   await cp(join(root, "examples", "degrade.svg"), join(out, "examples", "showcase", "degrade.svg"));
   for (const example of EXAMPLES) {
     if (example.theme) await cp(join(root, "examples", example.theme), join(out, "css", example.theme));
+    // An example's images sit in a folder named after its file, and the document links them relative to itself.
+    // Putting the folder beside the page keeps every link the same here as in the repository.
+    const assets = join(root, "examples", basename(example.file, ".md"));
+    const found = await readdir(assets).catch(() => null);
+    if (found) await cp(assets, join(out, "examples", example.slug, basename(assets)), { recursive: true });
   }
   await cp(join(root, "site", "playground", "playground.css"), join(out, "css", "playground.css"));
   await bundlePlayground(out);
