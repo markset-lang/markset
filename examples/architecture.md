@@ -16,22 +16,7 @@ Architecture overview · revision 11
 {.lead}
 Tidewater takes events from anything that can open a socket and puts them where they need to go, at about four million a minute on a normal weekday. This page is the map: what the parts are, how a single event moves through them, and which of the obvious designs we did not pick. It is the page to read before your first change, and the one to argue with when the shape stops fitting.
 
-[Revision 11]{.badge .info} [Owners: Platform]{.badge} [Invented system]{.badge .warn}
-
-> [!NOTE]
-> **Every picture here is text.** The diagrams are ASCII fences in the source of this file. They are drawn when the page is rendered and they read as diagrams when it is not — in a pull request, in a terminal, in a mail thread. Nothing below is an image file anyone has to keep in step with the prose.
-
-{.tick}
-***
-
-{.eyebrow}
-The shape of it
-
-## Three tiers, one direction
-
-Events move left to right and never back. That is the single most useful thing to know about the system, and most of the surprises people hit come from assuming otherwise.
-
-:::figure[Tidewater end to end. Collectors accept, the core decides, sinks deliver. Nothing flows right to left.]{#fig-overview}
+:::figure[Tidewater end to end. Collectors accept, the core decides, sinks deliver. Nothing flows right to left.]{#fig-overview .sheet}
 ```ascii
            collectors           core                       sinks
 
@@ -48,6 +33,25 @@ Events move left to right and never back. That is the single most useful thing t
       +------------+                                  +---------------+
 ```
 :::
+
+:::metrics{.title-block}
+| Field | Value |
+|---|---|
+| Drawing | Tidewater end to end |
+| Revision | 11 |
+| Owners | Platform |
+| Status | Invented system |
+:::
+
+{.tick}
+***
+
+{.eyebrow}
+The shape of it
+
+## Three tiers, one direction
+
+Events move left to right in the drawing above, and never back. That is the single most useful thing to know about the system, and most of the surprises people hit come from assuming otherwise.
 
 :::grid{cols=3}
 - ### Collectors
@@ -173,6 +177,9 @@ When a proposal turns one of these arrows around, or adds a box between two that
 Reading the source
 
 ## A note on the diagrams
+
+> [!NOTE]
+> **Every picture here is text.** The diagrams are ASCII fences in the source of this file. They are drawn when the page is rendered and they read as diagrams when it is not — in a pull request, in a terminal, in a mail thread. Nothing on this page is an image file anyone has to keep in step with the prose.
 
 The pictures on this page are fenced code blocks with `ascii` as the info string, each wrapped in a `figure` so it has a caption. That caption is not decoration: it is the diagram's text alternative, and a renderer will not draw a diagram that has none.
 

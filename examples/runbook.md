@@ -8,23 +8,32 @@ theme:
   radius: none
 ---
 
+::::columns{.alert ratio="3:2"}
+
 {.eyebrow}
 Runbook · CHK-LAT · Page severity 2
 
 # Checkout latency above 800ms
 
 {.lead}
-You have been paged because p99 checkout latency has been above 800ms for five minutes. This page is written to be read while that is still happening. **Do the triage, then find your symptom.** Everything below the first two sections is reference.
+You have been paged because p99 checkout latency has been above 800ms for five minutes. This page is written to be read while that is still happening. **Do the triage, then find your symptom.**
 
 [On call: payments]{.badge .danger} [Escalate after 20 min]{.badge .warn} [Last reviewed: 2026-09]{.badge}
 
+::col
+
 :::metrics{.first direction=inverse}
-| Signal | Threshold | Page at |
+| Signal | Threshold | Sustained |
 |---|---|---|
-| Checkout p99 | 800ms | 5 min |
-| Checkout error rate | 0.5% | 2 min |
-| Authorization p99 | 2s | 5 min |
+| Checkout p99 | 800ms | for 5 min |
+| Checkout error rate | 0.5% | for 2 min |
+| Authorization p99 | 2s | for 5 min |
 :::
+
+::::
+
+{.small .muted}
+Everything below the first two sections is reference.
 
 {.tick}
 ***

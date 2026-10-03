@@ -122,6 +122,30 @@ html { overflow-x: clip; }
 .tiles .ms-grid-item > p:first-child > strong:only-child { color: var(--site-accent-text); }
 .tiles .ms-grid-item > p:last-child:has(> .button) { margin-top: auto; padding-top: 0.9rem; }
 
+/* The examples index: each document opens with its first screen, taken by site/thumbnails.ts in both schemes,
+ * and the one matching the scheme in force shows. The heading's link is stretched over the whole item, so the
+ * picture can be clicked without being a second link to the same page. */
+.gallery .ms-grid-item { position: relative; }
+.gallery .ms-grid-item > p:first-child { margin: 0 0 1rem; }
+.gallery .ms-grid-item > p:first-child + h3 { margin-top: 0; font-size: 1.05rem; letter-spacing: -0.01em; }
+.gallery .thumb img { display: block; width: 100%; aspect-ratio: 1.6; object-fit: cover; object-position: top; border: 1px solid var(--ms-border); border-radius: 0.5rem; background: var(--ms-surface); transition: border-color 0.15s; }
+.gallery .ms-grid-item:hover .thumb img { border-color: var(--site-accent-bar); }
+.gallery h3 a::after { content: ""; position: absolute; inset: 0; }
+.gallery .ms-grid-item > p:last-child a { position: relative; z-index: 1; }
+/* An odd one out at the end spans both columns, picture beside text, rather than leaving half a row empty. */
+@media (min-width: 36.01rem) {
+  .gallery .ms-grid-item:last-child:nth-child(odd) { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: calc(var(--ms-space) * 2.25); align-content: start; }
+  .gallery .ms-grid-item:last-child:nth-child(odd) > * { grid-column: 2; }
+  .gallery .ms-grid-item:last-child:nth-child(odd) > p:first-child { grid-column: 1; grid-row: 1 / span 9; margin: 0; }
+}
+.gallery .thumb.dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  body:not([data-scheme="light"]):not(:has(#ms-scheme-light:checked)) .gallery .thumb.light { display: none; }
+  body:not([data-scheme="light"]):not(:has(#ms-scheme-light:checked)) .gallery .thumb.dark { display: block; }
+}
+body:is([data-scheme="dark"], :has(#ms-scheme-dark:checked)) .gallery .thumb.light { display: none; }
+body:is([data-scheme="dark"], :has(#ms-scheme-dark:checked)) .gallery .thumb.dark { display: block; }
+
 /* Ruler divider between major sections: {.tick} on a thematic break, now a plain hairline. */
 .ms-document > hr.tick { max-width: none; border: 0; border-top: 1px solid var(--ms-border); margin-block: var(--site-section); }
 

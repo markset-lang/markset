@@ -173,9 +173,9 @@ export const EXAMPLES: Array<{
   {
     slug: "showcase",
     file: "showcase.md",
-    title: "Showcase",
+    title: "Vocabulary tour",
     toggles: true,
-    kicker: "Construct tour",
+    kicker: "Every construct",
     blurb:
       "Every construct at the size it would really be used, each carrying a tab that holds the exact source which produced it. It names no theme of its own, so it shows the vocabulary on whatever stylesheet renders it.",
   },
@@ -204,15 +204,7 @@ export const EXAMPLES: Array<{
     theme: "runbook.css",
     kicker: "Runbook",
     blurb:
-      "The shortest and densest genre there is, read under time pressure, where the first screen has to be the answer. Triage steps that rank themselves, a symptom grid, procedures in tabs and an escalation table.",
-  },
-  {
-    slug: "config-reference",
-    file: "config-reference.md",
-    title: "Configuration reference",
-    kicker: "Reference",
-    blurb:
-      "Mostly tables and code: resolution order, a table of keys per section, the same configuration in four formats, and a deprecation table. The one long example that names no theme, so it is read on the site's own stylesheet.",
+      "The shortest and densest genre there is, read under time pressure, so it opens the way the alert did: a banner with what fired beside the title. Then triage steps that rank themselves, a symptom grid, procedures in tabs and an escalation table.",
   },
   {
     slug: "architecture",
@@ -221,16 +213,7 @@ export const EXAMPLES: Array<{
     theme: "tidewater.css",
     kicker: "Architecture",
     blurb:
-      "The genre that is mostly diagrams. A system map, a state machine and a deployment topology, each an ASCII fence in the source rather than an image file kept in step by hand — and one fence deliberately left as code.",
-  },
-  {
-    slug: "incident-review",
-    file: "incident-review.md",
-    title: "Incident review",
-    theme: "incident.css",
-    kicker: "Postmortem",
-    blurb:
-      "A postmortem in the register of a printed report: an impact strip, a timeline on a rail, a factors table with a real caption, and an action list where the committed items mark themselves.",
+      "The genre that is mostly diagrams, opening on a drawing sheet with its title block. A system map, a state machine and a deployment topology, each an ASCII fence in the source rather than an image file kept in step by hand — and one fence deliberately left as code.",
   },
   {
     slug: "capacity-review",
@@ -239,16 +222,16 @@ export const EXAMPLES: Array<{
     theme: "cistern.css",
     kicker: "Data readout",
     blurb:
-      "The genre that argues from quantities: a fleet strip, four data tables that carry the whole case, and a distribution drawn as an ASCII plot. Written to find out what a document wants when the numbers are the argument.",
+      "The genre that argues from quantities, opening on the one chart the case rests on with its table beside it, then a fleet strip and the tables that carry the rest. Written to find out what a document wants when the numbers are the argument.",
   },
   {
-    slug: "keystone-baseline",
-    file: "keystone-baseline.md",
-    title: "Change set",
-    theme: "ledger.css",
-    kicker: "Change set",
+    slug: "service-review",
+    file: "service-review.md",
+    title: "Service dashboard",
+    theme: "console.css",
+    kicker: "Dashboard",
     blurb:
-      "A proposal to change a system, written to be executed: a fact strip, three data tables whose columns line up on the decimal, four automation rules as cards of labeled parts, and a page wireframe that is `steps` inside a `card`. Every tone is a reserved class; the theme supplies the rest.",
+      "A weekly service review whose page is a board of panels rather than a column of prose: a masthead in `columns`, the week's numbers, a `grid` of services whose status is the tone of a badge, and three charts drawn from their tables, each panel the same height as its neighbour.",
   },
   {
     slug: "dashboard-access",
@@ -260,6 +243,10 @@ export const EXAMPLES: Array<{
       "A team demo in eleven slides, with no slide construct: each slide is a card carrying `.slide`, its speaker notes are a folded callout beneath it, and its screenshots are captioned figures. The theme frames every slide at 16:9, pages with scroll snapping and prints one slide to a page; on a phone the frames let go and it reads as a document.",
   },
 ];
+
+/** The tour is set apart on the index as the place to start; the rest are the gallery, each with a thumbnail. */
+export const TOUR = EXAMPLES.find((e) => e.toggles) ?? EXAMPLES[0];
+export const GALLERY = EXAMPLES.filter((e) => e !== TOUR);
 
 /**
  * Diagram engines for this site (spec §10).
@@ -371,6 +358,11 @@ async function writeSite(outDir: string): Promise<string[]> {
     const found = await readdir(assets).catch(() => null);
     if (found) await cp(assets, join(out, "examples", example.slug, basename(assets)), { recursive: true });
   }
+  // Screenshots taken by site/thumbnails.ts and committed; the manifest is a record for the test, not for readers.
+  await cp(join(root, "site", "thumbnails"), join(out, "examples", "thumbnails"), {
+    recursive: true,
+    filter: (src) => !src.endsWith(".json"),
+  });
   await cp(join(root, "site", "playground", "playground.css"), join(out, "css", "playground.css"));
   await bundlePlayground(out);
   await bundleEditorDemo(out);
@@ -506,8 +498,8 @@ async function examplesIndex(): Promise<Page> {
   // ones, and the index dogfoods `grid` on the page that advertises the
   // vocabulary. A generation bug fails the build loudly rather than shipping
   // broken markup.
-  const tour = EXAMPLES.find((e) => e.toggles) ?? EXAMPLES[0];
-  const documents = EXAMPLES.filter((e) => e !== tour);
+  const tour = TOUR;
+  const documents = GALLERY;
   const footer = (e: (typeof EXAMPLES)[number]): string =>
     [e.kicker, e.theme ? `theme \`${e.theme}\`` : "no theme", `[source](${REPO}/blob/main/examples/${e.file})`].join(
       " · ",
@@ -528,10 +520,16 @@ async function examplesIndex(): Promise<Page> {
     `{.small .muted}`,
     `Every company, system and number in these is invented.`,
     ``,
-    `:::grid{cols=2}`,
+    // Each document opens with its first screen, once per color scheme; site.css shows the one in force.
+    // The pictures are decorative (empty alt) and not links of their own: the heading is the one link,
+    // and site.css stretches it over the whole item, so a reader can click the picture without a screen
+    // reader hearing every destination twice.
+    `:::grid{.gallery cols=2}`,
     ...documents.map((e) =>
       [
-        `- ### [${e.title}](${e.slug}/index.html)`,
+        `- [![](thumbnails/${e.slug}.light.webp)]{.thumb .light}[![](thumbnails/${e.slug}.dark.webp)]{.thumb .dark}`,
+        ``,
+        `  ### [${e.title}](${e.slug}/index.html)`,
         ``,
         `  ${e.blurb}`,
         ``,
@@ -550,7 +548,8 @@ async function examplesIndex(): Promise<Page> {
   return {
     path: "examples/index.html",
     title: "Examples",
-    body: renderHtml(ast) + renderHtml(listing.ast),
+    // Lazy, so a reader downloads only the scheme they are looking at: the other set is display: none.
+    body: renderHtml(ast) + renderHtml(listing.ast).replaceAll("<img ", '<img loading="lazy" '),
   };
 }
 

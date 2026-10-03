@@ -57,6 +57,55 @@ body {
   font-size: 0.85em;
 }
 
+/* The first picture is the page's opening, so it is set as a drawing sheet:
+ * squared paper, a ruled frame, and a title block docked under its right-hand
+ * corner the way an engineering drawing carries one. The document says
+ * "a figure carrying .sheet" and "a metrics block carrying .title-block";
+ * the paper, the frame and the docking are this file's reading of those. */
+.ms-figure.sheet {
+  --sheet-ink: light-dark(#6f8f9d, #4d6977);
+  --sheet-grid: light-dark(#e0ecf1, #1a2830);
+  padding: clamp(1rem, 3.5vw, 2.25rem);
+  border: 1px solid var(--sheet-ink);
+  border-radius: 0;
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(var(--sheet-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--sheet-grid) 1px, transparent 1px);
+  background-size: 1.25rem 1.25rem;
+  background-position: -1px -1px;
+}
+.ms-document > .sheet + .title-block {
+  margin-top: 0;
+}
+.title-block {
+  --sheet-ink: light-dark(#6f8f9d, #4d6977);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0;
+}
+.title-block .ms-metric {
+  margin: 0 0 0 -1px;
+  padding: 0.45rem 0.85rem 0.5rem;
+  border: 1px solid var(--sheet-ink);
+  border-top: 0;
+  border-radius: 0;
+  background: var(--surface);
+}
+.title-block .ms-metric-label {
+  font-family: var(--ms-font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+}
+.title-block .ms-metric-value {
+  margin-top: 0.15rem;
+  font-family: var(--ms-font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
 /* A code block that is deliberately not a diagram should not look like a
  * failed one, so it keeps the plain code surface with no border of its own. */
 .ms-document > pre {

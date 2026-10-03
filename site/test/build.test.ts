@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { access, mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, normalize, resolve } from "node:path";
-import { build, EXAMPLES } from "../build.ts";
+import { build, EXAMPLES, GALLERY } from "../build.ts";
+import { SCHEMES, sourceHash, THUMBNAILS } from "../thumbnails.ts";
 
 /**
  * Build once, into a temporary directory. Tests used to build into dist/ three
@@ -172,6 +173,29 @@ test("every document under examples/ is published, and every published one exist
   const onDisk = (await readdir(dir)).filter((f) => f.endsWith(".md")).sort();
   const listed = EXAMPLES.map((e) => e.file).sort();
   assert.deepEqual(onDisk, listed, "examples/ and EXAMPLES in site/build.ts must match exactly");
+});
+
+test("every example in the gallery has a thumbnail in each scheme, taken from what it is now", async () => {
+  // The thumbnails are committed rather than taken at build time (site/thumbnails.ts says why), so the two
+  // ways they go wrong are checked here: a picture missing or left behind, and a picture of an example that
+  // has changed since. The fix for either is `npm run site:thumbnails`.
+  const manifest = JSON.parse(await readFile(join(THUMBNAILS, "manifest.json"), "utf8")) as Record<string, string>;
+  const expected = GALLERY.flatMap((e) => SCHEMES.map((scheme) => `${e.slug}.${scheme}.webp`)).sort();
+  const onDisk = (await readdir(THUMBNAILS)).filter((f) => f.endsWith(".webp")).sort();
+  assert.deepEqual(onDisk, expected, "site/thumbnails/ must hold exactly the gallery's thumbnails");
+  assert.deepEqual(Object.keys(manifest).sort(), GALLERY.map((e) => e.slug).sort());
+  for (const example of GALLERY) {
+    assert.equal(
+      manifest[example.slug],
+      await sourceHash(example),
+      `${example.file} has changed since its thumbnails were taken: run npm run site:thumbnails`,
+    );
+  }
+  const index = await readFile(join(dist, "examples", "index.html"), "utf8");
+  for (const file of expected) {
+    assert.match(index, new RegExp(`<img loading="lazy" src="thumbnails/${file.replace(/\./g, "\\.")}" alt="">`));
+    await access(join(dist, "examples", "thumbnails", file));
+  }
 });
 
 test("the reader can choose a color scheme, and it survives the next page", async () => {

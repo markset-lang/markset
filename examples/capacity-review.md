@@ -18,6 +18,18 @@ Cistern has been sized for four years against an average tenant holding 945 GB. 
 
 [Planning input]{.badge} [FY27]{.badge .info} [Decision by 14 October]{.badge .warn}
 
+:::figure[Tenants by stored volume. The mean, 945 GB, falls in the 250 GB to 1 TB band — the emptiest bucket in the fleet.]{#fig-dist .hero chart=bar}
+| Band | Tenants |
+|---|---|
+| under 10 GB | 6,140 |
+| 10 to 50 GB | 3,660 |
+| 50 to 250 GB | 760 |
+| 250 GB to 1 TB | 390 |
+| 1 to 8 TB | 810 |
+| 8 to 40 TB | 290 |
+| over 40 TB | 50 |
+:::
+
 :::metrics{.fleet}
 | Measure | Value | Change |
 |---|---|---|
@@ -63,19 +75,8 @@ The finding
 
 ## Two populations, one average
 
-Stored volume per tenant is not distributed around a center. It has two of them, roughly two orders of magnitude apart, with the arithmetic mean sitting in the gap between.
+Stored volume per tenant is not distributed around a center. It has two of them, roughly two orders of magnitude apart, with the arithmetic mean sitting in the gap between — which is the chart at the top of this page, and the whole of the finding.
 
-:::figure[Tenants by stored volume. The mean, 945 GB, falls in the 250 GB to 1 TB band — the emptiest bucket in the fleet.]{#fig-dist chart=bar}
-| Band | Tenants |
-|---|---|
-| under 10 GB | 6,140 |
-| 10 to 50 GB | 3,660 |
-| 50 to 250 GB | 760 |
-| 250 GB to 1 TB | 390 |
-| 1 to 8 TB | 810 |
-| 8 to 40 TB | 290 |
-| over 40 TB | 50 |
-:::
 
 ::::columns{ratio="3:2"}
 The left population is what self-serve signup produces: a workspace, a few thousand documents, a long flat life. There are 9,800 of them and together they hold 116 TB, which is one percent of the fleet. They are not growing in bytes and they are not going to.
