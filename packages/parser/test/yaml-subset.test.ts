@@ -34,6 +34,23 @@ test("maps, nesting, scalars, and comments", () => {
   });
 });
 
+test("a block sequence at its key's own indentation is the key's value, as YAML allows", () => {
+  const { value, error } = parseYamlSubset(
+    "markset: 0\nowner:\n  audiences:\n  - engineering\n  - product\n  revision: 1\nitems:\n- name: a\n  tags:\n  - x\n- name: b\nafter: true\n",
+  );
+  assert.equal(error, null);
+  assert.deepEqual(value, {
+    markset: 0,
+    owner: { audiences: ["engineering", "product"], revision: 1 },
+    items: [{ name: "a", tags: ["x"] }, { name: "b" }],
+    after: true,
+  });
+  // Indented and indentless spellings of the same document read the same.
+  assert.deepEqual(parseYamlSubset("a:\n- 1\n- 2\n").value, parseYamlSubset("a:\n  - 1\n  - 2\n").value);
+  // A sequence item where a key belongs is still an error, not a value for the key before it.
+  assert.equal(parseYamlSubset("a: 1\n- 2\n").error?.message, 'expected "key: value"');
+});
+
 test("block and flow sequences, including maps in sequences", () => {
   const { value, error } = parseYamlSubset(
     'tags: [a, "b, c", 3]\nauthors:\n  - name: X\n    role: y\n  - name: Z\nplain:\n  - one\n  - two\n',

@@ -240,6 +240,45 @@
   },
   {
     "section": "frontmatter",
+    "name": "a block sequence at its key's indentation is read, so the theme after it applies",
+    "markset": "---\nmarkset: 0\naudiences:\n- engineering\n- product\nowners:\n- name: platform\n  areas:\n  - infrastructure\ntheme:\n  preset: technical\n---\n\n# Title\n",
+    "ast": {
+      "type": "root",
+      "children": [
+        {
+          "type": "yaml",
+          "value": "markset: 0\naudiences:\n- engineering\n- product\nowners:\n- name: platform\n  areas:\n  - infrastructure\ntheme:\n  preset: technical"
+        },
+        {
+          "type": "heading",
+          "depth": 1,
+          "children": [
+            {
+              "type": "text",
+              "value": "Title"
+            }
+          ]
+        }
+      ],
+      "frontmatter": {
+        "markset": 0,
+        "theme": {
+          "preset": "technical",
+          "accent": null,
+          "density": null,
+          "radius": null,
+          "type": {
+            "body": null,
+            "heading": null,
+            "scale": null
+          }
+        }
+      }
+    },
+    "valid": true
+  },
+  {
+    "section": "frontmatter",
     "name": "unreadable frontmatter warns and is ignored",
     "markset": "---\nok: 1\n  stray: 2\n---\n",
     "ast": {

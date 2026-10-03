@@ -45,7 +45,7 @@ export function parseYamlSubset(source: string): YamlResult {
 
   function parseBlock(indent: number): YamlValue {
     const line = lines[pos];
-    if (line.text.startsWith("- ") || line.text === "-") return parseSequence(indent);
+    if (isSequenceItem(line.text)) return parseSequence(indent);
     return parseMap(indent);
   }
 
@@ -59,8 +59,13 @@ export function parseYamlSubset(source: string): YamlResult {
       const rest = match[2];
       pos++;
       if (rest === undefined) {
-        // Nested block, or null when nothing deeper follows.
-        map[key] = pos < lines.length && lines[pos].indent > indent ? parseBlock(lines[pos].indent) : null;
+        // Nested block, or null when nothing deeper follows. A block sequence may
+        // also sit at its key's own indentation ("indentless"), which YAML allows
+        // for a mapping value and which most YAML writers emit by default.
+        if (pos < lines.length && lines[pos].indent > indent) map[key] = parseBlock(lines[pos].indent);
+        else if (pos < lines.length && lines[pos].indent === indent && isSequenceItem(lines[pos].text))
+          map[key] = parseSequence(indent);
+        else map[key] = null;
       } else if (rest === "|" || rest === ">") {
         map[key] = parseBlockScalar(indent, rest === ">");
       } else {
@@ -76,11 +81,7 @@ export function parseYamlSubset(source: string): YamlResult {
 
   function parseSequence(indent: number): YamlValue[] {
     const list: YamlValue[] = [];
-    while (
-      pos < lines.length &&
-      lines[pos].indent === indent &&
-      (lines[pos].text.startsWith("- ") || lines[pos].text === "-")
-    ) {
+    while (pos < lines.length && lines[pos].indent === indent && isSequenceItem(lines[pos].text)) {
       const line = lines[pos];
       const rest = line.text === "-" ? "" : line.text.slice(2).trim();
       if (rest === "") {
@@ -103,6 +104,10 @@ export function parseYamlSubset(source: string): YamlResult {
     while (pos < lines.length && lines[pos].indent > indent) parts.push(lines[pos++].text);
     return folded ? parts.join(" ") : parts.join("\n");
   }
+}
+
+function isSequenceItem(text: string): boolean {
+  return text.startsWith("- ") || text === "-";
 }
 
 function parseScalar(text: string, line: number): YamlValue {
