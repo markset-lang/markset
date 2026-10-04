@@ -279,8 +279,32 @@ function insertEntry(id: string): void {
   }
 }
 
+/**
+ * The Insert button opens the chips and choosing one closes them, so the editor
+ * keeps its height except while something is being chosen. Escape closes them
+ * too, and puts focus back on the button.
+ */
+const insertToggle = document.getElementById("pg-insert-toggle") as HTMLButtonElement;
+const insertMenu = document.getElementById("pg-insert") as HTMLElement;
+function showInsert(open: boolean): void {
+  insertMenu.hidden = !open;
+  insertToggle.setAttribute("aria-expanded", String(open));
+}
+insertToggle.addEventListener("click", () => {
+  showInsert(insertMenu.hidden === true);
+  if (!insertMenu.hidden) insertMenu.querySelector<HTMLElement>("[data-insert]")?.focus();
+});
+insertMenu.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  showInsert(false);
+  insertToggle.focus();
+});
+
 for (const button of document.querySelectorAll<HTMLElement>("[data-insert]")) {
-  button.addEventListener("click", () => insertEntry(button.dataset.insert ?? ""));
+  button.addEventListener("click", () => {
+    if (insertMenu.contains(button)) showInsert(false);
+    insertEntry(button.dataset.insert ?? "");
+  });
 }
 
 /**
