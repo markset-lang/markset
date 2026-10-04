@@ -70,6 +70,10 @@ tsconfig.build.json  emit settings for publishing; tsconfig.json stays noEmit an
 site/       static site generator (build.ts) and content; every page is Markset rendered by the packages above.
             Nav lives in NAV and the page list in build(). The examples index generates Markset source and renders it,
             rather than assembling HTML, so that page is a Markset document like every other one.
+            content/agents.md is Writing with agents, the page the home hero leads to: the loop, the setup, and the
+            same document twice, from content/agents/, which holds a review an agent wrote from the guide alone and
+            the plain-Markdown version it wrote beside it, published as written. guide/ renders packages/cli/guide.md,
+            which is also copied raw to /guide.md, and /llms.txt points agents at it.
             content/start.md is the adoption page, content/github-pages.md is the publishing recipe
             (tested by site/test/recipe.test.ts, which runs it),
             content/cli.md documents the command line tool, and content/reference/index.md teaches the

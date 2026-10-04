@@ -244,7 +244,7 @@ test("tab titles follow the family's pattern: the home page names Markset first,
   // Streamlane's, and intentset.org's and coralreefventures.com's since
   // 2026-10-03, so the four sites read alike in a row of tabs.
   const home = await readFile(join(dist, "index.html"), "utf8");
-  assert.match(home, /<title>Markset · Rich documents, without leaving Markdown<\/title>/);
+  assert.match(home, /<title>Markset · Documents your agents write, and people want to read<\/title>/);
   for (const page of pages.filter((p) => p !== "index.html")) {
     const html = await readFile(join(dist, page), "utf8");
     assert.match(html, /<title>[^<]*[^.] · Markset<\/title>/, page);
