@@ -1,7 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.4.1 — 2026-10-04
 
+**Saving an edit inside emphasis works again with the dependencies a fresh install resolves.** Nothing in the grammar or the spec changed.
+
+- **`serializeDocument` no longer overflows the stack on changed emphasis or strong.** mdast-util-to-markdown 2.1.3, released 2026-09-27, writes emphasis and strong through an `attention` property on their handlers, and the serializer's wrappers did not carry it, so a changed emphasis went back through the handler that had called it. 0.4.0 asks for `^2.1.2`, so any fresh install got the new version, and saving an edit inside `_emphasis_` from the TipTap editor threw. The wrappers take every property of their handler now, and a changed emphasis still keeps its author's `_` or `*`. The parser and the downgrade renderer ask for `^2.2.0`, which the suite runs, and the install check edits inside emphasis and saves.
 - **Every package declares the types its declarations use.** `parser`, `render-downgrade`, `render-html`, `remark-markset` and `tiptap` import types from `mdast`, `hast`, `micromark-util-types` and `vfile` in their published `.d.ts` files without declaring them, which npm's flat install hid and a strict one, such as pnpm's, does not. They are dependencies now, at the versions already installed alongside.
 - **The repository builds with pnpm.** Development, CI and the release run on pnpm, and the release publishes with `pnpm publish --provenance` over trusted publishing. Install instructions on the site and in the READMEs show npm and pnpm side by side.
 - **The site's sections follow what a reader came to do.** The bar is Start, Tools, Reference, Examples and Playground. Start lands on writing with agents and holds the guide, writing by hand and why; Tools gathers VS Code, the command, the visual editor, a new page for the remark plugin and the Pages recipe; the specification and the conformance suite close the Reference rail. Every page kept its address.

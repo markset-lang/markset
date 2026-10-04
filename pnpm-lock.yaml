@@ -110,16 +110,16 @@ importers:
   packages/cli:
     dependencies:
       '@markset-lang/diagram-ascii':
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../diagram-ascii
       '@markset-lang/parser':
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../parser
       '@markset-lang/render-downgrade':
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../render-downgrade
       '@markset-lang/render-html':
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../render-html
     devDependencies:
       '@types/mdast':
@@ -202,7 +202,7 @@ importers:
   packages/remark-markset:
     dependencies:
       '@markset-lang/parser':
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../parser
       '@types/mdast':
         specifier: ^4.0.4
@@ -220,7 +220,7 @@ importers:
   packages/render-downgrade:
     dependencies:
       '@markset-lang/parser':
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../parser
       '@types/mdast':
         specifier: ^4.0.4
@@ -238,13 +238,13 @@ importers:
   packages/render-html:
     dependencies:
       '@markset-lang/chart-table':
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../chart-table
       '@markset-lang/diagram-ascii':
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../diagram-ascii
       '@markset-lang/parser':
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../parser
       '@types/hast':
         specifier: ^3.0.5
@@ -262,7 +262,7 @@ importers:
   packages/tiptap:
     dependencies:
       '@markset-lang/parser':
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../parser
       '@tiptap/core':
         specifier: ^3.0.0
