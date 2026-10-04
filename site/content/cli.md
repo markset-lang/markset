@@ -10,7 +10,7 @@ Reference implementation
 # The `markset` command
 
 {.lead}
-One executable with five commands. It validates a document, renders it to HTML, lowers it to plain CommonMark, prints the parsed tree, or writes the default stylesheet. There is no build step and no configuration file.
+One executable with six commands. It validates a document, renders it to HTML, lowers it to plain CommonMark, prints the parsed tree, writes the default stylesheet, or prints the authoring guide agents write from. There is no build step and no configuration file.
 
 {.tick}
 ***
@@ -57,6 +57,9 @@ Commands
 - ### `markset ast`
 
   Prints the parsed tree as JSON. The tree is mdast plus the Markset node types, so any tool in the unified ecosystem can consume it. Add `--positions` to keep source offsets.
+- ### `markset guide`
+
+  Prints the authoring guide: what an agent needs to write Markset well, from when each construct earns its place to the codes `check` reports. It is `guide.md` in the package, so a repository can point its agents at the installed file instead. See [writing with agents](../agents/index.html).
 :::
 
 A single `-` in place of a filename reads the document from standard input.
@@ -73,7 +76,7 @@ Options
 | Flag | Applies to | Effect |
 |---|---|---|
 | `-o`, `--out <path>` | all | Write to a file instead of standard output. |
-| (no file) | `css` | `css` is the one command that takes no input document. |
+| (no file) | `css`, `guide` | The two commands that take no input document. |
 | `--fragment` | `html` | Emit the body content only, with no page shell or stylesheet. |
 | `--css <mode>` | `html` | `inline` inlines the default stylesheet and is the default. `none` omits it. Any other value is treated as a URL and linked. |
 | `--theme <file>` | `html` | Append a theme stylesheet after the default one, so it can style author classes and override tokens. See spec §6. |

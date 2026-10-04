@@ -74,7 +74,10 @@ site/       static site generator (build.ts) and content; every page is Markset 
             same document twice, from content/agents/, which holds a review an agent wrote from the guide alone and
             the plain-Markdown version it wrote beside it, published as written. guide/ renders packages/cli/guide.md,
             which is also copied raw to /guide.md, and /llms.txt points agents at it.
-            content/start.md is the adoption page, content/github-pages.md is the publishing recipe
+            The bar is five sections by what a reader came to do (2026-10-04): Start (agents, the guide, by hand, why),
+            Tools (content/tools.md, then VS Code, the CLI, the visual editor, content/remark.md and Pages), Reference
+            (with the spec and conformance at the end of its rail), Examples and Playground. Five is the phone's limit.
+            content/start.md is the by-hand adoption page, content/github-pages.md is the publishing recipe
             (tested by site/test/recipe.test.ts, which runs it),
             content/cli.md documents the command line tool, and content/reference/index.md teaches the
             shared grammar. playground/ is the one page that is an application rather than a document:

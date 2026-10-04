@@ -118,7 +118,7 @@ Tools
 
   Add Markset to the Astro, Next or Eleventy build you already run, as one remark plugin, without replacing anything around it.
 
-  [[On npm](https://www.npmjs.com/package/@markset-lang/remark-markset)]{.button .small}
+  [[The remark plugin](remark/index.html)]{.button .small}
 
 - **On GitHub Pages**
 

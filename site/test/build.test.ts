@@ -275,7 +275,8 @@ test("the wordmark goes home, the bar names sections, and the repository is in t
   assert.match(header, /<a class="site-brand" href="\.\/index\.html">/, "the wordmark links home");
   const nav = /<nav class="site-nav" aria-label="Main">([\s\S]*?)<\/nav>/.exec(header)?.[1] ?? "";
   const labels = [...nav.matchAll(/>([^<]+)<\/a>/g)].map((m) => m[1]);
-  assert.deepEqual(labels, ["Start", "Playground", "Reference", "Spec", "Examples"]);
+  assert.deepEqual(labels, ["Start", "Tools", "Reference", "Examples", "Playground"]);
+  assert.match(nav, /href="\.\/agents\/index\.html">Start</, "Start lands on writing with agents");
   assert.doesNotMatch(header, /github\.com/, "the repository is not in the header");
   const footer = /<footer class="site-footer">[\s\S]*?<\/footer>/.exec(home)?.[0] ?? "";
   assert.match(footer, /<a href="https:\/\/github\.com\/[^"]+">Source on GitHub<\/a>/, "it is in the footer");
