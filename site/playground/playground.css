@@ -11,12 +11,25 @@
   max-width: none !important;
   display: grid;
   gap: var(--ms-space);
-  /* Fill what is left of the viewport under the bar, with a floor so a short
-   * window still gets a usable editor rather than a slot. */
-  --pg-h: max(26rem, calc(100vh - var(--site-header-h) - 15rem));
+  /* Fill what is left of the viewport under the title and the controls, with a
+   * floor so a short window still gets a usable editor rather than a slot. It
+   * read a --site-header-h until the header stopped being sticky on 2026-10-03;
+   * the token went with it, the calc became invalid, and the panes collapsed to
+   * their content (a 68px editor) until the browser test below this was added. */
+  --pg-h: max(26rem, calc(100vh - 21rem));
 }
+/* An application, not a document: on a wide screen the tool takes the window's
+ * width rather than the page's reading column, with a gutter either side. The
+ * negative margins center it on the column it sits in, which is centered on
+ * the window. The prose under it stays at reading width. */
 @media (min-width: 60rem) {
   .pg { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .pg,
+  .pg-controls {
+    --pg-w: min(calc(100vw - 3rem), 110rem);
+    width: var(--pg-w);
+    margin-inline: calc((100% - var(--pg-w)) / 2) !important;
+  }
 }
 
 .pg-controls {
@@ -107,9 +120,27 @@
 
 /* ---- the insert palette -------------------------------------------------- */
 
-/* Three groups of chips above the editor. The point is not only the clicking:
- * eight names in one row is the closed vocabulary made countable, which is the
- * fact about Markset a newcomer is least likely to guess. */
+/* Three groups of chips, behind the Insert button in the editor's header. They
+ * were always on show above the editor, and at a laptop's width they wrapped to
+ * three rows of the editor's height. Opened, the eight construct names still sit
+ * together, the closed vocabulary made countable; choosing one closes them. */
+.pg-insert-toggle {
+  margin-left: auto;
+  align-self: center;
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 0.2rem 0.65rem;
+  color: var(--ms-fg);
+  background: var(--ms-bg);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+}
+.pg-insert-toggle::after { content: " \25BE"; color: var(--ms-fg-muted); }
+.pg-insert-toggle[aria-expanded="true"]::after { content: " \25B4"; }
+.pg-insert-toggle:hover, .pg-insert-toggle[aria-expanded="true"] { border-color: var(--ms-accent); }
+.pg-insert-toggle:focus-visible { outline: 2px solid var(--ms-accent); outline-offset: 1px; }
+.pg-insert[hidden] { display: none; }
 .pg-insert {
   display: flex;
   flex-wrap: wrap;

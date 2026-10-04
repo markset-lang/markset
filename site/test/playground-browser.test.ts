@@ -148,6 +148,57 @@ test("the playground renders a document in a browser", { skip: unavailable }, as
   }
 });
 
+test("the panes fill the window, wider than the page column, and the chips wait behind Insert", {
+  skip: unavailable,
+}, async () => {
+  // The panes once read their height from a header token that a redesign
+  // removed; the calc went invalid and the editor collapsed to 68px. Measured
+  // here, at a laptop's size and a phone's, so that cannot happen quietly again.
+  const browser = await puppeteer!.launch({ headless: true, args: launchArgs });
+  try {
+    const { page, problems } = await open(browser);
+    const measure = () =>
+      page.evaluate(() => {
+        const box = (selector: string) => (document.querySelector(selector) as HTMLElement).getBoundingClientRect();
+        return {
+          editor: box("#pg-source").height,
+          views: box(".pg-views").height,
+          workspace: box(".pg").width,
+          column: box("main").width,
+          overflow: document.documentElement.scrollWidth - window.innerWidth,
+          menuHidden: (document.getElementById("pg-insert") as HTMLElement).hidden,
+          expanded: document.getElementById("pg-insert-toggle")?.getAttribute("aria-expanded"),
+        };
+      });
+
+    await page.setViewport({ width: 1440, height: 900 });
+    let seen = await measure();
+    assert.ok(seen.editor >= 400, `the editor is ${seen.editor}px tall`);
+    assert.ok(seen.views >= 400, `the output is ${seen.views}px tall`);
+    assert.ok(seen.workspace > seen.column, `the workspace (${seen.workspace}px) is held to the page column`);
+    assert.ok(seen.overflow <= 0, `the page scrolls sideways by ${seen.overflow}px`);
+    assert.equal(seen.menuHidden, true, "the chips start closed");
+    assert.equal(seen.expanded, "false");
+
+    await page.click("#pg-insert-toggle");
+    seen = await measure();
+    assert.equal(seen.menuHidden, false);
+    assert.equal(seen.expanded, "true");
+    await page.keyboard.press("Escape");
+    seen = await measure();
+    assert.equal(seen.menuHidden, true, "Escape closes the chips");
+
+    await page.setViewport({ width: 390, height: 844 });
+    seen = await measure();
+    assert.ok(seen.overflow <= 0, `on a phone the page scrolls sideways by ${seen.overflow}px`);
+    assert.ok(seen.editor >= 300, `on a phone the editor is ${seen.editor}px tall`);
+    assert.deepEqual(problems, []);
+    await page.close();
+  } finally {
+    await browser.close();
+  }
+});
+
 test("an invalid document reports problems and still renders", { skip: unavailable }, async () => {
   const browser = await puppeteer!.launch({ headless: true, args: launchArgs });
   try {
@@ -275,6 +326,8 @@ test("every palette button inserts something the document accepts", { skip: unav
     );
     assert.ok(ids.length >= 13, `the bar offers only ${ids.length} entries`);
     for (const id of ids) {
+      // The chips sit behind the Insert button, and choosing one closes them.
+      await page.click("#pg-insert-toggle");
       await page.click(`.pg-insert [data-insert="${id}"]`);
       await page.waitForFunction(
         (name: string) => (document.getElementById("pg-status") as HTMLElement).textContent?.includes(name),

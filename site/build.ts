@@ -510,7 +510,7 @@ async function trialPages(): Promise<Page[]> {
       ...markset,
       body:
         note(
-          'Written by an agent from the <a href="../../guide/index.html">authoring guide</a> alone, and published as it wrote it. Compare <a href="../rollout-review-plain/index.html">the same content in plain Markdown</a>, or go back to <a href="../index.html">Writing with agents</a>.',
+          'An invented example, written to test the guide: an agent given only the <a href="../../guide/index.html">authoring guide</a> wrote it, and it is published as written. Compare <a href="../rollout-review-plain/index.html">the same content in plain Markdown</a>, or go back to <a href="../index.html">Writing with agents</a>.',
         ) + markset.body,
     },
     {
@@ -518,7 +518,7 @@ async function trialPages(): Promise<Page[]> {
       title: `${plain.title}, in plain Markdown`,
       body:
         note(
-          'The same content as plain Markdown, written by the same agent for comparison and drawn by the same renderer and stylesheet. Compare <a href="../rollout-review/index.html">the Markset version</a>, or go back to <a href="../index.html">Writing with agents</a>.',
+          'An invented example, written to test the guide: the same content as plain Markdown, written by the same agent for comparison and drawn by the same renderer and stylesheet. Compare <a href="../rollout-review/index.html">the Markset version</a>, or go back to <a href="../index.html">Writing with agents</a>.',
         ) + plain.body,
     },
   ];
@@ -1173,8 +1173,8 @@ markset html doc.md -o doc.html</code></pre></div></noscript>
 </div>
 <div class="pg">
 <section class="pg-pane">
-<div class="pg-pane-head"><span class="pg-label"><label for="pg-source">Markset source</label></span></div>
-<div class="pg-insert" id="pg-insert">${bar}</div>
+<div class="pg-pane-head"><span class="pg-label"><label for="pg-source">Markset source</label></span><button type="button" class="pg-insert-toggle" id="pg-insert-toggle" aria-expanded="false" aria-controls="pg-insert">Insert</button></div>
+<div class="pg-insert" id="pg-insert" hidden>${bar}</div>
 <textarea id="pg-source" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="pg-status"></textarea>
 </section>
 <section class="pg-pane">
@@ -1194,7 +1194,7 @@ ${panels}
 <dt>Markdown</dt><dd>The same document with every construct taken away — the degradation contract, which is normative and covered by the conformance suite. This is what a reader sees in a pull request, a terminal or a plain-text mail.</dd>
 <dt>AST</dt><dd>The tree, as mdast plus three node types. This is the interface for anything built on top, and the shape the <code>remark-markset</code> plugin hands to a unified pipeline.</dd>
 <dt>Problems</dt><dd>Diagnostics, with the same codes and positions <code>markset check</code> reports. The vocabulary is closed, so an unknown directive name is an error here rather than markup that quietly passes through. Load <em>An invalid document</em> to see it.</dd>
-<dt>Vocabulary</dt><dd>Everything you are allowed to write, with the source of each and a link to its reference page. The same entries are the chips above the editor, and either one inserts at the cursor.</dd>
+<dt>Vocabulary</dt><dd>Everything you are allowed to write, with the source of each and a link to its reference page. The same entries are under <em>Insert</em> above the editor, and either one inserts at the cursor.</dd>
 </dl>
 <h2>Where the palette comes from</h2>
 <p>Nobody wrote that list. The names are the parser's own closed vocabulary, so the palette cannot offer a construct the parser rejects or leave one out; the descriptions are the ones the <a href="../reference/index.html">reference index</a> prints; and every snippet is a case from the conformance suite — usually the one the suite calls <em>canonical</em>, which is its word for the minimal correct form. So each is a document that is already proven valid, by the same tests that prove the renderer.</p>
