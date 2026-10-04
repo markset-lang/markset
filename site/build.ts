@@ -70,49 +70,53 @@ interface ConformanceCase {
   diagnostics?: string[];
 }
 
+/**
+ * The bar: five sections, by what a reader came to do. Five is the phone's
+ * limit: at 390px the links share one row under the wordmark, and a sixth was
+ * measured not to fit (2026-09-17). Home is not in the bar, because the
+ * wordmark is the way home, and the repository is linked from the footer.
+ *
+ * Restructured on 2026-10-04, once agents became the main way in. Start lands
+ * on Writing with agents and holds the guide; Tools gathers the places Markset
+ * runs, which the home page listed and no rail did (the VS Code page belonged to
+ * no section at all); the specification moved from the bar to the end of the
+ * Reference rail, because its readers are implementers, who arrive through the
+ * reference. Every page kept its URL.
+ */
 const NAV: Array<[string, string]> = [
-  ["Start", "start/index.html"],
-  ["Playground", "playground/index.html"],
+  ["Start", "agents/index.html"],
+  ["Tools", "tools/index.html"],
   ["Reference", "reference/index.html"],
-  ["Spec", "spec/index.html"],
   ["Examples", "examples/index.html"],
+  ["Playground", "playground/index.html"],
 ];
-// Home is not in the bar: the wordmark beside it is the way home, as on
-// intentset.org, and the repository is linked from the footer. On a phone the
-// links wrap onto a row of their own under the wordmark.
-//
-// The bar names sections, and the rail names the pages inside one. So the
-// command line is not here either: it is a page in Get started, linked from the
-// adoption page as one of the two things a reader might go and do, and from the
-// home page. It ends up better connected than the specification, which is in
-// the bar and is reached from prose alone.
-//
-// Conformance is deliberately not in that list. It is a browser of 366 test
-// cases whose index is a hundred and fifty words, and its readers are people
-// writing a second implementation, who arrive through the specification rather
-// than through a bar aimed at someone with a document to write. It is linked
-// from the specification, which is what §7 of that document is about.
 
 /**
  * The pages that belong together, for the rail.
  *
  * A page reached only from a sentence inside another page is a page most
- * readers never find. The Pages guide was the clearest case: a top-level guide
- * with no section of its own, linked from three paragraphs and nowhere else.
- * The bar cannot hold everything, so the rail carries the rest — and it earns
- * its place on the short pages too, where there is no table of contents to show
- * and a reader still needs to know what else is here. Before this, a reference
- * page had no route to its seven siblings except going back to the index.
+ * readers never find. The bar cannot hold everything, so the rail carries the
+ * rest, and it earns its place on the short pages too, where there is no table
+ * of contents to show and a reader still needs to know what else is here.
  */
-const GET_STARTED: Array<[string, string]> = [
-  ["Why Markset", "why/index.html"],
+const START: Array<[string, string]> = [
   ["Writing with agents", "agents/index.html"],
-  ["Adopting Markset", "start/index.html"],
   ["The authoring guide", "guide/index.html"],
+  ["Writing by hand", "start/index.html"],
+  ["Why Markset", "why/index.html"],
+];
+
+const TOOLS: Array<[string, string]> = [
+  ["All tools", "tools/index.html"],
+  ["VS Code", "editor/index.html"],
   ["The markset command", "cli/index.html"],
-  ["Editing visually", "tiptap/index.html"],
+  ["The visual editor", "tiptap/index.html"],
+  ["The remark plugin", "remark/index.html"],
   ["Publishing to GitHub Pages", "github-pages/index.html"],
 ];
+
+/** Pages whose bar item is Reference without being in its rail by name. */
+const UNDER_REFERENCE = ["reference/", "spec/", "conformance/"];
 
 interface RailSection {
   title: string;
@@ -120,8 +124,9 @@ interface RailSection {
 }
 
 function railSection(path: string): RailSection | undefined {
-  if (GET_STARTED.some(([, href]) => href === path)) return { title: "Get started", items: GET_STARTED };
-  if (path.startsWith("reference/")) {
+  if (START.some(([, href]) => href === path)) return { title: "Start", items: START };
+  if (TOOLS.some(([, href]) => href === path)) return { title: "Tools", items: TOOLS };
+  if (path.startsWith("reference/") || path === "spec/index.html") {
     return {
       title: "Reference",
       items: [
@@ -130,6 +135,8 @@ function railSection(path: string): RailSection | undefined {
         ["Diagrams", "reference/diagrams/index.html"],
         ["Charts", "reference/charts/index.html"],
         ["Frontmatter", "reference/frontmatter/index.html"],
+        ["Specification", "spec/index.html"],
+        ["Conformance", "conformance/index.html"],
       ],
     };
   }
@@ -381,6 +388,8 @@ async function writeSite(outDir: string): Promise<string[]> {
       constructs: String(CONSTRUCTS.length),
     }),
     await markdownPage("why/index.html", join(root, "site", "content", "why.md")),
+    await markdownPage("tools/index.html", join(root, "site", "content", "tools.md")),
+    await markdownPage("remark/index.html", join(root, "site", "content", "remark.md")),
     await markdownPage("agents/index.html", join(root, "site", "content", "agents.md")),
     ...(await trialPages()),
     await guidePage(),
@@ -1227,8 +1236,11 @@ function shell(page: Page): string {
   const nav = NAV.map(([label, href]) => {
     // A bar item is current for its whole section, not just its own page, or
     // the bar goes blank the moment a reader follows the rail into one.
-    const inGetStarted = href === "start/index.html" && GET_STARTED.some(([, h]) => h === page.path);
-    const active = page.path === href || inGetStarted || page.path.startsWith(href.replace("index.html", ""));
+    const rail = href === START[0][1] ? START : href === TOOLS[0][1] ? TOOLS : [];
+    const inSection =
+      rail.some(([, h]) => h === page.path) ||
+      (href === "reference/index.html" && UNDER_REFERENCE.some((prefix) => page.path.startsWith(prefix)));
+    const active = page.path === href || inSection || page.path.startsWith(href.replace("index.html", ""));
     return `<a href="${rel}${href}"${active ? ' aria-current="page"' : ""}>${label}</a>`;
   }).join("\n");
   const section = railSection(page.path);

@@ -51,7 +51,7 @@ for (const m of file.messages) {
 }
 ```
 
-`ruleId` is the Markset diagnostic code (`DIRECTIVE_UNKNOWN_NAME`, `GRID_BAD_COLS`, …) and `source` is `"markset"`, so a pipeline that already reports vfile messages will report these without being taught anything.
+`ruleId` is the Markset diagnostic code (`DIRECTIVE_UNKNOWN_NAME`, `GRID_CONTENT`, …) and `source` is `"markset"`, so a pipeline that already reports vfile messages will report these without being taught anything.
 
 `fatal` is `true` for errors and `false` for warnings. A document with any error is invalid; warnings are not.
 

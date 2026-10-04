@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **The site's sections follow what a reader came to do.** The bar is Start, Tools, Reference, Examples and Playground. Start lands on writing with agents and holds the guide, writing by hand and why; Tools gathers VS Code, the command, the visual editor, a new page for the remark plugin and the Pages recipe; the specification and the conformance suite close the Reference rail. Every page kept its address.
+- **The playground has room again.** Its panes had collapsed to a few lines when the header stopped being sticky, and they fill the window again; on a wide screen the workspace takes the window's width, and the insert chips sit behind an Insert button instead of three rows above the editor.
 - **The site leads with agent-written documents.** The home page opens on documents agents write and people want to read, with six reasons agents should write Markset. A new page, *Writing with agents*, sets an agent up in one install and one line and shows the same review twice, as an agent wrote it from the guide alone in plain Markdown and in Markset. The guide is a page of its own, the raw file is at `/guide.md`, and `/llms.txt` points agents to it.
 
 ## 0.4.0 — 2026-10-04

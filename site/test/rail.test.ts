@@ -107,17 +107,24 @@ test("the reference index lists its generated section too", async () => {
 });
 
 test("a page reachable only from a sentence gets a place in the rail", async () => {
-  // The Pages guide was the one genuine orphan on the site: a top-level guide
-  // belonging to no section, linked from three paragraphs and nowhere else. It
-  // is a peer of the adoption page in the rail now, and both say so from the
-  // other's page.
-  const fromStart = await section("start/index.html");
-  assert.ok(
-    fromStart.some((h) => h.endsWith("github-pages/index.html")),
-    `the Pages guide is missing from the adoption page's rail: ${fromStart.join(", ")}`,
-  );
-  const fromGuide = await section("github-pages/index.html");
-  assert.ok(fromGuide.some((h) => h.endsWith("start/index.html")));
+  // The Pages guide was the first orphan on the site: a top-level guide
+  // belonging to no section, linked from three paragraphs and nowhere else. The
+  // VS Code page was the second, until 2026-10-04 gave every place Markset runs
+  // a section of its own. Each tool's rail names the others.
+  const tools = ["tools", "editor", "cli", "tiptap", "remark", "github-pages"];
+  for (const page of tools) {
+    const rail = await section(`${page}/index.html`);
+    for (const other of tools) {
+      assert.ok(
+        rail.some((h) => h.endsWith(`${other}/index.html`)),
+        `${page}'s rail is missing ${other}: ${rail.join(", ")}`,
+      );
+    }
+  }
+  // And Start holds the ways in, agents first.
+  const start = await section("start/index.html");
+  assert.ok(start[0]?.endsWith("agents/index.html"), `Start's rail begins with ${start[0]}`);
+  assert.ok(start.some((h) => h.endsWith("guide/index.html")));
 
   // And the short pages, which have no contents of their own, are no longer
   // dead ends: a reference page had no route to its siblings but the back
