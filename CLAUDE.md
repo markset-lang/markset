@@ -140,7 +140,7 @@ docs/       background analysis, prior art, design rationale
   runs beside `conformance`, and the Playwright harness is bundled with `development`. A lookahead run by
   `effects.check` still has to enter a token before it consumes, and may not leave one empty.
 - `test/consumer/smoke.ts` installs the nine packages into an empty project and uses every entry point:
-  `pnpm run smoke:packed` from tarballs, `pnpm run smoke:registry -- <version>` from npm. The release runs the first
+  `pnpm run smoke:packed` from tarballs, `pnpm run smoke:registry <version>` from npm. The release runs the first
   before publishing and the second after, which is the check tiptap 0.3.1 needed.
 - `esbuild` (approved 2026-09-17) bundles `site/playground/app.ts` for the browser, and nothing else uses it.
   It resolves through `markset-source`, so the bundle is built from `src/` and a stale `dist/` cannot reach a

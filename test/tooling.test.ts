@@ -365,6 +365,9 @@ test("the release workflow proves the build before it publishes", async () => {
   // ...but only on a tag. GITHUB_REF_NAME is the branch on a manual run, so an
   // unconditional check makes the workflow_dispatch trigger above unusable.
   assert.match(yaml, /if: startsWith\(github\.ref, 'refs\/tags\/'\)/u, "and only when there is one");
+  // pnpm run hands a "--" to the script rather than swallowing it as npm did, and
+  // the registry check then asked for version "--" until its twenty minutes ran out.
+  assert.doesNotMatch(yaml, /pnpm run [\w:-]+ --\s/u, "no separator after a pnpm run script name");
 });
 
 test("the release workflow can be run a second time without failing", async () => {

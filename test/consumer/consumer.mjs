@@ -22,6 +22,15 @@ check("parser", () => {
   assert.deepEqual(diagnostics, []);
   assert.equal(ast.children[0].type, "card");
   assert.equal(parser.serializeDocument(structuredClone(ast), { original: { source, ast } }), source);
+  // An edit inside emphasis, saved. With the freshly resolved mdast-util-to-markdown
+  // this is what 0.4.0 could not do: 2.1.3 writes emphasis through its handler's
+  // attention, and the serializer's wrapper sent it round until the stack ran out.
+  const edited = structuredClone(ast);
+  const emphasis = edited.children[0].children[0].children[1];
+  assert.equal(emphasis.type, "emphasis");
+  emphasis.children[0].value = "$12";
+  const saved = parser.serializeDocument(edited, { original: { source, ast } });
+  assert.match(saved, /^Starts at _\$12_ a month\.$/mu, "the edit is saved, and the emphasis keeps its underscores");
 });
 
 const html = await import("@markset-lang/render-html");

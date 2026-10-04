@@ -3,7 +3,7 @@
  * source file changes, and pushes a reload to every open browser. Node
  * built-ins only, so there is still nothing to install.
  *
- *   pnpm run site:watch -- --port 4000
+ *   pnpm run site:watch --port 4000
  *
  * The reload client is injected into HTML as it is served and is never written
  * to disk, so dist/ stays byte-identical to what pages.yml deploys. A change to

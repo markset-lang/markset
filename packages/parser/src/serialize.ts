@@ -31,6 +31,11 @@ import {
   type SourceHints,
 } from "./to-markdown.ts";
 
+/** A handler that writes its node as attention (emphasis, strong) in mdast-util-to-markdown 2.1.3 and later. */
+type Attentive = Handler & {
+  attention?: (node: unknown, state: State) => { construct: string; markers: string[]; sizes: number[] };
+};
+
 export interface SerializeOptions {
   /**
    * The source the tree was edited from, and its parse. Parts of the tree that
@@ -590,6 +595,26 @@ function patchHints(
           keepingAttributeLines(self, old, () => base(node, parent, state, info)),
         );
       };
+      // A handler carries more than its function. mdast-util-to-markdown 2.1.3
+      // added `attention` to emphasis and strong, and serializes a node through
+      // its handler's attention when there is one; a wrapper without it sent
+      // emphasis back through the handler that called it, without end. So the
+      // wrapper takes every property the base has, and overrides only peek.
+      Object.assign(wrapped, base);
+      // And from 2.1.3 emphasis and strong are written by the phrasing code
+      // itself, not their handler, from the markers attention offers, first
+      // choice first. A changed one offers its author's marker first, so `_x_`
+      // edited is still written with underscores where the context allows.
+      const attention = (base as Attentive).attention;
+      if (attention) {
+        (wrapped as Attentive).attention = (node, state) => {
+          const result = attention(node, state);
+          const old = originOf.get(node as Node);
+          const first = old?.position ? source[old.position.start.offset!] : undefined;
+          if (first === undefined || !result.markers.includes(first)) return result;
+          return { ...result, markers: [first, ...result.markers.filter((marker) => marker !== first)] };
+        };
+      }
       if (base.peek) {
         wrapped.peek = (node, parent, state, info) => {
           const self = node as Node;
