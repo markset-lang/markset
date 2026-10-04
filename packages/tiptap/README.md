@@ -10,6 +10,8 @@ The requirement it is built to meet is that editing must not damage the file:
 
 ```sh
 npm i @markset-lang/tiptap @tiptap/core @tiptap/pm
+# or
+pnpm add @markset-lang/tiptap @tiptap/core @tiptap/pm
 ```
 
 ## Loading and saving

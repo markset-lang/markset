@@ -4,6 +4,8 @@ Draws a data table as a line, bar or column chart. A pure function with no depen
 
 ```sh
 npm i @markset-lang/chart-table
+# or
+pnpm add @markset-lang/chart-table
 ```
 
 ```js

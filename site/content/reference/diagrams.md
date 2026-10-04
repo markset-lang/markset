@@ -114,10 +114,19 @@ Other languages
 
 Yes, and graphviz, and svgbob, and anything else with a command that reads a diagram on stdin and writes SVG on stdout. **Nothing but `ascii` is built in**, which is a deliberate limit rather than a gap: a renderer that shipped a dozen engines would be a renderer nobody could reimplement, and §10 obligation 1 makes a fence with no engine a code block rather than an error.
 
+:::tabs
+### npm
 ```sh
 npm i -g @mermaid-js/mermaid-cli
 markset html doc.md --diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"
 ```
+
+### pnpm
+```sh
+pnpm add -g @mermaid-js/mermaid-cli
+markset html doc.md --diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"
+```
+:::
 
 That is the whole setup. `ascii` keeps drawing alongside it, because an engine you name is layered over the built-in one rather than replacing it.
 

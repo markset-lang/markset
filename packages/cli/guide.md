@@ -15,10 +15,12 @@ The specification is at https://markset.org/spec/. This guide is the part of it 
 3. Check the file, and fix every error and warning it reports:
 
    ```sh
-   npx @markset-lang/cli check document.md
+   npx @markset-lang/cli check document.md        # with npm
+   pnpm dlx @markset-lang/cli check document.md   # with pnpm
    ```
 
-4. If you can, render it and look at it: `npx @markset-lang/cli html document.md -o document.html`.
+4. If you can, render it and look at it: `npx @markset-lang/cli html document.md -o document.html`, or the same
+   with `pnpm dlx` in place of `npx`.
 
 ## Restraint
 

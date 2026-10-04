@@ -13,9 +13,17 @@ Tools
 `@markset-lang/remark-markset` teaches a unified pipeline you already run to read Markset. If you use remark in Astro,
 Next, Eleventy, a lint step or a script, this is how you get the constructs without replacing any of it.
 
+:::tabs
+### npm
 ```sh
 npm i @markset-lang/remark-markset
 ```
+
+### pnpm
+```sh
+pnpm add @markset-lang/remark-markset
+```
+:::
 
 ## Parsing
 

@@ -4,6 +4,8 @@ The `markset` command: check a [Markset](https://markset.org/) document, render 
 
 ```sh
 npm i -g @markset-lang/cli
+# or
+pnpm add -g @markset-lang/cli
 markset check docs/*.md
 markset html README.md -o index.html
 ```

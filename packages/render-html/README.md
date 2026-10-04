@@ -4,6 +4,8 @@ Renders a [Markset](https://markset.org/) tree to HTML, and ships the default st
 
 ```sh
 npm i @markset-lang/render-html
+# or
+pnpm add @markset-lang/render-html
 ```
 
 ```js

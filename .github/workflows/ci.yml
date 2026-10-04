@@ -8,28 +8,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # pnpm comes from the packageManager field in package.json, so the version
+      # is pinned in one place.
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm run build
-      - run: npm test
-      - run: npm run conformance
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+      - run: pnpm run typecheck
+      - run: pnpm run build
+      - run: pnpm test
+      - run: pnpm run conformance
       # The same cases against micromark's development build, which asserts its
       # tokenizer contract where the production build does not. Vite and Vitest
       # resolve that build by default, so a consumer's dev server runs it.
-      - run: npm run conformance:development
+      - run: pnpm run conformance:development
       # The editor in the three engines readers use. The package's own tests
       # run it in happy-dom, which checks the model and not the browser.
       - uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-      - run: npx playwright install --with-deps chromium firefox webkit
-      - run: npm run e2e
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - run: pnpm run e2e
       # Installs the packed packages into an empty project and uses them, which
-      # is the one place a package meets the dependencies npm resolves for it.
+      # is the one place a package meets the dependencies a consumer's install resolves for it.
       - run: node test/consumer/smoke.ts --packed

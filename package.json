@@ -2,24 +2,19 @@
   "name": "markset",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "packages/*",
-    "site",
-    "editors/vscode"
-  ],
   "engines": {
     "node": ">=22.18"
   },
   "scripts": {
     "build": "rm -rf packages/*/dist && node --conditions=markset-source packages/conformance-suite/stage.ts && tsc -p packages/parser/tsconfig.build.json && tsc -p packages/diagram-ascii/tsconfig.build.json && tsc -p packages/chart-table/tsconfig.build.json && tsc -p packages/render-downgrade/tsconfig.build.json && tsc -p packages/render-html/tsconfig.build.json && tsc -p packages/cli/tsconfig.build.json && tsc -p packages/remark-markset/tsconfig.build.json && tsc -p packages/conformance-suite/tsconfig.build.json && tsc -p packages/tiptap/tsconfig.build.json",
-    "release": "npm run build && npm publish --workspace @markset-lang/parser --workspace @markset-lang/diagram-ascii --workspace @markset-lang/chart-table --workspace @markset-lang/render-downgrade --workspace @markset-lang/render-html --workspace @markset-lang/cli --workspace @markset-lang/remark-markset --workspace @markset-lang/conformance-suite --workspace @markset-lang/tiptap",
+    "release": "pnpm run build && pnpm --filter @markset-lang/parser --filter @markset-lang/diagram-ascii --filter @markset-lang/chart-table --filter @markset-lang/render-downgrade --filter @markset-lang/render-html --filter @markset-lang/cli --filter @markset-lang/remark-markset --filter @markset-lang/conformance-suite --filter @markset-lang/tiptap publish",
     "markset": "node --conditions=markset-source packages/cli/src/markset.ts",
-    "test": "node --conditions=markset-source --test packages/*/test/*.test.ts site/test/*.test.ts editors/vscode/test/*.test.ts test/*.test.ts && npm run test:development",
+    "test": "node --conditions=markset-source --test packages/*/test/*.test.ts site/test/*.test.ts editors/vscode/test/*.test.ts test/*.test.ts && pnpm run test:development",
     "test:development": "node --conditions=markset-source --conditions=development --test packages/*/test/*.test.ts editors/vscode/test/*.test.ts",
     "conformance": "node --conditions=markset-source packages/conformance/src/cli.ts",
     "conformance:development": "node --conditions=markset-source --conditions=development packages/conformance/src/cli.ts",
     "e2e": "playwright test",
-    "smoke:packed": "npm run build && node --conditions=markset-source test/consumer/smoke.ts --packed",
+    "smoke:packed": "pnpm run build && node --conditions=markset-source test/consumer/smoke.ts --packed",
     "smoke:registry": "node --conditions=markset-source test/consumer/smoke.ts --registry",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "biome check .",
@@ -27,11 +22,19 @@
     "site": "node --conditions=markset-source site/build.ts",
     "site:watch": "node --conditions=markset-source site/serve.ts",
     "site:thumbnails": "node --conditions=markset-source site/thumbnails.ts",
-    "vscode:build": "npm run build --workspace markset-vscode",
-    "vscode:package": "npm run package --workspace markset-vscode"
+    "vscode:build": "pnpm --filter markset-vscode run build",
+    "vscode:package": "pnpm --filter markset-vscode run package"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.13",
+    "@markset-lang/chart-table": "workspace:*",
+    "@markset-lang/conformance-suite": "workspace:*",
+    "@markset-lang/diagram-ascii": "workspace:*",
+    "@markset-lang/parser": "workspace:*",
+    "@markset-lang/remark-markset": "workspace:*",
+    "@markset-lang/render-downgrade": "workspace:*",
+    "@markset-lang/render-html": "workspace:*",
+    "@markset-lang/tiptap": "workspace:*",
     "@mermaid-js/mermaid-cli": "^11.17.0",
     "@playwright/test": "^1.63.0",
     "@tiptap/core": "^3.31.3",
@@ -57,5 +60,6 @@
     "type": "git",
     "url": "git+https://github.com/markset-lang/markset.git"
   },
-  "homepage": "https://markset.org/"
+  "homepage": "https://markset.org/",
+  "packageManager": "pnpm@11.24.0"
 }

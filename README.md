@@ -22,26 +22,28 @@ The specification is [`spec/v0.md`](spec/v0.md). The eight constructs are callou
 Node 22.18 or later.
 
 ```sh
-npm i -g @markset-lang/cli          # the command line tool
+npm i -g @markset-lang/cli          # the command line tool, or: pnpm add -g @markset-lang/cli
+npm i @markset-lang/render-html     # the library, or: pnpm add @markset-lang/render-html
 code --install-extension markset-lang.markset-vscode   # the VS Code extension, also on the marketplace
-npm i @markset-lang/render-html     # or the library
 ```
 
 Nine packages are published under the `@markset-lang` scope: `parser`, `diagram-ascii`, `chart-table`, `render-downgrade`, `render-html`, `cli`, `remark-markset`, `conformance-suite`, and `tiptap`. The two drawing engines, `diagram-ascii` and `chart-table`, are pure functions with no dependencies. `remark-markset` and `conformance-suite` are the ways in from outside: a remark plugin for a pipeline you already run, and the test suite as data for anyone writing a second implementation. `tiptap` edits a document visually and saves it back touching only the lines an edit changed.
 
-Already using remark? `npm i @markset-lang/remark-markset` and add it to the pipeline you have.
+Already using remark? `npm i @markset-lang/remark-markset` (or `pnpm add @markset-lang/remark-markset`) and add it to the pipeline you have.
 
 ## Working on it
 
 No build step in development: sources are TypeScript run directly by Node. The build exists only for publishing.
 
+The repository uses pnpm (the version is pinned in `package.json`; `corepack enable` provides it).
+
 ```sh
-npm install
+pnpm install
 node packages/cli/src/markset.ts check examples/showcase.md
 node packages/cli/src/markset.ts html examples/showcase.md -o showcase.html
 node packages/cli/src/markset.ts downgrade examples/showcase.md
-npm test                # unit tests plus the conformance suite
-npm run conformance     # per-section conformance report
+pnpm test               # unit tests plus the conformance suite
+pnpm run conformance    # per-section conformance report
 ```
 
 ## Documentation
@@ -63,7 +65,7 @@ The site at <https://markset.org/> is generated from this repository: a referenc
 | `packages/remark-markset` | remark plugin: Markset in an existing unified pipeline. |
 | `packages/conformance-suite` | `tests/*.json` and the schema, published as data for other implementations. |
 | `packages/cli` | `markset check | html | downgrade | ast | css | guide`, and `guide.md`, the authoring guide for agents. |
-| `site/` | Documentation site, written in Markset and built by the packages above (`npm run site`). |
+| `site/` | Documentation site, written in Markset and built by the packages above (`pnpm run site`). |
 | `docs/` | Background analysis and design rationale. |
 
 ## Status

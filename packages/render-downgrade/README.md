@@ -4,6 +4,8 @@ Renders a [Markset](https://markset.org/) tree as plain CommonMark: what a docum
 
 ```sh
 npm i @markset-lang/render-downgrade
+# or
+pnpm add @markset-lang/render-downgrade
 ```
 
 ```js

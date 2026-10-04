@@ -62,7 +62,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: npm i -g @markset-lang/cli@0.2
+      - run: npm i -g @markset-lang/cli@0.4
 
       - name: Render
         run: |
@@ -88,7 +88,7 @@ jobs:
 ```
 
 > [!TIP] Pin the version, and install it globally
-> `@0.2` is what makes the build reproducible: a rebuild next year renders with the version it rendered with today, and changes within v0 are additive only (spec §0), so the pin costs you nothing. Installing globally is what keeps the rest of the recipe short — your repository needs no `package.json` and no lockfile, because the only tool involved is this one.
+> `@0.4` is what makes the build reproducible: a rebuild next year renders with the version it rendered with today, and changes within v0 are additive only (spec §0), so the pin costs you nothing. Installing globally is what keeps the rest of the recipe short — your repository needs no `package.json` and no lockfile, because the only tool involved is this one. npm is already on every GitHub runner; to use pnpm instead, add `- uses: pnpm/action-setup@v4` with `version: 11` before the install, and run `pnpm dlx @markset-lang/cli@0.4` wherever the recipe runs `markset`.
 
 {.tick}
 ***

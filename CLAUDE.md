@@ -89,7 +89,7 @@ site/       static site generator (build.ts) and content; every page is Markset 
             the canonical cases in tests/, so it cannot drift from the grammar, the reference or the suite. An example with `toggles: true` in EXAMPLES gets every top-level construct
             wrapped in a Result/Markdown tabs pair, with the source sliced from the file by node
             position, so the panes cannot drift and the toggle needs no script. thumbnails.ts
-            (`npm run site:thumbnails`) screenshots each gallery example's first screen in both schemes into
+            (`pnpm run site:thumbnails`) screenshots each gallery example's first screen in both schemes into
             thumbnails/, committed, with manifest.json recording a hash of the document, theme and images each was
             taken from; a test fails when an example changes after its thumbnails were taken. The site's own
             stylesheets are not in the hash, so rerun it by hand after a change to the site's look.
@@ -97,7 +97,7 @@ editors/vscode/  the VS Code extension: diagnostics, a scripting-off preview, co
             injection, over the same packages. core.ts is the part node can test and extension.ts the glue.
             build.ts bundles it with esbuild as CommonJS (.cjs, since the manifest is an ES module for tsc)
             and derives snippets from tests/ with the same selectSnippet the playground palette uses.
-            `npm run vscode:package` makes the .vsix. PUBLISHING.md there is the manual marketplace release, step by
+            `pnpm run vscode:package` makes the .vsix. PUBLISHING.md there is the manual marketplace release, step by
             step, and the extension carries its own version: an upload needs a new one, and an extension fix must
             not force an npm release of eight unchanged packages.
 test/corpus/ documents retired from the site's gallery (an incident review, a configuration reference, a change
@@ -109,41 +109,50 @@ docs/       background analysis, prior art, design rationale
 
 ## Toolchain
 
-- Node ≥ 22.18, npm workspaces. Source is TypeScript run directly by Node's type stripping, so use erasable syntax only (no enums, namespaces, or parameter properties) and import with explicit `.ts` extensions.
+- Node ≥ 22.18, pnpm workspaces (`pnpm-workspace.yaml`, with pnpm itself pinned by `packageManager` in `package.json`). Source is TypeScript run directly by Node's type stripping, so use erasable syntax only (no enums, namespaces, or parameter properties) and import with explicit `.ts` extensions.
 - The CommonMark base is **micromark + mdast** (`micromark`, `mdast-util-from-markdown`, the GFM table pair, and the `micromark-util-*` helpers), chosen 2026-09-13. Markset's three grammar constructs are a micromark syntax extension in `packages/parser/src/syntax.ts` and an mdast compiler extension in `from-markdown.ts`. The Markset AST is mdast plus `directive`, `separator`, and `span` nodes (`ast.ts`), so any unified tooling can consume it. Tokenizers find boundaries only; fence lines and attribute specifiers are parsed by the line grammar, so there is one grammar to keep in sync with the spec.
-- `npm install` once, to link the workspace packages. Then `npm test` (unit tests plus the full conformance suite) and `npm run conformance` for the per-section report (`--section <name>`, `--verbose`).
-- `npm run typecheck` runs `tsc --noEmit`. `typescript`, `@types/node` (approved 2026-09-14), `@biomejs/biome` (approved 2026-09-15) and `@mermaid-js/mermaid-cli` (approved 2026-09-15) are the dev dependencies. **There is a build step now, but only for publishing:** `npm run build` compiles each publishable package to `dist/` (JS, `.d.ts`, and both map kinds) with `tsconfig.build.json`. Nothing in the development workflow uses it — node still runs the `.ts` sources directly. mermaid-cli is the heavy one — it pulls puppeteer and a Chromium download — and it is used by nothing but `site/mermaid.ts`, which draws the site's mermaid fences. Nothing in `packages/` depends on it, and a consumer of the library never installs it.
+- `pnpm install` once, to link the workspace packages. Then `pnpm test` (unit tests plus the full conformance suite) and `pnpm run conformance` for the per-section report (`--section <name>`, `--verbose`).
+- `pnpm run typecheck` runs `tsc --noEmit`. `typescript`, `@types/node` (approved 2026-09-14), `@biomejs/biome` (approved 2026-09-15) and `@mermaid-js/mermaid-cli` (approved 2026-09-15) are the dev dependencies. **There is a build step now, but only for publishing:** `npm run build` compiles each publishable package to `dist/` (JS, `.d.ts`, and both map kinds) with `tsconfig.build.json`. Nothing in the development workflow uses it — node still runs the `.ts` sources directly. mermaid-cli is the heavy one — it pulls puppeteer and a Chromium download — and it is used by nothing but `site/mermaid.ts`, which draws the site's mermaid fences. Nothing in `packages/` depends on it, and a consumer of the library never installs it.
 - `@tiptap/core`, `@tiptap/pm`, `@tiptap/react`, `react`, `react-dom` and `happy-dom` (approved 2026-09-28) are
   root dev dependencies for `packages/tiptap`, which declares the TipTap pair as peers and the React three as optional
   peers. `happy-dom` is the tests' DOM and nothing ships with it. `.tsx` is not erasable, so the React entry uses
   `createElement`.
-- `@playwright/test` (approved 2026-09-28) runs `packages/tiptap/e2e/` in Chromium, Firefox and WebKit: `npm run e2e`,
-  after `npx playwright install chromium firefox webkit` once. `global-setup.ts` bundles `harness.ts` from src/ with
+- `@playwright/test` (approved 2026-09-28) runs `packages/tiptap/e2e/` in Chromium, Firefox and WebKit: `pnpm run e2e`,
+  after `pnpm exec playwright install chromium firefox webkit` once. `global-setup.ts` bundles `harness.ts` from src/ with
   esbuild, and the specs drive it with the browser's own keyboard, selection and paste. Wait for
   `harness.selectionSettled()` after moving the caret: a browser reports a moved caret on its own schedule, and a
   command run before then acts on the old selection. It found three bugs on its first run that 300 happy-dom tests had
   not: a space typed inside bold made the file unsavable, the kit had no keys at all, and `setContent` puts a load in
   the undo history.
+- **pnpm, since 2026-10-04.** Siblings ask for each other at `^<version>` (a test holds it), and
+  `linkWorkspacePackages: true` links those ranges to the workspace copy, so published manifests need no rewriting.
+  pnpm runs no dependency's install script unless `allowBuilds` names it: esbuild and puppeteer run, vsce's keytar and
+  vsce-sign do not. A file may import only what its own package declares, which npm's flat `node_modules` had hidden:
+  the published packages now declare the type packages their `.d.ts` files import (`@types/mdast`, `@types/hast`,
+  `micromark-util-types`, `vfile`), and the root links every published package so tests can import them by name.
+  puppeteer is reached through mermaid-cli (`site/puppeteer.ts`) rather than declared. The release publishes with
+  `pnpm publish --provenance`, which does npm's trusted publishing over OIDC itself; the smoke test packs with pnpm and
+  installs into a pnpm project. The lockfile was imported from npm's, so every version stayed the same.
 - **Everything runs under two export conditions.** micromark ships a development build that asserts its tokenizer
   contract and a production build that does not, and Vite, Vitest and Next resolve the development one by default.
   0.3.3's parser passed every test here under production and threw on any link under development, because every
-  script passed `--conditions=markset-source` alone. `npm test` ends with `test:development`, `conformance:development`
+  script passed `--conditions=markset-source` alone. `pnpm test` ends with `test:development`, `conformance:development`
   runs beside `conformance`, and the Playwright harness is bundled with `development`. A lookahead run by
   `effects.check` still has to enter a token before it consumes, and may not leave one empty.
 - `test/consumer/smoke.ts` installs the nine packages into an empty project and uses every entry point:
-  `npm run smoke:packed` from tarballs, `npm run smoke:registry -- <version>` from npm. The release runs the first
+  `pnpm run smoke:packed` from tarballs, `pnpm run smoke:registry -- <version>` from npm. The release runs the first
   before publishing and the second after, which is the check tiptap 0.3.1 needed.
 - `esbuild` (approved 2026-09-17) bundles `site/playground/app.ts` for the browser, and nothing else uses it.
   It resolves through `markset-source`, so the bundle is built from `src/` and a stale `dist/` cannot reach a
   reader. It is also a guard with no extra cost: five packages go into the bundle and none may import a node
-  builtin, so `npm run site` fails outright if one starts to. The suite's browser test drives the built page in
+  builtin, so `pnpm run site` fails outright if one starts to. The suite's browser test drives the built page in
   headless Chrome, using the puppeteer that arrives with mermaid-cli rather than a declared dependency of its own;
   if that ever stops being true the test reports a skip with a reason instead of failing. **It launches with
   `site/puppeteer.json`**, the same flags `site/mermaid.ts` passes to mmdc: the runner image restricts
   unprivileged user namespaces, so without `--no-sandbox` Chrome refuses to start at all and the failure is
   CI-only. That is Chrome's process sandbox and not the iframe `sandbox` attribute the tests assert on, which
   the renderer enforces inside the page and this flag does not touch.
-- `npm run lint` checks formatting and lint rules, `npm run format` applies them, and CI runs the check as a gate. Configuration is `biome.jsonc`, deliberately not `biome.json`: a `//` comment in a `biome.json` silently drops the members that follow it in that object, so the config reads as applied and is not. `test/tooling.test.ts` asserts every setting survives parsing. Two exemptions, both with reasons in the config: stylesheets keep their one-rule-per-line style, and `tests/*.json` is generated by `JSON.stringify` and would fight the formatter on every regeneration.
+- `pnpm run lint` checks formatting and lint rules, `pnpm run format` applies them, and CI runs the check as a gate. Configuration is `biome.jsonc`, deliberately not `biome.json`: a `//` comment in a `biome.json` silently drops the members that follow it in that object, so the config reads as applied and is not. `test/tooling.test.ts` asserts every setting survives parsing. Two exemptions, both with reasons in the config: stylesheets keep their one-rule-per-line style, and `tests/*.json` is generated by `JSON.stringify` and would fight the formatter on every regeneration.
 - The default stylesheet holds one palette: each color is a `light-dark(light, dark)` pair and `color-scheme` decides which half applies, so there is no second block to keep in sync and forcing a scheme is one property. Nothing in a document chooses it; that is the reader's, through `data-scheme` on `<body>` (§6).
 - The stylesheet is checked at a 390px viewport, not just on a desktop window. Headless Chrome clamps its window to 500px, so measure inside an iframe of the target width and read `document.documentElement.scrollWidth`; anything above the viewport width means a block is pushing the page sideways.
 - `site/site.css` is the site's own theme, layered over `markset.css` the way a theme stylesheet is layered over a document (§6). Redesigned 2026-09-30 after a comparison with Streamlane's site: ink links with an accent underline, grid items as text rather than boxes, borderless cards, and more space between sections. **Realigned with intentset.org and coralreefventures.com 2026-10-03**, so the three read as one family side by side: the system sans and Intentset's type sizes (Inter is gone, and with it the one font from another origin), Markset's violet accent as coralreefventures.com draws it (`#664d93`, pages set no `accent` of their own, and the mark is that violet too), a header held to the page's width that scrolls away rather than a full-width sticky bar (the wordmark is the way home, the repository is linked from the footer), the same scheme control on all three sites, and the network figure from coralreefventures.com small in the footer with Markset's nodes in violet. It carries the author classes the site's pages use: `.hero` on the home page's `columns`, `.band` on a card for a section set in a violet-tinted panel, `.demo` on the card beside the hero (the one neutral panel), `.tiles` on a grid whose items sit open under a neutral rule with violet titles (boxes were cut back the same day, when the home page read as a page of grey panels), `.gallery` on the examples index's grid, whose items open with a thumbnail per scheme and stretch their heading's link over the item, `.button` (and `.primary`, `.small`) on a span around a link, `.tick` for a hairline divider, `.stats` for a metrics fact strip, `.compare` for a comparison table, alongside the reserved classes from §5. The home page is short on purpose; the essay and the prior-art table are `site/content/why.md`.
@@ -154,7 +163,7 @@ docs/       background analysis, prior art, design rationale
   renderer's engine option, because each diagram is rendered twice for light and dark and spliced into one SVG.
   Everything else stays a code block, which is §10 obligation 1 working. The conformance harness passes
   `diagrams: false`, because the `html` aspect has to be a form a second implementation could also produce.
-- `npm run site` builds the documentation site into `dist/` (ignored by git). Each build stages into its own `dist.staging-<tag>/` and renames into place, so a reader never sees a half-built tree, a failed build leaves the previous one intact, and two builds at once (`npm run site` while `site:watch` rebuilds) cannot delete each other's work. `npm run site:watch` serves it at http://localhost:3002 (`-- --port N` to change), rebuilds on change, and reloads open browsers; a stylesheet edit swaps the `<link>` instead of reloading, so the scroll position survives. The reload client is injected as pages are served, never written to `dist/`. The reference and conformance pages are generated from `tests/*.json`, so they never drift from the suite. `.github/workflows/pages.yml` deploys `dist/` to GitHub Pages on push to `main`; Pages must be enabled once in the repository settings with "GitHub Actions" as the source.
+- `pnpm run site` builds the documentation site into `dist/` (ignored by git). Each build stages into its own `dist.staging-<tag>/` and renames into place, so a reader never sees a half-built tree, a failed build leaves the previous one intact, and two builds at once (`pnpm run site` while `site:watch` rebuilds) cannot delete each other's work. `pnpm run site:watch` serves it at http://localhost:3002 (`-- --port N` to change), rebuilds on change, and reloads open browsers; a stylesheet edit swaps the `<link>` instead of reloading, so the scroll position survives. The reload client is injected as pages are served, never written to `dist/`. The reference and conformance pages are generated from `tests/*.json`, so they never drift from the suite. `.github/workflows/pages.yml` deploys `dist/` to GitHub Pages on push to `main`; Pages must be enabled once in the repository settings with "GitHub Actions" as the source.
 - Adding a section to `tests/` without a driver in `packages/conformance/src/drivers.ts` is fine: the harness reports it as skipped, not failed. Same for `html`/`downgrade` fields before those renderers exist. Register a driver once the code exists so the cases start counting.
 
 ## Prior art worth knowing
@@ -181,7 +190,7 @@ in commit order, which is the wrong order for finding the work.
       **A package npm has never seen cannot be published by CI**, and this is the trap to remember when adding an
       eighth. Trusted publishing is configured per package on npmjs.com, a package that does not exist cannot have a
       publisher configured, so the run failed with `ENEEDAUTH` on the first new one and never reached the second.
-      A new package needs one publish by hand — `npm publish --workspace <name>`, in a terminal, with the passkey —
+      A new package needs one publish by hand — `pnpm --filter <name> publish`, in a terminal, with the passkey —
       and then its trusted publisher configured, after which it releases with the rest. The publish step walks the
       packages in order and stops at the first failure, so the five that were already established went out first;
       that ordering is luck rather than design, and the step is idempotent, so the fix was one command.
@@ -212,7 +221,7 @@ in commit order, which is the wrong order for finding the work.
       minified, TipTap and ProseMirror being most of it. The package ships `css/editor.css` for the four constructs
       whose editing shape differs from the rendered one (grid, steps, metrics, tabs); the page uses it too.
       **A shell whose working directory is spelled with the wrong case** (`~/github/...` for `~/GitHub/...`) fails
-      `npm run build` at this package with TS1149: macOS resolves both spellings, tsc sees `@types/mdast` twice.
+      `pnpm run build` at this package with TS1149: macOS resolves both spellings, tsc sees `@types/mdast` twice.
       `cd` to the real spelling; CI on Linux cannot meet it.
 - [x] **The authoring guide for agents, 2026-10-04** (`packages/cli/guide.md`, `markset guide`). Agents draft most
       documents now; the guide is what one needs to write Markset well: when each construct earns its place and when it

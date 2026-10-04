@@ -58,9 +58,17 @@ Getting it
 
 ## Installing it
 
+:::tabs
+### npm
 ```sh
 npm i @markset-lang/tiptap @tiptap/core @tiptap/pm
 ```
+
+### pnpm
+```sh
+pnpm add @markset-lang/tiptap @tiptap/core @tiptap/pm
+```
+:::
 
 Load a document into the editor, and save it against the source it came from:
 
