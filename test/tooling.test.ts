@@ -37,7 +37,7 @@ test("the biome configuration parses with its comments and keeps every setting",
 
 test("lint runs in CI, as a gate rather than a suggestion", async () => {
   const workflow = await readFile(join(root, ".github", "workflows", "ci.yml"), "utf8");
-  assert.match(workflow, /- run: npm run lint\n/, "a formatter nobody enforces is a formatter nobody runs");
+  assert.match(workflow, /- run: pnpm run lint\n/, "a formatter nobody enforces is a formatter nobody runs");
   const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
   assert.equal(pkg.scripts.lint, "biome check .");
   assert.equal(pkg.scripts.format, "biome check --write .");
@@ -275,18 +275,22 @@ test("the manifests are already in the form npm would rewrite them into", async 
 });
 
 test("the release names every published package, and nothing else", async () => {
-  // --workspaces would be shorter and it also sweeps up the two private
-  // packages, which npm's dry run happily lists. Naming them is the only
+  // A recursive publish of the whole workspace would be shorter, and it would
+  // also reach the private packages. Naming each one with --filter is the only
   // spelling that cannot quietly publish the test harness, and this keeps the
   // list honest when a package is added.
   const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as {
     scripts: Record<string, string>;
   };
   const release = pkg.scripts.release;
-  assert.match(release, /^npm run build &&/u, "a release always builds first, so dist cannot be stale");
-  const named = [...release.matchAll(/--workspace (@markset-lang\/[a-z-]+)/gu)].map((m) => m[1]);
+  assert.match(release, /^pnpm run build &&/u, "a release always builds first, so dist cannot be stale");
+  const named = [...release.matchAll(/--filter (@markset-lang\/[a-z-]+)/gu)].map((m) => m[1]);
   assert.deepEqual(named.sort(), PUBLISHED.map((n) => `@markset-lang/${n}`).sort());
-  assert.doesNotMatch(release, /--workspaces\b/u, "never the sweep-everything form");
+  assert.doesNotMatch(
+    release,
+    /(^|\s)(-r|--recursive)\b|--filter ['"]?@markset-lang\/\*/u,
+    "never the sweep-everything form",
+  );
 });
 
 test("every package asks for its siblings at the version being released", async () => {
@@ -319,7 +323,7 @@ test("the release publishes each package after everything it depends on", async 
   // from the registry was broken. Reorder the list and a stop would strand a
   // package whose dependency never arrived.
   const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as { scripts: Record<string, string> };
-  const named = [...pkg.scripts.release.matchAll(/--workspace @markset-lang\/([a-z-]+)/gu)].map((m) => m[1]);
+  const named = [...pkg.scripts.release.matchAll(/--filter @markset-lang\/([a-z-]+)/gu)].map((m) => m[1]);
   for (const [i, name] of named.entries()) {
     const d = JSON.parse(await readFile(join(root, "packages", name, "package.json"), "utf8")) as {
       dependencies?: Record<string, string>;
@@ -342,20 +346,20 @@ test("the release workflow proves the build before it publishes", async () => {
   assert.match(yaml, /id-token: write/u, "trusted publishing and provenance both need it");
   assert.match(yaml, /--provenance/u, "each tarball is tied to the run that built it");
   for (const step of [
-    "npm run lint",
-    "npm run typecheck",
-    "npm test",
-    "npm run conformance",
-    "npm run conformance:development",
-    "npm run e2e",
-    "npm run smoke:packed",
+    "pnpm run lint",
+    "pnpm run typecheck",
+    "pnpm test",
+    "pnpm run conformance",
+    "pnpm run conformance:development",
+    "pnpm run e2e",
+    "pnpm run smoke:packed",
   ]) {
     assert.ok(yaml.includes(step), `the release re-proves ${step}, since a tag can come from anywhere`);
   }
   assert.match(yaml, /does not match package version/u, "the tag must match the version it claims");
   assert.ok(
-    yaml.indexOf("npm run smoke:packed") < yaml.indexOf("npm publish") &&
-      yaml.indexOf("npm run smoke:registry") > yaml.indexOf("npm publish"),
+    yaml.indexOf("pnpm run smoke:packed") < yaml.indexOf(" publish --provenance") &&
+      yaml.indexOf("pnpm run smoke:registry") > yaml.indexOf(" publish --provenance"),
     "the packed install is proved before publishing, and the registry install after",
   );
   // ...but only on a tag. GITHUB_REF_NAME is the branch on a manual run, so an
@@ -364,7 +368,7 @@ test("the release workflow proves the build before it publishes", async () => {
 });
 
 test("the release workflow can be run a second time without failing", async () => {
-  // npm answers a second publish of a version that already exists with a 403.
+  // The registry answers a second publish of a version that already exists with a 403.
   // Run all five as one command and that 403 fails the step, stranding every
   // package after it -- so a re-pushed tag, or a rerun after a partial
   // publish, would do damage rather than nothing. The first release of this
@@ -373,38 +377,39 @@ test("the release workflow can be run a second time without failing", async () =
   assert.match(yaml, /curl -sf -o \/dev\/null "https:\/\/registry\.npmjs\.org/u, "asks the registry before it writes");
   assert.doesNotMatch(
     yaml,
-    /npm view/u,
-    "over plain HTTPS: npm view fails on a bad token, which would read as not published",
+    /(npm|pnpm) view/u,
+    "over plain HTTPS: a client's view fails on a bad token, which would read as not published",
   );
-  assert.doesNotMatch(yaml, /npm run release/u, "and not the all-at-once script, which cannot skip");
+  assert.doesNotMatch(yaml, /pnpm run release/u, "and not the all-at-once script, which cannot skip");
   // The list it walks is the one the release script names. Two copies of it
   // would be two things to keep in step, and the test above only governs one.
   assert.match(yaml, /scripts\.release\.match/u, "derives the package list rather than repeating it");
   // These packages publish through npm's trusted publishing, so the workflow
-  // configures no credential at all: npm exchanges the OIDC token GitHub mints
-  // for the run. An .npmrc carrying an empty _authToken is worse than none --
-  // npm tries that credential, is refused, and never reaches the OIDC path,
-  // which is precisely how npm ci failed in this workflow once already. Both
-  // spellings of that mistake stay out.
+  // configures no credential at all: pnpm exchanges the OIDC token GitHub mints
+  // for the run. An .npmrc carrying an empty _authToken is the mistake to keep
+  // out -- the npm client tried that credential, was refused, and never reached
+  // the OIDC path, which is how npm ci failed in this workflow once. Both
+  // spellings of it stay out.
   assert.doesNotMatch(yaml, /NODE_AUTH_TOKEN/u, "no token: publishing is by OIDC");
   assert.doesNotMatch(yaml, /registry-url/u, "and nothing writes an .npmrc for one");
 });
 
 test("every dependency resolves to the public registry", async () => {
   // A private registry in a contributor's ~/.npmrc is written into the
-  // lockfile as the resolved URL for anything it serves, and npm ci then
-  // sends an empty credential to a host that demands one. It fails with a
-  // 401 about a password, on a machine that never configured a password,
-  // for a package nobody added -- and it fails at install, so nothing else
-  // in the job gets far enough to say anything more useful. It broke every
+  // lockfile as the resolved URL for anything it serves, and a frozen install
+  // then sends an empty credential to a host that demands one. It fails with
+  // a 401 about a password, on a machine that never configured a password,
+  // for a package nobody added -- and it fails at install, so nothing else in
+  // the job gets far enough to say anything more useful. It broke every
   // workflow in this repository for five commits before anyone read a log.
-  const lock = JSON.parse(await readFile(join(root, "package-lock.json"), "utf8")) as {
-    packages: Record<string, { resolved?: string }>;
-  };
-  const foreign = Object.entries(lock.packages)
-    .filter(([, v]) => v.resolved?.startsWith("http") && !v.resolved.startsWith("https://registry.npmjs.org/"))
-    .map(([name, v]) => `${name} -> ${v.resolved}`);
+  // pnpm records a registry package by integrity alone and writes a tarball
+  // URL only for one that came from somewhere else, so any such URL is foreign.
+  const lock = await readFile(join(root, "pnpm-lock.yaml"), "utf8");
+  const foreign = [...lock.matchAll(/tarball: (\S+)/gu)]
+    .map((m) => m[1])
+    .filter((url) => !url.startsWith("https://registry.npmjs.org/"));
   assert.deepEqual(foreign, [], "a lockfile entry points somewhere only one machine can reach");
+  assert.ok(!(await readFile(join(root, "package-lock.json"), "utf8").catch(() => "")), "and npm's lockfile is gone");
 });
 
 test("the README names every published package, so its count cannot go stale", async () => {

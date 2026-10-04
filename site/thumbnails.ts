@@ -1,7 +1,7 @@
 /**
  * The first screen of every example in the gallery, in both color schemes, for the examples index.
  *
- *   npm run site:thumbnails
+ *   pnpm run site:thumbnails
  *
  * They are committed rather than taken at build time. Taking them needs a browser, and the build already
  * launches one for mermaid, but every test that builds the site would pay for sixteen screenshots, and the
@@ -20,6 +20,7 @@ import { tmpdir } from "node:os";
 import { basename, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { build, type EXAMPLES, GALLERY } from "./build.ts";
+import { loadPuppeteer } from "./puppeteer.ts";
 
 const root = resolve(import.meta.dirname, "..");
 export const THUMBNAILS = join(root, "site", "thumbnails");
@@ -45,10 +46,7 @@ export async function sourceHash(example: (typeof EXAMPLES)[number]): Promise<st
 }
 
 async function capture(): Promise<void> {
-  const puppeteer = await import("puppeteer").then(
-    (m) => m.default,
-    () => null,
-  );
+  const puppeteer = await loadPuppeteer();
   if (!puppeteer)
     throw new Error("site:thumbnails: puppeteer is not installed; it arrives with @mermaid-js/mermaid-cli");
   const args = JSON.parse(await readFile(join(import.meta.dirname, "puppeteer.json"), "utf8")).args as string[];

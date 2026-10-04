@@ -33,9 +33,17 @@ opens it.
 
 Install the command line tool beside your project:
 
+:::tabs
+### npm
 ```sh
 npm install --save-dev @markset-lang/cli
 ```
+
+### pnpm
+```sh
+pnpm add --save-dev @markset-lang/cli
+```
+:::
 
 Then add one line to the file your agent reads, so it loads the guide before it writes:
 

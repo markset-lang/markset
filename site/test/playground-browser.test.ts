@@ -5,6 +5,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { extname, join } from "node:path";
 import { build } from "../build.ts";
+import { loadPuppeteer } from "../puppeteer.ts";
 
 /**
  * The playground, in a real browser.
@@ -22,10 +23,7 @@ import { build } from "../build.ts";
  * declared, so if that ever stops being true this reports a skip with a reason
  * instead of failing for a thing nobody changed.
  */
-const puppeteer = await import("puppeteer").then(
-  (m) => m.default,
-  () => null,
-);
+const puppeteer = await loadPuppeteer();
 const unavailable = puppeteer ? false : "puppeteer is not installed; it arrives with @mermaid-js/mermaid-cli";
 
 /**

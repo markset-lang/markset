@@ -15,18 +15,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # pnpm comes from the packageManager field in package.json, so the version
+      # is pinned in one place.
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
+          cache: pnpm
       # Chromium is downloaded by mermaid-cli's postinstall and is the slowest
       # part of a cold build, so it is cached against the lockfile it came from.
       - uses: actions/cache@v4
         with:
           path: ~/.cache/puppeteer
-          key: puppeteer-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-      - run: npm ci
-      - run: npm run site
+          key: puppeteer-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

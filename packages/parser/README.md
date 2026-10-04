@@ -4,6 +4,8 @@ The reference parser for [Markset](https://markset.org/): CommonMark plus a clos
 
 ```sh
 npm i @markset-lang/parser
+# or
+pnpm add @markset-lang/parser
 ```
 
 ```js

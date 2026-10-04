@@ -5,7 +5,7 @@ import { formatReport } from "../src/report.ts";
 import { drivers } from "../src/drivers.ts";
 
 /**
- * Runs the real suite under tests/ so `npm test` covers conformance. Skipped
+ * Runs the real suite under tests/ so `pnpm test` covers conformance. Skipped
  * aspects (sections or renderers that do not exist yet) do not fail this test.
  */
 test("tests/*.json conform to the schema and pass against the implementation", async () => {

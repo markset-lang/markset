@@ -80,10 +80,10 @@ check("remark-markset", () => {
 
 check("cli", () => {
   writeFileSync("doc.md", source);
-  execFileSync("npx", ["--no-install", "markset", "check", "doc.md"], { stdio: "pipe" });
-  assert.match(execFileSync("npx", ["--no-install", "markset", "html", "doc.md"], { encoding: "utf8" }), /ms-card/);
+  execFileSync("pnpm", ["exec", "markset", "check", "doc.md"], { stdio: "pipe" });
+  assert.match(execFileSync("pnpm", ["exec", "markset", "html", "doc.md"], { encoding: "utf8" }), /ms-card/);
   // The guide ships as a file beside the code, so a missing "files" entry would only show up installed.
-  assert.match(execFileSync("npx", ["--no-install", "markset", "guide"], { encoding: "utf8" }), /^# Writing Markset/);
+  assert.match(execFileSync("pnpm", ["exec", "markset", "guide"], { encoding: "utf8" }), /^# Writing Markset/);
   assert.ok(readFileSync("node_modules/@markset-lang/cli/guide.md", "utf8").startsWith("# Writing Markset"));
 });
 

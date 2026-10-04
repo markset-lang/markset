@@ -15,6 +15,7 @@
     "micromark-extension-gfm-table": "*",
     "mdast-util-gfm-table": "*",
     "micromark-extension-frontmatter": "*",
-    "mdast-util-frontmatter": "*"
+    "mdast-util-frontmatter": "*",
+    "@types/mdast": "^4.0.4"
   }
 }

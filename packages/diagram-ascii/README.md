@@ -4,6 +4,8 @@ Draws an ASCII diagram as SVG. A pure function with no dependencies: text in, SV
 
 ```sh
 npm i @markset-lang/diagram-ascii
+# or
+pnpm add @markset-lang/diagram-ascii
 ```
 
 ```js

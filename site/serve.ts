@@ -3,7 +3,7 @@
  * source file changes, and pushes a reload to every open browser. Node
  * built-ins only, so there is still nothing to install.
  *
- *   npm run site:watch -- --port 4000
+ *   pnpm run site:watch -- --port 4000
  *
  * The reload client is injected into HTML as it is served and is never written
  * to disk, so dist/ stays byte-identical to what pages.yml deploys. A change to
@@ -174,7 +174,7 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
  * is on disk — silently, because a stale `dist/` is a working build. It cost an
  * afternoon: charts had landed, every test passed, and the page in the browser
  * had none, because `packages/render-html/dist` predated them. `process.execArgv`
- * is not enough on its own, since it is empty when the flag came from an npm
+ * is not enough on its own, since it is empty when the flag came from a package
  * script rather than the command line.
  */
 function rebuild(): Promise<boolean> {

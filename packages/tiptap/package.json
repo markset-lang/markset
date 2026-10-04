@@ -43,7 +43,8 @@
     "./css/editor.css": "./css/editor.css"
   },
   "dependencies": {
-    "@markset-lang/parser": "^0.4.0"
+    "@markset-lang/parser": "^0.4.0",
+    "@types/mdast": "^4.0.4"
   },
   "peerDependencies": {
     "@tiptap/core": "^3.0.0",

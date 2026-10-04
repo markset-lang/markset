@@ -1,9 +1,9 @@
 /**
- * Copy the canonical cases into the package, so npm can pack them.
+ * Copy the canonical cases into the package, so they can be packed.
  *
  * The suite lives at the repository root, under tests/, because spec §7 says
  * it does and because it mirrors the CommonMark layout a reader already knows.
- * npm packs only what is inside the package directory, so the files have to be
+ * A pack holds only what is inside the package directory, so the files have to be
  * here at pack time. They are copied rather than moved, and never committed:
  * one canonical location, and a test that fails if this copy differs from it.
  */
