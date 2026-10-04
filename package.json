@@ -52,7 +52,7 @@
     "typescript": "^7.0.2",
     "unified": "^11.0.5"
   },
-  "version": "0.3.4",
+  "version": "0.4.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/markset-lang/markset.git"

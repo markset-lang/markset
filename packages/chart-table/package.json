@@ -1,6 +1,6 @@
 {
   "name": "@markset-lang/chart-table",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "description": "Draws a figure's table as a chart (spec §11). An engine, not part of the renderer.",
   "license": "MIT",
   "type": "module",

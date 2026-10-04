@@ -1,6 +1,6 @@
 {
   "name": "@markset-lang/tiptap",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "description": "TipTap extensions that edit a Markset document visually and save it back as Markset source, touching only the lines an edit changed.",
   "license": "MIT",
   "type": "module",
@@ -43,7 +43,7 @@
     "./css/editor.css": "./css/editor.css"
   },
   "dependencies": {
-    "@markset-lang/parser": "^0.3.4"
+    "@markset-lang/parser": "^0.4.0"
   },
   "peerDependencies": {
     "@tiptap/core": "^3.0.0",

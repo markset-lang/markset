@@ -1,7 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.4.0 — 2026-10-04
 
+**An authoring guide for the agents that write most documents now.** Nothing in the grammar changed; one frontmatter form the spec always allowed now reads.
+
+- **`markset guide`, and `guide.md` in `@markset-lang/cli`.** What an agent needs to write Markset well: when each construct earns its place and when it does not, an example of each, the classes, the rules that keep a document portable, and the codes `check` reports. It ships as a file, so a repository points its agents at `node_modules/@markset-lang/cli/guide.md` from CLAUDE.md or AGENTS.md and the guide stays in step with the version installed. Its tests parse every example with no diagnostic and check every code, preset, tone, callout type and chart type it names against the parser, so it cannot teach what `check` rejects. An agent given only the guide wrote a two-page review that checked clean on its first run.
+- **A block sequence at its key's indentation reads.** `key:` followed by `- item` lines at the same indentation is valid YAML and how most tools write frontmatter, and the subset reader reported it as `FRONTMATTER_UNPARSEABLE`. It reads as a sequence now, with conformance cases.
 - **A calmer dark palette in the default stylesheet.** The dark half of `markset.css` was GitHub's: near-black, with surfaces and borders so close to the ground that a page of cards read as a stack of dark rectangles. It is now a warm charcoal with the surface a visible step above it and quieter borders. Text keeps 14:1 contrast and muted text 7:1, and every dark chart color stays above 3:1 on both new grounds. Light mode is unchanged.
 - **The site is redesigned**, over the same Markset: one sans face, real buttons, fewer boxes, full-width bands, and a short home page with a two-column hero. The essay and the comparison with prior art moved to a *Why Markset* page.
 - **The examples are fewer and more varied.** Seven documents instead of ten, because most had opened the same way. The incident review, the configuration reference and the change set left the site and are kept as test documents in `test/corpus/`; the construct tour is now the *Vocabulary tour*. The runbook opens as an alert banner, the architecture overview as a drawing sheet with a title block, and the capacity review on its chart. A new example, a weekly service dashboard, is a board of panels rather than a column of prose. The examples index shows each document's first screen, in the reader's color scheme.
