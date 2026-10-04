@@ -1,7 +1,7 @@
 {
   "name": "@markset-lang/cli",
   "version": "0.3.4",
-  "description": "markset command line: check, html, downgrade, ast.",
+  "description": "markset command line: check, html, downgrade, ast, and the authoring guide for agents.",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -23,7 +23,8 @@
   ],
   "files": [
     "dist",
-    "src"
+    "src",
+    "guide.md"
   ],
   "exports": {
     ".": {

@@ -62,7 +62,7 @@ The site at <https://markset.org/> is generated from this repository: a referenc
 | `packages/conformance` | Harness that runs `tests/*.json` against the packages above. |
 | `packages/remark-markset` | remark plugin: Markset in an existing unified pipeline. |
 | `packages/conformance-suite` | `tests/*.json` and the schema, published as data for other implementations. |
-| `packages/cli` | `markset check | html | downgrade | ast | css`. |
+| `packages/cli` | `markset check | html | downgrade | ast | css | guide`, and `guide.md`, the authoring guide for agents. |
 | `site/` | Documentation site, written in Markset and built by the packages above (`npm run site`). |
 | `docs/` | Background analysis and design rationale. |
 

@@ -59,7 +59,8 @@ packages/
   conformance-suite/ the cases as data - tests/*.json and the schema, copied in at build time by
                     stage.ts and published for implementations that are not this one. No dependencies,
                     deliberately: it is what an implementation is checked against, so it must not carry one.
-  cli/
+  cli/              `markset`: check, html, downgrade, ast, css, and guide, which prints guide.md, the authoring guide
+                    for agents (shipped in the package; its tests parse every example and check every code it names)
   tiptap/           TipTap extensions for editing a document visually (D14). convert.ts is Markset <-> ProseMirror JSON
                     and needs no DOM; extensions.ts is the schema, commands and guards; model.ts is the node and
                     attribute table both read; react.ts is the optional `/react` entry. A block the editor did not
@@ -206,6 +207,12 @@ in commit order, which is the wrong order for finding the work.
       **A shell whose working directory is spelled with the wrong case** (`~/github/...` for `~/GitHub/...`) fails
       `npm run build` at this package with TS1149: macOS resolves both spellings, tsc sees `@types/mdast` twice.
       `cd` to the real spelling; CI on Linux cannot meet it.
+- [x] **The authoring guide for agents, 2026-10-04** (`packages/cli/guide.md`, `markset guide`). Agents draft most
+      documents now; the guide is what one needs to write Markset well: when each construct earns its place and when it
+      does not, an example of each, the classes, the portability rules and the codes `check` reports. Shipped as a file
+      so a repository points its agents at `node_modules/@markset-lang/cli/guide.md`. `guide.test.ts` parses every
+      example with no diagnostic, requires a section per construct, and checks every code, preset, tone, callout type
+      and chart type it names against the parser. The site's rewrite around agent-written documents comes next.
 - [ ] Nothing.
 
 **Done,** in the order it landed.
