@@ -19,8 +19,26 @@ Markset is a strict superset of CommonMark with a closed vocabulary of layout co
 | `downgrade <file>` | Render plain CommonMark, the form for a target that has never heard of Markset (spec §3). |
 | `ast <file>` | Print the AST as JSON — mdast plus the construct nodes. |
 | `css` | Write the default stylesheet, for a site that links it once instead of inlining it into every page. |
+| `guide` | Write the authoring guide: how to write Markset well, for a coding agent or a person. |
 
 `-` as the file reads standard input.
+
+## Writing with an agent
+
+Most documents are drafted by an agent now, and `guide.md` in this package is what an agent needs to write Markset
+well: the eight constructs with an example of each, when each earns its place and when it does not, the classes, the
+rules that keep a document portable, and the codes `check` reports. Point your agent at it with one line, in CLAUDE.md:
+
+```text
+@node_modules/@markset-lang/cli/guide.md
+```
+
+or in AGENTS.md: `Before writing a Markset document, read node_modules/@markset-lang/cli/guide.md and follow it.`
+With the CLI installed as a dev dependency the guide stays in step with the version you run. `markset guide -o
+MARKSET.md` writes a copy instead, for a repository that does not install it.
+
+The loop is the guide, then `markset check`, which the guide tells the agent to run and clean before it finishes.
+Every example in the guide is parsed by this package's tests, so it never teaches what the checker rejects.
 
 ## Options
 

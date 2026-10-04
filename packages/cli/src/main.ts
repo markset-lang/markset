@@ -20,6 +20,7 @@ commands
   downgrade <file>       render plain CommonMark
   ast <file>             print the AST as JSON
   css                    write the default stylesheet, for a site that links it once
+  guide                  write the authoring guide: how to write Markset well, for an agent or a person
 
 options
   -o, --out <path>       write output to a file instead of stdout
@@ -39,7 +40,17 @@ options
 "-" reads the document from stdin.`;
 
 /** Every command name, so an unknown one is reported as one rather than as a missing file. */
-const COMMANDS = new Set(["check", "html", "downgrade", "ast", "css"]);
+const COMMANDS = new Set(["check", "html", "downgrade", "ast", "css", "guide"]);
+
+/**
+ * The authoring guide, `guide.md` at the package root: what an agent writing a
+ * Markset document needs, from the vocabulary to the restraint. It ships as a
+ * file so a repository can point its agents at it in place
+ * (node_modules/@markset-lang/cli/guide.md), and `markset guide` prints it.
+ * The tests parse every example in it and check every code it names, so it
+ * cannot teach what the parser rejects.
+ */
+export const guidePath = new URL("../guide.md", import.meta.url);
 
 export async function main(
   argv: string[],
@@ -73,7 +84,7 @@ export async function main(
     io.stderr(`markset: unknown command "${command}"\n\n${USAGE}\n`);
     return 2;
   }
-  if (files.length === 0 && command !== "css") {
+  if (files.length === 0 && command !== "css" && command !== "guide") {
     io.stderr(`markset ${command}: a file is required ("-" for stdin)\n`);
     return 2;
   }
@@ -141,6 +152,10 @@ export async function main(
       // what made that obvious: --css already took an href, and there was no
       // way to produce the file it pointed at.
       await emit(await readFile(defaultStylesheetPath, "utf8"));
+      return 0;
+    }
+    case "guide": {
+      await emit(await readFile(guidePath, "utf8"));
       return 0;
     }
     case "downgrade": {
