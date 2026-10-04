@@ -66,11 +66,18 @@ Installed, the guide stays in step with the version you run. `markset guide` pri
 
 [[Read the guide](../guide/index.html)]{.button .primary} [[The markset command](../cli/index.html)]{.button}
 
+{.eyebrow}
+A test of the guide
+
 ## The same document, twice
 
-An agent was given the guide and nothing else, and asked for a two-page review of an invented checkout rollout, for
-engineering and product leaders. Its document checked clean on the first run. Then it wrote the same content as plain
-Markdown, for comparison. Both are drawn by the same renderer with the same stylesheet: the only difference is the constructs.
+Before the guide was released, it was tested. A fresh agent was given [the authoring guide](../guide/index.html), the
+same file your agent reads from `node_modules`, and nothing else: no specification and no examples. It was asked for a
+two-page review of an invented product's checkout rollout, written for engineering and product leaders. Its document
+passed `markset check` on the first run. It then wrote the same content as plain Markdown, so the two could be compared.
+
+Both are drawn below by the same renderer with the same stylesheet, so the only difference is the constructs. The
+product, its numbers and its team are invented; the documents are exactly as the agent wrote them.
 
 ### The headline numbers
 
