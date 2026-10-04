@@ -131,7 +131,7 @@ Tab labels are headings, so a renderer with no tab support shows the sections on
 :::tabs
 ### On the command line
 ```sh
-npm i -g @markset-lang/cli
+npm i -g @markset-lang/cli     # or: pnpm add -g @markset-lang/cli
 markset html showcase.md -o showcase.html
 ```
 
@@ -147,7 +147,7 @@ const html = renderHtml(ast);
 
 ### In CI
 ```sh
-npx @markset-lang/cli check docs/*.md
+npx @markset-lang/cli check docs/*.md     # or: pnpm dlx @markset-lang/cli check docs/*.md
 ```
 :::
 

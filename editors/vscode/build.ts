@@ -1,7 +1,7 @@
 /**
  * Builds the extension into dist/: the bundled script, the stylesheet it
  * inlines into the preview, and the snippets derived from the conformance
- * suite. Run by `npm run build` in this directory and by the test that proves
+ * suite. Run by `pnpm run build` in this directory and by the test that proves
  * the bundle builds.
  */
 import { copyFile, mkdir, readdir, readFile, writeFile } from "node:fs/promises";

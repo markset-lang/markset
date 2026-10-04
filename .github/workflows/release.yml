@@ -6,8 +6,8 @@ on:
     tags: ["v[0-9]*"]
   workflow_dispatch:
 
-# id-token lets npm attach provenance, which ties each published tarball to the
-# commit and workflow run that produced it.
+# id-token lets pnpm publish by OIDC trusted publishing and attach provenance,
+# which ties each published tarball to the commit and workflow run that produced it.
 permissions:
   contents: read
   id-token: write
@@ -17,40 +17,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # pnpm comes from the packageManager field in package.json, so the version
+      # is pinned in one place.
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
+          cache: pnpm
       # The test suite builds the site, which draws mermaid, which needs the
       # browser mermaid-cli brings. Cached so a release is not a cold download.
       - uses: actions/cache@v4
         with:
           path: ~/.cache/puppeteer
-          key: puppeteer-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-      - run: npm ci
+          key: puppeteer-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm install --frozen-lockfile
 
       # A tag can be pushed from anywhere, so the release re-proves the whole
       # thing rather than trusting that CI ran on this commit.
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm test
-      - run: npm run conformance
+      - run: pnpm run lint
+      - run: pnpm run typecheck
+      - run: pnpm test
+      - run: pnpm run conformance
       # The same cases against micromark's development build, which asserts its
       # tokenizer contract where the production build does not. Vite and Vitest
       # resolve that build by default, so a consumer's dev server runs it.
-      - run: npm run conformance:development
+      - run: pnpm run conformance:development
       # The editor in the three engines readers use. The package's own tests
       # run it in happy-dom, which checks the model and not the browser.
       - uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-      - run: npx playwright install --with-deps chromium firefox webkit
-      - run: npm run e2e
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - run: pnpm run e2e
       # Everything above runs inside the workspace, where a sibling package is
       # always the local copy. This installs the packed tarballs into an empty
       # project, as a consumer would, and uses every entry point.
-      - run: npm run smoke:packed
+      - run: pnpm run smoke:packed
 
       # Only on a tag: on a manual run GITHUB_REF_NAME is the branch, which can
       # never equal a version, so without this the workflow_dispatch trigger it
@@ -66,8 +69,8 @@ jobs:
             exit 1
           fi
 
-      # Publishing has to be safe to repeat. npm answers a second publish of a
-      # version that already exists with a 403, which would fail the whole run
+      # Publishing has to be safe to repeat. The registry answers a second publish
+      # of a version that already exists with a 403, which would fail the whole run
       # and leave any package after it unpublished -- so a re-pushed tag, or a
       # run after a partial publish, would be worse than useless. Skip what is
       # already on the registry and publish the rest.
@@ -76,26 +79,27 @@ jobs:
       # again here, so the two cannot disagree about what ships. Every package
       # declares access: public, so no flag is needed for the scope.
       # Nothing configures a credential, deliberately. These packages use npm's
-      # trusted publishing, so npm exchanges the OIDC token GitHub mints for
+      # trusted publishing, so pnpm exchanges the OIDC token GitHub mints for
       # this run -- which is why the job asks for id-token: write -- for a
       # short-lived registry token scoped to this workflow. An .npmrc carrying
-      # an empty _authToken would be worse than none at all: npm would try that
-      # credential, be refused, and never reach the OIDC path. That is exactly
-      # how npm ci failed here before, so it is not a hypothetical.
+      # an empty _authToken is the trap to stay out of: the npm client tried that
+      # credential, was refused, and never reached the OIDC path, which is how
+      # npm ci failed here once. --no-git-checks because a tag checkout is a
+      # detached HEAD, which pnpm publish otherwise refuses.
       - name: Publish what is not already on the registry
         run: |
-          npm run build
+          pnpm run build
           version="$(node -p "require('./package.json').version")"
           names="$(node -p "require('./package.json').scripts.release.match(/@markset-lang\/[a-z-]+/g).join(' ')")"
           for name in $names; do
-            # Asked over plain HTTPS rather than through the npm client, so the
+            # Asked over plain HTTPS rather than through a package manager, so the
             # check cannot fail for a credential reason. A failure here would
             # read as "not published" and turn a safe skip into a publish that
             # 403s -- the one outcome this step exists to prevent.
             if curl -sf -o /dev/null "https://registry.npmjs.org/${name//\//%2f}/$version"; then
               echo "$name@$version is already published"
             else
-              npm publish --workspace "$name" --provenance
+              pnpm --filter "$name" publish --provenance --no-git-checks
             fi
           done
 
@@ -104,4 +108,4 @@ jobs:
       # for a parser the registry answered with an older one. Retries while the
       # registry catches up with what was just published.
       - name: Install the release from the registry and use it
-        run: npm run smoke:registry -- "$(node -p "require('./package.json').version")"
+        run: pnpm run smoke:registry -- "$(node -p "require('./package.json').version")"

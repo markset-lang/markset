@@ -1,0 +1,18 @@
+packages:
+  - packages/*
+  - site
+  - editors/vscode
+
+# Every package asks for its siblings at the version they are released at together (^x.y.z, held by
+# test/tooling.test.ts), so the published manifests need no rewriting. This links those ranges to the
+# workspace copy instead of fetching the last release from the registry.
+linkWorkspacePackages: true
+
+# pnpm runs no dependency's install script unless it is named here. esbuild checks its platform binary;
+# puppeteer fetches the Chrome that mermaid-cli and the site's browser tests drive. keytar and vsce-sign
+# serve vsce's credential store and signing, which packaging the extension does not use.
+allowBuilds:
+  esbuild: true
+  puppeteer: true
+  keytar: false
+  "@vscode/vsce-sign": false

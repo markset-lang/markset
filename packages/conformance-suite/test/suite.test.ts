@@ -10,7 +10,7 @@ const root = resolve(import.meta.dirname, "..", "..", "..");
 const canonical = join(root, "tests");
 
 test("the packaged cases are byte-identical to the canonical ones", async () => {
-  // The suite lives at the repository root and is copied here so npm can pack
+  // The suite lives at the repository root and is copied here so it can be packed
   // it, which is two locations and therefore a chance to drift. This is the
   // only thing stopping a published case file from quietly differing from the
   // one the reference implementation is actually tested against.
@@ -39,7 +39,7 @@ test("the packaged cases are byte-identical to the canonical ones", async () => 
 test("the copy that would actually be packed matches too", async () => {
   // The test above proves the staging function is correct, which is not the
   // same as the working copy being correct -- and it is the working copy that
-  // npm packs. The formatter reached in and rewrote all fifteen files here
+  // is packed. The formatter reached in and rewrote all fifteen files here
   // once, and nothing noticed: the copy is gitignored, so no diff shows it,
   // and staging into a temporary directory hides it by construction.
   const cases = join(import.meta.dirname, "..", "cases");

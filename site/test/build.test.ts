@@ -140,7 +140,7 @@ test("copied SVG assets stay valid XML", async () => {
 });
 
 test("two builds into one directory both finish, and the tree is whole", async () => {
-  // `npm run site` while site:watch is rebuilding. With a fixed staging path
+  // `pnpm run site` while site:watch is rebuilding. With a fixed staging path
   // each build deleted the directory the other was writing into, and the tree
   // that got published was whatever survived — which looks exactly like a page
   // whose stylesheet disappeared. Every build gets its own scratch space now,
@@ -178,7 +178,7 @@ test("every document under examples/ is published, and every published one exist
 test("every example in the gallery has a thumbnail in each scheme, taken from what it is now", async () => {
   // The thumbnails are committed rather than taken at build time (site/thumbnails.ts says why), so the two
   // ways they go wrong are checked here: a picture missing or left behind, and a picture of an example that
-  // has changed since. The fix for either is `npm run site:thumbnails`.
+  // has changed since. The fix for either is `pnpm run site:thumbnails`.
   const manifest = JSON.parse(await readFile(join(THUMBNAILS, "manifest.json"), "utf8")) as Record<string, string>;
   const expected = GALLERY.flatMap((e) => SCHEMES.map((scheme) => `${e.slug}.${scheme}.webp`)).sort();
   const onDisk = (await readdir(THUMBNAILS)).filter((f) => f.endsWith(".webp")).sort();
@@ -188,7 +188,7 @@ test("every example in the gallery has a thumbnail in each scheme, taken from wh
     assert.equal(
       manifest[example.slug],
       await sourceHash(example),
-      `${example.file} has changed since its thumbnails were taken: run npm run site:thumbnails`,
+      `${example.file} has changed since its thumbnails were taken: run pnpm run site:thumbnails`,
     );
   }
   const index = await readFile(join(dist, "examples", "index.html"), "utf8");

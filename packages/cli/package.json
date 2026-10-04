@@ -41,5 +41,8 @@
     "@markset-lang/render-downgrade": "^0.4.0",
     "@markset-lang/render-html": "^0.4.0",
     "@markset-lang/diagram-ascii": "^0.4.0"
+  },
+  "devDependencies": {
+    "@types/mdast": "^4.0.4"
   }
 }

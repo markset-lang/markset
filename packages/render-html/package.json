@@ -41,6 +41,8 @@
     "@markset-lang/diagram-ascii": "^0.4.0",
     "@markset-lang/chart-table": "^0.4.0",
     "mdast-util-to-hast": "^13.2.0",
-    "hast-util-to-html": "^9.0.5"
+    "hast-util-to-html": "^9.0.5",
+    "@types/mdast": "^4.0.4",
+    "@types/hast": "^3.0.5"
   }
 }

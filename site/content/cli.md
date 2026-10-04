@@ -22,12 +22,21 @@ Getting it
 
 Node 22.18 or newer, and one package.
 
+:::tabs
+### npm
 ```sh
 npm i -g @markset-lang/cli
 markset --help
 ```
 
-A project that renders as part of its own build wants it as a dev dependency instead — `npm i -D @markset-lang/cli` puts `markset` on the path inside npm scripts. To try it without installing anything, `npx @markset-lang/cli html doc.md`.
+### pnpm
+```sh
+pnpm add -g @markset-lang/cli
+markset --help
+```
+:::
+
+A project that renders as part of its own build wants it as a dev dependency instead — `npm i -D @markset-lang/cli` or `pnpm add -D @markset-lang/cli` puts `markset` on the path inside the project's scripts. To try it without installing anything, `npx @markset-lang/cli html doc.md`, or `pnpm dlx @markset-lang/cli html doc.md`.
 
 {.small .muted}
 Working on Markset rather than with it? Clone the repository and run `node packages/cli/src/markset.ts`, which is the same program before packaging: the sources are TypeScript that Node runs by stripping the types, so there is no build step between an edit and running it.

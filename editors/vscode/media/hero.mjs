@@ -7,7 +7,9 @@
  *
  *   node --conditions=markset-source editors/vscode/media/hero.mjs
  */
-import puppeteer from "puppeteer";
+import { loadPuppeteer } from "../../../site/puppeteer.ts";
+
+const puppeteer = await loadPuppeteer();
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";

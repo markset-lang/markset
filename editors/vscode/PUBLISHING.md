@@ -35,8 +35,8 @@ Patch for a fix, minor for a feature, following the extension's own history in `
 From the repository root:
 
 ```sh
-npm test
-npm run lint
+pnpm test
+pnpm run lint
 ```
 
 Both must pass. The extension's tests build the bundle into a temporary directory and activate it against a stub host, so a bundle that would fail on load fails here first.
@@ -44,7 +44,7 @@ Both must pass. The extension's tests build the bundle into a temporary director
 ### 4. Package
 
 ```sh
-npm run vscode:package
+pnpm run vscode:package
 ```
 
 This builds `editors/vscode/dist/` from the sources and writes `editors/vscode/markset-vscode-<version>.vsix`. The last line of the output names the file and its size; it has been around 130 KB. If `vsce` complains about the icon, README, LICENSE or repository fields, fix the manifest rather than passing a flag to skip the check.
@@ -77,5 +77,5 @@ The tag is what ties a marketplace version to a commit, which is the first thing
 
 ## What is not covered
 
-- **Open VSX**, the registry Cursor, VSCodium and Gitpod read, has no web upload; publishing there needs an access token from <https://open-vsx.org> and `npx ovsx publish`. It can wait until the marketplace listing has settled.
-- **Publishing from CI** needs the Azure DevOps token as a repository secret. When a token becomes obtainable, the change is a job in `release.yml` that runs `npx vsce publish --no-dependencies -p "$VSCE_PAT"` from this directory on a `vscode-v*` tag. Until then, the steps above are the release.
+- **Open VSX**, the registry Cursor, VSCodium and Gitpod read, has no web upload; publishing there needs an access token from <https://open-vsx.org> and `pnpm dlx ovsx publish`. It can wait until the marketplace listing has settled.
+- **Publishing from CI** needs the Azure DevOps token as a repository secret. When a token becomes obtainable, the change is a job in `release.yml` that runs `pnpm dlx @vscode/vsce publish --no-dependencies -p "$VSCE_PAT"` from this directory on a `vscode-v*` tag. Until then, the steps above are the release.

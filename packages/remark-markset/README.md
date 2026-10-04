@@ -6,6 +6,8 @@ If you already run remark — in Astro, Next, Eleventy, Gatsby, a lint step, a s
 
 ```sh
 npm i @markset-lang/remark-markset
+# or
+pnpm add @markset-lang/remark-markset
 ```
 
 ## Parsing

@@ -300,7 +300,7 @@ const SECTION_ORDER = [
  */
 export async function build(outDir: string = join(root, "dist")): Promise<string[]> {
   // Both scratch directories are unique to this build. They used to be fixed
-  // names, which is fine until two builds overlap: `npm run site` while
+  // names, which is fine until two builds overlap: `pnpm run site` while
   // `site:watch` is rebuilding, and each one deletes the staging directory the
   // other is still writing into. The tree that got renamed into place was
   // whatever survived, which looked exactly like a page whose stylesheet had
@@ -542,7 +542,7 @@ function llmsTxt(): string {
 > figure) that renders as a designed page and degrades to plain Markdown anywhere else.
 
 To write a Markset document, read the authoring guide and follow it, then run \`npx @markset-lang/cli check <file>\`
-and fix everything it reports.
+(or \`pnpm dlx @markset-lang/cli check <file>\`) and fix everything it reports.
 
 - [Authoring guide](${site}/guide.md): the constructs, when each earns its place, and the codes the checker reports
 - [Specification](${site}/spec/): the source of truth
@@ -1173,7 +1173,7 @@ ${group.entries
 <p class="lead">Markset, running in your browser: the same parser and the same HTML writer the command line calls, bundled and handed to you. Nothing you type leaves this page.</p>
 <noscript><div class="pg-noscript"><p><strong>The playground needs JavaScript</strong>, because it runs the renderer rather than showing you something it rendered earlier. Every other page on this site works without it.</p>
 <p>The same output, from a terminal:</p>
-<pre class="pg-code"><code>npm i -g @markset-lang/cli
+<pre class="pg-code"><code>npm i -g @markset-lang/cli     # or: pnpm add -g @markset-lang/cli
 markset html doc.md -o doc.html</code></pre></div></noscript>
 <div class="pg-controls">
 <label for="pg-sample">Load an example<select id="pg-sample"></select></label>
