@@ -108,4 +108,4 @@ jobs:
       # for a parser the registry answered with an older one. Retries while the
       # registry catches up with what was just published.
       - name: Install the release from the registry and use it
-        run: pnpm run smoke:registry -- "$(node -p "require('./package.json').version")"
+        run: pnpm run smoke:registry "$(node -p "require('./package.json').version")"
