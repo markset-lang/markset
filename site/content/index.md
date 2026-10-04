@@ -15,7 +15,7 @@ Cards, grids, tabs, metrics and callouts, written as plain Markdown. A Markset f
 
 [[Open the playground](playground/index.html)]{.button .primary} [[Get started](start/index.html)]{.button}
 
-[v0]{.badge .success} [0.3.4]{.badge} [CommonMark superset]{.badge}
+[v0]{.badge .success} [0.4.0]{.badge} [CommonMark superset]{.badge}
 
 ::col
 
