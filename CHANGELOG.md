@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **The site leads with agent-written documents.** The home page opens on documents agents write and people want to read, with six reasons agents should write Markset. A new page, *Writing with agents*, sets an agent up in one install and one line and shows the same review twice, as an agent wrote it from the guide alone in plain Markdown and in Markset. The guide is a page of its own, the raw file is at `/guide.md`, and `/llms.txt` points agents to it.
+
 ## 0.4.0 — 2026-10-04
 
 **An authoring guide for the agents that write most documents now.** Nothing in the grammar changed; one frontmatter form the spec always allowed now reads.

@@ -106,7 +106,9 @@ const NAV: Array<[string, string]> = [
  */
 const GET_STARTED: Array<[string, string]> = [
   ["Why Markset", "why/index.html"],
+  ["Writing with agents", "agents/index.html"],
   ["Adopting Markset", "start/index.html"],
+  ["The authoring guide", "guide/index.html"],
   ["The markset command", "cli/index.html"],
   ["Editing visually", "tiptap/index.html"],
   ["Publishing to GitHub Pages", "github-pages/index.html"],
@@ -364,6 +366,11 @@ async function writeSite(outDir: string): Promise<string[]> {
     filter: (src) => !src.endsWith(".json"),
   });
   await cp(join(root, "site", "playground", "playground.css"), join(out, "css", "playground.css"));
+  // The authoring guide raw, beside the page that renders it, so an agent can be
+  // told to read https://markset.org/guide.md with nothing installed. llms.txt is
+  // the conventional place an agent looks first on a site, and it points there.
+  await cp(GUIDE, join(out, "guide.md"));
+  await writeFile(join(out, "llms.txt"), llmsTxt());
   await bundlePlayground(out);
   await bundleEditorDemo(out);
 
@@ -374,6 +381,9 @@ async function writeSite(outDir: string): Promise<string[]> {
       constructs: String(CONSTRUCTS.length),
     }),
     await markdownPage("why/index.html", join(root, "site", "content", "why.md")),
+    await markdownPage("agents/index.html", join(root, "site", "content", "agents.md")),
+    ...(await trialPages()),
+    await guidePage(),
     await markdownPage("start/index.html", join(root, "site", "content", "start.md")),
     await markdownPage("cli/index.html", join(root, "site", "content", "cli.md")),
     await markdownPage("editor/index.html", join(root, "site", "content", "editor.md")),
@@ -469,6 +479,66 @@ async function markdownPage(
     ...(wantsRail(ast) ? { toc: tableOfContents(ast, 2, 3) } : {}),
     ...(themeCss ? { themeCss } : {}),
   };
+}
+
+/** The authoring guide, from the command line package that ships it. */
+const GUIDE = join(root, "packages", "cli", "guide.md");
+
+/**
+ * The guide as a page. It is the file an agent reads, rendered: plain Markdown
+ * with no frontmatter, so it takes the default theme, and the note above it
+ * says where the raw copy is.
+ */
+async function guidePage(): Promise<Page> {
+  const page = await markdownPage("guide/index.html", GUIDE);
+  const note = `<p class="site-note">This is <code>guide.md</code> from <code>@markset-lang/cli</code>, as an agent reads it. The raw file is at <a href="../guide.md">markset.org/guide.md</a>, and <code>markset guide</code> prints it.</p>\n`;
+  return { ...page, title: "The authoring guide", body: note + page.body };
+}
+
+/**
+ * The document an agent wrote from the guide alone, and the same content it
+ * wrote as plain Markdown, each a page under Writing with agents. They are kept
+ * as the agent wrote them; the note above each says so and links the other.
+ */
+async function trialPages(): Promise<Page[]> {
+  const dir = join(root, "site", "content", "agents");
+  const markset = await markdownPage("agents/rollout-review/index.html", join(dir, "rollout-review.md"));
+  const plain = await markdownPage("agents/rollout-review-plain/index.html", join(dir, "rollout-review-plain.md"));
+  const note = (text: string) => `<p class="site-note">${text}</p>\n`;
+  return [
+    {
+      ...markset,
+      body:
+        note(
+          'Written by an agent from the <a href="../../guide/index.html">authoring guide</a> alone, and published as it wrote it. Compare <a href="../rollout-review-plain/index.html">the same content in plain Markdown</a>, or go back to <a href="../index.html">Writing with agents</a>.',
+        ) + markset.body,
+    },
+    {
+      ...plain,
+      title: `${plain.title}, in plain Markdown`,
+      body:
+        note(
+          'The same content as plain Markdown, written by the same agent for comparison and drawn by the same renderer and stylesheet. Compare <a href="../rollout-review/index.html">the Markset version</a>, or go back to <a href="../index.html">Writing with agents</a>.',
+        ) + plain.body,
+    },
+  ];
+}
+
+/** /llms.txt: what Markset is, and where an agent finds the guide. */
+function llmsTxt(): string {
+  const site = pkg.homepage.replace(/\/$/, "");
+  return `# Markset
+
+> Markdown with a small, closed vocabulary of layout constructs (callout, card, grid, columns, tabs, steps, metrics,
+> figure) that renders as a designed page and degrades to plain Markdown anywhere else.
+
+To write a Markset document, read the authoring guide and follow it, then run \`npx @markset-lang/cli check <file>\`
+and fix everything it reports.
+
+- [Authoring guide](${site}/guide.md): the constructs, when each earns its place, and the codes the checker reports
+- [Specification](${site}/spec/): the source of truth
+- [Reference](${site}/reference/): a page per construct, with examples from the test suite
+`;
 }
 
 /** One example document, with links to the index and to the other examples so no page is a dead end. */

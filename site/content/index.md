@@ -8,12 +8,12 @@ theme:
 {.eyebrow}
 Markdown, with layout
 
-# Rich documents, without leaving Markdown
+# Documents your agents write, and people want to read
 
 {.lead}
-Cards, grids, tabs, metrics and callouts, written as plain Markdown. A Markset file is still a Markdown file, and reads as one wherever Markset is not supported.
+Agents draft most documents now, and they already write Markdown. Markset adds cards, grids, tabs, metrics, charts and callouts, so what they write reads like a designed page, and is still a Markdown file that reads anywhere Markset is not supported.
 
-[[Open the playground](playground/index.html)]{.button .primary} [[Get started](start/index.html)]{.button}
+[[Write with an agent](agents/index.html)]{.button .primary} [[Open the playground](playground/index.html)]{.button}
 
 [v0]{.badge .success} [0.4.0]{.badge} [CommonMark superset]{.badge}
 
@@ -52,6 +52,39 @@ Markdown source → rendered layout
 The example above is the whole idea: a Markdown table in a fence that names what it is. Rendered, it becomes metric tiles. Anywhere else, it is the same table. The construct adds meaning without taking the content hostage.
 
 {.eyebrow}
+With agents
+
+## Why agents should write Markset
+
+:::grid{cols=3 .tiles}
+- **Cheap to teach**
+
+  Agents already write Markdown. Markset adds eight constructs and one way to attach a class, so the whole guide fits in a few pages of an agent's context.
+
+- **Checked before you read it**
+
+  The vocabulary is closed and every mistake has a code, so an agent checks its own document and fixes it before handing it over.
+
+- **Consistent across documents**
+
+  The agent says what each thing is and the theme decides how it looks, so fifty documents from fifty prompts read as one organization's.
+
+- **Reviewable**
+
+  The source is plain text, so a diff shows what changed in the content rather than in hundreds of lines of markup.
+
+- **Safe to render**
+
+  Nothing runs and no raw HTML passes through, so a document an agent wrote can be rendered without reading it first.
+
+- **Readable everywhere**
+
+  Every construct degrades to plain Markdown. Paste the document into a pull request, an email or a chat, and it still reads.
+:::
+
+[See the same document written twice](agents/index.html#the-same-document-twice), as plain Markdown and as Markset, by an agent that had only the guide.
+
+{.eyebrow}
 Tools
 
 ## Where you can use it
@@ -59,7 +92,7 @@ Tools
 :::grid{cols=3 .tiles}
 - **In VS Code**
 
-  The Markdown preview you already use renders the layout, every construct is offered after `:::`, and a mistake is underlined as you type.
+  Review what an agent wrote in the Markdown preview you already use. Every construct is offered after `:::`, and a mistake is underlined as you type.
 
   [[Set up the extension](editor/index.html)]{.button .small}
 
@@ -77,7 +110,7 @@ Tools
 
 - **From the command line**
 
-  Check a document, render it to HTML, lower it to plain CommonMark, or print its tree. One command, no configuration file.
+  Check a document, which is how an agent checks its own, render it to HTML, or lower it to plain CommonMark. It also carries the guide agents write from.
 
   [[The markset command](cli/index.html)]{.button .small}
 
