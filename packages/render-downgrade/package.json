@@ -35,9 +35,9 @@
   },
   "dependencies": {
     "@markset-lang/parser": "^0.4.0",
-    "mdast-util-to-markdown": "^2.1.2",
-    "mdast-util-gfm-table": "^2.0.0",
+    "@types/mdast": "^4.0.4",
     "mdast-util-frontmatter": "^2.0.1",
-    "@types/mdast": "^4.0.4"
+    "mdast-util-gfm-table": "^2.0.0",
+    "mdast-util-to-markdown": "^2.2.0"
   }
 }
