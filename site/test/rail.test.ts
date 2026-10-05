@@ -177,7 +177,9 @@ test("every page is reachable from the home page, and none of them is far", asyn
     }
   }
 
-  const unreachable = pages.filter((p) => !hops.has(p));
+  // Except the 404 page, which a reader reaches by following a broken link
+  // rather than a working one; nothing should link to it.
+  const unreachable = pages.filter((p) => !hops.has(p) && p !== "404.html");
   assert.deepEqual(unreachable, [], "a page nothing links to is a page nobody reads");
   const worst = Math.max(...hops.values());
   assert.ok(worst <= 3, `the furthest page is ${worst} hops from home`);
