@@ -28,16 +28,20 @@ options
   --css <mode>           html: inline (default) | none | <href to link>
   --theme <file>         html: append a theme stylesheet after the default (spec §6)
   --diagram <spec>       html: diagram fences (spec §10); repeatable
-  --chart <spec>         html: draw a figure's table as a chart (spec §11); "none" to draw none
                            ascii fences are drawn by default
                            none             draw nothing; keep every fence as code
                            <lang>=<command> run a command: fence on stdin, SVG on stdout
+  --chart <spec>         html: draw a figure's table as a chart (spec §11); "none" to draw none
   --title <text>         html: page title (default: first level-one heading)
   --json                 check: emit diagnostics as JSON
   --positions            ast: keep position fields
   -h, --help             show this help
+  --version              print the version
 
-"-" reads the document from stdin.`;
+"-" reads the document from stdin.
+
+exit codes: 0 no errors, 1 a document has an error (check), 2 invocation failure (an unknown command or flag,
+            a missing or unreadable file)`;
 
 /** Every command name, so an unknown one is reported as one rather than as a missing file. */
 const COMMANDS = new Set(["check", "html", "downgrade", "ast", "css", "guide"]);
@@ -52,10 +56,55 @@ const COMMANDS = new Set(["check", "html", "downgrade", "ast", "css", "guide"]);
  */
 export const guidePath = new URL("../guide.md", import.meta.url);
 
+/**
+ * The package's own manifest, one level up from both src/ and dist/, which is
+ * where `--version` reads from. npm always packs package.json, so the path
+ * holds installed as well as here, and there is no second copy of the version
+ * string to keep in step.
+ */
+const manifestPath = new URL("../package.json", import.meta.url);
+
+/**
+ * A failure of the invocation rather than of a document: the file named is not
+ * there, or cannot be read, or -o names a directory that does not exist. Node
+ * reports these as system errors carrying the `syscall` that failed and a
+ * `code` such as ENOENT, and they are exit 2, because to CI an exit 1 means a
+ * document has an error and a missing file is not that.
+ */
+function isSystemError(error: unknown): error is NodeJS.ErrnoException {
+  return error instanceof Error && typeof (error as NodeJS.ErrnoException).syscall === "string";
+}
+
 export async function main(
   argv: string[],
   io: { stdout: (s: string) => void; stderr: (s: string) => void },
 ): Promise<number> {
+  try {
+    return await run(argv, io);
+  } catch (error) {
+    // Two failures used to escape as a stack trace and exit 1, which CI reads
+    // as "a document has an error": an unknown flag, which parseArgs in strict
+    // mode throws on, and a file that is not there. Both are the caller's
+    // invocation, so they get the message, the usage and 2, like every other
+    // usage error here. Anything else is a bug and keeps its stack.
+    if (isSystemError(error) || isArgumentError(error)) {
+      io.stderr(`markset: ${error.message}\n\n${USAGE}\n`);
+      return 2;
+    }
+    throw error;
+  }
+}
+
+/** parseArgs reports a bad flag with a TypeError whose code names the problem. */
+function isArgumentError(error: unknown): error is Error {
+  return (
+    error instanceof TypeError &&
+    typeof (error as NodeJS.ErrnoException).code === "string" &&
+    ((error as NodeJS.ErrnoException).code as string).startsWith("ERR_PARSE_ARGS_")
+  );
+}
+
+async function run(argv: string[], io: { stdout: (s: string) => void; stderr: (s: string) => void }): Promise<number> {
   const { values, positionals } = parseArgs({
     args: argv,
     allowPositionals: true,
@@ -70,9 +119,15 @@ export async function main(
       json: { type: "boolean", default: false },
       positions: { type: "boolean", default: false },
       help: { type: "boolean", short: "h", default: false },
+      version: { type: "boolean", default: false },
     },
   });
   const [command, ...files] = positionals;
+  if (values.version) {
+    const { version } = JSON.parse(await readFile(manifestPath, "utf8")) as { version: string };
+    io.stdout(`markset ${version}\n`);
+    return 0;
+  }
   if (values.help || !command) {
     io.stdout(`${USAGE}\n`);
     return values.help ? 0 : 2;
