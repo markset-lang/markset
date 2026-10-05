@@ -117,9 +117,11 @@ test/corpus/ documents retired from the site's gallery (an incident review, a co
 docs/       background analysis, prior art, design rationale
             future-requirements.md — open register of things real documents asked for; the
             open counterpart to spec §8, which is the closed list of deferred constructs
-            Intentset's integration requirements and the contract between the two are Intentset's, in
-            https://github.com/intentset/intentset/tree/main/docs/requirements; the copy of its kickoff that sat in
-            docs/expansion-requirements/ was deleted 2026-10-05, so there is one copy to keep current
+            Intentset's requirements of Markset are Intentset's, and it keeps the one copy: the half of its kickoff
+            delivered here (integration requirements MKS-001 to MKS-008, the profile adapter contract, the backlog and
+            their README) is in https://github.com/intentset/intentset/tree/main/docs/requirements/markset, and the
+            contract between the two is https://github.com/intentset/intentset/blob/main/docs/requirements/integration-contract.md.
+            docs/expansion-requirements/ held them until 2026-10-05
 ```
 
 ## Toolchain
