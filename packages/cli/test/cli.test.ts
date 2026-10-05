@@ -94,6 +94,51 @@ test("usage errors", async () => {
   assert.equal((await run(["check"])).code, 2);
 });
 
+// To CI, exit 1 means "a document has an error". Both of these used to end in
+// a Node stack trace and exit 1, so a typo in a workflow file read as a broken
+// document.
+test("an unknown flag is a usage error: a message, the usage and exit 2", async () => {
+  const { code, out, err } = await run(["check", "--bogus", "doc.md"]);
+  assert.equal(code, 2);
+  assert.equal(out, "");
+  assert.match(err, /^markset: Unknown option '--bogus'/);
+  assert.match(err, /usage: markset <command>/);
+  assert.doesNotMatch(err, /\n\s+at /, "no stack trace");
+});
+
+test("a file that does not exist is a usage error, not a document error", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "markset-cli-"));
+  const missing = join(dir, "missing.md");
+  for (const command of ["check", "html", "downgrade", "ast"]) {
+    const { code, err } = await run([command, missing]);
+    assert.equal(code, 2, command);
+    assert.match(err, /^markset: ENOENT: no such file or directory/, command);
+    assert.ok(err.includes(missing), `${command} names the file`);
+    assert.match(err, /usage: markset <command>/, command);
+  }
+  // A theme that is not there is the same failure, reached by a flag.
+  const file = join(dir, "doc.md");
+  await writeFile(file, "# T\n");
+  const theme = await run(["html", file, "--theme", join(dir, "missing.css")]);
+  assert.equal(theme.code, 2);
+  assert.match(theme.err, /^markset: ENOENT/);
+});
+
+test("the usage names all three exit codes", async () => {
+  const { out } = await run(["--help"]);
+  assert.match(out, /exit codes: 0 no errors, 1 a document has an error \(check\), 2 invocation failure/);
+});
+
+test("--version prints the package's own version", async () => {
+  const manifest = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
+  const { code, out, err } = await run(["--version"]);
+  assert.equal(code, 0);
+  assert.equal(out, `markset ${manifest.version}\n`);
+  assert.equal(err, "");
+  // It answers before anything else is asked of the arguments.
+  assert.equal((await run(["check", "--version"])).out, `markset ${manifest.version}\n`);
+});
+
 const DIAGRAM_DOC = ":::figure[A hub and its edges]\n```ascii\n+---+\n| a |\n+---+\n```\n:::\n";
 
 async function diagramFile() {

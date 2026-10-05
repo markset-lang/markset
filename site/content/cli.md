@@ -52,7 +52,7 @@ Commands
 :::grid{cols=2}
 - ### `markset check`
 
-  Reads one or more documents and reports every diagnostic with a file, line and column. Exits with status 1 if any diagnostic is an error, which is what makes it usable in continuous integration. Add `--json` to get the diagnostics as structured data instead of text.
+  Reads one or more documents and reports every diagnostic with a file, line and column. Exits with status 1 if any diagnostic is an error, which is what makes it usable in continuous integration, and 2 if it could not run at all. Add `--json` to get the diagnostics as structured data instead of text.
 - ### `markset html`
 
   Renders a complete HTML page with the default stylesheet inlined, so the output is one self-contained file. Add `--fragment` for the body content alone, `--theme <file>` to append a theme stylesheet, and `--title` to set the page title. ASCII diagram fences are drawn automatically (spec §10), and `--diagram` adds other languages or turns drawing off — `--diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"` draws mermaid. What draws a fence is an *engine*: a function built into the renderer, or a command you name. See [diagrams](../reference/diagrams/index.html).
@@ -72,6 +72,8 @@ Commands
 :::
 
 A single `-` in place of a filename reads the document from standard input.
+
+Every command exits with 0, 1 or 2. 0 means nothing is wrong. 1 means `check` found an error in a document, and only `check` returns it. 2 means the invocation is wrong: an unknown command or flag, a missing file argument, or a file that is not there or cannot be read. Each prints `markset:` and the reason on standard error rather than a stack trace, so continuous integration can tell a broken document from a broken workflow.
 
 {.tick}
 ***
@@ -95,6 +97,7 @@ Options
 | `--json` | `check` | Emit diagnostics as JSON rather than as lines of text. |
 | `--positions` | `ast` | Keep the `position` field on every node. |
 | `-h`, `--help` | all | Print usage and exit. |
+| `--version` | all | Print `markset <version>` and exit. |
 :::
 
 {.tick}

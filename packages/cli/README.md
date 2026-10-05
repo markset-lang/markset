@@ -23,7 +23,9 @@ Markset is a strict superset of CommonMark with a closed vocabulary of layout co
 | `css` | Write the default stylesheet, for a site that links it once instead of inlining it into every page. |
 | `guide` | Write the authoring guide: how to write Markset well, for a coding agent or a person. |
 
-`-` as the file reads standard input.
+`-` as the file reads standard input. Every command exits 0, 1 or 2: 0 when nothing is wrong, 1 when `check`
+finds an error in a document, and 2 when the invocation is wrong (an unknown command or flag, or a file that is not
+there). `markset --version` prints the version.
 
 ## Writing with an agent
 
