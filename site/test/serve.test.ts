@@ -11,6 +11,8 @@ test("media types cover what the site serves", () => {
   assert.equal(contentType("css/markset.css"), "text/css; charset=utf-8");
   assert.equal(contentType("examples/showcase/degrade.SVG"), "image/svg+xml");
   assert.equal(contentType("examples/thumbnails/runbook.dark.webp"), "image/webp");
+  assert.equal(contentType("sitemap.xml"), "application/xml; charset=utf-8");
+  assert.equal(contentType("robots.txt"), "text/plain; charset=utf-8");
   assert.equal(contentType("unknown.bin"), "application/octet-stream");
 });
 

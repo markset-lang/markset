@@ -33,10 +33,26 @@ const root = resolve(import.meta.dirname, "..");
 const pkg = JSON.parse(await readFile(join(resolve(import.meta.dirname, ".."), "package.json"), "utf8")) as {
   repository: { url: string };
   homepage: string;
+  version: string;
 };
 const REPO = pkg.repository.url.replace(/^git\+/, "").replace(/\.git$/, "");
 /** The host the site is served from, for the CNAME file Pages reads. */
 const SITE_HOST = new URL(pkg.homepage).host;
+/** Where a page lives once published: the address canonical, og:url and the sitemap give for it. */
+export function canonicalUrl(path: string): string {
+  return new URL(path.replace(/(^|\/)index\.html$/, "$1"), pkg.homepage).href;
+}
+/**
+ * The sibling site, linked from the footer and nowhere in the format's own
+ * pages (decided 2026-10-05): Intentset is Markset's one known consumer, and
+ * the two read as one family, but Markset stays a neutral format.
+ */
+export const SIBLING = { name: "Intentset", url: "https://intentset.org/" };
+/** What a page says about itself when it has no paragraph of its own to say it with. */
+const DEFAULT_DESCRIPTION =
+  "Markdown with a small, closed vocabulary of layout constructs that renders as a designed page and degrades to plain Markdown anywhere else.";
+/** Not found: served by Pages for any address it has nothing at, so it is linked from the root (see shell()). */
+const NOT_FOUND = "404.html";
 
 interface Page {
   /** Output path relative to dist/, e.g. "reference/card/index.html". */
@@ -46,6 +62,12 @@ interface Page {
   body: string;
   /** Optional table of contents HTML. */
   toc?: string;
+  /**
+   * The meta description, og:description included. Left out, it is the page's
+   * first paragraph after its h1, which is the sentence a reader arriving from
+   * a search result or a link preview needs, and which cannot drift from it.
+   */
+  description?: string;
   themeAttributes?: string;
   /** Extra stylesheet for this page, as a path inside dist/ (spec §6 theme stylesheets). */
   themeCss?: string;
@@ -378,6 +400,7 @@ async function writeSite(outDir: string): Promise<string[]> {
   // the conventional place an agent looks first on a site, and it points there.
   await cp(GUIDE, join(out, "guide.md"));
   await writeFile(join(out, "llms.txt"), llmsTxt());
+  await writeFile(join(out, "robots.txt"), robotsTxt());
   await bundlePlayground(out);
   await bundleEditorDemo(out);
 
@@ -412,6 +435,7 @@ async function writeSite(outDir: string): Promise<string[]> {
     ...SECTION_ORDER.filter((s) => cases[s]).map((s) => conformancePage(s, cases[s])),
     await examplesIndex(),
     ...(await Promise.all(EXAMPLES.map(examplePage))),
+    await markdownPage(NOT_FOUND, join(root, "site", "content", "404.md")),
   ];
 
   const written: string[] = [];
@@ -421,7 +445,26 @@ async function writeSite(outDir: string): Promise<string[]> {
     await writeFile(file, shell(page));
     written.push(page.path);
   }
+  await writeFile(join(out, "sitemap.xml"), sitemapXml(written));
   return written;
+}
+
+/** /robots.txt: everything may be crawled, and the sitemap says what there is. */
+function robotsTxt(): string {
+  return `User-agent: *\nAllow: /\n\nSitemap: ${new URL("sitemap.xml", pkg.homepage).href}\n`;
+}
+
+/**
+ * /sitemap.xml: every page the build wrote, at its canonical address, and
+ * nothing else. No lastmod: a build cannot know when a page last changed, and
+ * one stamped with the build's own date claims every page changed every time.
+ */
+function sitemapXml(paths: string[]): string {
+  const urls = paths
+    .filter((path) => path !== NOT_FOUND)
+    .map((path) => `<url><loc>${esc(canonicalUrl(path))}</loc></url>`)
+    .join("\n");
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
 }
 
 // ---------------------------------------------------------------------------
@@ -457,6 +500,12 @@ function withSourceToggles(tree: Root, source: string): Root {
   return { ...tree, children };
 }
 
+/**
+ * Tokens every content page may use. The release is one of them, because the
+ * home page badged 0.4.1 by hand beside two tokens it already substituted.
+ */
+const SITE_TOKENS: Record<string, string> = { version: pkg.version, repository: REPO };
+
 async function markdownPage(
   path: string,
   file: string,
@@ -470,7 +519,7 @@ async function markdownPage(
   // Anything of that kind is written as {{name}} and substituted here from the
   // thing it describes; a test fails on any token that survives into output.
   let source = await readFile(file, "utf8");
-  for (const [name, value] of Object.entries(tokens ?? {})) {
+  for (const [name, value] of Object.entries({ ...SITE_TOKENS, ...tokens })) {
     source = source.replaceAll(`{{${name}}}`, value);
   }
   const parsed = parseDocument(source);
@@ -525,6 +574,9 @@ async function trialPages(): Promise<Page[]> {
     {
       ...plain,
       title: `${plain.title}, in plain Markdown`,
+      // Its first paragraph is the Markset version's, word for word, so it says what it is instead.
+      description:
+        "The same rollout review as plain Markdown, written by the same agent beside the Markset version and drawn by the same renderer and stylesheet, for comparison.",
       body:
         note(
           'An invented example, written to test the guide: the same content as plain Markdown, written by the same agent for comparison and drawn by the same renderer and stylesheet. Compare <a href="../rollout-review/index.html">the Markset version</a>, or go back to <a href="../index.html">Writing with agents</a>.',
@@ -1230,9 +1282,51 @@ export function pageTitle(page: { path: string; title: string }): string {
   return page.path === "index.html" ? `Markset · ${text}` : `${text} · Markset`;
 }
 
+const NAMED_ENTITIES: Record<string, string> = { lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", amp: "&" };
+
+/**
+ * The page's description: its own if it set one, otherwise the first paragraph
+ * after its h1, as text. Read from the rendered body rather than the tree, so
+ * the generated pages, which are built as HTML, get one by the same rule as
+ * the documents. Held to a length a search result shows whole.
+ */
+export function pageDescription(page: { body: string; description?: string }): string {
+  if (page.description) return page.description;
+  const afterHeading = page.body.slice(Math.max(0, page.body.indexOf("</h1>")));
+  const paragraph = /<p\b[^>]*>([\s\S]*?)<\/p>/.exec(afterHeading)?.[1];
+  if (!paragraph) return DEFAULT_DESCRIPTION;
+  const text = paragraph
+    .replace(/<[^>]+>/g, "")
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) => String.fromCodePoint(Number.parseInt(hex, 16)))
+    .replace(/&#([0-9]+);/g, (_, dec: string) => String.fromCodePoint(Number(dec)))
+    .replace(/&(lt|gt|quot|apos|nbsp|amp);/g, (_, name: string) => NAMED_ENTITIES[name])
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!text) return DEFAULT_DESCRIPTION;
+  if (text.length <= 200) return text;
+  const cut = text.slice(0, 199);
+  return `${cut.slice(0, cut.lastIndexOf(" ")).replace(/[,;:.]$/, "")}…`;
+}
+
+/**
+ * Pages serves 404.html for any address it has nothing at, however deep, so a
+ * relative link on it would resolve against the missing address. Its links are
+ * written from the site's root path instead. Not with a `<base>`: that would
+ * also resolve the skip link's `#main` against the root, and a keyboard user
+ * on the 404 page would be sent to the home page.
+ */
+function fromRoot(html: string, root: string): string {
+  return html.replace(
+    /\b(href|src)="(?![a-z][a-z0-9+.-]*:|\/|#)([^"]*)"/gi,
+    (_, name: string, url: string) => `${name}="${root}${url}"`,
+  );
+}
+
 function shell(page: Page): string {
   const depth = page.path.split("/").length - 1;
-  const rel = depth === 0 ? "./" : "../".repeat(depth);
+  const notFound = page.path === NOT_FOUND;
+  const sitePath = new URL(pkg.homepage).pathname;
+  const rel = notFound ? sitePath : depth === 0 ? "./" : "../".repeat(depth);
   const nav = NAV.map(([label, href]) => {
     // A bar item is current for its whole section, not just its own page, or
     // the bar goes blank the moment a reader follows the rail into one.
@@ -1260,31 +1354,47 @@ function shell(page: Page): string {
     : "";
   const rail = sectionNav || contentsNav ? `<aside class="site-toc">${sectionNav}${contentsNav}</aside>\n` : "";
   const attrs = page.themeAttributes || ' data-preset="technical"';
+  const title = esc(pageTitle(page));
+  const description = esc(pageDescription(page));
+  // The 404 page has no canonical address, and asks not to be indexed.
+  const canonical = esc(canonicalUrl(page.path));
+  const meta = notFound
+    ? `<meta name="robots" content="noindex">\n`
+    : `<link rel="canonical" href="${canonical}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Markset">
+<meta property="og:title" content="${title}">
+<meta property="og:description" content="${description}">
+<meta property="og:url" content="${canonical}">
+<meta name="twitter:card" content="summary">
+`;
   return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(pageTitle(page))}</title>
-<link rel="icon" type="image/svg+xml" href="${rel}icon.svg">
+<title>${title}</title>
+<meta name="description" content="${description}">
+${meta}<link rel="icon" type="image/svg+xml" href="${rel}icon.svg">
 <link rel="stylesheet" href="${rel}css/markset.css">
 <link rel="stylesheet" href="${rel}css/site.css">
 ${page.themeCss ? `<link rel="stylesheet" href="${rel}${page.themeCss}">\n` : ""}</head>
 <body${attrs}>
-${SCHEME_SCRIPT}<header class="site-header">
+${SCHEME_SCRIPT}<a class="site-skip" href="#main">Skip to content</a>
+<header class="site-header">
 <a class="site-brand" href="${rel}index.html"><img class="site-mark" src="${rel}icon.svg" alt="" width="28" height="28">Markset</a>
 <nav class="site-nav" aria-label="Main">
 ${nav}
 </nav>
 ${SCHEME_CONTROL}</header>
 <div class="site-layout${rail ? " has-rail" : ""}">
-${rail}<main class="ms-document">
-${page.body}</main>
+${rail}<main id="main" class="ms-document" tabindex="-1">
+${notFound ? fromRoot(page.body, sitePath) : page.body}</main>
 </div>
 <footer class="site-footer">
 <div>
 <p><strong>Markset</strong> is a strict superset of CommonMark with a closed layout vocabulary. Every page on this site is written in Markset and built by the reference implementation.</p>
-<p><a href="${REPO}">Source on GitHub</a> · <a href="${CORAL_REEF}">A Coral Reef Ventures project</a></p>
+<p><a href="${REPO}">Source on GitHub</a> · <a href="${CORAL_REEF}">A Coral Reef Ventures project</a> · Sibling project: <a href="${SIBLING.url}">${SIBLING.name}</a></p>
 </div>
 ${FAMILY_MARK}</footer>
 ${(page.scripts ?? []).map((src) => `<script type="module" src="${rel}${src}"></script>`).join("\n")}</body>
