@@ -15,7 +15,7 @@ Agents draft most documents now, and they already write Markdown. Markset adds c
 
 [[Write with an agent](agents/index.html)]{.button .primary} [[Open the playground](playground/index.html)]{.button}
 
-[v0]{.badge .success} [0.4.1]{.badge} [CommonMark superset]{.badge}
+[v0]{.badge .success} [{{version}}]{.badge} [CommonMark superset]{.badge}
 
 ::col
 

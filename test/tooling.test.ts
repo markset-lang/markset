@@ -44,9 +44,9 @@ test("lint runs in CI, as a gate rather than a suggestion", async () => {
 });
 
 /**
- * The release version is written in thirteen places: seven package.json files,
- * the spec's frontmatter and its status line, the changelog, the README, the
- * home page badge and a span demo in the tour. package.json is the one that is
+ * The release version is written in twelve places: seven package.json files,
+ * the spec's frontmatter and its status line, the changelog, the README and a
+ * span demo in the tour. The home page badge reads it through {{version}}. package.json is the one that is
  * true; the rest are copies, and copies drift the moment nothing checks them.
  */
 test("every copy of the version agrees with package.json", async () => {
@@ -77,10 +77,15 @@ test("every copy of the version agrees with package.json", async () => {
   const readme = await readFile(join(root, "README.md"), "utf8");
   assert.ok(readme.includes(`\`${version}\``), "README status line names the version");
 
-  for (const page of ["site/content/index.md", "examples/showcase.md"]) {
-    const text = await readFile(join(root, page), "utf8");
-    assert.ok(text.includes(version), `${page} shows a stale version`);
-  }
+  // The tour is a document a reader opens raw, so it carries the number itself.
+  const tour = await readFile(join(root, "examples", "showcase.md"), "utf8");
+  assert.ok(tour.includes(version), "examples/showcase.md shows a stale version");
+
+  // The home page badge is no longer a copy: it is {{version}}, which the site
+  // build fills from package.json, and the site's tests check what it filled.
+  const home = await readFile(join(root, "site", "content", "index.md"), "utf8");
+  assert.ok(home.includes("[{{version}}]{.badge}"), "the home page badges the version through the token");
+  assert.ok(!/\b\d+\.\d+\.\d+\b/.test(home), "and writes no release number by hand");
 });
 
 test("the heavy dev dependency stays out of the library", async () => {

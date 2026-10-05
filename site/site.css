@@ -30,9 +30,14 @@ body {
   /* A violet-tinted panel for the one section the home page sets in color. */
   --site-band: light-dark(#f6f3fb, #1e1a27);
   --site-band-border: light-dark(#e4dcf1, #352d47);
+  /* The focus ring: the accent's text color, which holds 3:1 against both grounds. */
+  --site-focus: light-dark(#664d93, #c2b3e3);
   --site-gutter: clamp(1rem, 3vw, 1.5rem);
   --site-section: clamp(2.75rem, 6vw, 4.5rem);
   line-height: 1.65;
+  /* A word longer than the line, such as a URL in inline code, breaks rather
+   * than pushing the page sideways at phone width; intentset.org's rule. */
+  overflow-wrap: break-word;
 }
 html { overflow-x: clip; }
 .ms-document { max-width: min(75rem, 100%); padding-inline: var(--site-gutter); }
@@ -56,6 +61,11 @@ html { overflow-x: clip; }
 /* Links: ink text with an accent underline, which reads on both grounds. */
 .ms-document a { color: inherit; text-decoration-line: underline; text-decoration-color: color-mix(in oklab, var(--ms-accent), transparent 35%); text-decoration-thickness: 2px; text-underline-offset: 3px; }
 .ms-document a:hover { text-decoration-color: var(--ms-fg); }
+/* Every link is a target at least 24px tall (WCAG 2.5.8), as on intentset.org.
+ * Inline links take vertical padding, which an inline box adds to its hit area
+ * without moving the line, so the text sits exactly where it did. A link that
+ * is a box of its own (a button, the scheme control) sets its own padding. */
+.ms-document a, .site-toc a { padding-block: 0.25rem; }
 
 /* Buttons: a link inside a span classed .button, [[Start](start/)]{.button}. */
 .ms-span.button > a { display: inline-flex; align-items: center; padding: 0.6rem 1.1rem; border: 1px solid var(--ms-border); border-radius: 0.5rem; background: var(--ms-bg); color: var(--ms-fg); font-weight: 600; font-size: 0.95rem; line-height: 1.2; text-decoration: none; }
@@ -165,6 +175,25 @@ body:is([data-scheme="dark"], :has(#ms-scheme-dark:checked)) .gallery .thumb.dar
 .compare tr:last-child td { border-bottom: 0; background: var(--ms-surface); }
 
 /* ---- chrome -------------------------------------------------------------- */
+/* Keyboard focus is one ring everywhere, and always visible; intentset.org's.
+ * main takes focus from the skip link without drawing one, since the whole
+ * page would be outlined. The skip link waits above the viewport and drops in
+ * on focus, so it is the first stop for the keyboard and no stop for the eye. */
+:focus-visible { outline: 3px solid var(--site-focus); outline-offset: 3px; border-radius: 2px; }
+main:focus { outline: none; }
+.site-skip {
+  position: absolute;
+  left: 0.75rem;
+  top: -100px;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: var(--ms-bg);
+  color: var(--ms-fg);
+  border: 1px solid var(--ms-fg);
+  border-radius: var(--ms-radius);
+}
+.site-skip:focus { top: 0.75rem; }
+
 /* The header is intentset.org's: held to the page's width, with the rule drawn
  * inside the gutters so it starts at the content's left edge, and it scrolls
  * away with the page. The wordmark is the way home; the bar names sections. */
@@ -228,7 +257,7 @@ body { --site-scheme-w: 5.6rem; }
 .site-scheme:not(:hover):not(:focus-within) .site-scheme-option { background: none; }
 /* Keyboard focus has to be visible on the label, because the input it belongs
  * to is clipped out of sight. */
-.site-scheme-input:focus-visible + .site-scheme-option { outline: 2px solid var(--ms-accent); outline-offset: 1px; }
+.site-scheme-input:focus-visible + .site-scheme-option { outline: 3px solid var(--site-focus); outline-offset: 1px; }
 
 .site-layout { max-width: 75rem; margin: 0 auto; }
 .site-layout.has-rail { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: var(--ms-space); }
@@ -307,5 +336,5 @@ body { --site-scheme-w: 5.6rem; }
 }
 
 @media print {
-  .site-scheme-slot, .site-family { display: none; }
+  .site-skip, .site-scheme-slot, .site-family { display: none; }
 }

@@ -36,6 +36,14 @@ jobs:
       # thing rather than trusting that CI ran on this commit.
       - run: pnpm run lint
       - run: pnpm run typecheck
+      # Playwright's browsers, ahead of the tests: site/test/browser.test.ts
+      # measures every page in Chromium and fails under CI rather than skipping,
+      # and the editor's e2e run below uses all three engines.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm test
       - run: pnpm run conformance
       # The same cases against micromark's development build, which asserts its
@@ -44,11 +52,6 @@ jobs:
       - run: pnpm run conformance:development
       # The editor in the three engines readers use. The package's own tests
       # run it in happy-dom, which checks the model and not the browser.
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-      - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm run e2e
       # Everything above runs inside the workspace, where a sibling package is
       # always the local copy. This installs the packed tarballs into an empty
