@@ -1,5 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://markset.org/spec/conformance.schema.json",
   "title": "Markset conformance test file",
   "description": "One file per spec section. The file is an array of cases. See spec/v0.md §7.",
   "type": "array",

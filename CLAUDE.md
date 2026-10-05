@@ -161,7 +161,8 @@ docs/       background analysis, prior art, design rationale
   page sets one), canonical, `og:*` and `twitter:card`; `sitemap.xml`, `robots.txt` and `404.html` (from
   `content/404.md`), whose links are written from the site's root path because Pages serves it at any depth (not with
   a `<base>`, which would send its skip link to the home page). Content pages take `{{version}}` and `{{repository}}`
-  from package.json, so the home badge is not a copy. `site/test/shell.test.ts` holds the markup; `site/test/browser.test.ts` measures every
+  from package.json, so the home badge is not a copy. `spec/conformance.schema.json` declares the `$id`
+  it is served at, `https://markset.org/spec/conformance.schema.json`, and §7 names it. `site/test/shell.test.ts` holds the markup; `site/test/browser.test.ts` measures every
   page but the two applications in Playwright's Chromium at 390 and 1440px (no sideways scroll, nothing clipped, links
   at least 24px tall, the skip link first and staying on the page, the 404 page styled at depth), and skips when Chromium cannot launch except
   under CI, which installs Playwright's browsers before `pnpm test` for it. The footer links the sibling site,

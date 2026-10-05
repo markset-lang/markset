@@ -3,7 +3,7 @@
  * 2026-10-05: a skip link and a focusable main for the keyboard, a description,
  * canonical and Open Graph block for search results and link previews, a
  * sitemap and robots.txt for crawlers, a 404 page for addresses Pages has
- * nothing at. The two sites are
+ * nothing at, and the schema at the address its $id names. The two sites are
  * read side by side as one family, and this is the part of that a keyboard
  * user, a link preview or a crawler meets first.
  */
@@ -139,6 +139,16 @@ test("the 404 page sits at the root, writes its links from the site's root path,
 test("the home page badges the release from package.json", () => {
   const home = html.get("index.html") ?? "";
   assert.ok(home.includes(`<span class="ms-span badge">${pkg.version}</span>`), `the badge reads ${pkg.version}`);
+});
+
+test("the conformance schema is served at the address its $id declares", async () => {
+  const source = await readFile(join(root, "spec", "conformance.schema.json"), "utf8");
+  const id = (JSON.parse(source) as { $id?: string }).$id ?? "";
+  assert.equal(id, new URL("spec/conformance.schema.json", pkg.homepage).href, "the $id is on the site's host");
+  const path = new URL(id).pathname.slice(new URL(pkg.homepage).pathname.length);
+  assert.equal(await readFile(join(dist, path), "utf8"), source, `${path} is the normative schema, byte for byte`);
+  const spec = await readFile(join(root, "spec", "v0.md"), "utf8");
+  assert.ok(spec.includes(`\`${id}\``), "§7 names the address");
 });
 
 test("the footer links the sibling site, and the format's own pages do not mention it", () => {
