@@ -159,11 +159,11 @@ docs/       background analysis, prior art, design rationale
 - **The shell's baseline, taken from intentset.org 2026-10-05.** A skip link to `<main id="main" tabindex="-1">`, one
   `:focus-visible` ring, a meta description (the page's first paragraph after its h1, `pageDescription()`, unless the
   page sets one), canonical, `og:*` and `twitter:card`; `sitemap.xml`, `robots.txt` and `404.html` (from
-  `content/404.md`), whose `<base>` is the site's root because Pages serves it at any depth. Content pages take
-  `{{version}}` and `{{repository}}` from package.json, so the home badge is not a copy. The schema's `$id` is the
-  address the site serves it at. `site/test/shell.test.ts` holds the markup; `site/test/browser.test.ts` measures every
+  `content/404.md`), whose links are written from the site's root path because Pages serves it at any depth (not with
+  a `<base>`, which would send its skip link to the home page). Content pages take `{{version}}` and `{{repository}}`
+  from package.json, so the home badge is not a copy. `site/test/shell.test.ts` holds the markup; `site/test/browser.test.ts` measures every
   page but the two applications in Playwright's Chromium at 390 and 1440px (no sideways scroll, nothing clipped, links
-  at least 24px tall, the skip link first, the 404 page styled at depth), and skips when Chromium cannot launch except
+  at least 24px tall, the skip link first and staying on the page, the 404 page styled at depth), and skips when Chromium cannot launch except
   under CI, which installs Playwright's browsers before `pnpm test` for it. The footer links the sibling site,
   intentset.org, and nothing in the format's own pages mentions it (decided 2026-10-05): Markset stays a neutral format.
 - **Intentset is Markset's one known consumer.** `@intentset/markset-adapter`, its publisher and Atlas import the parser

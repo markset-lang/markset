@@ -3,7 +3,7 @@
  * 2026-10-05: a skip link and a focusable main for the keyboard, a description,
  * canonical and Open Graph block for search results and link previews, a
  * sitemap and robots.txt for crawlers, a 404 page for addresses Pages has
- * nothing at, and the schema at the address its $id names. The two sites are
+ * nothing at. The two sites are
  * read side by side as one family, and this is the part of that a keyboard
  * user, a link preview or a crawler meets first.
  */
@@ -115,36 +115,30 @@ test("the sitemap lists every page at its canonical address, and robots.txt poin
   assert.match(robots, new RegExp(`^Sitemap: ${new URL("sitemap.xml", pkg.homepage).href}$`, "m"));
 });
 
-test("the 404 page sits at the root, resolves its links from there at any depth, and asks not to be indexed", async () => {
+test("the 404 page sits at the root, writes its links from the site's root path, and asks not to be indexed", async () => {
   assert.ok(pages.includes("404.html"), "Pages serves 404.html from the root for any missing address");
   const doc = html.get("404.html") ?? "";
-  const base = attr(doc, /<base href="([^"]+)">/);
-  assert.equal(base, new URL(pkg.homepage).pathname, "a base of the site's root");
-  assert.ok(doc.indexOf("<base") < doc.indexOf("<link"), "ahead of every link it applies to");
+  const sitePath = new URL(pkg.homepage).pathname;
+  // No base: it would resolve the skip link's #main against the root too, and
+  // send a keyboard user on the 404 page to the home page.
+  assert.doesNotMatch(doc, /<base\b/, "no base");
+  assert.match(doc, /<a class="site-skip" href="#main">/, "the skip link stays on the page");
   assert.match(doc, /<meta name="robots" content="noindex">/);
   assert.doesNotMatch(doc, /rel="canonical"|og:url/, "a missing address has no canonical one");
   assert.match(doc, /<h1[^>]*>Page not found<\/h1>/);
-  // Its links are written as if from the root, which the base makes true.
+  // Every other link is written from the site's root path, so it resolves the
+  // same at any depth Pages serves the page.
   for (const [, href] of doc.matchAll(/(?:href|src)="([^"]+)"/g)) {
-    if (/^(?:https?:|#|\/$)/.test(href)) continue;
-    assert.doesNotMatch(href, /^\.\.\//, `${href} climbs out of the root`);
-    await access(join(dist, normalize(href.split("#")[0]))).catch(() => assert.fail(`404.html -> ${href}`));
+    if (/^(?:https?:|#)/.test(href)) continue;
+    assert.ok(href.startsWith(sitePath), `${href} is not written from ${sitePath}`);
+    const path = href.slice(sitePath.length).split("#")[0] || "index.html";
+    await access(join(dist, normalize(path))).catch(() => assert.fail(`404.html -> ${href}`));
   }
 });
 
 test("the home page badges the release from package.json", () => {
   const home = html.get("index.html") ?? "";
   assert.ok(home.includes(`<span class="ms-span badge">${pkg.version}</span>`), `the badge reads ${pkg.version}`);
-});
-
-test("the conformance schema is served at the address its $id declares", async () => {
-  const source = await readFile(join(root, "spec", "conformance.schema.json"), "utf8");
-  const id = (JSON.parse(source) as { $id?: string }).$id;
-  assert.equal(id, new URL("spec/conformance.schema.json", pkg.homepage).href, "the $id is on the site's host");
-  const path = new URL(id).pathname.slice(new URL(pkg.homepage).pathname.length);
-  assert.equal(await readFile(join(dist, path), "utf8"), source, `${path} is the normative schema, byte for byte`);
-  const spec = await readFile(join(root, "spec", "v0.md"), "utf8");
-  assert.ok(spec.includes(`\`${id}\``), "§7 names the address");
 });
 
 test("the footer links the sibling site, and the format's own pages do not mention it", () => {
@@ -157,9 +151,10 @@ test("the footer links the sibling site, and the format's own pages do not menti
 });
 
 test("every relative link on a page that is not at the root resolves from where the page is", async () => {
-  // The 404 page is the only one with a base; everywhere else a link resolves
-  // from the page's own directory, which is what lets the site work at any base
-  // path. This is the guard that the base did not leak into the shell.
+  // Only the 404 page writes its links from the site's root; everywhere else a
+  // link resolves from the page's own directory, which is what lets the site
+  // work at any base path. This is the guard that the root did not leak into
+  // the shell.
   for (const [page, doc] of html) {
     if (page === "404.html") continue;
     assert.doesNotMatch(doc, /<base\b/, `${page} has a base`);

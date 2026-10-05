@@ -118,40 +118,61 @@ for (const width of WIDTHS) {
   });
 }
 
+// The home page, and the 404 page at depth: Pages serves that one at whatever
+// address was missing, and a skip link that resolved against anything but the
+// page itself would send a keyboard user somewhere else (it once went home).
+const SKIP_PAGES = [url("index.html"), `${origin}/no/such/page/`];
+
 test("Tab from the top lands on the skip link, which moves focus to main; the next stop shows a focus ring", async (t) => {
   if (!browser) return t.skip(`Chromium did not launch: ${launchError}`);
-  for (const width of WIDTHS) {
-    const tab = await browser.newPage({ viewport: { width, height: 900 } });
-    await tab.goto(url("index.html"));
-    await tab.keyboard.press("Tab");
-    const first = await tab.evaluate(() => {
-      const el = document.activeElement as HTMLElement;
-      const r = el.getBoundingClientRect();
-      const style = getComputedStyle(el);
-      return {
-        label: el.textContent?.trim(),
-        visible: r.top >= 0 && r.height > 0,
-        outline: `${style.outlineStyle} ${style.outlineWidth}`,
-      };
-    });
-    assert.equal(first.label, "Skip to content", `at ${width}px`);
-    assert.ok(first.visible, `the skip link is visible when focused at ${width}px`);
-    assert.equal(first.outline, "solid 3px", `the skip link has a focus ring at ${width}px`);
-    await tab.keyboard.press("Enter");
-    assert.equal(await tab.evaluate(() => document.activeElement?.id), "main", `at ${width}px`);
-    const mainOutline = await tab.evaluate(() => getComputedStyle(document.activeElement as Element).outlineStyle);
-    assert.equal(mainOutline, "none", `main takes focus without outlining the page at ${width}px`);
-    await tab.keyboard.press("Tab");
-    const next = await tab.evaluate(() => {
-      const el = document.activeElement as HTMLElement;
-      const style = getComputedStyle(el);
-      return { tag: el.tagName, inMain: !!el.closest("main"), outline: `${style.outlineStyle} ${style.outlineWidth}` };
-    });
-    assert.equal(next.tag, "A");
-    assert.ok(next.inMain, `the next stop is inside the document at ${width}px`);
-    assert.equal(next.outline, "solid 3px", `the first link after main has a focus ring at ${width}px`);
-    await tab.close();
-  }
+  for (const address of SKIP_PAGES)
+    for (const width of WIDTHS) {
+      const tab = await browser.newPage({ viewport: { width, height: 900 } });
+      await tab.goto(address);
+      const heading = await tab.evaluate(() => document.querySelector("h1")?.textContent);
+      await tab.keyboard.press("Tab");
+      const first = await tab.evaluate(() => {
+        const el = document.activeElement as HTMLElement;
+        const r = el.getBoundingClientRect();
+        const style = getComputedStyle(el);
+        return {
+          label: el.textContent?.trim(),
+          visible: r.top >= 0 && r.height > 0,
+          outline: `${style.outlineStyle} ${style.outlineWidth}`,
+        };
+      });
+      assert.equal(first.label, "Skip to content", `at ${width}px`);
+      assert.ok(first.visible, `the skip link is visible when focused at ${width}px`);
+      assert.equal(first.outline, "solid 3px", `the skip link has a focus ring at ${width}px`);
+      await tab.keyboard.press("Enter");
+      assert.equal(await tab.evaluate(() => document.activeElement?.id), "main", `${address} at ${width}px`);
+      assert.equal(
+        new URL(tab.url()).pathname,
+        new URL(address).pathname,
+        `${address}: the skip link stays on the page`,
+      );
+      assert.equal(
+        await tab.evaluate(() => document.querySelector("h1")?.textContent),
+        heading,
+        `${address}: same page`,
+      );
+      const mainOutline = await tab.evaluate(() => getComputedStyle(document.activeElement as Element).outlineStyle);
+      assert.equal(mainOutline, "none", `main takes focus without outlining the page at ${width}px`);
+      await tab.keyboard.press("Tab");
+      const next = await tab.evaluate(() => {
+        const el = document.activeElement as HTMLElement;
+        const style = getComputedStyle(el);
+        return {
+          tag: el.tagName,
+          inMain: !!el.closest("main"),
+          outline: `${style.outlineStyle} ${style.outlineWidth}`,
+        };
+      });
+      assert.equal(next.tag, "A");
+      assert.ok(next.inMain, `the next stop is inside the document at ${width}px`);
+      assert.equal(next.outline, "solid 3px", `the first link after main has a focus ring at ${width}px`);
+      await tab.close();
+    }
 });
 
 test("the skip link is out of sight until it is focused", async (t) => {

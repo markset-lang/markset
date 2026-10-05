@@ -26,10 +26,9 @@ test("the site builds, every page has the shell, and links stay relative", async
   for (const page of pages) {
     const html = await readFile(join(dist, page), "utf8");
     assert.match(html, /<nav class="site-nav" aria-label="Main">/, page);
-    // The 404 page's one exception is its base, which is the root by design
-    // (Pages serves it at any depth); shell.test.ts holds the rest of it.
-    const checked = page === "404.html" ? html.replace(/<base href="\/">/, "") : html;
-    assert.doesNotMatch(checked, /href="\//, `${page} has a root-relative link`);
+    // The 404 page is the one exception: Pages serves it at any depth, so it
+    // writes its links from the site's root path, and shell.test.ts holds it.
+    if (page !== "404.html") assert.doesNotMatch(html, /href="\//, `${page} has a root-relative link`);
     // The shell's scheme-persistence script, and on the playground the module
     // that runs the renderer. Nothing else, and on no page anything inside the
     // document -- which is the half that is a claim rather than a budget: a

@@ -1308,9 +1308,25 @@ export function pageDescription(page: { body: string; description?: string }): s
   return `${cut.slice(0, cut.lastIndexOf(" ")).replace(/[,;:.]$/, "")}…`;
 }
 
+/**
+ * Pages serves 404.html for any address it has nothing at, however deep, so a
+ * relative link on it would resolve against the missing address. Its links are
+ * written from the site's root path instead. Not with a `<base>`: that would
+ * also resolve the skip link's `#main` against the root, and a keyboard user
+ * on the 404 page would be sent to the home page.
+ */
+function fromRoot(html: string, root: string): string {
+  return html.replace(
+    /\b(href|src)="(?![a-z][a-z0-9+.-]*:|\/|#)([^"]*)"/gi,
+    (_, name: string, url: string) => `${name}="${root}${url}"`,
+  );
+}
+
 function shell(page: Page): string {
   const depth = page.path.split("/").length - 1;
-  const rel = depth === 0 ? "./" : "../".repeat(depth);
+  const notFound = page.path === NOT_FOUND;
+  const sitePath = new URL(pkg.homepage).pathname;
+  const rel = notFound ? sitePath : depth === 0 ? "./" : "../".repeat(depth);
   const nav = NAV.map(([label, href]) => {
     // A bar item is current for its whole section, not just its own page, or
     // the bar goes blank the moment a reader follows the rail into one.
@@ -1340,12 +1356,7 @@ function shell(page: Page): string {
   const attrs = page.themeAttributes || ' data-preset="technical"';
   const title = esc(pageTitle(page));
   const description = esc(pageDescription(page));
-  // Pages serves 404.html for any address it has nothing at, however deep, so
-  // relative links on it would resolve against the missing address. A base of
-  // the site's root makes them resolve as they do on a page at the root, which
-  // is where it was built. It is also the one page with no canonical address,
-  // and it asks not to be indexed.
-  const notFound = page.path === NOT_FOUND;
+  // The 404 page has no canonical address, and asks not to be indexed.
   const canonical = esc(canonicalUrl(page.path));
   const meta = notFound
     ? `<meta name="robots" content="noindex">\n`
@@ -1361,7 +1372,7 @@ function shell(page: Page): string {
 <html lang="en">
 <head>
 <meta charset="utf-8">
-${notFound ? `<base href="${esc(new URL(pkg.homepage).pathname)}">\n` : ""}<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title}</title>
 <meta name="description" content="${description}">
 ${meta}<link rel="icon" type="image/svg+xml" href="${rel}icon.svg">
@@ -1378,7 +1389,7 @@ ${nav}
 ${SCHEME_CONTROL}</header>
 <div class="site-layout${rail ? " has-rail" : ""}">
 ${rail}<main id="main" class="ms-document" tabindex="-1">
-${page.body}</main>
+${notFound ? fromRoot(page.body, sitePath) : page.body}</main>
 </div>
 <footer class="site-footer">
 <div>
