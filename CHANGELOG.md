@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.2 — 2026-10-05
+
+**The command line fails like a command line.** Nothing in the grammar or the spec changed.
+
+- **An unknown flag and a missing file exit 2 with a message, not a stack trace.** `parseArgs` throws on a flag it does not know and reading a file that is not there throws too, and neither was caught, so both ended in a Node stack trace and exit 1, which continuous integration reads as "a document has an error". Both now print `markset:` and the reason, then the usage, and exit 2, like every other usage error. A `--theme` file that is not there, or an `-o` into a directory that does not exist, is the same failure. The usage and the command's page now say what each exit code means: 0 nothing is wrong, 1 `check` found an error, 2 the invocation is wrong.
+- **`markset --version`** prints `markset` and the version, read from the package's own manifest.
+- **The spec, the suite and the parser are held to one list of diagnostic codes.** A test requires every code `spec/v0.md` names to be pinned by a conformance case or declared review-only with a reason (none is, today), and every code the parser reports to be one the spec names. They agreed already; now they cannot drift.
+- **Intentset's kickoff requirements left this repository.** `docs/expansion-requirements/` was a copy of documents Intentset owns; they are at [intentset/docs/requirements](https://github.com/intentset/intentset/tree/main/docs/requirements).
+
 ## 0.4.1 — 2026-10-04
 
 **Saving an edit inside emphasis works again with the dependencies a fresh install resolves.** Nothing in the grammar or the spec changed.

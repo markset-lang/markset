@@ -1,6 +1,6 @@
 {
   "name": "@markset-lang/cli",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "markset command line: check, html, downgrade, ast, and the authoring guide for agents.",
   "license": "MIT",
   "type": "module",
@@ -37,10 +37,10 @@
     "markset": "dist/markset.js"
   },
   "dependencies": {
-    "@markset-lang/parser": "^0.4.1",
-    "@markset-lang/render-downgrade": "^0.4.1",
-    "@markset-lang/render-html": "^0.4.1",
-    "@markset-lang/diagram-ascii": "^0.4.1"
+    "@markset-lang/parser": "^0.4.2",
+    "@markset-lang/render-downgrade": "^0.4.2",
+    "@markset-lang/render-html": "^0.4.2",
+    "@markset-lang/diagram-ascii": "^0.4.2"
   },
   "devDependencies": {
     "@types/mdast": "^4.0.4"
