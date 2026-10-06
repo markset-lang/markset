@@ -114,6 +114,12 @@ const NAV: Array<[string, string]> = [
 ];
 
 /**
+ * The footer's row: the bar again, and Why Markset, which is not in it, the
+ * same way intentset.org's row is its bar and About (decided 2026-10-06).
+ */
+export const FOOTER_LINKS: Array<[string, string]> = [...NAV, ["Why Markset", "why/index.html"]];
+
+/**
  * The pages that belong together, for the rail.
  *
  * A page reached only from a sentence inside another page is a page most
@@ -1337,6 +1343,9 @@ function shell(page: Page): string {
     const active = page.path === href || inSection || page.path.startsWith(href.replace("index.html", ""));
     return `<a href="${rel}${href}"${active ? ' aria-current="page"' : ""}>${label}</a>`;
   }).join("\n");
+  const footerLinks = FOOTER_LINKS.map(
+    ([label, href]) => `<a href="${rel}${href}"${page.path === href ? ' aria-current="page"' : ""}>${esc(label)}</a>`,
+  ).join("\n");
   const section = railSection(page.path);
   // Where am I, then what is on this page. The section comes first because it
   // answers the question a reader arriving from a search result has.
@@ -1393,8 +1402,10 @@ ${notFound ? fromRoot(page.body, sitePath) : page.body}</main>
 </div>
 <footer class="site-footer">
 <div>
-<p><strong>Markset</strong> is a strict superset of CommonMark with a closed layout vocabulary. Every page on this site is written in Markset and built by the reference implementation.</p>
-<p><a href="${REPO}">Source on GitHub</a> · <a href="${CORAL_REEF}">A Coral Reef Ventures project</a> · Sibling project: <a href="${SIBLING.url}">${SIBLING.name}</a></p>
+<nav class="site-footer-nav" aria-label="Footer">
+${footerLinks}
+</nav>
+<p><strong>Markset</strong> · ${FOOTER_STATEMENT} · <a href="${REPO}">Source on GitHub</a> · <a href="${CORAL_REEF}">A Coral Reef Ventures project</a> · Sibling project: <a href="${SIBLING.url}">${SIBLING.name}</a></p>
 </div>
 ${FAMILY_MARK}</footer>
 ${(page.scripts ?? []).map((src) => `<script type="module" src="${rel}${src}"></script>`).join("\n")}</body>
@@ -1432,10 +1443,18 @@ const ICON_DARK = `<svg class="site-icon" viewBox="0 0 24 24" fill="none" stroke
 const CORAL_REEF = "https://coralreefventures.com/";
 
 /**
- * The network figure from coralreefventures.com, which draws the three
- * products as clusters of nodes: Markset's two, Intentset's two, Streamlane's
- * one, and two unaffiliated. Here Markset's nodes carry the accent and the rest
- * stay quiet. Inline so its colors are tokens and follow the reader's scheme.
+ * What Markset is, in the footer's one sentence. The second sentence it had
+ * (every page here is written in Markset) went on 2026-10-06, when the footer
+ * took the family's one-line shape: the home, Tools and Start pages say it.
+ */
+export const FOOTER_STATEMENT = "A strict superset of CommonMark with a closed layout vocabulary.";
+
+/**
+ * The network figure from coralreefventures.com, which draws the four
+ * products as nodes: Markset's two, Intentset's two, Streamlane's one,
+ * Driftline's one, and one unaffiliated. Here Markset's nodes carry the accent
+ * and the rest stay quiet. Inline so its colors are tokens and follow the
+ * reader's scheme.
  */
 const FAMILY_MARK = `<svg class="site-family" viewBox="0 0 384 240" aria-hidden="true" focusable="false"><path d="M40 170 112 96 196 132 268 52 344 104M112 96 150 30 268 52M196 132 236 206 344 104M40 170 236 206M150 30 196 132"/><circle class="own" cx="40" cy="170" r="7"/><circle class="own" cx="112" cy="96" r="9"/><circle cx="150" cy="30" r="5"/><circle cx="196" cy="132" r="9"/><circle cx="236" cy="206" r="5"/><circle cx="268" cy="52" r="7"/><circle cx="344" cy="104" r="8"/></svg>
 `;
