@@ -291,8 +291,7 @@ body { --site-scheme-w: 5.6rem; }
   color: var(--ms-fg-muted);
   background: linear-gradient(var(--ms-border), var(--ms-border)) no-repeat center top / calc(100% - 2 * var(--site-gutter)) 1px;
 }
-.site-footer p { margin: 0; max-width: 60ch; }
-.site-footer p + p { margin-top: 0.35rem; }
+.site-footer p { margin: 0; }
 .site-footer strong { color: var(--ms-fg); }
 .site-footer a { display: inline-block; padding-block: 0.25rem; color: inherit; text-decoration-color: var(--ms-accent); text-underline-offset: 0.2em; }
 .site-footer a:hover { color: var(--ms-fg); }
