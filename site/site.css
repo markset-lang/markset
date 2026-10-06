@@ -274,9 +274,10 @@ body { --site-scheme-w: 5.6rem; }
 .site-rail a[aria-current="page"] { color: var(--ms-fg); font-weight: 600; }
 .site-toc a { color: var(--ms-fg-muted); text-decoration: none; }
 .site-toc a:hover { color: var(--site-accent-text); }
-/* The footer: what this is, where the source lives, and whose it is. The
- * figure is the network from coralreefventures.com, drawn small with this
- * product's nodes in its accent and the other two products' nodes left quiet:
+/* The footer: the bar's links again, then one line saying what this is, where
+ * the source lives, and whose it is. The figure is the network from
+ * coralreefventures.com, drawn small with this product's nodes in its accent
+ * and the other three products' nodes left quiet:
  * the family's mark, worn by one member. Decoration only, hidden from
  * assistive technology; the link beside it says the same thing in words. */
 .site-footer {
@@ -290,11 +291,14 @@ body { --site-scheme-w: 5.6rem; }
   color: var(--ms-fg-muted);
   background: linear-gradient(var(--ms-border), var(--ms-border)) no-repeat center top / calc(100% - 2 * var(--site-gutter)) 1px;
 }
-.site-footer p { margin: 0; max-width: 60ch; }
-.site-footer p + p { margin-top: 0.35rem; }
+.site-footer p { margin: 0; }
 .site-footer strong { color: var(--ms-fg); }
 .site-footer a { display: inline-block; padding-block: 0.25rem; color: inherit; text-decoration-color: var(--ms-accent); text-underline-offset: 0.2em; }
 .site-footer a:hover { color: var(--ms-fg); }
+/* The footer's row: the bar again and Why Markset, styled as intentset.org's. */
+.site-footer-nav { display: flex; flex-wrap: wrap; gap: 0 1.25rem; margin-bottom: 0.75rem; }
+.site-footer-nav a { display: inline-block; padding-block: 0.5rem; text-decoration: none; color: var(--ms-fg-muted); }
+.site-footer-nav a:hover, .site-footer-nav a[aria-current="page"] { color: var(--ms-fg); text-decoration: underline; text-decoration-color: var(--ms-accent); }
 .site-family { flex: none; width: 9.5rem; height: auto; color: color-mix(in oklab, var(--ms-fg-muted), transparent 60%); }
 .site-family path { stroke: currentColor; stroke-width: 1.5; fill: none; }
 .site-family circle { fill: var(--ms-fg-muted); opacity: 0.4; }

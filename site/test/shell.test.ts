@@ -12,10 +12,14 @@ import assert from "node:assert/strict";
 import { access, mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, normalize, resolve } from "node:path";
-import { build, canonicalUrl, pageDescription, SIBLING } from "../build.ts";
+import { build, canonicalUrl, FOOTER_LINKS, FOOTER_STATEMENT, pageDescription, SIBLING } from "../build.ts";
 
 const root = resolve(import.meta.dirname, "..", "..");
-const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as { homepage: string; version: string };
+const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as {
+  homepage: string;
+  version: string;
+  repository: { url: string };
+};
 const dist = await mkdtemp(join(tmpdir(), "markset-shell-"));
 const pages = await build(dist);
 const html = new Map<string, string>();
@@ -147,6 +151,45 @@ test("the footer links the sibling site, and the format's own pages do not menti
     assert.ok(footer.includes(`<a href="${SIBLING.url}">${SIBLING.name}</a>`), `${page}: the footer links it`);
     const main = doc.slice(doc.indexOf("<main"), doc.indexOf("</main>"));
     assert.ok(!main.includes(new URL(SIBLING.url).host), `${page}: Markset stays a neutral format`);
+  }
+});
+
+test("the footer is the family's: the bar's links and Why Markset, then one line", async () => {
+  // Decided 2026-10-06 for Markset and Intentset alike: a row of links (the
+  // bar, and the one page about the project that is not in it), then one
+  // paragraph naming the product, saying what it is in a sentence, and linking
+  // its source, its company and its sibling, in that order.
+  assert.deepEqual(
+    FOOTER_LINKS.map(([label]) => label),
+    ["Start", "Tools", "Reference", "Examples", "Playground", "Why Markset"],
+  );
+  const line =
+    `<p><strong>Markset</strong> · ${FOOTER_STATEMENT} · ` +
+    `<a href="${pkg.repository.url.replace(/^git\+/, "").replace(/\.git$/, "")}">Source on GitHub</a> · ` +
+    `<a href="https://coralreefventures.com/">A Coral Reef Ventures project</a> · ` +
+    `Sibling project: <a href="${SIBLING.url}">${SIBLING.name}</a></p>`;
+  for (const [page, doc] of html) {
+    const footer = /<footer class="site-footer">([\s\S]*?)<\/footer>/.exec(doc)?.[1] ?? "";
+    const body =
+      /^\s*<div>\s*<nav class="site-footer-nav" aria-label="Footer">([\s\S]*?)<\/nav>\s*(<p>[\s\S]*?<\/p>)\s*<\/div>\s*<svg class="site-family"/.exec(
+        footer,
+      );
+    assert.ok(body, `${page}: the row, one line, then the figure`);
+    const [, row, paragraph] = body;
+    assert.equal(paragraph, line, `${page}: the line`);
+    const links = [...row.matchAll(/<a href="([^"]+)"( aria-current="page")?>([^<]+)<\/a>/g)];
+    assert.deepEqual(
+      links.map((m) => m[3]),
+      FOOTER_LINKS.map(([label]) => label),
+      `${page}: the row's labels`,
+    );
+    for (const [i, [, href, current]] of links.entries()) {
+      const target = FOOTER_LINKS[i][1];
+      assert.ok(href.endsWith(target), `${page}: ${href} goes to ${target}`);
+      assert.equal(Boolean(current), page === target, `${page}: ${target} is current only on itself`);
+      if (page === "404.html") continue;
+      await access(join(dist, normalize(join(dirname(page), href)))).catch(() => assert.fail(`${page} -> ${href}`));
+    }
   }
 });
 
