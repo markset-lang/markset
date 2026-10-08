@@ -26,6 +26,7 @@ import {
   defaultStylesheetPath,
   type Diagnostic,
 } from "./deps.ts";
+import { CARD, CARD_ALT } from "./social-card.ts";
 import { drawMermaid } from "./mermaid.ts";
 
 const root = resolve(import.meta.dirname, "..");
@@ -41,6 +42,10 @@ const SITE_HOST = new URL(pkg.homepage).host;
 /** Where a page lives once published: the address canonical, og:url and the sitemap give for it. */
 export function canonicalUrl(path: string): string {
   return new URL(path.replace(/(^|\/)index\.html$/, "$1"), pkg.homepage).href;
+}
+/** The card's absolute address: whatever reads og:image has no page to resolve a relative one against. */
+export function cardUrl(): string {
+  return new URL(CARD.file, pkg.homepage).href;
 }
 /**
  * The sibling site, linked from the footer and nowhere in the format's own
@@ -379,6 +384,9 @@ async function writeSite(outDir: string): Promise<string[]> {
   // The mark: the favicon, and the image beside the wordmark in the header. The
   // extension's icon.png is rendered from this same file.
   await cp(join(root, "site", "icon.svg"), join(out, "icon.svg"));
+  // The social card, drawn by hand (`pnpm run site:social-card`) and committed, for
+  // the reason the thumbnails are: taking it needs a browser. See site/social-card.ts.
+  await cp(join(root, "site", CARD.file), join(out, CARD.file));
   // §7 links the normative schema as a sibling of the spec, which is where it
   // sits in the repository. Copying it here makes that link resolve on the site
   // too, and means an implementer reading the spec can fetch the schema it is
@@ -1375,7 +1383,11 @@ function shell(page: Page): string {
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">
 <meta property="og:url" content="${canonical}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${esc(cardUrl())}">
+<meta property="og:image:width" content="${CARD.width}">
+<meta property="og:image:height" content="${CARD.height}">
+<meta property="og:image:alt" content="${esc(CARD_ALT)}">
+<meta name="twitter:card" content="summary_large_image">
 `;
   return `<!doctype html>
 <html lang="en">

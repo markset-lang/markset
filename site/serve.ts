@@ -33,6 +33,7 @@ export const WATCHED = [
   "site/mermaid.ts",
   "site/puppeteer.json",
   "site/site.css",
+  "site/social-card.png",
   "site/content",
   "site/playground",
   "site/thumbnails",

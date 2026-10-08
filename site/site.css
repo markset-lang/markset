@@ -21,15 +21,19 @@ body {
   --ms-base: 1.0625rem;
   --ms-fg: light-dark(#152029, #e3e6ea);
   --ms-fg-muted: light-dark(#56636d, #a0a8b1);
-  --ms-bg: light-dark(#ffffff, #15181c);
-  --ms-surface: light-dark(#f4f6f8, #1d2126);
-  --ms-border: light-dark(#e2e7eb, #2c3238);
+  /* The ground carries the mark's violet, faintly: the tile on the wordmark is #664d93, and a page that was pure
+   * white beside it read as a different brand's. Light is white mixed a few percent toward the mark; dark is a
+   * near-black with the same hue in it, rather than the blue-black it was. Every pair below was checked against
+   * WCAG AA on both grounds. */
+  --ms-bg: light-dark(#f8f6fc, #17141d);
+  --ms-surface: light-dark(#f0ecf7, #201c2a);
+  --ms-border: light-dark(#e4ddf0, #322b40);
   --ms-accent: light-dark(#664d93, #a993dc);
   --site-accent-text: light-dark(#664d93, #c2b3e3);
   --site-accent-bar: light-dark(#9982bc, #ab97d1);
-  /* A violet-tinted panel for the one section the home page sets in color. */
-  --site-band: light-dark(#f6f3fb, #1e1a27);
-  --site-band-border: light-dark(#e4dcf1, #352d47);
+  /* The one section the home page sets in color, now a step deeper than the ground it sits on. */
+  --site-band: light-dark(#ece5f7, #241e31);
+  --site-band-border: light-dark(#dbd0ee, #3d3454);
   /* The focus ring: the accent's text color, which holds 3:1 against both grounds. */
   --site-focus: light-dark(#664d93, #c2b3e3);
   --site-gutter: clamp(1rem, 3vw, 1.5rem);

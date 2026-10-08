@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { access, mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, normalize, resolve } from "node:path";
-import { build, EXAMPLES, GALLERY } from "../build.ts";
+import { build, cardUrl, EXAMPLES, GALLERY } from "../build.ts";
+import { CARD, CARD_ALT } from "../social-card.ts";
 import { SCHEMES, sourceHash, THUMBNAILS } from "../thumbnails.ts";
 
 /**
@@ -392,4 +393,29 @@ test("every page carries the mark: a favicon link, and the image beside the word
       `${page} shows the mark in the header`,
     );
   }
+});
+
+test("every page points at the social card, and the committed card is the size it claims", async () => {
+  // Without a card a link to the site previews as text. The file is drawn by hand
+  // (`pnpm run site:social-card`) and committed, as the thumbnails are; this holds
+  // the picture to the size the pages tell a client to expect, which is what the
+  // client lays the preview out from before it has the bytes.
+  for (const page of pages) {
+    const html = await readFile(join(dist, page), "utf8");
+    if (page === "404.html") {
+      assert.doesNotMatch(html, /og:image/, "the 404 page asks not to be indexed and claims no card");
+      continue;
+    }
+    assert.match(html, new RegExp(`<meta property="og:image" content="${cardUrl()}">`), `${page}: names the card`);
+    assert.ok(html.includes(`<meta property="og:image:width" content="${CARD.width}">`), `${page}: its width`);
+    assert.ok(html.includes(`<meta property="og:image:height" content="${CARD.height}">`), `${page}: its height`);
+    assert.ok(html.includes(`<meta property="og:image:alt" content="${CARD_ALT}">`), `${page}: what it says`);
+    assert.ok(html.includes('<meta name="twitter:card" content="summary_large_image">'), `${page}: shown large`);
+  }
+  // A PNG declares its size in the IHDR chunk, the first after the signature.
+  const png = await readFile(join(dist, CARD.file));
+  assert.equal(png.subarray(1, 4).toString("ascii"), "PNG", "the card is a PNG");
+  const ratio = png.readUInt32BE(16) / CARD.width;
+  assert.ok(Number.isInteger(ratio) && ratio >= 1, `the card is ${CARD.width} wide, or a whole multiple of it`);
+  assert.equal(png.readUInt32BE(20), CARD.height * ratio, `and ${CARD.height} tall at the same scale`);
 });

@@ -48,10 +48,14 @@ test("the dev server watches every source directory the site has", async () => {
   for (const entry of entries) {
     // Dotfiles (a Finder .DS_Store) are not sources, and git ignores them.
     // node_modules is the site package's own dependency links, which pnpm puts beside it, and
-    // puppeteer.ts serves the thumbnail script and the browser tests, never the build.
+    // puppeteer.ts serves the thumbnail script, the card script and the browser tests,
+    // never the build; social-card.ts draws site/social-card.png, which the build copies
+    // and the watcher does follow.
     if (
       entry.name.startsWith(".") ||
-      ["test", "serve.ts", "thumbnails.ts", "puppeteer.ts", "package.json", "node_modules"].includes(entry.name)
+      ["test", "serve.ts", "thumbnails.ts", "social-card.ts", "puppeteer.ts", "package.json", "node_modules"].includes(
+        entry.name,
+      )
     )
       continue;
     assert.ok(WATCHED.includes(`site/${entry.name}`), `site/${entry.name} is built from but not watched`);

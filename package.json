@@ -22,6 +22,7 @@
     "site": "node --conditions=markset-source site/build.ts",
     "site:watch": "node --conditions=markset-source site/serve.ts",
     "site:thumbnails": "node --conditions=markset-source site/thumbnails.ts",
+    "site:social-card": "node --conditions=markset-source site/social-card.ts",
     "vscode:build": "pnpm --filter markset-vscode run build",
     "vscode:package": "pnpm --filter markset-vscode run package"
   },

@@ -75,7 +75,7 @@ test("every page describes itself, and says where it lives, for search results a
     );
     assert.match(doc, /<meta property="og:type" content="website">/, page);
     assert.match(doc, /<meta property="og:site_name" content="Markset">/, page);
-    assert.match(doc, /<meta name="twitter:card" content="summary">/, page);
+    assert.match(doc, /<meta name="twitter:card" content="summary_large_image">/, page);
   }
   assert.equal(canonicalUrl("index.html"), pkg.homepage);
   assert.equal(canonicalUrl("reference/card/index.html"), new URL("reference/card/", pkg.homepage).href);
