@@ -169,7 +169,7 @@ A bare fence, or a `figure` with no caption argument. Nothing is lost and nothin
 :::
 ::::
 
-This is the same move as the [tabs](../tabs/index.html) page's refusal to emit tab roles: the output claims only what it can keep true.
+This is the same move as the [tabs](../tabs/) page's refusal to emit tab roles: the output claims only what it can keep true.
 
 {.tick}
 ***
@@ -319,5 +319,5 @@ A drawn diagram replaces the `<pre>` with an image:
 
 The reference implementation draws to SVG and embeds it as a `data:` URI rather than inlining the markup. Markset never passes raw HTML from a document through to output, and an engine — which on the command line is an arbitrary command — should not get a channel that documents are denied. An SVG loaded through `<img>` cannot execute script, so obligation 6 holds because of the shape of the output rather than because the engine was trusted.
 
-The built-in engine carries its own `prefers-color-scheme` block, which resolves against the page's color scheme, so a diagram follows the [light and dark control](../../index.html) in the bar above like everything else on the page. Try it: the picture at the top of this page changes with it.
+The built-in engine carries its own `prefers-color-scheme` block, which resolves against the page's color scheme, so a diagram follows the [light and dark control](../../) in the bar above like everything else on the page. Try it: the picture at the top of this page changes with it.
 

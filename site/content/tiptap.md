@@ -115,11 +115,11 @@ import { refreshDiagnostics } from "@markset-lang/tiptap";
 refreshDiagnostics(editor, source);   // check what the editor holds now, and mark it
 ```
 
-A marked block has the class `ms-diagnostic` and a `data-severity` of `error` or `warning`, and its title carries the code, such as `GRID_CONTENT`, which the [specification](../spec/index.html) defines.
+A marked block has the class `ms-diagnostic` and a `data-severity` of `error` or `warning`, and its title carries the code, such as `GRID_CONTENT`, which the [specification](../spec/) defines.
 
 ## Styling it, and replacing the views
 
-Blocks render the way the HTML renderer draws them, with `ms-` classes and `data-` attributes, so the [default stylesheet](../reference/index.html) or your own theme styles the editor too. The one deliberate difference is that every tab panel is shown while editing.
+Blocks render the way the HTML renderer draws them, with `ms-` classes and `data-` attributes, so the [default stylesheet](../reference/) or your own theme styles the editor too. The one deliberate difference is that every tab panel is shown while editing.
 
 Any node's view can be replaced, and React views have an entry point of their own, so an editor without React never loads it:
 

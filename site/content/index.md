@@ -13,7 +13,7 @@ Markdown, with layout
 {.lead}
 Agents draft most documents now, and they already write Markdown. Markset adds cards, grids, tabs, metrics, charts and callouts, so what they write reads like a designed page, and is still a Markdown file that reads anywhere Markset is not supported.
 
-[[Write with an agent](agents/index.html)]{.button .primary} [[Open the playground](playground/index.html)]{.button}
+[[Write with an agent](agents/)]{.button .primary} [[Open the playground](playground/)]{.button}
 
 [v0]{.badge .success} [{{version}}]{.badge} [CommonMark superset]{.badge}
 
@@ -82,7 +82,7 @@ With agents
   Every construct degrades to plain Markdown. Paste the document into a pull request, an email or a chat, and it still reads.
 :::
 
-[See the same document written twice](agents/index.html#the-same-document-twice), as plain Markdown and as Markset, by an agent that had only the guide.
+[See the same document written twice](agents/#the-same-document-twice), as plain Markdown and as Markset, by an agent that had only the guide.
 
 {.eyebrow}
 Tools
@@ -94,37 +94,37 @@ Tools
 
   Review what an agent wrote in the Markdown preview you already use. Every construct is offered after `:::`, and a mistake is underlined as you type.
 
-  [[Set up the extension](editor/index.html)]{.button .small}
+  [[Set up the extension](editor/)]{.button .small}
 
 - **In your own app**
 
   A TipTap editor for people who should never see the syntax. Saving writes Markset back and changes only the lines they edited.
 
-  [[Try the editor](tiptap/index.html)]{.button .small}
+  [[Try the editor](tiptap/)]{.button .small}
 
 - **In your browser**
 
   The playground runs the parser and both renderers on your machine: the page, its HTML, the plain-Markdown fallback and the diagnostics.
 
-  [[Open the playground](playground/index.html)]{.button .small}
+  [[Open the playground](playground/)]{.button .small}
 
 - **From the command line**
 
   Check a document, which is how an agent checks its own, render it to HTML, or lower it to plain CommonMark. It also carries the guide agents write from.
 
-  [[The markset command](cli/index.html)]{.button .small}
+  [[The markset command](cli/)]{.button .small}
 
 - **In a remark pipeline**
 
   Add Markset to the Astro, Next or Eleventy build you already run, as one remark plugin, without replacing anything around it.
 
-  [[The remark plugin](remark/index.html)]{.button .small}
+  [[The remark plugin](remark/)]{.button .small}
 
 - **On GitHub Pages**
 
   Publish a folder of Markset documents as a site with one workflow file. This site is built that way.
 
-  [[The recipe](github-pages/index.html)]{.button .small}
+  [[The recipe](github-pages/)]{.button .small}
 :::
 
 :::::card{.band}
@@ -147,7 +147,7 @@ Principles
   Eight constructs, and an unknown one is a reported error rather than silent passthrough, so a document can be checked before it ships.
 :::
 
-[Why Markset exists](why/index.html), and how it compares with Pandoc, Quarto, MyST, Markdoc and MDX.
+[Why Markset exists](why/), and how it compares with Pandoc, Quarto, MyST, Markdoc and MDX.
 :::::
 
 {.eyebrow}
@@ -160,17 +160,17 @@ Next
 
   A page per construct, with live examples taken from the test suite.
 
-  [Read the reference](reference/index.html)
+  [Read the reference](reference/)
 
 - **The specification**
 
   Short, and the source of truth: when the code and the spec disagree, the spec wins.
 
-  [Read the spec](spec/index.html)
+  [Read the spec](spec/)
 
 - **The examples**
 
   Complete documents, each with a theme of its own, showing how far appearance moves while the source stays plain.
 
-  [See the examples](examples/index.html)
+  [See the examples](examples/)
 :::

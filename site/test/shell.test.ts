@@ -185,7 +185,7 @@ test("the footer is the family's: the bar's links and Why Markset, then one line
     );
     for (const [i, [, href, current]] of links.entries()) {
       const target = FOOTER_LINKS[i][1];
-      assert.ok(href.endsWith(target), `${page}: ${href} goes to ${target}`);
+      assert.ok(href.endsWith(target.replace(/index\.html$/, "")), `${page}: ${href} goes to ${target}`);
       assert.equal(Boolean(current), page === target, `${page}: ${target} is current only on itself`);
       if (page === "404.html") continue;
       await access(join(dist, normalize(join(dirname(page), href)))).catch(() => assert.fail(`${page} -> ${href}`));
@@ -203,5 +203,14 @@ test("every relative link on a page that is not at the root resolves from where 
     assert.doesNotMatch(doc, /<base\b/, `${page} has a base`);
     const icon = attr(doc, /<link rel="icon" type="image\/svg\+xml" href="([^"]+)">/) ?? "";
     await access(join(dist, normalize(join(dirname(page), icon))));
+  }
+});
+
+test("no link on the site ends in index.html: a page's address is its directory (decided 2026-10-15)", () => {
+  for (const [page, doc] of html) {
+    for (const [, href] of doc.matchAll(/href="([^"]*)"/g)) {
+      const own = !/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith("https://markset.org/");
+      assert.ok(!own || !/(^|\/)index\.html(#|$)/.test(href), `${page} links ${href}`);
+    }
   }
 });

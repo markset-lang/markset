@@ -39,9 +39,17 @@ const pkg = JSON.parse(await readFile(join(resolve(import.meta.dirname, ".."), "
 const REPO = pkg.repository.url.replace(/^git\+/, "").replace(/\.git$/, "");
 /** The host the site is served from, for the CNAME file Pages reads. */
 const SITE_HOST = new URL(pkg.homepage).host;
+/**
+ * A page's address: its output path without the trailing `index.html`, which a static host serves for a directory.
+ * Every link the site writes uses it, so no address on the site ends in `index.html` (decided 2026-10-15).
+ */
+export function pageAddress(path: string): string {
+  return path.replace(/(^|\/)index\.html$/, "$1");
+}
+
 /** Where a page lives once published: the address canonical, og:url and the sitemap give for it. */
 export function canonicalUrl(path: string): string {
-  return new URL(path.replace(/(^|\/)index\.html$/, "$1"), pkg.homepage).href;
+  return new URL(pageAddress(path), pkg.homepage).href;
 }
 /** The card's absolute address: whatever reads og:image has no page to resolve a relative one against. */
 export function cardUrl(): string {
@@ -582,7 +590,7 @@ async function trialPages(): Promise<Page[]> {
       ...markset,
       body:
         note(
-          'An invented example, written to test the guide: an agent given only the <a href="../../guide/index.html">authoring guide</a> wrote it, and it is published as written. Compare <a href="../rollout-review-plain/index.html">the same content in plain Markdown</a>, or go back to <a href="../index.html">Writing with agents</a>.',
+          'An invented example, written to test the guide: an agent given only the <a href="../../guide/">authoring guide</a> wrote it, and it is published as written. Compare <a href="../rollout-review-plain/">the same content in plain Markdown</a>, or go back to <a href="../">Writing with agents</a>.',
         ) + markset.body,
     },
     {
@@ -593,7 +601,7 @@ async function trialPages(): Promise<Page[]> {
         "The same rollout review as plain Markdown, written by the same agent beside the Markset version and drawn by the same renderer and stylesheet, for comparison.",
       body:
         note(
-          'An invented example, written to test the guide: the same content as plain Markdown, written by the same agent for comparison and drawn by the same renderer and stylesheet. Compare <a href="../rollout-review/index.html">the Markset version</a>, or go back to <a href="../index.html">Writing with agents</a>.',
+          'An invented example, written to test the guide: the same content as plain Markdown, written by the same agent for comparison and drawn by the same renderer and stylesheet. Compare <a href="../rollout-review/">the Markset version</a>, or go back to <a href="../">Writing with agents</a>.',
         ) + plain.body,
     },
   ];
@@ -625,10 +633,10 @@ async function examplePage(example: (typeof EXAMPLES)[number]): Promise<Page> {
     example.toggles ?? false,
   );
   const others = EXAMPLES.filter((e) => e.slug !== example.slug).map(
-    (e) => `<a href="../${e.slug}/index.html">${esc(e.title)}</a>`,
+    (e) => `<a href="../${e.slug}/">${esc(e.title)}</a>`,
   );
   const source = `<a href="${REPO}/blob/main/examples/${esc(example.file)}">source</a>`;
-  page.body += `<p class="site-more">Examples: <a href="../index.html">all</a>${others.length ? ` · ${others.join(" · ")}` : ""} · ${source}</p>\n`;
+  page.body += `<p class="site-more">Examples: <a href="../">all</a>${others.length ? ` · ${others.join(" · ")}` : ""} · ${source}</p>\n`;
   return page;
 }
 
@@ -652,7 +660,7 @@ async function examplesIndex(): Promise<Page> {
 
   const source = [
     `:::card[Start here]{tone=info}`,
-    `### [${tour.title}](${tour.slug}/index.html)`,
+    `### [${tour.title}](${tour.slug}/)`,
     ``,
     tour.blurb,
     ``,
@@ -674,7 +682,7 @@ async function examplesIndex(): Promise<Page> {
       [
         `- [![](thumbnails/${e.slug}.light.webp)]{.thumb .light}[![](thumbnails/${e.slug}.dark.webp)]{.thumb .dark}`,
         ``,
-        `  ### [${e.title}](${e.slug}/index.html)`,
+        `  ### [${e.title}](${e.slug}/)`,
         ``,
         `  ${e.blurb}`,
         ``,
@@ -712,7 +720,7 @@ async function specPage(): Promise<Page> {
   const meta = ast.children[0]?.type === "yaml" ? ast.children[0].value : "";
   const status = /status:\s*(.+)/.exec(meta)?.[1] ?? "";
   const version = /version:\s*(.+)/.exec(meta)?.[1] ?? "";
-  const banner = `<p class="site-status"><span class="ms-span badge info">${esc(status)}</span> <span class="ms-span badge">${esc(version)}</span> Source: <a href="${REPO}/blob/main/spec/v0.md"><code>spec/v0.md</code></a> · <a href="../conformance/index.html">Conformance suite</a></p>\n`;
+  const banner = `<p class="site-status"><span class="ms-span badge info">${esc(status)}</span> <span class="ms-span badge">${esc(version)}</span> Source: <a href="${REPO}/blob/main/spec/v0.md"><code>spec/v0.md</code></a> · <a href="../conformance/">Conformance suite</a></p>\n`;
   return { path: "spec/index.html", title: "Markset v0 specification", body: banner + renderHtml(ast), toc };
 }
 
@@ -733,16 +741,16 @@ async function referenceIndex(): Promise<Page> {
   const generated = [
     "",
     "{.site-list}",
-    ...CONSTRUCTS.map((name) => `- [\`${name}\`](${name}/index.html) — ${BLURB[name]}`),
+    ...CONSTRUCTS.map((name) => `- [\`${name}\`](${name}/) — ${BLURB[name]}`),
     "",
     "## Beyond the constructs",
     "",
     "Three things a document does that no construct covers.",
     "",
     "{.site-list}",
-    "- [Diagrams](diagrams/index.html) — an ASCII or mermaid fence becomes a picture, why that needs no ninth construct, and what a renderer may and may not do with one.",
-    "- [Charts](charts/index.html) — a figure's table drawn as a line, bar or column chart, why the table is the source and stays on the page, and how a theme colors one.",
-    "- [Frontmatter and theme tokens](frontmatter/index.html) — the version key, the seven theme tokens, and what each preset changes.",
+    "- [Diagrams](diagrams/) — an ASCII or mermaid fence becomes a picture, why that needs no ninth construct, and what a renderer may and may not do with one.",
+    "- [Charts](charts/) — a figure's table drawn as a line, bar or column chart, why the table is the source and stays on the page, and how a theme colors one.",
+    "- [Frontmatter and theme tokens](frontmatter/) — the version key, the seven theme tokens, and what each preset changes.",
     "",
   ].join("\n");
   const full = parseDocument(`${intro}\n${generated}`);
@@ -907,7 +915,7 @@ async function referencePage(name: (typeof CONSTRUCTS)[number], sectionCases: Co
     body += `<h2 id="diagnostics">What the validator catches</h2>\n<p>Every error below is specified; nothing degrades silently.</p>\n`;
     body += invalid.map((c) => caseCard(c, { showName: true, compact: true })).join("\n");
   }
-  body += `<p class="site-more">All ${sectionCases.length} cases for <code>${name}</code> are in the <a href="../../conformance/${name}/index.html">conformance browser</a>. The normative text is <a href="../../spec/index.html#4-core-constructs">spec §4</a>.</p>\n`;
+  body += `<p class="site-more">All ${sectionCases.length} cases for <code>${name}</code> are in the <a href="../../conformance/${name}/">conformance browser</a>. The normative text is <a href="../../spec/#4-core-constructs">spec §4</a>.</p>\n`;
   return { path: `reference/${name}/index.html`, title: `${name} — Reference`, body };
 }
 
@@ -917,12 +925,12 @@ function conformanceIndex(cases: Record<string, ConformanceCase[]>): Page {
     .map((s) => {
       const list = cases[s];
       const invalid = list.filter((c) => !c.valid).length;
-      return `<tr><td><a href="${s}/index.html"><code>${s}</code></a></td><td>${list.length}</td><td>${list.length - invalid}</td><td>${invalid}</td></tr>`;
+      return `<tr><td><a href="${s}/"><code>${s}</code></a></td><td>${list.length}</td><td>${list.length - invalid}</td><td>${invalid}</td></tr>`;
     })
     .join("\n");
   const body = `<h1 id="conformance-suite">Conformance suite</h1>
 <p>${total} cases in ${Object.keys(cases).length} sections, one JSON file per spec section under <a href="${REPO}/tree/main/tests"><code>tests/</code></a>. Each case pins the parse result, the diagnostics, and the two fallbacks. The pages below render every case live with the reference implementation: what you see in the "Rendered" column is produced at build time from the case's source, not copied from the file.</p>
-<p>Structure (validity, diagnostic codes, AST) is normative for every implementation. The HTML and downgrade strings are reference output; other implementations must be equivalent, not byte-identical. See <a href="../spec/index.html#7-conformance-suite">spec §7</a>.</p>
+<p>Structure (validity, diagnostic codes, AST) is normative for every implementation. The HTML and downgrade strings are reference output; other implementations must be equivalent, not byte-identical. See <a href="../spec/#7-conformance-suite">spec §7</a>.</p>
 <p><strong>Writing an implementation?</strong> The cases are published as <code>@markset-lang/conformance-suite</code>: these ${total} cases and the normative schema, carrying no parser, no renderer and no dependencies at all. The JSON is the artifact, so an implementation in any language reads the files directly — checking a second implementation should not require obtaining the first.</p>
 <table class="site-table"><thead><tr><th>Section</th><th>Cases</th><th>Valid</th><th>Invalid</th></tr></thead><tbody>
 ${rows}
@@ -1003,7 +1011,7 @@ export async function vocabularyGroups(): Promise<VocabularyGroup[]> {
     kind: "block",
     blurb: BLURB[name],
     snippet: snippet(name),
-    href: `../reference/${name}/index.html`,
+    href: `../reference/${name}/`,
   });
 
   return [
@@ -1022,7 +1030,7 @@ export async function vocabularyGroups(): Promise<VocabularyGroup[]> {
           kind: "block",
           blurb: "An ASCII fence inside a captioned figure, drawn as a picture.",
           snippet: snippet("diagram"),
-          href: "../reference/diagrams/index.html",
+          href: "../reference/diagrams/",
         },
         {
           id: "chart",
@@ -1030,7 +1038,7 @@ export async function vocabularyGroups(): Promise<VocabularyGroup[]> {
           kind: "block",
           blurb: "A figure's table drawn as a line, bar or column chart.",
           snippet: snippet("chart"),
-          href: "../reference/charts/index.html",
+          href: "../reference/charts/",
         },
       ],
     },
@@ -1044,7 +1052,7 @@ export async function vocabularyGroups(): Promise<VocabularyGroup[]> {
           kind: "block",
           blurb: "A line of attributes above a block, to style the block below it.",
           snippet: snippet("attribute-line"),
-          href: "../reference/index.html",
+          href: "../reference/",
         },
         {
           id: "span",
@@ -1052,7 +1060,7 @@ export async function vocabularyGroups(): Promise<VocabularyGroup[]> {
           kind: "inline",
           blurb: "An inline run carrying attributes, for a badge or a keyword.",
           snippet: snippet("bracketed-span"),
-          href: "../reference/index.html",
+          href: "../reference/",
         },
         {
           id: "frontmatter",
@@ -1060,7 +1068,7 @@ export async function vocabularyGroups(): Promise<VocabularyGroup[]> {
           kind: "frontmatter",
           blurb: "The version key and the seven theme tokens, at the top of the document.",
           snippet: snippet("frontmatter"),
-          href: "../reference/frontmatter/index.html",
+          href: "../reference/frontmatter/",
         },
       ],
     },
@@ -1272,10 +1280,10 @@ ${panels}
 <dt>Vocabulary</dt><dd>Everything you are allowed to write, with the source of each and a link to its reference page. The same entries are under <em>Insert</em> above the editor, and either one inserts at the cursor.</dd>
 </dl>
 <h2>Where the palette comes from</h2>
-<p>Nobody wrote that list. The names are the parser's own closed vocabulary, so the palette cannot offer a construct the parser rejects or leave one out; the descriptions are the ones the <a href="../reference/index.html">reference index</a> prints; and every snippet is a case from the conformance suite — usually the one the suite calls <em>canonical</em>, which is its word for the minimal correct form. So each is a document that is already proven valid, by the same tests that prove the renderer.</p>
+<p>Nobody wrote that list. The names are the parser's own closed vocabulary, so the palette cannot offer a construct the parser rejects or leave one out; the descriptions are the ones the <a href="../reference/">reference index</a> prints; and every snippet is a case from the conformance suite — usually the one the suite calls <em>canonical</em>, which is its word for the minimal correct form. So each is a document that is already proven valid, by the same tests that prove the renderer.</p>
 <p>Where a snippet lands is read off the tree rather than counted in lines. A construct always goes in at the top level, never between another construct's fences, and an inline span goes in only where the document actually has inline content — not into your frontmatter and not into a code fence. A test inserts every entry at every offset of a document and requires the result to still parse.</p>
 <p>The share button puts the whole document in the URL fragment. A fragment is never sent to a server, so a link is a complete bug report that reveals the document to nobody but the person you send it to.</p>
-<p>Everything here runs from <a href="../cli/index.html">the same library the command line uses</a>, so anything the playground renders, a build renders the same way.</p>
+<p>Everything here runs from <a href="../cli/">the same library the command line uses</a>, so anything the playground renders, a build renders the same way.</p>
 `;
   return {
     path: "playground/index.html",
@@ -1332,7 +1340,7 @@ export function pageDescription(page: { body: string; description?: string }): s
 function fromRoot(html: string, root: string): string {
   return html.replace(
     /\b(href|src)="(?![a-z][a-z0-9+.-]*:|\/|#)([^"]*)"/gi,
-    (_, name: string, url: string) => `${name}="${root}${url}"`,
+    (_, name: string, url: string) => `${name}="${root}${url === "./" ? "" : url}"`,
   );
 }
 
@@ -1349,10 +1357,11 @@ function shell(page: Page): string {
       rail.some(([, h]) => h === page.path) ||
       (href === "reference/index.html" && UNDER_REFERENCE.some((prefix) => page.path.startsWith(prefix)));
     const active = page.path === href || inSection || page.path.startsWith(href.replace("index.html", ""));
-    return `<a href="${rel}${href}"${active ? ' aria-current="page"' : ""}>${label}</a>`;
+    return `<a href="${rel}${pageAddress(href)}"${active ? ' aria-current="page"' : ""}>${label}</a>`;
   }).join("\n");
   const footerLinks = FOOTER_LINKS.map(
-    ([label, href]) => `<a href="${rel}${href}"${page.path === href ? ' aria-current="page"' : ""}>${esc(label)}</a>`,
+    ([label, href]) =>
+      `<a href="${rel}${pageAddress(href)}"${page.path === href ? ' aria-current="page"' : ""}>${esc(label)}</a>`,
   ).join("\n");
   const section = railSection(page.path);
   // Where am I, then what is on this page. The section comes first because it
@@ -1361,8 +1370,8 @@ function shell(page: Page): string {
     ? `<nav class="site-rail" aria-label="${esc(section.title)}"><p class="site-rail-title">${esc(section.title)}</p>\n<ul>\n${section.items
         .map(([label, href]) =>
           href === page.path
-            ? `<li><a href="${rel}${href}" aria-current="page">${esc(label)}</a></li>`
-            : `<li><a href="${rel}${href}">${esc(label)}</a></li>`,
+            ? `<li><a href="${rel}${pageAddress(href)}" aria-current="page">${esc(label)}</a></li>`
+            : `<li><a href="${rel}${pageAddress(href)}">${esc(label)}</a></li>`,
         )
         .join("\n")}\n</ul></nav>\n`
     : "";
@@ -1403,7 +1412,7 @@ ${page.themeCss ? `<link rel="stylesheet" href="${rel}${page.themeCss}">\n` : ""
 <body${attrs}>
 ${SCHEME_SCRIPT}<a class="site-skip" href="#main">Skip to content</a>
 <header class="site-header">
-<a class="site-brand" href="${rel}index.html"><img class="site-mark" src="${rel}icon.svg" alt="" width="28" height="28">Markset</a>
+<a class="site-brand" href="${rel}"><img class="site-mark" src="${rel}icon.svg" alt="" width="28" height="28">Markset</a>
 <nav class="site-nav" aria-label="Main">
 ${nav}
 </nav>

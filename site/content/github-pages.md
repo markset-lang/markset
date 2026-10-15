@@ -155,7 +155,7 @@ Making it yours
 ## A theme, and diagrams
 
 ::::columns{ratio="1:1"}
-**Your own stylesheet.** Pass `--theme theme.css` and it is linked after the default one, so it can override any token and style any author class you invent. The [examples](../examples/index.html) are six documents that differ only in their theme; the source of each names no color and no width.
+**Your own stylesheet.** Pass `--theme theme.css` and it is linked after the default one, so it can override any token and style any author class you invent. The [examples](../examples/) are six documents that differ only in their theme; the source of each names no color and no width.
 
 ```sh
 markset html docs/guide.md --css markset.css \
@@ -164,7 +164,7 @@ markset html docs/guide.md --css markset.css \
 
 ::col
 
-**Diagrams cost nothing until they do.** An `ascii` fence in a captioned figure is drawn with no extra setup, in CI as anywhere else. Any other language needs an engine you name, and mermaid's brings a headless browser with it — a large download in every build, so add it deliberately or not at all. See [diagrams](../reference/diagrams/index.html).
+**Diagrams cost nothing until they do.** An `ascii` fence in a captioned figure is drawn with no extra setup, in CI as anywhere else. Any other language needs an engine you name, and mermaid's brings a headless browser with it — a large download in every build, so add it deliberately or not at all. See [diagrams](../reference/diagrams/).
 ::::
 
 {.tick}
@@ -186,7 +186,7 @@ Two reasonable directions, neither of which is Markset's business:
 
 2. ### Keep the generator you have
 
-   If you already run Eleventy, Hugo, Astro or anything else, do not replace it. Render each page to a fragment with `--fragment` and hand it to your existing layout, or lower the constructs away entirely with `markset downgrade`. Those routes are on the [adoption page](../start/index.html).
+   If you already run Eleventy, Hugo, Astro or anything else, do not replace it. Render each page to a fragment with `--fragment` and hand it to your existing layout, or lower the constructs away entirely with `markset downgrade`. Those routes are on the [adoption page](../start/).
 :::
 
 {.small .muted}

@@ -116,15 +116,15 @@ test("a page reachable only from a sentence gets a place in the rail", async () 
     const rail = await section(`${page}/index.html`);
     for (const other of tools) {
       assert.ok(
-        rail.some((h) => h.endsWith(`${other}/index.html`)),
+        rail.some((h) => h.endsWith(`${other}/`)),
         `${page}'s rail is missing ${other}: ${rail.join(", ")}`,
       );
     }
   }
   // And Start holds the ways in, agents first.
   const start = await section("start/index.html");
-  assert.ok(start[0]?.endsWith("agents/index.html"), `Start's rail begins with ${start[0]}`);
-  assert.ok(start.some((h) => h.endsWith("guide/index.html")));
+  assert.ok(start[0]?.endsWith("agents/"), `Start's rail begins with ${start[0]}`);
+  assert.ok(start.some((h) => h.endsWith("guide/")));
 
   // And the short pages, which have no contents of their own, are no longer
   // dead ends: a reference page had no route to its siblings but the back
@@ -132,7 +132,7 @@ test("a page reachable only from a sentence gets a place in the rail", async () 
   const card = await section("reference/card/index.html");
   assert.deepEqual(await rail("reference/card/index.html"), [], "still no table of contents, correctly");
   assert.ok(card.length >= 10, `a reference page should offer its siblings, found ${card.length}`);
-  assert.ok(card.some((h) => h.endsWith("reference/grid/index.html")));
+  assert.ok(card.some((h) => h.endsWith("reference/grid/")));
 });
 
 test("the rail says which page you are on, exactly once", async () => {
@@ -159,7 +159,9 @@ test("every page is reachable from the home page, and none of them is far", asyn
     for (const [, href] of html.matchAll(/href="([^"#?]*)"/gu)) {
       if (href.startsWith("http") || /\.(css|json|svg|png)$/u.test(href)) continue;
       const from = page.includes("/") ? page.slice(0, page.lastIndexOf("/")) : "";
-      const target = join(from, href).replace(/^\.\//u, "");
+      // A page's address is its directory, which the host serves as its index.html.
+      let target = join(from, href).replace(/^\.\//u, "");
+      if (target === "" || target.endsWith("/")) target += "index.html";
       if (pages.includes(target) && target !== page) out.add(target);
     }
     linked.set(page, out);
