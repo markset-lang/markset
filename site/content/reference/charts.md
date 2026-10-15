@@ -22,7 +22,7 @@ That is the whole syntax. Everything except `chart=line` already worked: `figure
 
 ## Why the source is a table
 
-Section 3 asks a document to read where the layout cannot follow, and this is the place that requirement pays best. A diagram's content has no canonical text form, so [diagrams](../diagrams/index.html) settle for a fence that degrades to its own source — honest, and not a diagram. A chart's content does have one: it is the data, and a reader of a quantitative document wants it anyway.
+Section 3 asks a document to read where the layout cannot follow, and this is the place that requirement pays best. A diagram's content has no canonical text form, so [diagrams](../diagrams/) settle for a fence that degrades to its own source — honest, and not a diagram. A chart's content does have one: it is the data, and a reader of a quantitative document wants it anyway.
 
 So the naive output of a chart is the numbers themselves, in every target, with no engine installed. A fence naming a data language would either duplicate the table the document was going to contain regardless, or replace it with JSON that nobody reads.
 
@@ -60,7 +60,7 @@ The failure mode is the safe one. Mark such a table `chart=` and you get a table
 
 ## What a renderer may do
 
-Eight obligations, in [spec §11](../../spec/index.html#11-charts). The two worth knowing as an author:
+Eight obligations, in [spec §11](../../spec/#11-charts). The two worth knowing as an author:
 
 **The table never goes away.** A drawn chart is added in front of its table, never substituted for it. A diagram's fallback is lossy by nature, so replacing it costs a reader nothing they could otherwise have had. A chart's picture is a lossy view of data that is sitting right there, and in a document where the numbers are the argument, the reader who wants an exact value is not an edge case.
 

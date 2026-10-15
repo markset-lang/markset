@@ -115,8 +115,8 @@ test("an example can carry a theme stylesheet, linked after the site's own", asy
   assert.match(page, /<div class="ms-column hot">/, "a separator's own attributes reach the column");
   await readFile(join(dist, "css", "dossier.css"), "utf8");
   const index = await readFile(join(dist, "examples", "index.html"), "utf8");
-  assert.match(index, /showcase\/index\.html/);
-  assert.match(index, /notification-routing\/index\.html/);
+  assert.match(index, /href="showcase\/"/);
+  assert.match(index, /href="notification-routing\/"/);
 });
 
 test("every image an example links to is published beside its page", async () => {
@@ -275,11 +275,11 @@ test("the header is held to the page's width and scrolls away, as on intentset.o
 test("the wordmark goes home, the bar names sections, and the repository is in the footer", async () => {
   const home = await readFile(join(dist, "index.html"), "utf8");
   const header = /<header class="site-header">[\s\S]*?<\/header>/.exec(home)?.[0] ?? "";
-  assert.match(header, /<a class="site-brand" href="\.\/index\.html">/, "the wordmark links home");
+  assert.match(header, /<a class="site-brand" href="\.\/">/, "the wordmark links home");
   const nav = /<nav class="site-nav" aria-label="Main">([\s\S]*?)<\/nav>/.exec(header)?.[1] ?? "";
   const labels = [...nav.matchAll(/>([^<]+)<\/a>/g)].map((m) => m[1]);
   assert.deepEqual(labels, ["Start", "Tools", "Reference", "Examples", "Playground"]);
-  assert.match(nav, /href="\.\/agents\/index\.html">Start</, "Start lands on writing with agents");
+  assert.match(nav, /href="\.\/agents\/">Start</, "Start lands on writing with agents");
   assert.doesNotMatch(header, /github\.com/, "the repository is not in the header");
   const footer = /<footer class="site-footer">[\s\S]*?<\/footer>/.exec(home)?.[0] ?? "";
   assert.match(footer, /<a href="https:\/\/github\.com\/[^"]+">Source on GitHub<\/a>/, "it is in the footer");

@@ -55,10 +55,10 @@ Commands
   Reads one or more documents and reports every diagnostic with a file, line and column. Exits with status 1 if any diagnostic is an error, which is what makes it usable in continuous integration, and 2 if it could not run at all. Add `--json` to get the diagnostics as structured data instead of text.
 - ### `markset html`
 
-  Renders a complete HTML page with the default stylesheet inlined, so the output is one self-contained file. Add `--fragment` for the body content alone, `--theme <file>` to append a theme stylesheet, and `--title` to set the page title. ASCII diagram fences are drawn automatically (spec §10), and `--diagram` adds other languages or turns drawing off — `--diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"` draws mermaid. What draws a fence is an *engine*: a function built into the renderer, or a command you name. See [diagrams](../reference/diagrams/index.html).
+  Renders a complete HTML page with the default stylesheet inlined, so the output is one self-contained file. Add `--fragment` for the body content alone, `--theme <file>` to append a theme stylesheet, and `--title` to set the page title. ASCII diagram fences are drawn automatically (spec §10), and `--diagram` adds other languages or turns drawing off — `--diagram mermaid="mmdc -i /dev/stdin -o /dev/stdout"` draws mermaid. What draws a fence is an *engine*: a function built into the renderer, or a command you name. See [diagrams](../reference/diagrams/).
 - ### `markset css`
 
-  Writes the default stylesheet — tokens, the eight constructs, print rules, light and dark. A site that renders more than one page links it once instead of inlining it into every file, which is the difference between a 24 KB page and a 0.5 KB one. Takes no input file. See [publishing to GitHub Pages](../github-pages/index.html).
+  Writes the default stylesheet — tokens, the eight constructs, print rules, light and dark. A site that renders more than one page links it once instead of inlining it into every file, which is the difference between a 24 KB page and a 0.5 KB one. Takes no input file. See [publishing to GitHub Pages](../github-pages/).
 
 - ### `markset downgrade`
 
@@ -68,7 +68,7 @@ Commands
   Prints the parsed tree as JSON. The tree is mdast plus the Markset node types, so any tool in the unified ecosystem can consume it. Add `--positions` to keep source offsets.
 - ### `markset guide`
 
-  Prints the authoring guide: what an agent needs to write Markset well, from when each construct earns its place to the codes `check` reports. It is `guide.md` in the package, so a repository can point its agents at the installed file instead. See [writing with agents](../agents/index.html).
+  Prints the authoring guide: what an agent needs to write Markset well, from when each construct earns its place to the codes `check` reports. It is `guide.md` in the package, so a repository can point its agents at the installed file instead. See [writing with agents](../agents/).
 :::
 
 A single `-` in place of a filename reads the document from standard input.
@@ -91,8 +91,8 @@ Options
 | `--fragment` | `html` | Emit the body content only, with no page shell or stylesheet. |
 | `--css <mode>` | `html` | `inline` inlines the default stylesheet and is the default. `none` omits it. Any other value is treated as a URL and linked. |
 | `--theme <file>` | `html` | Append a theme stylesheet after the default one, so it can style author classes and override tokens. See spec §6. |
-| `--diagram <spec>` | `html` | Diagram code fences. `ascii` is drawn by default; `none` turns drawing off; `<lang>=<command>` adds a language, running a command with the fence on stdin and SVG on stdout. Repeatable. Only a fence inside a captioned `figure` is drawn, and an engine that fails leaves the code block in place. See spec §10 and the [diagrams reference](../reference/diagrams/index.html). |
-| `--chart <spec>` | `html` | Charts (spec §11). Drawn by default, because `chart=` is the document asking for a picture rather than naming a language; `none` turns drawing off. Only a captioned `figure` holding a table is drawn, and the table is kept either way, so this costs a picture and no data. See the [charts reference](../reference/charts/index.html). |
+| `--diagram <spec>` | `html` | Diagram code fences. `ascii` is drawn by default; `none` turns drawing off; `<lang>=<command>` adds a language, running a command with the fence on stdin and SVG on stdout. Repeatable. Only a fence inside a captioned `figure` is drawn, and an engine that fails leaves the code block in place. See spec §10 and the [diagrams reference](../reference/diagrams/). |
+| `--chart <spec>` | `html` | Charts (spec §11). Drawn by default, because `chart=` is the document asking for a picture rather than naming a language; `none` turns drawing off. Only a captioned `figure` holding a table is drawn, and the table is kept either way, so this costs a picture and no data. See the [charts reference](../reference/charts/). |
 | `--title <text>` | `html` | Page title. Defaults to the first level-one heading. |
 | `--json` | `check` | Emit diagnostics as JSON rather than as lines of text. |
 | `--positions` | `ast` | Keep the `position` field on every node. |

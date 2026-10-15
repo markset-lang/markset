@@ -223,7 +223,7 @@ test("an address with nothing at it, however deep, gets the 404 page with its st
   }));
   assert.equal(result.heading, "Page not found");
   assert.equal(result.styled, "flex", "the site's stylesheet loaded");
-  assert.equal(result.home, `${origin}/index.html`, "the wordmark goes home from any depth");
+  assert.equal(result.home, `${origin}/`, "the wordmark goes home from any depth");
   assert.deepEqual(failed, [], "every asset it asks for exists");
   await tab.close();
 });

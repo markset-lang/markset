@@ -72,14 +72,14 @@ Read https://markset.org/guide.md and follow it.
 
 Installed, the guide stays in step with the version you run. `markset guide` prints it.
 
-[[Read the guide](../guide/index.html)]{.button .primary} [[The markset command](../cli/index.html)]{.button}
+[[Read the guide](../guide/)]{.button .primary} [[The markset command](../cli/)]{.button}
 
 {.eyebrow}
 A test of the guide
 
 ## The same document, twice
 
-Before the guide was released, it was tested. A fresh agent was given [the authoring guide](../guide/index.html), the
+Before the guide was released, it was tested. A fresh agent was given [the authoring guide](../guide/), the
 same file your agent reads from `node_modules`, and nothing else: no specification and no examples. It was asked for a
 two-page review of an invented product's checkout rollout, written for engineering and product leaders. Its document
 passed `markset check` on the first run. It then wrote the same content as plain Markdown, so the two could be compared.
@@ -161,7 +161,7 @@ anywhere Markset is not supported the table is all there is.
 {.small .muted}
 Every other week of the agent's ten, to fit a column. The full documents have them all.
 
-[[Open the Markset version](rollout-review/index.html)]{.button .primary} [[Open the plain version](rollout-review-plain/index.html)]{.button}
+[[Open the Markset version](rollout-review/)]{.button .primary} [[Open the plain version](rollout-review-plain/)]{.button}
 
 ### What it chose, and what it left out
 

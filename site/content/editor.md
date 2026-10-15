@@ -111,6 +111,6 @@ Next
 
 ## Where to go from here
 
-- The [command line](../cli/index.html) does everything the extension does from a terminal or a build step, which is how a site gets published.
-- The [reference](../reference/index.html) is one page per construct, and the completions in the editor are drawn from the same cases it shows.
+- The [command line](../cli/) does everything the extension does from a terminal or a build step, which is how a site gets published.
+- The [reference](../reference/) is one page per construct, and the completions in the editor are drawn from the same cases it shows.
 - The extension's source is in the [repository](https://github.com/markset-lang/markset/tree/main/editors/vscode), beside the packages it bundles.

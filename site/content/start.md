@@ -10,10 +10,10 @@ Getting started
 # Enrich the Markdown you already have
 
 {.lead}
-There is no migration. A Markset file *is* a Markdown file, so the way in is to keep every document you have and reach for a construct only on the pages that need one. Here is the whole idea, in two lines — or skip the reading and try it in the [playground](../playground/index.html), which runs the same renderer in your browser.
+There is no migration. A Markset file *is* a Markdown file, so the way in is to keep every document you have and reach for a construct only on the pages that need one. Here is the whole idea, in two lines — or skip the reading and try it in the [playground](../playground/), which runs the same renderer in your browser.
 
 > [!TIP] Writing with an agent?
-> Most documents are drafted by one now. [Set your agent up](../agents/index.html) first: one install and one line, and it writes Markset from the guide and checks its own work. The rest of this page is the same idea by hand.
+> Most documents are drafted by one now. [Set your agent up](../agents/) first: one install and one line, and it writes Markset from the guide and checks its own work. The rest of this page is the same idea by hand.
 
 {.tick}
 ***
@@ -116,7 +116,7 @@ Fitting it in
 
    The cheapest option, and a real one. Write constructs in your Markdown and let your existing renderer show the fallback: a grid is a list, a card is a heading and its body, a metrics block is a table. You get a document that is better organized at the source level today, and rich when you decide to render it properly.
 
-   The only thing to add is validation, so a typo fails in review rather than shipping. In Visual Studio Code the [extension](../editor/index.html) does this as you type; anywhere else it is one command:
+   The only thing to add is validation, so a typo fails in review rather than shipping. In Visual Studio Code the [extension](../editor/) does this as you type; anywhere else it is one command:
 
    ```sh
    markset check docs/*.md
@@ -198,25 +198,25 @@ Three of these are things to do and three are things to read. Take whichever mat
 
 ::::columns{ratio="1:1:1"}
 :::card[Write it in your editor]{tone=info}
-**[The Visual Studio Code extension](../editor/index.html)** renders your document with its layout in the Markdown preview you already use, offers every construct after `:::`, and underlines a mistake as you type. Install it from the marketplace and nothing else changes.
+**[The Visual Studio Code extension](../editor/)** renders your document with its layout in the Markdown preview you already use, offers every construct after `:::`, and underlines a mistake as you type. Install it from the marketplace and nothing else changes.
 :::
 
 ::col
 
 :::card[Publish a site]
-**[Publishing to GitHub Pages](../github-pages/index.html)** is the whole recipe on one page: a workflow file to copy, two commands, and the three things that are easy to get wrong. This site is built that way, which is the only reason to trust any of it.
+**[Publishing to GitHub Pages](../github-pages/)** is the whole recipe on one page: a workflow file to copy, two commands, and the three things that are easy to get wrong. This site is built that way, which is the only reason to trust any of it.
 :::
 
 ::col
 
 :::card[Render it yourself]
-**[The markset command](../cli/index.html)** is five commands and their flags — check a document, render it, lower it to plain CommonMark, print the tree, or write the stylesheet a site links once.
+**[The markset command](../cli/)** is five commands and their flags — check a document, render it, lower it to plain CommonMark, print the tree, or write the stylesheet a site links once.
 :::
 ::::
 
 Then, as you need them:
 
-- The [reference](../reference/index.html) starts with the three pieces of syntax every construct is built from, then gives a page per construct with four worked examples each — plus [frontmatter and theme tokens](../reference/frontmatter/index.html) for the settings a document carries about itself, and [diagrams](../reference/diagrams/index.html) for turning an ASCII or mermaid fence into a picture.
-- The [examples](../examples/index.html) are what a long document looks like once it has a theme of its own.
-- [Editing visually](../tiptap/index.html) is for an application that lets people edit Markset without seeing the syntax: a TipTap editor that saves back to the file and changes only the lines that were edited.
-- The [specification](../spec/index.html) is the normative answer. It is short, and it is what a second implementation would be written from.
+- The [reference](../reference/) starts with the three pieces of syntax every construct is built from, then gives a page per construct with four worked examples each — plus [frontmatter and theme tokens](../reference/frontmatter/) for the settings a document carries about itself, and [diagrams](../reference/diagrams/) for turning an ASCII or mermaid fence into a picture.
+- The [examples](../examples/) are what a long document looks like once it has a theme of its own.
+- [Editing visually](../tiptap/) is for an application that lets people edit Markset without seeing the syntax: a TipTap editor that saves back to the file and changes only the lines that were edited.
+- The [specification](../spec/) is the normative answer. It is short, and it is what a second implementation would be written from.
