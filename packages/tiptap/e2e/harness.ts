@@ -13,16 +13,18 @@ import {
   fromMarkset,
   jsonToMdast,
   mdastToJSON,
+  renderedNodeViews,
   toMarkset,
   type JSONNode,
 } from "../src/index.ts";
 import { HOST, HOST_EXTENSIONS } from "../test/host-schema.ts";
 
 /**
- * Which schema the editor has: the kit, or MarksetConstructs beside a host's
- * StarterKit and TableKit, as Streamlane's body editor has it (test/host-schema.ts).
+ * Which schema the editor has: the kit, MarksetConstructs beside a host's
+ * StarterKit and TableKit, as Streamlane's body editor has it
+ * (test/host-schema.ts), or the kit read-only, drawn by the rendered views.
  */
-type Schema = "kit" | "host";
+type Schema = "kit" | "host" | "rendered";
 
 let original = "";
 let schema: Schema = "kit";
@@ -35,6 +37,10 @@ function create(source: string): Editor {
   if (schema === "host") {
     const content = mdastToJSON(parseDocument(source).ast, HOST);
     return new Editor({ element, extensions: HOST_EXTENSIONS, content: content as never });
+  }
+  if (schema === "rendered") {
+    const extensions = [Markset.configure({ nodeViews: renderedNodeViews() })];
+    return new Editor({ element, extensions, editable: false, content: fromMarkset(source).doc as never });
   }
   return new Editor({ element, extensions: [Markset], content: fromMarkset(source).doc as never });
 }
@@ -71,7 +77,7 @@ const harness = {
     return editor.view.serializeForClipboard(slice).dom.innerHTML;
   },
   save(): string {
-    if (schema === "kit") return toMarkset(editor.getJSON() as JSONNode, original);
+    if (schema !== "host") return toMarkset(editor.getJSON() as JSONNode, original);
     const { ast } = parseDocument(original);
     const tree = jsonToMdast(editor.getJSON() as JSONNode, HOST, { original: ast });
     return serializeDocument(tree, { original: { source: original, ast } });

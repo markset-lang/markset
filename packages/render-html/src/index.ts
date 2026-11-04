@@ -10,6 +10,8 @@ import { drawCharts, resolveChartEngine, type ChartOptions } from "./charts.ts";
 
 export { marksetHandlers };
 export { addHeadingIds, headingSlug } from "./heading-ids.ts";
+export { scopeStylesheet } from "./scope.ts";
+export type { ScopeOptions } from "./scope.ts";
 export { drawDiagrams, builtInEngines, resolveEngines } from "./diagrams.ts";
 export type { DiagramEngine, DiagramOptions } from "./diagrams.ts";
 export { drawCharts, builtInChartEngine, resolveChartEngine } from "./charts.ts";

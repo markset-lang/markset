@@ -37,6 +37,7 @@ const html = await import("@markset-lang/render-html");
 check("render-html", () => {
   assert.match(html.renderHtml(parser.parseDocument(source).ast), /class="ms-card"/);
   assert.ok(existsSync(require.resolve("@markset-lang/render-html/css/markset.css")));
+  assert.match(html.scopeStylesheet("body { --x: 1; } h1 { y: 2; }"), /^\.ms-document \{ --x: 1; \} \.ms-document h1/);
 });
 
 const down = await import("@markset-lang/render-downgrade");
@@ -106,6 +107,8 @@ check("tiptap", () => {
   assert.equal(tiptap.toMarkset(doc, source), source.replace("Starts at ", "From "));
   assert.ok(existsSync(require.resolve("@markset-lang/tiptap/css/editor.css")));
   assert.equal(tiptap.MarksetConstructs.name, "marksetConstructs");
+  assert.equal(typeof tiptap.renderedNodeViews().tabs, "function");
+  assert.ok(existsSync(require.resolve("@markset-lang/tiptap/css/constructs.css")));
 });
 
 const convert = await import("@markset-lang/tiptap/convert");

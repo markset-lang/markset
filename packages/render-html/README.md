@@ -46,6 +46,10 @@ Nothing in the output runs. Tabs are radio inputs, a folding callout is a `<deta
 
 A theme stylesheet layers over it. It reaches the constructs by their `ms-` classes and the tokens by their custom properties — `--ms-accent`, `--ms-measure`, `--ms-chart-1` — and it decides what the document's author classes look like.
 
+### Scoping it
+
+`markset.css` styles `body`, headings, links, tables and code bare, because a rendered page is all Markset. Where it is not, `scopeStylesheet(css, options)` puts every rule under one selector (`.ms-document` by default) and turns `body` into that selector, which is where the tokens go. `keep` filters selectors and `bodyDeclarations` the declarations of the rules for `body`; a rule or at-rule left empty is dropped. `@markset-lang/tiptap/css/constructs.css` is made with it: the `.ms-` rules alone, under `.ms-scope`.
+
 ## Drawing
 
 Diagrams and charts are engines the renderer calls, not things it does itself. The `ascii` engine is [`@markset-lang/diagram-ascii`](https://www.npmjs.com/package/@markset-lang/diagram-ascii) and the chart engine is [`@markset-lang/chart-table`](https://www.npmjs.com/package/@markset-lang/chart-table); both are pure functions with no dependencies. A `DiagramEngine` is any function from fence text to SVG string, so a language you need is one entry in the `diagrams` option. A fence is only ever drawn inside a captioned `figure`, because the caption is the text alternative, and an engine that fails leaves the code block in place. A chart goes in front of its table and never replaces it.

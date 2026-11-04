@@ -45,7 +45,8 @@
       "types": "./dist/react.d.ts",
       "default": "./dist/react.js"
     },
-    "./css/editor.css": "./css/editor.css"
+    "./css/editor.css": "./css/editor.css",
+    "./css/constructs.css": "./css/constructs.css"
   },
   "dependencies": {
     "@markset-lang/parser": "^0.4.2",

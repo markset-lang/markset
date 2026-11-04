@@ -305,9 +305,14 @@ test("the preview stylesheet reaches only Markset output", async () => {
   const selectors = [...scoped.matchAll(/(?:^|\})\s*([^@{}]+?)\s*\{/gu)].map((m) => m[1]);
   assert.ok(selectors.length > 100, `only ${selectors.length} selectors found`);
   for (const list of selectors) {
-    for (const s of list.split(","))
+    // Split at the list's own commas: `:is(h1, h2)` is one selector, scoped once.
+    for (const s of list.split(/,(?![^(]*\))/u))
       assert.match(s.trim(), /^\.ms-document(?![\w-])/u, `unscoped selector: ${s.trim()}`);
   }
+  assert.equal(
+    scopeStylesheet(".ms-card > :is(h1, h2) + p, :where(:not(h1, h2)) { x: y; }"),
+    ".ms-document .ms-card > :is(h1, h2) + p, .ms-document :where(:not(h1, h2)) { x: y; }",
+  );
   assert.equal(
     scopeStylesheet(
       'body[data-preset="report"] { --ms-measure: 56rem; }\nth, td { padding: 0; }\n.ms-document > * { x: y; }',

@@ -1,0 +1,241 @@
+/*
+ * Markset's constructs, for a page that is not all Markset. Generated from
+ * @markset-lang/render-html/css/markset.css by packages/tiptap/stylesheet.ts
+ * (pnpm run tiptap:css); do not edit it by hand.
+ *
+ * Only the rules for the ms- classes and the constructs' data- variants are
+ * here, each under .ms-scope, and .ms-scope carries the tokens markset.css
+ * sets on body. Nothing styles the host's body, headings, links, tables or
+ * code. Put the class on the element a document is shown in.
+ */
+.ms-scope {
+  --ms-accent: #2563eb;
+  --ms-font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ms-font-heading: var(--ms-font-body);
+  --ms-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ms-type-scale: 1.2;
+  --ms-base: 1rem;
+  --ms-measure: 56rem;
+  --ms-measure-wide: 72rem;
+  --ms-space: 1rem;
+  --ms-radius: 0.5rem;
+
+  color-scheme: light dark;
+  --ms-fg: light-dark(#1f2328, #e3e6ea);
+  --ms-fg-muted: light-dark(#59636e, #a0a8b1);
+  --ms-bg: light-dark(#ffffff, #15181c);
+  --ms-surface: light-dark(#f6f8fa, #1d2126);
+  --ms-border: light-dark(#d0d7de, #2c3238);
+
+  --ms-tone-neutral: light-dark(#59636e, #a0a8b1);
+  --ms-tone-info: light-dark(#0969da, #4493f8);
+  --ms-tone-success: light-dark(#1a7f37, #3fb950);
+  --ms-tone-warn: light-dark(#9a6700, #d29922);
+  --ms-tone-danger: light-dark(#cf222e, #f85149);
+
+  --ms-chart-1: light-dark(#2a78d6, #3987e5);
+  --ms-chart-2: light-dark(#eb6834, #d95926);
+  --ms-chart-3: light-dark(#1baf7a, #199e70);
+  --ms-chart-4: light-dark(#eda100, #c98500);
+  --ms-chart-5: light-dark(#e87ba4, #d55181);
+  --ms-chart-6: light-dark(#008300, #008300);
+  --ms-chart-7: light-dark(#4a3aa7, #9085e9);
+  --ms-chart-8: light-dark(#e34948, #e66767);
+
+  --ms-h6: var(--ms-base);
+  --ms-h5: calc(var(--ms-base) * var(--ms-type-scale));
+  --ms-h4: calc(var(--ms-h5) * var(--ms-type-scale));
+  --ms-h3: calc(var(--ms-h4) * var(--ms-type-scale));
+  --ms-h2: calc(var(--ms-h3) * var(--ms-type-scale));
+  --ms-h1: calc(var(--ms-h2) * var(--ms-type-scale));
+}
+
+.ms-scope[data-scheme="light"] { color-scheme: light; }
+.ms-scope[data-scheme="dark"] { color-scheme: dark; }
+
+.ms-scope[data-radius="none"] { --ms-radius: 0; }
+.ms-scope[data-radius="sm"] { --ms-radius: 0.25rem; }
+.ms-scope[data-radius="lg"] { --ms-radius: 1rem; }
+
+.ms-scope[data-preset="editorial"] {
+  --ms-font-body: "Source Serif 4", Charter, Georgia, "Times New Roman", serif;
+  --ms-font-heading: Inter, ui-sans-serif, system-ui, sans-serif;
+  --ms-type-scale: 1.25;
+  --ms-measure: 44rem;
+  --ms-measure-wide: 64rem;
+}
+.ms-scope[data-preset="technical"] {
+  --ms-type-scale: 1.15;
+  --ms-measure: 60rem;
+  --ms-measure-wide: 72rem;
+  --ms-radius: 0.375rem;
+}
+.ms-scope[data-preset="deck"] {
+  --ms-base: 1.25rem;
+  --ms-type-scale: 1.3;
+  --ms-space: 1.5rem;
+  --ms-measure: 64rem;
+  --ms-measure-wide: 80rem;
+}
+.ms-scope[data-preset="report"] {
+  --ms-type-scale: 1.15;
+  --ms-space: 0.875rem;
+  --ms-measure: 56rem;
+  --ms-measure-wide: 72rem;
+  --ms-radius: 0.25rem;
+}
+
+.ms-scope[data-density="compact"] { --ms-space: 0.625rem; --ms-base: 0.9375rem; }
+.ms-scope[data-density="spacious"] { --ms-space: 1.5rem; --ms-base: 1.0625rem; }
+
+.ms-scope .ms-card > * + :is(h1, h2, h3, h4, h5, h6):not(.ms-card-title), .ms-scope .ms-column > * + :is(h1, h2, h3, h4, h5, h6), .ms-scope .ms-tabpanel > * + :is(h1, h2, h3, h4, h5, h6), .ms-scope .ms-callout-body > * + :is(h1, h2, h3, h4, h5, h6) { margin-top: 1.5em; }
+.ms-scope .ms-card > :is(h1, h2, h3, h4, h5, h6) + *, .ms-scope .ms-column > :is(h1, h2, h3, h4, h5, h6) + *, .ms-scope .ms-tabpanel > :is(h1, h2, h3, h4, h5, h6) + *, .ms-scope .ms-callout-body > :is(h1, h2, h3, h4, h5, h6) + * { margin-top: calc(var(--ms-space) * 0.6); }
+
+.ms-scope [data-tone="neutral"] { --ms-tone: var(--ms-tone-neutral); }
+
+.ms-scope .ms-span:is(.info, .success, .warn, .danger, .neutral):not(.badge) { color: var(--ms-tone); }
+.ms-scope [data-tone="info"] { --ms-tone: var(--ms-tone-info); }
+.ms-scope [data-tone="success"] { --ms-tone: var(--ms-tone-success); }
+.ms-scope [data-tone="warn"] { --ms-tone: var(--ms-tone-warn); }
+.ms-scope [data-tone="danger"] { --ms-tone: var(--ms-tone-danger); }
+
+.ms-scope .ms-callout {
+  border: 1px solid var(--ms-border);
+  border-left: 4px solid var(--ms-tone, var(--ms-tone-neutral));
+  border-radius: var(--ms-radius);
+  background: var(--ms-surface);
+  padding: calc(var(--ms-space) * 0.75) var(--ms-space);
+}
+.ms-scope .ms-callout[data-type="note"] { --ms-tone: var(--ms-tone-info); }
+.ms-scope .ms-callout[data-type="tip"] { --ms-tone: var(--ms-tone-success); }
+.ms-scope .ms-callout[data-type="important"] { --ms-tone: #8250df; }
+.ms-scope .ms-callout[data-type="warning"] { --ms-tone: var(--ms-tone-warn); }
+.ms-scope .ms-callout[data-type="caution"] { --ms-tone: var(--ms-tone-danger); }
+.ms-scope .ms-callout-title { font-family: var(--ms-font-heading); font-weight: 600; color: var(--ms-tone); }
+.ms-scope summary.ms-callout-title { cursor: pointer; }
+.ms-scope .ms-callout-body:not(:empty) { margin-top: calc(var(--ms-space) / 2); }
+.ms-scope .ms-callout-body > * + * { margin-top: calc(var(--ms-space) / 2); }
+
+.ms-scope .ms-card {
+  border: 1px solid var(--ms-border);
+  border-top: 3px solid var(--ms-tone, var(--ms-border));
+  border-radius: var(--ms-radius);
+  background: var(--ms-surface);
+  padding: var(--ms-space);
+}
+.ms-scope .ms-card[data-tone="neutral"] { border-top-color: var(--ms-border); }
+.ms-scope .ms-card[data-compact] { padding: calc(var(--ms-space) / 2) calc(var(--ms-space) * 0.75); }
+.ms-scope .ms-card > * + * { margin-top: calc(var(--ms-space) * 0.75); }
+.ms-scope .ms-card-title { font-size: var(--ms-h5); color: var(--ms-tone, inherit); }
+.ms-scope .ms-card[data-tone="neutral"] .ms-card-title { color: inherit; }
+
+.ms-scope .ms-grid { display: grid; gap: var(--ms-gap, var(--ms-space)); grid-template-columns: repeat(var(--ms-cols, 2), minmax(0, 1fr)); }
+.ms-scope .ms-grid[data-cols="1"] { --ms-cols: 1; } .ms-scope .ms-grid[data-cols="2"] { --ms-cols: 2; }
+.ms-scope .ms-grid[data-cols="3"] { --ms-cols: 3; } .ms-scope .ms-grid[data-cols="4"] { --ms-cols: 4; }
+.ms-scope [data-gap="sm"] { --ms-gap: calc(var(--ms-space) / 2); }
+.ms-scope [data-gap="md"] { --ms-gap: var(--ms-space); }
+.ms-scope [data-gap="lg"] { --ms-gap: calc(var(--ms-space) * 2); }
+.ms-scope .ms-grid-item {
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius);
+  background: var(--ms-surface);
+  padding: var(--ms-space);
+}
+.ms-scope .ms-grid-item > * + * { margin-top: calc(var(--ms-space) / 2); }
+@media (max-width: 60rem) { .ms-scope .ms-grid[data-cols="4"] { --ms-cols: 2; } .ms-scope .ms-grid[data-cols="3"] { --ms-cols: 2; } }
+@media (max-width: 36rem) { .ms-scope .ms-grid { --ms-cols: 1 !important; } }
+
+.ms-scope .ms-columns { display: grid; gap: var(--ms-gap, var(--ms-space)); grid-template-columns: var(--ms-ratio, repeat(auto-fit, minmax(0, 1fr))); align-items: start; }
+.ms-scope .ms-column > * + * { margin-top: var(--ms-space); }
+@media (max-width: 36rem) { .ms-scope .ms-columns { grid-template-columns: 1fr; } }
+
+.ms-scope .ms-column, .ms-scope .ms-grid-item, .ms-scope .ms-tabpanel, .ms-scope .ms-callout-body, .ms-scope .ms-card, .ms-scope .ms-metric { min-width: 0; }
+
+@media (max-width: 48rem) {
+  .ms-scope .ms-figure caption { width: 100cqw; box-sizing: border-box; position: sticky; left: 0; }
+}
+
+.ms-scope .ms-tabs { border: 1px solid var(--ms-border); border-radius: var(--ms-radius); overflow: hidden; }
+.ms-scope .ms-tab-input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.ms-scope .ms-tablist { display: flex; flex-wrap: wrap; gap: 2px; background: var(--ms-surface); border-bottom: 1px solid var(--ms-border); padding: 0.25rem 0.25rem 0; }
+.ms-scope .ms-tab {
+  font-family: var(--ms-font-heading);
+  font-weight: 500;
+  padding: 0.45em 0.9em;
+  border-radius: var(--ms-radius) var(--ms-radius) 0 0;
+  color: var(--ms-fg-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+.ms-scope .ms-tab:hover { color: var(--ms-fg); }
+.ms-scope .ms-tab-input:focus-visible ~ .ms-tablist .ms-tab { outline: none; }
+.ms-scope .ms-tabpanel { display: none; padding: var(--ms-space); }
+.ms-scope .ms-tabpanel > * + * { margin-top: var(--ms-space); }
+.ms-scope .ms-tab-input:nth-of-type(1):checked ~ .ms-tabpanel[data-index="1"], .ms-scope .ms-tab-input:nth-of-type(2):checked ~ .ms-tabpanel[data-index="2"], .ms-scope .ms-tab-input:nth-of-type(3):checked ~ .ms-tabpanel[data-index="3"], .ms-scope .ms-tab-input:nth-of-type(4):checked ~ .ms-tabpanel[data-index="4"], .ms-scope .ms-tab-input:nth-of-type(5):checked ~ .ms-tabpanel[data-index="5"], .ms-scope .ms-tab-input:nth-of-type(6):checked ~ .ms-tabpanel[data-index="6"], .ms-scope .ms-tab-input:nth-of-type(7):checked ~ .ms-tabpanel[data-index="7"], .ms-scope .ms-tab-input:nth-of-type(8):checked ~ .ms-tabpanel[data-index="8"], .ms-scope .ms-tab-input:nth-of-type(9):checked ~ .ms-tabpanel[data-index="9"], .ms-scope .ms-tab-input:nth-of-type(10):checked ~ .ms-tabpanel[data-index="10"], .ms-scope .ms-tab-input:nth-of-type(11):checked ~ .ms-tabpanel[data-index="11"], .ms-scope .ms-tab-input:nth-of-type(12):checked ~ .ms-tabpanel[data-index="12"] { display: block; }
+.ms-scope .ms-tab-input:nth-of-type(1):checked ~ .ms-tablist .ms-tab:nth-child(1), .ms-scope .ms-tab-input:nth-of-type(2):checked ~ .ms-tablist .ms-tab:nth-child(2), .ms-scope .ms-tab-input:nth-of-type(3):checked ~ .ms-tablist .ms-tab:nth-child(3), .ms-scope .ms-tab-input:nth-of-type(4):checked ~ .ms-tablist .ms-tab:nth-child(4), .ms-scope .ms-tab-input:nth-of-type(5):checked ~ .ms-tablist .ms-tab:nth-child(5), .ms-scope .ms-tab-input:nth-of-type(6):checked ~ .ms-tablist .ms-tab:nth-child(6), .ms-scope .ms-tab-input:nth-of-type(7):checked ~ .ms-tablist .ms-tab:nth-child(7), .ms-scope .ms-tab-input:nth-of-type(8):checked ~ .ms-tablist .ms-tab:nth-child(8), .ms-scope .ms-tab-input:nth-of-type(9):checked ~ .ms-tablist .ms-tab:nth-child(9), .ms-scope .ms-tab-input:nth-of-type(10):checked ~ .ms-tablist .ms-tab:nth-child(10), .ms-scope .ms-tab-input:nth-of-type(11):checked ~ .ms-tablist .ms-tab:nth-child(11), .ms-scope .ms-tab-input:nth-of-type(12):checked ~ .ms-tablist .ms-tab:nth-child(12) { color: var(--ms-accent); border-bottom-color: var(--ms-accent); background: var(--ms-bg); }
+
+.ms-scope .ms-steps { list-style: none; padding: 0; margin: 0; }
+.ms-scope .ms-step { position: relative; padding-left: 3rem; min-height: 2.25rem; }
+.ms-scope .ms-step + .ms-step { margin-top: var(--ms-space); }
+.ms-scope .ms-step::before {
+
+  content: counter(list-item);
+
+  content: counter(list-item) / "";
+  position: absolute; left: 0; top: 0;
+  width: 2rem; height: 2rem;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--ms-accent); color: #fff;
+  font-family: var(--ms-font-heading); font-weight: 600; font-size: 0.9em;
+}
+.ms-scope .ms-step:not(:last-child)::after {
+  content: ""; position: absolute; left: calc(1rem - 1px); top: 2.25rem; bottom: calc(var(--ms-space) * -1);
+  border-left: 2px solid var(--ms-border);
+}
+.ms-scope .ms-step > * + * { margin-top: calc(var(--ms-space) / 2); }
+
+.ms-scope .ms-metrics { display: grid; gap: var(--ms-space); grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+.ms-scope .ms-metric { border: 1px solid var(--ms-border); border-radius: var(--ms-radius); background: var(--ms-surface); padding: var(--ms-space); }
+.ms-scope .ms-metric-label { font-family: var(--ms-font-heading); font-size: 0.8em; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ms-fg-muted); }
+.ms-scope .ms-metric-value { font-family: var(--ms-font-heading); font-size: var(--ms-h2); font-weight: 700; line-height: 1.1; margin-top: 0.25em; letter-spacing: -0.02em; }
+.ms-scope .ms-metric-delta { margin-top: 0.35em; font-size: 0.9em; font-weight: 600; color: var(--ms-fg-muted); }
+.ms-scope .ms-metric[data-direction="up"] .ms-metric-delta { color: var(--ms-tone-success); }
+.ms-scope .ms-metric[data-direction="down"] .ms-metric-delta { color: var(--ms-tone-danger); }
+
+.ms-scope .ms-figure { box-sizing: border-box; margin-inline: 0; width: var(--ms-width, 100%); max-width: 100%; }
+.ms-scope .ms-figure > img { display: block; border-radius: var(--ms-radius); }
+
+.ms-scope .ms-figure:has(> .ms-diagram) { overflow-x: auto; }
+.ms-scope .ms-diagram { max-width: none; }
+
+.ms-scope .ms-chart { display: block; width: 100%; height: auto; margin-bottom: calc(var(--ms-space) * 0.75); }
+.ms-scope .ms-chart-grid { stroke: var(--ms-border); stroke-width: 1; opacity: 0.6; }
+.ms-scope .ms-chart-baseline { stroke: var(--ms-border); stroke-width: 1; }
+.ms-scope .ms-chart-tick, .ms-scope .ms-chart-legend { fill: var(--ms-fg-muted); font-family: var(--ms-font-body); font-size: 12px; font-variant-numeric: tabular-nums; }
+
+.ms-scope [data-series="1"] { fill: var(--ms-chart-1); stroke: var(--ms-chart-1); }
+.ms-scope [data-series="2"] { fill: var(--ms-chart-2); stroke: var(--ms-chart-2); }
+.ms-scope [data-series="3"] { fill: var(--ms-chart-3); stroke: var(--ms-chart-3); }
+.ms-scope [data-series="4"] { fill: var(--ms-chart-4); stroke: var(--ms-chart-4); }
+.ms-scope [data-series="5"] { fill: var(--ms-chart-5); stroke: var(--ms-chart-5); }
+.ms-scope [data-series="6"] { fill: var(--ms-chart-6); stroke: var(--ms-chart-6); }
+.ms-scope [data-series="7"] { fill: var(--ms-chart-7); stroke: var(--ms-chart-7); }
+.ms-scope [data-series="8"] { fill: var(--ms-chart-8); stroke: var(--ms-chart-8); }
+
+.ms-scope .ms-chart-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.ms-scope .ms-chart-bar, .ms-scope .ms-chart-key, .ms-scope .ms-chart-dot { stroke: none; }
+
+.ms-scope .ms-figure > figcaption, .ms-scope .ms-figure caption { margin-top: var(--ms-space); font-size: 0.9em; color: var(--ms-fg-muted); font-style: italic; }
+
+.ms-scope .ms-figure caption { caption-side: bottom; text-align: left; }
+
+@media print {
+
+  .ms-scope, .ms-scope[data-scheme="dark"] { color-scheme: light; --ms-bg: #fff; --ms-fg: #000; }
+  .ms-scope .ms-tabpanel { display: block !important; padding-top: 0; }
+  .ms-scope .ms-tablist { display: none; }
+  .ms-scope .ms-tabpanel::before { content: attr(data-index) ". "; font-weight: 600; }
+  .ms-scope details.ms-callout { display: block; }
+  .ms-scope details.ms-callout > .ms-callout-body { display: block; }
+}
