@@ -45,7 +45,7 @@ An unknown directive name is an error rather than silent passthrough. That is wh
 
 ## Using it inside unified
 
-If you already run remark, use [`@markset-lang/remark-markset`](https://www.npmjs.com/package/@markset-lang/remark-markset), which assembles the same extensions as a plugin. The pieces are exported here too — `markset()` is the micromark syntax extension and `marksetFromMarkdown()` the mdast compiler extension — along with the passes `parseDocument` runs after them: `attachAttributeLines`, `validateStructure`, `normalizeConstructs`, `readFrontmatter`.
+If you already run remark, use [`@markset-lang/remark-markset`](https://www.npmjs.com/package/@markset-lang/remark-markset), which assembles the same extensions as a plugin. The pieces are exported here too — `markset()` is the micromark syntax extension and `marksetFromMarkdown()` the mdast compiler extension — along with the passes `parseDocument` runs after them: `attachAttributeLines`, `validateStructure`, `normalizeConstructs`, `readFrontmatter`. For writing, `marksetToMarkdownExtension()` is the mdast-util-to-markdown extension that writes the constructs, spans and attribute lines back as Markset source, beside any other extension such as GFM's; the plugin registers it for `remark-stringify`.
 
 ## Conformance
 

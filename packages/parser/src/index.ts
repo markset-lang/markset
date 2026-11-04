@@ -37,5 +37,5 @@ export { hasErrors } from "./diagnostics.ts";
 export type { Diagnostic, Severity } from "./diagnostics.ts";
 export { serializeDocument, SerializeError } from "./serialize.ts";
 export type { SerializeOptions } from "./serialize.ts";
-export { marksetToMarkdown, stringifyAttributes } from "./to-markdown.ts";
+export { marksetToMarkdown, marksetToMarkdownExtension, stringifyAttributes } from "./to-markdown.ts";
 export type { SourceHints } from "./to-markdown.ts";

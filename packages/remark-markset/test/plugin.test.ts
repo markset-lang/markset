@@ -119,3 +119,23 @@ test("the pipeline agrees with renderHtml, on a document that uses both attribut
 
   assert.equal(`${viaUnified}\n`, direct);
 });
+
+test("the plugin registers Markset's writer for remark-stringify, beside any other", () => {
+  const other = { handlers: {} };
+  const processor = unified()
+    .use(remarkParse)
+    .use(function () {
+      const data = this.data() as { toMarkdownExtensions?: unknown[] };
+      data.toMarkdownExtensions ??= [];
+      data.toMarkdownExtensions.push(other);
+    });
+  const data = processor.use(remarkMarkset).freeze().data() as {
+    toMarkdownExtensions?: Array<{ handlers?: Record<string, unknown> }>;
+  };
+  assert.equal(data.toMarkdownExtensions?.length, 2, "the pipeline's own extension is kept");
+  assert.equal(data.toMarkdownExtensions?.[0], other);
+  const handlers = data.toMarkdownExtensions?.[1].handlers ?? {};
+  for (const type of ["card", "grid", "columns", "tabs", "steps", "metrics", "figure", "callout", "span", "root"]) {
+    assert.equal(typeof handlers[type], "function", type);
+  }
+});

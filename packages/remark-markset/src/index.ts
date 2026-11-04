@@ -12,6 +12,13 @@
  * those, so add `remark-gfm` and `remark-frontmatter` if you want them. This
  * plugin reads frontmatter when something else has parsed it into a `yaml`
  * node, and ignores its absence.
+ *
+ * It writes as well as reads. With remark-stringify in the pipeline, the
+ * constructs, spans and attribute lines go back out as Markset source through
+ * the parser's `marksetToMarkdownExtension()`, beside whatever other
+ * extensions the pipeline writes with: remark-gfm's strikethrough and task
+ * lists keep working, in either order. The serialization options (bullet,
+ * emphasis marker, fences) stay the pipeline's.
  */
 import type { Nodes, Root } from "mdast";
 // For the type augmentation alone: remark-parse is what declares
@@ -26,6 +33,7 @@ import {
   attachAttributeLines,
   markset,
   marksetFromMarkdown,
+  marksetToMarkdownExtension,
   normalizeConstructs,
   readFrontmatter,
   validateStructure,
@@ -39,12 +47,24 @@ interface Carrier {
   [CARRIED]?: Diagnostic[];
 }
 
+/**
+ * What remark-stringify reads from the processor's data. It declares this on
+ * unified's Data itself; it is spelled out here so that a pipeline which only
+ * reads needs no remark-stringify installed to type-check this plugin.
+ */
+interface WritingData {
+  toMarkdownExtensions?: Array<ReturnType<typeof marksetToMarkdownExtension>>;
+}
+
 const remarkMarkset: Plugin<[], Root, Root> = function remarkMarkset() {
   const data = this.data();
   data.micromarkExtensions ??= [];
   data.fromMarkdownExtensions ??= [];
   const micromarkExtensions = data.micromarkExtensions;
   const fromMarkdownExtensions = data.fromMarkdownExtensions;
+  const writing = data as WritingData;
+  writing.toMarkdownExtensions ??= [];
+  writing.toMarkdownExtensions.push(marksetToMarkdownExtension());
 
   // The mdast extension reports into an array, and it is built once while
   // parsing happens once per file. Handing it a long-lived array and reading
