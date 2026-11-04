@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+**Markset can be written from a unified pipeline, beside GFM.** Nothing in the grammar, the spec or the conformance suite changed, and nothing changes for Intentset's adapter: no diagnostic, node shape or `parseDocument` result moved, and `serializeDocument` writes the same bytes as before.
+
+- **`marksetToMarkdownExtension()` in `@markset-lang/parser`** is an mdast-util-to-markdown extension that writes the constructs, generic directives, separators, spans and attribute lines as Markset source. Attribute lines were added inside `serializeDocument`'s private writer, so nothing outside it could write a block's `{.lead}`; the extension adds them to whichever handler ends up writing each block, after every extension is configured, so a task-list extension that replaces `listItem` keeps them too. It sets no serialization options, so a pipeline's own bullet and emphasis choices stand. With the reference implementation's options it writes exactly what `serializeDocument` writes for every document in the suite, the examples and the corpus, and a test holds that.
+- **`@markset-lang/remark-markset` writes as well as reads.** It registers that extension in `toMarkdownExtensions`, so with `remark-stringify` a pipeline writes Markset back out, and with `remark-gfm` beside it strikethrough and task lists keep working inside constructs, in either plugin order.
+
 ## 0.4.2 — 2026-10-05
 
 **The command line fails like a command line.** Nothing in the grammar or the spec changed.

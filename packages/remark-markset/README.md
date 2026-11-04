@@ -43,6 +43,24 @@ That pipeline produces the same HTML as the library's own `renderHtml`, and a te
 
 You will also want the stylesheet, which is `@markset-lang/render-html/css/markset.css`, or `markset css` from the CLI.
 
+## Writing Markdown
+
+With `remark-stringify` in the pipeline, the plugin writes as well as reads: constructs, spans and attribute lines go back out as Markset source. It registers the parser's `marksetToMarkdownExtension()` in `toMarkdownExtensions`, beside whatever else the pipeline writes with, so `remark-gfm`'s strikethrough and task lists keep working, whichever plugin comes first.
+
+```js
+import remarkGfm from "remark-gfm";
+import remarkStringify from "remark-stringify";
+
+const file = await unified()
+  .use(remarkParse)
+  .use(remarkGfm)
+  .use(remarkMarkset)
+  .use(remarkStringify)
+  .process(source);
+```
+
+The serialization options (bullet, emphasis marker, fences) stay the pipeline's. To write a whole document with the reference implementation's choices, or to save an edit as a patch against its source, use `serializeDocument` from `@markset-lang/parser`.
+
 ## Diagnostics
 
 Markset has a closed vocabulary, so an unknown directive name is an error rather than silent passthrough (spec §3). Those arrive as ordinary vfile messages:

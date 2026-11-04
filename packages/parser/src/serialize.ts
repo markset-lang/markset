@@ -22,11 +22,10 @@ import { frontmatterToMarkdown } from "mdast-util-frontmatter";
 import { parseDocument } from "./document.ts";
 import type { Attributes } from "./attributes.ts";
 import {
-  ATTRIBUTABLE,
   CANONICAL_OPTIONS,
   marksetToMarkdown,
   stringifyAttributes,
-  withAttributeLine,
+  wrapAttributeLines,
   type Handler,
   type SourceHints,
 } from "./to-markdown.ts";
@@ -140,7 +139,9 @@ function write(tree: Root, hints: PatchHints | undefined): string {
     written = state.containerFlow(node as Root, info);
     return written;
   };
-  for (const type of ATTRIBUTABLE) handlers[type] = withAttributeLine(type, handlers[type], hints);
+  // Attribute lines inside the patching wrapper below, which copies an unchanged
+  // block with its attribute lines and so must not have them added again.
+  wrapAttributeLines(handlers, hints);
   if (hints) {
     for (const [type, base] of Object.entries(handlers)) handlers[type] = hints.wrap(type, base);
   }

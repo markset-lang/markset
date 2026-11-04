@@ -59,6 +59,27 @@ const file = await unified()
 That pipeline produces the same HTML as the library's own renderer, and a test asserts it byte for byte. The
 stylesheet is `@markset-lang/render-html/css/markset.css`, or `markset css` from the command line.
 
+## Writing Markdown
+
+With `remark-stringify` in the pipeline the plugin writes as well as reads: constructs, spans and attribute lines go
+back out as Markset source, beside whatever else the pipeline writes with. `remark-gfm`'s strikethrough and task lists
+keep working, whichever plugin comes first, and the serialization options stay the pipeline's.
+
+```js
+import remarkGfm from "remark-gfm";
+import remarkStringify from "remark-stringify";
+
+const file = await unified()
+  .use(remarkParse)
+  .use(remarkGfm)
+  .use(remarkMarkset)
+  .use(remarkStringify)
+  .process(source);
+```
+
+The writer is `marksetToMarkdownExtension()` from `@markset-lang/parser`, an ordinary mdast-util-to-markdown extension.
+To save an edited document as a patch against its source, use the parser's `serializeDocument`.
+
 ## Diagnostics
 
 The vocabulary is closed, so an unknown directive name is an error rather than markup that quietly passes through.

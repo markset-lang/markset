@@ -7,13 +7,27 @@
  * back to the tree it was given. The serialization choices are the ones §3 fixes
  * for the downgrade renderer, so the two agree wherever they overlap.
  *
+ * marksetToMarkdownExtension() is the same writer packaged as an ordinary
+ * mdast-util-to-markdown extension, for a unified pipeline that writes Markdown
+ * with remark-stringify and its own extensions beside it (remark-gfm's
+ * strikethrough and task lists, say). serializeDocument does not use it: it
+ * composes the same pieces itself, because its patching wraps every handler.
+ *
  * `hints` is how serializeDocument (serialize.ts) reuses the original source
  * for the parts of a construct an edit left alone: an unchanged fence line, the
  * blank lines an author put between blocks. Without hints every choice is the
  * canonical one.
  */
 import type { Heading, Nodes, Paragraph, PhrasingContent } from "mdast";
-import type { Handle, Info, Join, Options, State, Unsafe } from "mdast-util-to-markdown";
+import {
+  defaultHandlers,
+  type Handle,
+  type Info,
+  type Join,
+  type Options,
+  type State,
+  type Unsafe,
+} from "mdast-util-to-markdown";
 import type { Attributes } from "./attributes.ts";
 import type {
   Callout,
@@ -382,6 +396,41 @@ export function withAttributeLine(type: string, base: Handler, hints?: SourceHin
   };
   if (base.peek) wrapped.peek = base.peek;
   return wrapped;
+}
+
+/** Wrap each attributable handler in `handlers`, in place, so a block carrying attributes gets its attribute line. */
+export function wrapAttributeLines(handlers: Record<string, Handler>, hints?: SourceHints): void {
+  for (const type of ATTRIBUTABLE) {
+    if (handlers[type]) handlers[type] = withAttributeLine(type, handlers[type], hints);
+  }
+}
+
+/** Handler tables already given their attribute lines, so two copies of the extension do not write two. */
+const WRAPPED = new WeakSet<object>();
+
+/**
+ * Markset as an mdast-util-to-markdown extension: the construct, directive,
+ * separator and span handlers, and the attribute lines (§2.5) every block that
+ * carries `attributes` is written with. Pass it with any other extension, in
+ * any order, as remark-markset does through `toMarkdownExtensions`.
+ *
+ * Attribute lines wrap whichever handler ends up writing a block, so they must
+ * be added after every extension is configured: a task-list extension that
+ * replaces `listItem` would otherwise replace the wrapper too. The extension's
+ * `root` handler does that, once per run, before the tree is written. It
+ * writes no serialization options; the host's (bullet, emphasis, fences) stand.
+ */
+export function marksetToMarkdownExtension(): Options {
+  const base = marksetToMarkdown();
+  const root: Handle = (node, parent, state, info) => {
+    const handlers = state.handlers as unknown as Record<string, Handler>;
+    if (!WRAPPED.has(handlers)) {
+      WRAPPED.add(handlers);
+      wrapAttributeLines(handlers);
+    }
+    return defaultHandlers.root(node as never, parent, state, info);
+  };
+  return { ...base, handlers: { ...base.handlers, root } as Options["handlers"] };
 }
 
 /** Block types an attribute line can reach (§2.5), plus the list item's own form. */
