@@ -8,7 +8,7 @@ const css = ["packages/render-html/css/markset.css", "packages/tiptap/css/editor
   .map((file) => readFileSync(join(repo, file), "utf8"))
   .join("\n");
 
-async function open(page: Page, source?: string, schema: "kit" | "host" = "kit"): Promise<void> {
+async function open(page: Page, source?: string, schema: "kit" | "host" | "rendered" = "kit"): Promise<void> {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.setContent(
@@ -209,10 +209,56 @@ for (const name of ["callout", "card", "grid", "columns", "tabs", "steps", "metr
   });
 }
 
+// A read-only editor drawn by renderedNodeViews(), styled by css/constructs.css
+// alone, inside an element carrying .ms-scope, as a host application shows one.
+
+const scoped = readFileSync(join(repo, "packages/tiptap/css/constructs.css"), "utf8");
+
+async function openRendered(page: Page, source: string): Promise<void> {
+  await page.setContent(
+    `<!doctype html><html><head><style>${scoped}</style></head><body><div class="ms-scope"><div id="editor"></div></div></body></html>`,
+  );
+  await page.addScriptTag({ path: BUNDLE });
+  await page.waitForFunction(() => "harness" in window);
+  await page.evaluate((s) => window.harness.load(s, "rendered"), source);
+}
+
+test("read-only, a tab's label opens its panel, and the document does not change", async ({ page }) => {
+  const source = ":::tabs\n### macOS\n`brew install markset`\n\n### Windows\n`winget install markset`\n:::\n";
+  await openRendered(page, source);
+  const panels = page.locator(".ms-tabpanel");
+  await expect(panels.nth(0)).toBeVisible();
+  await expect(panels.nth(1)).toBeHidden();
+  await page.locator("label.ms-tab").nth(1).click();
+  await expect(panels.nth(1)).toBeVisible();
+  await expect(panels.nth(0)).toBeHidden();
+  expect(await save(page)).toBe(source);
+});
+
+test("read-only, metrics are tiles and a grid lays out its items, with only the scoped stylesheet", async ({
+  page,
+}) => {
+  await openRendered(
+    page,
+    ":::metrics\n| Metric | Value | Δ |\n|---|---|---|\n| Revenue | $4.2M | +12% |\n| Churn | 2.1% | -0.4% |\n:::\n\n:::grid{cols=2}\n- One\n- Two\n:::\n",
+  );
+  const display = (selector: string) =>
+    page
+      .locator(selector)
+      .first()
+      .evaluate((element) => getComputedStyle(element).display);
+  expect(await display(".ms-metrics")).toBe("grid");
+  await expect(page.locator(".ms-metric")).toHaveCount(2);
+  expect(await display(".ms-grid")).toBe("grid");
+  await expect(page.locator(".ms-grid > .ms-grid-item")).toHaveCount(2);
+  // Nothing outside the scope is styled: the page's own body keeps the browser's margin.
+  expect(await page.evaluate(() => getComputedStyle(document.body).margin)).toBe("8px");
+});
+
 declare global {
   interface Window {
     harness: {
-      load(source: string, schema?: "kit" | "host"): void;
+      load(source: string, schema?: "kit" | "host" | "rendered"): void;
       save(): string;
       roundTrip(documents: Array<{ name: string; source: string }>): string[];
       insert(name: string): boolean;

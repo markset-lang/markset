@@ -37,8 +37,9 @@
   font-family: var(--ms-font-heading); font-weight: 600; font-size: 0.9em;
 }
 
-/* Metrics: the table is what gets edited, so it stays a table. */
-.ProseMirror .ms-metrics { display: block; }
+/* Metrics: the table is what gets edited, so it stays a table. Metrics drawn
+   as tiles, by the rendered views of a read-only editor, are not touched. */
+.ProseMirror .ms-metrics:has(> table) { display: block; }
 
 /* Tabs: every panel, one under another, each under its label. */
 .ProseMirror .ms-tab-editor { padding: var(--ms-space); }

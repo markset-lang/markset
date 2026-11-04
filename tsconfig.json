@@ -18,6 +18,7 @@
     "site/**/*.ts",
     "editors/vscode/**/*.ts",
     "packages/*/e2e/**/*.ts",
+    "packages/tiptap/stylesheet.ts",
     "playwright.config.ts"
   ]
 }

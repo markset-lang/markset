@@ -66,6 +66,13 @@
       }
     },
     {
+      // Generated from markset.css by packages/tiptap/stylesheet.ts, without its
+      // comments, so without the biome-ignore that marks its one intended
+      // duplicate (a `content` fallback). markset.css is linted as written.
+      "includes": ["packages/tiptap/css/constructs.css"],
+      "linter": { "rules": { "suspicious": { "noDuplicateProperties": "off" } } }
+    },
+    {
       // The conformance suite is generated, written by JSON.stringify with two
       // spaces. A formatter that disagrees would fight every regeneration.
       //
