@@ -35,6 +35,56 @@ Pass the document to the editor's constructor, as above, rather than loading it 
 
 `Markset` replaces TipTap's StarterKit. Its CommonMark nodes use StarterKit's names (`paragraph`, `bulletList`, `bold`, `italic`, `code`, `link`), so toolbar commands such as `toggleBold` keep working, but the two cannot be installed together.
 
+## Beside StarterKit: `MarksetConstructs`
+
+A host with its own schema (StarterKit, TableKit, task lists, an image node, collaboration) adds the constructs alone:
+
+```js
+import { Editor } from "@tiptap/core";
+import StarterKit from "@tiptap/starter-kit";
+import { TableKit } from "@tiptap/extension-table";
+import { TaskList, TaskItem } from "@tiptap/extension-list";
+import Collaboration from "@tiptap/extension-collaboration";
+import { MarksetConstructs } from "@markset-lang/tiptap";
+import { mdastToJSON, jsonToMdast } from "@markset-lang/tiptap/convert";
+
+// How this schema differs from the kit's (see "A host with its own schema" below).
+const host = { names: { tableHeader: "tableHeader", image: "inlineImage" }, cellContent: "paragraph", node, mark };
+
+const editor = new Editor({
+  extensions: [
+    StarterKit.configure({ undoRedo: false }),
+    TableKit,
+    TaskList,
+    TaskItem.configure({ nested: true }),
+    BlockImage, // the host's own `image` node
+    MarksetConstructs.configure({
+      titleContent: "inline*",
+      imageNode: "image",
+      host,
+      // Changes y-tiptap applies from the shared document were normalized where they were made.
+      skipNormalize: (tr) => tr.getMeta("y-sync$")?.isChangeOrigin === true,
+    }),
+    Collaboration.configure({ document }),
+  ],
+});
+```
+
+It holds the construct nodes, the `directive`, `directiveArgument` and `separator` nodes an unknown or invalid construct is kept in, the commands `insertConstruct`, `setConstructAttributes` and `removeConstruct`, guards that check construct nodes only, and one key: <kbd>Enter</kbd> in a title moves into the construct's body. Everything else is the host's: its nodes, marks, keys, history.
+
+| Option | Default | What it is |
+|---|---|---|
+| `titleContent` | `"titleInline*"` | What a title, label or caption holds. The kit's group is not in a host's schema; pass `"inline*"`. A hard break in a title is written as a space, because a title is one line. |
+| `listContent` | `"list"` | What a grid holds: one list. StarterKit's lists and the task list are all in the `list` group. |
+| `tableNode` | `"table"` | The host's table, which metrics hold and a figure may. |
+| `imageNode` | `"figureImage"` | The node a figure shows its image with. Name a host's block image, such as `"image"`, and no `figureImage` node is added. |
+| `figureContent` | from the two above | A figure's content: by default a caption and one of `imageNode`, `tableNode` or `codeBlock`. |
+| `nodeViews` | `{}` | Node views by node name, as for the kit. |
+| `skipNormalize` | none | A transaction the guards leave alone: neither refused nor normalized. Under Yjs, pass the changes that arrived from another editor, as above: each was normalized by the editor that made it, and normalizing it again on every collaborator applies the same fix once per editor. |
+| `host` | `{}` | The conversion settings the host reads and writes with: `insertConstruct` reads each template through them, so a metrics table arrives with TableKit's header cells and paragraph cells. |
+
+Load with `mdastToJSON(ast, host)` and save with `jsonToMdast(doc, host, { original: ast })` and `serializeDocument`, as below. What a host's schema has no node or mark for, such as frontmatter, spans and the attribute lines of its own blocks, is its hooks' to keep or drop; the guards do not look at it. StarterKit's list item must open with a paragraph, so a grid item that opens with a heading is content that schema does not allow: ProseMirror keeps it as loaded, and it saves, but a host that wants to edit such items gives its list item `block+` content.
+
 ## Keys
 
 The kit brings the keys StarterKit would have: <kbd>Mod</kbd>+<kbd>B</kbd>, <kbd>I</kbd> and <kbd>E</kbd> for bold, italic and code; <kbd>Enter</kbd> in a list item makes a new item, and <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> nest and un-nest it; <kbd>Shift</kbd>+<kbd>Enter</kbd> is a hard line break; <kbd>Enter</kbd> in a construct's title moves into its body, because a title is one line. Undo and redo are included; pass `Markset.configure({ undoRedo: false })` when the host brings its own history, as a Yjs editor does.

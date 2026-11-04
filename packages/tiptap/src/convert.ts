@@ -722,13 +722,17 @@ class Writer {
           spread: a.spread,
           children: this.blocks(content),
         });
-      case "listItem":
+      case "listItem": {
+        const children = this.blocks(content);
         return withAttributes({
           type: "listItem",
-          spread: a.spread,
+          // A host's list item may not carry `spread`. Two paragraphs in one item
+          // need a blank line between them, which makes the item loose when read.
+          spread: input.attrs && "spread" in input.attrs ? a.spread : needsBlankLine(children),
           checked: a.checked,
-          children: this.blocks(content),
+          children,
         });
+      }
       case "codeBlock":
         return withAttributes({ type: "code", lang: a.language, meta: a.meta, value: plainText(content) });
       case "horizontalRule":
@@ -737,8 +741,13 @@ class Writer {
         return withAttributes({ type: "html", value: a.value });
       case "definition":
         return { type: "definition", identifier: a.identifier, label: a.label, url: a.url, title: a.title };
-      case "table":
-        return withAttributes({ type: "table", align: [...(a.align as never[])], children: this.blocks(content) });
+      case "table": {
+        // One alignment per column, as the parser gives: a host's table may carry none.
+        const align = [...(a.align as Array<string | null>)];
+        const columns = content[0]?.content?.length ?? 0;
+        while (align.length < columns) align.push(null);
+        return withAttributes({ type: "table", align, children: this.blocks(content) });
+      }
       case "tableRow":
         return { type: "tableRow", children: this.blocks(content) };
       case "tableCell":
@@ -1002,6 +1011,16 @@ function inlineLeaf(item: JSONNode, code: boolean): PhrasingContent {
     default:
       throw new Error(`no mdast for inline editor node "${item.type}"`);
   }
+}
+
+/** Whether two neighbouring blocks would merge without a blank line, as two paragraphs do. */
+function needsBlankLine(children: Block[]): boolean {
+  return children.some(
+    (child, index) =>
+      index > 0 &&
+      children[index - 1].type === "paragraph" &&
+      (child.type === "paragraph" || child.type === "definition"),
+  );
 }
 
 function imageParagraph(node: JSONNode): Block {

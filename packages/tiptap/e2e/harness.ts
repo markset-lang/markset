@@ -6,21 +6,43 @@
  */
 import { Editor } from "@tiptap/core";
 import { NodeSelection } from "@tiptap/pm/state";
-import { type ConstructName, Markset, fromMarkset, toMarkset, type JSONNode } from "../src/index.ts";
+import { parseDocument, serializeDocument } from "@markset-lang/parser";
+import {
+  type ConstructName,
+  Markset,
+  fromMarkset,
+  jsonToMdast,
+  mdastToJSON,
+  toMarkset,
+  type JSONNode,
+} from "../src/index.ts";
+import { HOST, HOST_EXTENSIONS } from "../test/host-schema.ts";
+
+/**
+ * Which schema the editor has: the kit, or MarksetConstructs beside a host's
+ * StarterKit and TableKit, as Streamlane's body editor has it (test/host-schema.ts).
+ */
+type Schema = "kit" | "host";
 
 let original = "";
+let schema: Schema = "kit";
 let editor = create("");
 
 /** A document is loaded by making the editor with it, as a host does, so a first undo cannot take it away. */
 function create(source: string): Editor {
   const element = document.getElementById("editor")!;
   element.replaceChildren();
+  if (schema === "host") {
+    const content = mdastToJSON(parseDocument(source).ast, HOST);
+    return new Editor({ element, extensions: HOST_EXTENSIONS, content: content as never });
+  }
   return new Editor({ element, extensions: [Markset], content: fromMarkset(source).doc as never });
 }
 
 const harness = {
-  load(source: string): void {
+  load(source: string, kind: Schema = "kit"): void {
     original = source;
+    schema = kind;
     editor.destroy();
     editor = create(source);
   },
@@ -49,7 +71,10 @@ const harness = {
     return editor.view.serializeForClipboard(slice).dom.innerHTML;
   },
   save(): string {
-    return toMarkset(editor.getJSON() as JSONNode, original);
+    if (schema === "kit") return toMarkset(editor.getJSON() as JSONNode, original);
+    const { ast } = parseDocument(original);
+    const tree = jsonToMdast(editor.getJSON() as JSONNode, HOST, { original: ast });
+    return serializeDocument(tree, { original: { source: original, ast } });
   },
   /** Save every document in turn, unedited, and name the ones that did not come back whole. */
   roundTrip(documents: Array<{ name: string; source: string }>): string[] {

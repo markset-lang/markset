@@ -105,6 +105,7 @@ check("tiptap", () => {
   doc.content[0].content[1].content[0].text = "From ";
   assert.equal(tiptap.toMarkset(doc, source), source.replace("Starts at ", "From "));
   assert.ok(existsSync(require.resolve("@markset-lang/tiptap/css/editor.css")));
+  assert.equal(tiptap.MarksetConstructs.name, "marksetConstructs");
 });
 
 const convert = await import("@markset-lang/tiptap/convert");

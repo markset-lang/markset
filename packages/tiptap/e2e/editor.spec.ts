@@ -8,7 +8,7 @@ const css = ["packages/render-html/css/markset.css", "packages/tiptap/css/editor
   .map((file) => readFileSync(join(repo, file), "utf8"))
   .join("\n");
 
-async function open(page: Page, source?: string): Promise<void> {
+async function open(page: Page, source?: string, schema: "kit" | "host" = "kit"): Promise<void> {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.setContent(
@@ -16,7 +16,7 @@ async function open(page: Page, source?: string): Promise<void> {
   );
   await page.addScriptTag({ path: BUNDLE });
   await page.waitForFunction(() => "harness" in window);
-  if (source !== undefined) await page.evaluate((s) => window.harness.load(s), source);
+  if (source !== undefined) await page.evaluate(([s, kind]) => window.harness.load(s, kind), [source, schema] as const);
   expect(errors).toEqual([]);
 }
 
@@ -171,10 +171,48 @@ for (const name of ["callout", "card", "grid", "columns", "tabs", "steps", "metr
   });
 }
 
+// MarksetConstructs beside a host's StarterKit and TableKit, with the host's own
+// keys: only Enter in a title is Markset's.
+
+test("beside StarterKit: Enter in a card's title moves into its body", async ({ page }) => {
+  await open(page, CARD, "host");
+  await caretAtEnd(page, ".ms-card-title");
+  await page.keyboard.type(" plans");
+  await page.keyboard.press("Enter");
+  await page.keyboard.type("Now ");
+  expect(await save(page)).toBe(CARD.replace("Pricing", "Pricing plans").replace("Starts at", "Now Starts at"));
+});
+
+test("beside TableKit: typing in a metrics cell rewrites that row and no other", async ({ page }) => {
+  const source = ":::metrics\n| Metric | Value |\n|---|---|\n| Revenue | $1M |\n| Churn | 2% |\n:::\n";
+  await open(page, source, "host");
+  await caretAtEnd(page, ".ms-metrics td p");
+  await page.keyboard.type(" net");
+  expect(await save(page)).toBe(source.replace("| Revenue |", "| Revenue net |"));
+});
+
+for (const name of ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const) {
+  test(`beside StarterKit and TableKit, ${name}: inserted at the caret, then removed`, async ({ page }) => {
+    const source = "First.\n\nLast.\n";
+    await open(page, source, "host");
+    await caretAtEnd(page, "p");
+    expect(await page.evaluate((n) => window.harness.insert(n), name)).toBe(true);
+    const saved = await save(page);
+    expect(saved.startsWith("First.\n")).toBe(true);
+    expect(saved.endsWith("Last.\n")).toBe(true);
+    expect(saved).toContain(name === "callout" ? "> [!NOTE]" : `:${name}`);
+    const inserted = page.locator(`.ProseMirror [data-ms="${name}"]`).first();
+    await inserted.locator("p, figcaption").first().click();
+    await page.waitForFunction(() => window.harness.selectionSettled());
+    expect(await page.evaluate((n) => window.harness.remove(n), name)).toBe(true);
+    expect(await save(page)).toBe(source);
+  });
+}
+
 declare global {
   interface Window {
     harness: {
-      load(source: string): void;
+      load(source: string, schema?: "kit" | "host"): void;
       save(): string;
       roundTrip(documents: Array<{ name: string; source: string }>): string[];
       insert(name: string): boolean;
