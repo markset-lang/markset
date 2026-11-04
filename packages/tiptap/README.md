@@ -81,6 +81,46 @@ Markset.configure({ nodeViews: reactNodeViews({ card: MyCard }) });
 
 `reactNodeViews()` gives each construct a plain view that draws its default element; pass a component to replace one and keep the rest.
 
+## Converting without an editor
+
+`@markset-lang/tiptap/convert` is the conversion alone: no TipTap and no DOM, so a server, a worker or a script can read and write the editor's JSON.
+
+```js
+import { parseDocument, serializeDocument } from "@markset-lang/parser";
+import { mdastToJSON, jsonToMdast, constructTemplate } from "@markset-lang/tiptap/convert";
+
+const { ast } = parseDocument(source);
+const doc = mdastToJSON(ast, host);
+// later
+const tree = jsonToMdast(doc, host, { original: ast });
+const saved = serializeDocument(tree, { original: { source, ast } });
+```
+
+`mdastToJSON(root, host?)` reads mdast, as `parseDocument` or `remark-markset` makes it, into ProseMirror JSON. `jsonToMdast(doc, host?, { original? })` writes it back; given the tree the document was read from, a block the editor did not change gets its original mdast back, which is what keeps `***a***` nested the way its author wrote it. Without a host the two are exactly what `fromMarkset` and `toMarkset` are made of. `constructTemplate(name)` is a construct's starting mdast, the node `insertConstruct` inserts.
+
+### A host with its own schema
+
+`host` says how a schema differs from the kit's:
+
+```js
+const host = {
+  // TableKit's first row is tableHeader cells; Markset's inline image is renamed so `image` is the host's block image.
+  names: { tableHeader: "tableHeader", image: "inlineImage" },
+  // TableKit's cells hold paragraphs (`block+`), not inline content.
+  cellContent: "paragraph",
+  node: {
+    toJSON: (node, context) => undefined, // mdast -> the host's JSON
+    toMdast: (node, context) => undefined, // the host's JSON -> mdast
+  },
+  mark: {
+    toJSON: (node, context) => (node.type === "delete" ? { type: "strike" } : undefined),
+    toMdast: (mark) => (mark.type === "strike" ? { type: "delete", children: [] } : undefined),
+  },
+};
+```
+
+Every hook is asked first, for every node or mark, and its answer stands: `undefined` leaves the node to Markset, `null` drops it (for a mark, keeps the text and drops the mark), and anything else replaces it. `context` converts children back through the same hooks: `context.blocks(...)` and `context.inline(...)`, and when reading, `context.name(...)` gives the host's name for one of Markset's nodes. A hook sees nodes and marks in the host's own names. A host's own mark nests inside Markset's, just outside `code`. A table cell given more than one paragraph is written as one line, its paragraphs joined by a space, because a GFM cell is one line.
+
 ## What the host decides
 
 Collaboration (Yjs or none), extra nodes, persistence and where the file goes are the host's. Nothing in this package assumes any of them. The editor carries no source offsets in its state, so a collaborative document needs nothing extra to be saved correctly: the host keeps the text it loaded and passes it to `toMarkset`.

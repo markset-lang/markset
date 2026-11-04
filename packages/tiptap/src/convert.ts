@@ -1,5 +1,8 @@
 /**
- * Markset source <-> ProseMirror JSON, with no editor and no DOM.
+ * Markset source <-> ProseMirror JSON, with no editor and no DOM. This module
+ * is also the `@markset-lang/tiptap/convert` entry point, which a host whose
+ * schema is not the kit's uses to read and write its own JSON: TipTap is never
+ * imported here.
  *
  * Reading goes through parseDocument, so there is one parser. Writing goes
  * through serializeDocument with the source the document was loaded from, so an
@@ -11,6 +14,12 @@
  * node only knows it is both. So a block the editor did not change is not
  * rebuilt from its marks at all: it is recognised by its JSON and given back
  * the mdast it was made from.
+ *
+ * A host's schema can differ from the kit's in names and shapes (TableKit's
+ * `tableHeader` and paragraph cells, a block image), and can hold nodes and
+ * marks Markset has no word for (task lists, strikethrough, mentions). The
+ * `ConvertHost` argument says how: names for the nodes and marks the two share,
+ * and hooks, both ways, for the ones only the host has.
  */
 import {
   parseDocument,
@@ -20,7 +29,160 @@ import {
   type Frontmatter,
 } from "@markset-lang/parser";
 import type { Nodes, PhrasingContent, Root, RootContent } from "mdast";
-import { MARK_ORDER, withDefaults, type BlockAttributes, type JSONMark, type JSONNode } from "./model.ts";
+import {
+  MARK_ATTRIBUTES,
+  NODE_ATTRIBUTES,
+  TEMPLATES,
+  markRank,
+  withDefaults,
+  type BlockAttributes,
+  type ConstructName,
+  type JSONMark,
+  type JSONNode,
+  type MarkName,
+  type NodeName,
+} from "./model.ts";
+
+export { CONSTRUCTS, NODE_ATTRIBUTES, MARK_ATTRIBUTES, ALLOWED, TEMPLATES } from "./model.ts";
+export type { BlockAttributes, ConstructName, JSONMark, JSONNode, MarkName, NodeName } from "./model.ts";
+
+// ---------------------------------------------------------------------------
+// Hosts
+
+/** The names a host can rename: Markset's nodes and marks, and `tableHeader` for the cells of a table's first row. */
+export type HostName = NodeName | MarkName | "tableHeader";
+
+/** An mdast node that holds phrasing content, as a mark is written: `delete`, `emphasis`, `link`. */
+export type MarkParent = Extract<PhrasingContent, { children: PhrasingContent[] }>;
+
+/** What a host hook reading mdast can call back into. */
+export interface ReadContext {
+  /** Block mdast to the host's JSON, through the host's hooks again. */
+  blocks(nodes: Nodes[]): JSONNode[];
+  /** Phrasing mdast to the host's JSON, carrying the marks open where the hook was called. */
+  inline(nodes: PhrasingContent[]): JSONNode[];
+  /** The host's name for a Markset node or mark. */
+  name(name: HostName): string;
+}
+
+/** What a host hook writing mdast can call back into. */
+export interface WriteContext {
+  /** The host's block JSON to mdast, through the host's hooks again. */
+  blocks(nodes: JSONNode[]): RootContent[];
+  /** The host's inline JSON to phrasing mdast. */
+  inline(nodes: JSONNode[]): PhrasingContent[];
+}
+
+/**
+ * How a host's schema differs from the kit's. Every field is optional; with
+ * none, the JSON is exactly what `fromMarkset` gives and `toMarkset` takes.
+ *
+ * Each hook is asked first, for every node or mark, and its answer stands:
+ * `undefined` leaves the node to Markset, `null` drops it (with a mark, keeps
+ * the text and drops only the mark), anything else replaces it.
+ */
+export interface ConvertHost {
+  /**
+   * The host's names for nodes and marks it shares with Markset, where they
+   * differ: `{ tableHeader: "tableHeader" }` for TableKit, whose header row is
+   * made of `tableHeader` cells, or `{ image: "inlineImage" }` when the host's
+   * own `image` is something else. A Markset name renamed away is free for the
+   * host's own node of that name.
+   */
+  names?: Partial<Record<HostName, string>>;
+  /**
+   * What a table cell holds: inline content, as in the kit (`"inline"`, the
+   * default), or a paragraph, as in TableKit's `block+` cells (`"paragraph"`).
+   * Writing accepts either. A cell given more than one paragraph is written as
+   * one line, its paragraphs joined by a space, because a GFM cell is one line.
+   */
+  cellContent?: "inline" | "paragraph";
+  /** Nodes only the host has, or that it draws differently: a task list, a block image, a mention. */
+  node?: {
+    toJSON?: (node: Nodes, context: ReadContext) => JSONNode | JSONNode[] | null | undefined;
+    toMdast?: (node: JSONNode, context: WriteContext) => Nodes | Nodes[] | null | undefined;
+  };
+  /** Marks only the host has: strikethrough, underline, a comment highlight. */
+  mark?: {
+    /** Asked for each phrasing mdast node: a mark here puts the node's children under it. */
+    toJSON?: (node: Nodes, context: ReadContext) => JSONMark | null | undefined;
+    /** The mdast node a mark is written as, with empty `children` for the text under it. */
+    toMdast?: (mark: JSONMark, context: WriteContext) => MarkParent | null | undefined;
+  };
+}
+
+/** A host's names both ways. */
+class Names {
+  readonly #toHost = new Map<string, string>();
+  readonly #fromHost = new Map<string, string>();
+
+  constructor(names: ConvertHost["names"] = {}) {
+    for (const [markset, host] of Object.entries(names)) {
+      if (host === undefined) continue;
+      this.#toHost.set(markset, host);
+      this.#fromHost.set(host, markset);
+    }
+  }
+
+  host(name: string): string {
+    return this.#toHost.get(name) ?? name;
+  }
+
+  /** Markset's name for a host type, or undefined for a node or mark only the host has. A header cell is a cell. */
+  markset(type: string): string | undefined {
+    let name = this.#fromHost.get(type);
+    if (name === undefined) {
+      // A Markset name the host renamed away now names one of the host's own.
+      if (this.#toHost.has(type) && this.#toHost.get(type) !== type) return undefined;
+      name = type;
+    }
+    if (name === "tableHeader") return "tableCell";
+    return name in NODE_ATTRIBUTES || name in MARK_ATTRIBUTES ? name : undefined;
+  }
+}
+
+const NO_NAMES = new Names();
+
+/**
+ * Read mdast, as parseDocument or remark-markset makes it, into a host's
+ * ProseMirror JSON. Without a host the result is `fromMarkset`'s `doc`.
+ */
+export function mdastToJSON(root: Root, host: ConvertHost = {}): JSONNode {
+  return new Reader([], undefined, host).root(root);
+}
+
+export interface JsonToMdastOptions {
+  /**
+   * The tree the document was read from. A block the editor did not change is
+   * given back its original mdast, which keeps what marks cannot say, such as
+   * how `***a***` nested. Pass the same tree to serializeDocument's `original`.
+   */
+  original?: Root;
+}
+
+/**
+ * Write a host's ProseMirror JSON as Markset mdast, ready for
+ * serializeDocument (`@markset-lang/parser`) or any mdast-util-to-markdown
+ * pipeline with `marksetToMarkdownExtension()`.
+ */
+export function jsonToMdast(doc: JSONNode, host: ConvertHost = {}, options: JsonToMdastOptions = {}): Root {
+  let known: Known | null = null;
+  if (options.original) {
+    known = new Known(new Names(host.names));
+    new Reader([], known, host).root(options.original);
+  }
+  return new Writer(known, host).root(doc);
+}
+
+/**
+ * A construct's starting mdast: the node `insertConstruct` inserts, before it
+ * is JSON. A host reads it with its own `mdastToJSON` to insert a construct
+ * shaped for its schema.
+ */
+export function constructTemplate(name: ConstructName): RootContent {
+  const [node] = parseDocument(TEMPLATES[name]).ast.children;
+  return JSON.parse(JSON.stringify(node, (key, value) => (key === "position" ? undefined : value))) as RootContent;
+}
 
 /** A diagnostic from the parser, with the block it belongs to as a path of child indexes into `doc`. */
 export interface EditorDiagnostic extends Diagnostic {
@@ -59,11 +221,9 @@ export function fromMarkset(source: string): LoadedDocument {
  * source can express; the editor's guards exist so that it cannot.
  */
 export function toMarkset(doc: JSONNode, original?: string): string {
-  if (original === undefined) return serializeDocument(new Writer(null).root(doc));
+  if (original === undefined) return serializeDocument(jsonToMdast(doc));
   const parsed = parseDocument(original);
-  const known = new Known();
-  new Reader([], known).root(parsed.ast);
-  const tree = new Writer(known).root(doc);
+  const tree = jsonToMdast(doc, {}, { original: parsed.ast });
   return serializeDocument(tree, { original: { source: original, ast: parsed.ast } });
 }
 
@@ -78,9 +238,14 @@ export function diagnose(doc: JSONNode, original?: string): EditorDiagnostic[] {
 /** JSON of blocks from the original, each with the mdast it came from, in document order. */
 class Known {
   readonly #byKey = new Map<string, unknown[]>();
+  readonly names: Names;
+
+  constructor(names: Names = NO_NAMES) {
+    this.names = names;
+  }
 
   add(json: JSONNode | JSONNode[], mdast: unknown): void {
-    const key = keyOf(json);
+    const key = keyOf(json, this.names);
     const list = this.#byKey.get(key);
     if (list) list.push(mdast);
     else this.#byKey.set(key, [mdast]);
@@ -88,19 +253,54 @@ class Known {
 
   /** The mdast of the first unclaimed original block with exactly this JSON, claimed. */
   take<T>(json: JSONNode | JSONNode[]): T | undefined {
-    const list = this.#byKey.get(keyOf(json));
+    const list = this.#byKey.get(keyOf(json, this.names));
     const found = list?.shift();
     return found === undefined ? undefined : (structuredClone(found) as T);
   }
 }
 
-function keyOf(json: JSONNode | JSONNode[]): string {
-  const normal = Array.isArray(json) ? mergeText(json.map(withDefaults)) : withDefaults(json);
+/**
+ * A key equal for two JSON nodes exactly when they say the same Markset: in
+ * Markset's names, with every default filled, and without the attributes a
+ * host's node carries that Markset has no field for (a TableKit cell's colspan).
+ */
+function keyOf(json: JSONNode | JSONNode[], names: Names = NO_NAMES): string {
+  const normal = Array.isArray(json)
+    ? mergeText(json.map((node) => withDefaults(canonical(node, names, true))))
+    : withDefaults(canonical(json, names, true));
   return JSON.stringify(normal, (_, value) =>
     value && typeof value === "object" && !Array.isArray(value)
       ? Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b)))
       : value,
   );
+}
+
+/**
+ * A node, and its marks, in Markset's names, with the attributes Markset knows
+ * of filled from their defaults and any other dropped. A node or mark only the
+ * host has is kept as it is. `deep` does the same to the content.
+ */
+function canonical(json: JSONNode, names: Names, deep = false): JSONNode {
+  const type = names.markset(json.type);
+  const out: JSONNode = { ...json, type: type ?? json.type };
+  if (type !== undefined) out.attrs = known(json.attrs, NODE_ATTRIBUTES[type as NodeName]);
+  if (json.marks) out.marks = json.marks.map((mark) => canonicalMark(mark, names));
+  if (deep && json.content) out.content = json.content.map((child) => canonical(child, names, true));
+  return out;
+}
+
+function canonicalMark(mark: JSONMark, names: Names): JSONMark {
+  const type = names.markset(mark.type);
+  if (type === undefined) return mark;
+  return { ...mark, type, attrs: known(mark.attrs, MARK_ATTRIBUTES[type as MarkName]) };
+}
+
+function known(attrs: Record<string, unknown> | undefined, defaults: Record<string, unknown> | undefined) {
+  const out: Record<string, unknown> = {};
+  for (const [name, value] of Object.entries(defaults ?? {})) {
+    out[name] = attrs && name in attrs ? attrs[name] : structuredClone(value);
+  }
+  return out;
 }
 
 /** Adjacent text with the same marks is one text node to ProseMirror, so it is one here. */
@@ -129,10 +329,14 @@ type AnyNode = Nodes & Record<string, unknown>;
 class Reader {
   readonly ranges: Array<{ path: number[]; start: number; end: number }>;
   readonly known: Known | undefined;
+  readonly host: ConvertHost;
+  readonly names: Names;
 
-  constructor(ranges: Array<{ path: number[]; start: number; end: number }>, known?: Known) {
+  constructor(ranges: Array<{ path: number[]; start: number; end: number }>, known?: Known, host: ConvertHost = {}) {
     this.ranges = ranges;
     this.known = known;
+    this.host = host;
+    this.names = known?.names ?? new Names(host.names);
   }
 
   root(tree: Root): JSONNode {
@@ -140,7 +344,28 @@ class Reader {
   }
 
   blocks(nodes: RootContent[], path: number[]): JSONNode[] {
-    return nodes.map((node, index) => this.block(node as AnyNode, [...path, index]));
+    return nodes.flatMap((node, index) => this.hosted(node as AnyNode, [...path, index]));
+  }
+
+  /** A block through the host's hook first, then Markset's own reading. */
+  hosted(node: AnyNode, path: number[], fallback = () => this.block(node, path)): JSONNode[] {
+    const answer = this.host.node?.toJSON?.(node, this.context([]));
+    if (answer === undefined) return [fallback()];
+    return answer === null ? [] : Array.isArray(answer) ? answer : [answer];
+  }
+
+  context(marks: JSONMark[]): ReadContext {
+    return {
+      blocks: (nodes) => this.blocks(nodes as RootContent[], []),
+      inline: (nodes) => this.inline(nodes, marks),
+      name: (name) => this.names.host(name),
+    };
+  }
+
+  /** A JSON node in the host's names. */
+  named(json: JSONNode): JSONNode {
+    const type = this.names.host(json.type);
+    return type === json.type ? json : { ...json, type };
   }
 
   block(node: AnyNode, path: number[]): JSONNode {
@@ -149,13 +374,13 @@ class Reader {
     }
     const json = this.convert(node, path);
     if (TEXTBLOCKS.has(json.type)) this.known?.add(json, node);
-    return json;
+    return this.named(json);
   }
 
   convert(node: AnyNode, path: number[]): JSONNode {
     const attrs = (extra: Record<string, unknown> = {}) => ({ ...extra, attributes: blockAttributes(node) });
     const children = (list: unknown[], offset = 0) =>
-      (list as RootContent[]).map((child, index) => this.block(child as AnyNode, [...path, index + offset]));
+      (list as RootContent[]).flatMap((child, index) => this.hosted(child as AnyNode, [...path, index + offset]));
     const n = node as unknown as Record<string, never>;
     switch (node.type) {
       case "yaml":
@@ -192,12 +417,26 @@ class Reader {
           type: "definition",
           attrs: { identifier: n.identifier, label: n.label ?? null, url: n.url, title: n.title ?? null },
         };
-      case "table":
-        return withContent({ type: "table", attrs: attrs({ align: n.align ?? [] }) }, children(n.children));
+      case "table": {
+        const rows = children(n.children);
+        // TableKit sets the first row's cells apart as header cells.
+        const header = this.host.names?.tableHeader;
+        if (header && rows[0]?.content)
+          rows[0] = { ...rows[0], content: rows[0].content.map((cell) => ({ ...cell, type: header })) };
+        return withContent({ type: "table", attrs: attrs({ align: n.align ?? [] }) }, rows);
+      }
       case "tableRow":
         return withContent({ type: "tableRow" }, children(n.children));
-      case "tableCell":
-        return withContent({ type: "tableCell" }, this.inline(n.children));
+      case "tableCell": {
+        const inline = this.inline(n.children);
+        if (this.host.cellContent !== "paragraph") return withContent({ type: "tableCell" }, inline);
+        // The cell's text is recognised on the way back as a title's is, whatever the paragraph around it became.
+        this.known?.add(inline, n.children);
+        return {
+          type: "tableCell",
+          content: [withContent(this.named({ type: "paragraph", attrs: { attributes: null } }), inline)],
+        };
+      }
 
       case "callout":
         return withContent({ type: "callout", attrs: attrs({ kind: n.kind, fold: n.fold }) }, [
@@ -238,8 +477,10 @@ class Reader {
       case "figure": {
         const caption = n.caption as PhrasingContent[] | null;
         const offset = caption === null ? 0 : 1;
-        const content = (n.children as AnyNode[]).map((child, index) =>
-          isImageParagraph(child) ? this.figureImage(child) : this.block(child, [...path, index + offset]),
+        const content = (n.children as AnyNode[]).flatMap((child, index) =>
+          this.hosted(child, [...path, index + offset], () =>
+            isImageParagraph(child) ? this.figureImage(child) : this.block(child, [...path, index + offset]),
+          ),
         );
         return withContent({ type: "figure", attrs: { width: n.width, chart: n.chart ?? null, ...identity(node) } }, [
           ...(caption === null ? [] : [this.title("figureCaption", caption)]),
@@ -259,25 +500,43 @@ class Reader {
   }
 
   title(type: string, inline: PhrasingContent[]): JSONNode {
-    const json = withContent({ type }, this.inline(inline));
+    const json = withContent(this.named({ type }), this.inline(inline));
     this.known?.add(json.content ?? [], inline);
     return json;
   }
 
   figureImage(paragraph: AnyNode): JSONNode {
     const image = (paragraph.children as AnyNode[])[0] as unknown as Record<string, string | null>;
-    return { type: "figureImage", attrs: { src: image.url, alt: image.alt ?? null, title: image.title ?? null } };
+    return this.named({
+      type: "figureImage",
+      attrs: { src: image.url, alt: image.alt ?? null, title: image.title ?? null },
+    });
   }
 
   inline(nodes: PhrasingContent[], marks: JSONMark[] = []): JSONNode[] {
     const out: JSONNode[] = [];
     const text = (value: string, extra: JSONMark[] = []) => {
       if (value === "") return;
-      const all = [...marks, ...extra];
+      const all = [...marks, ...extra.map((mark) => this.named(mark))];
       out.push(all.length > 0 ? { type: "text", text: value, marks: all } : { type: "text", text: value });
     };
+    const mark = (json: JSONMark): JSONMark[] => [...marks, this.named(json)];
+    const leaf = (json: JSONNode) => out.push(withMarks(this.named(json), marks));
     for (const node of nodes) {
       const n = node as unknown as Record<string, never>;
+      const answer = this.host.node?.toJSON?.(node, this.context(marks));
+      if (answer !== undefined) {
+        for (const json of answer === null ? [] : Array.isArray(answer) ? answer : [answer]) {
+          out.push(withMarks(json, [...marks, ...(json.marks ?? [])]));
+        }
+        continue;
+      }
+      const hostMark = this.host.mark?.toJSON?.(node, this.context(marks));
+      if (hostMark !== undefined) {
+        const children = ((node as { children?: PhrasingContent[] }).children ?? []) as PhrasingContent[];
+        out.push(...this.inline(children, hostMark === null ? marks : [...marks, hostMark]));
+        continue;
+      }
       switch (node.type) {
         case "text":
           text(n.value);
@@ -286,67 +545,58 @@ class Reader {
           text(n.value, [{ type: "code" }]);
           break;
         case "emphasis":
-          out.push(...this.inline(n.children, [...marks, { type: "italic" }]));
+          out.push(...this.inline(n.children, mark({ type: "italic" })));
           break;
         case "strong":
-          out.push(...this.inline(n.children, [...marks, { type: "bold" }]));
+          out.push(...this.inline(n.children, mark({ type: "bold" })));
           break;
         case "link":
-          out.push(
-            ...this.inline(n.children, [...marks, { type: "link", attrs: { href: n.url, title: n.title ?? null } }]),
-          );
+          out.push(...this.inline(n.children, mark({ type: "link", attrs: { href: n.url, title: n.title ?? null } })));
           break;
         case "linkReference":
           out.push(
-            ...this.inline(n.children, [
-              ...marks,
-              {
+            ...this.inline(
+              n.children,
+              mark({
                 type: "linkReference",
                 attrs: { identifier: n.identifier, label: n.label ?? null, referenceType: n.referenceType },
-              },
-            ]),
+              }),
+            ),
           );
           break;
         case "span": {
           const a = n.attributes as unknown as NonNullable<BlockAttributes>;
           if ((n.children as unknown[]).length === 0) {
-            out.push(withMarks({ type: "emptySpan", attrs: plain(a) }, marks));
+            leaf({ type: "emptySpan", attrs: plain(a) });
             break;
           }
           out.push(
-            ...this.inline(n.children, [
-              ...marks,
-              { type: "span", attrs: { id: a.id, classes: [...a.classes], attrs: { ...a.attrs } } },
-            ]),
+            ...this.inline(
+              n.children,
+              mark({ type: "span", attrs: { id: a.id, classes: [...a.classes], attrs: { ...a.attrs } } }),
+            ),
           );
           break;
         }
         case "break":
-          out.push(withMarks({ type: "hardBreak" }, marks));
+          leaf({ type: "hardBreak" });
           break;
         case "image":
-          out.push(
-            withMarks({ type: "image", attrs: { src: n.url, alt: n.alt ?? null, title: n.title ?? null } }, marks),
-          );
+          leaf({ type: "image", attrs: { src: n.url, alt: n.alt ?? null, title: n.title ?? null } });
           break;
         case "imageReference":
-          out.push(
-            withMarks(
-              {
-                type: "imageReference",
-                attrs: {
-                  identifier: n.identifier,
-                  label: n.label ?? null,
-                  referenceType: n.referenceType,
-                  alt: n.alt ?? null,
-                },
-              },
-              marks,
-            ),
-          );
+          leaf({
+            type: "imageReference",
+            attrs: {
+              identifier: n.identifier,
+              label: n.label ?? null,
+              referenceType: n.referenceType,
+              alt: n.alt ?? null,
+            },
+          });
           break;
         case "html":
-          out.push(withMarks({ type: "htmlInline", attrs: { value: n.value } }, marks));
+          leaf({ type: "htmlInline", attrs: { value: n.value } });
           break;
         default:
           throw new Error(`no editor node for inline mdast "${node.type}"`);
@@ -392,13 +642,22 @@ type Block = Record<string, unknown> & { type: string };
 
 class Writer {
   readonly known: Known | null;
+  readonly host: ConvertHost;
+  readonly names: Names;
+  readonly context: WriteContext;
 
-  constructor(known: Known | null) {
+  constructor(known: Known | null, host: ConvertHost = {}) {
     this.known = known;
+    this.host = host;
+    this.names = known?.names ?? new Names(host.names);
+    this.context = {
+      blocks: (nodes) => this.blocks(nodes) as RootContent[],
+      inline: (nodes) => this.inline(nodes),
+    };
   }
 
   root(doc: JSONNode): Root {
-    const children = (doc.content ?? []).map((node) => this.block(node)) as RootContent[];
+    const children = this.blocks(doc.content) as RootContent[];
     const root: Root = { type: "root", children };
     const first = children[0];
     if (first?.type === "yaml") {
@@ -409,13 +668,23 @@ class Writer {
   }
 
   blocks(nodes: JSONNode[] | undefined): Block[] {
-    return (nodes ?? []).map((node) => this.block(node));
+    return (nodes ?? []).flatMap((node) => this.hosted(node));
+  }
+
+  /** A block through the host's hook first, then Markset's own writing. */
+  hosted(node: JSONNode): Block[] {
+    const answer = this.host.node?.toMdast?.(node, this.context);
+    if (answer === undefined) return [this.block(node)];
+    return (answer === null ? [] : Array.isArray(answer) ? answer : [answer]) as Block[];
   }
 
   block(input: JSONNode): Block {
-    const json = withDefaults(input);
+    if (this.names.markset(input.type) === undefined) throw new Error(`no mdast for editor node "${input.type}"`);
+    // Defaults for this node only: its content is the host's until each child is written in turn.
+    const named = canonical(input, this.names);
+    const json = { ...withDefaults({ ...named, content: undefined }), content: named.content };
     if (TEXTBLOCKS.has(json.type)) {
-      const reused = this.known?.take<Block>(json);
+      const reused = this.known?.take<Block>(input);
       if (reused) return reused;
     }
     const a = (json.attrs ?? {}) as Record<string, never>;
@@ -425,8 +694,9 @@ class Writer {
       if (attributes) node.attributes = { type: "attributes", ...plain(attributes) };
       return node;
     };
-    const titled = (name: string) => (content[0]?.type === name ? content[0] : undefined);
-    const rest = (name: string) => (content[0]?.type === name ? content.slice(1) : content);
+    const isFirst = (name: string) => content[0] !== undefined && this.names.markset(content[0].type) === name;
+    const titled = (name: string) => (isFirst(name) ? content[0] : undefined);
+    const rest = (name: string) => (isFirst(name) ? content.slice(1) : content);
     switch (json.type) {
       case "frontmatter":
         return { type: "yaml", value: a.value };
@@ -472,7 +742,7 @@ class Writer {
       case "tableRow":
         return { type: "tableRow", children: this.blocks(content) };
       case "tableCell":
-        return { type: "tableCell", children: this.inline(content) };
+        return { type: "tableCell", children: this.cell(content) };
 
       case "callout":
         return withAttributes({
@@ -520,8 +790,11 @@ class Writer {
           caption: caption ? this.title(caption) : null,
           width: a.width,
           ...identityOf(a),
-          children: rest("figureCaption").map((node) =>
-            node.type === "figureImage" ? imageParagraph(node) : this.block(node),
+          children: rest("figureCaption").flatMap((node) =>
+            this.host.node?.toMdast?.(node, this.context) === undefined &&
+            this.names.markset(node.type) === "figureImage"
+              ? [imageParagraph(canonical(node, this.names))]
+              : this.hosted(node),
           ),
         };
         if (a.chart !== null) figure.chart = a.chart;
@@ -549,22 +822,64 @@ class Writer {
     return this.known?.take<PhrasingContent[]>(content) ?? this.inline(content);
   }
 
+  /** A cell's content: inline, or a host's paragraphs (TableKit's `block+`), which one GFM line has to hold. */
+  cell(content: JSONNode[]): PhrasingContent[] {
+    if (!content.some((node) => this.names.markset(node.type) === "paragraph")) return this.inline(content);
+    const lines = content.map((paragraph) => this.title(paragraph)).filter((line) => line.length > 0);
+    const joined: PhrasingContent[] = [];
+    for (const node of lines.flatMap((line, index) => (index === 0 ? line : [{ type: "text", value: " " }, ...line]))) {
+      const last = joined.at(-1);
+      if (node.type === "text" && last?.type === "text") last.value += node.value;
+      else joined.push(node as PhrasingContent);
+    }
+    return joined;
+  }
+
   /** Rebuild nesting from marks: each run keeps the longest run of open marks it shares with the one before. */
   inline(content: JSONNode[]): PhrasingContent[] {
     const root: { children: PhrasingContent[] } = { children: [] };
     const stack: Array<{ mark: JSONMark | null; node: { children: PhrasingContent[] } }> = [{ mark: null, node: root }];
-    for (const item of expelWhitespace(mergeText(content.map(withDefaults)))) {
-      const marks = (item.marks ?? []).filter((mark) => mark.type !== "code").sort(byRank);
+    // A host's mark is written as the node its hook gives, or dropped when the hook says null.
+    const written = new Map<string, PhrasingContent | null>();
+    const writeMark = (mark: JSONMark): PhrasingContent | null => {
+      const key = keyOf({ type: "text", text: "x", marks: [mark] }, this.names);
+      if (!written.has(key)) {
+        // The hook sees the mark in the host's own name.
+        const own = this.names.markset(mark.type) === mark.type ? { ...mark, type: this.names.host(mark.type) } : mark;
+        const answer = this.host.mark?.toMdast?.(own, this.context);
+        written.set(key, answer === undefined ? markNode(mark) : answer);
+      }
+      const node = written.get(key);
+      return node ? structuredClone(node) : null;
+    };
+    // Each leaf in Markset's names, remembering the host's node it was, which is what a hook is shown.
+    const own = new Map<JSONNode, JSONNode>();
+    const leaves = content.map((node) => {
+      const leaf = withDefaults(canonical(node, this.names));
+      own.set(leaf, node);
+      return leaf;
+    });
+    for (const item of expelWhitespace(mergeText(leaves))) {
+      const marks = (item.marks ?? []).filter((mark) => mark.type !== "code" && writeMark(mark) !== null).sort(byRank);
       const code = (item.marks ?? []).some((mark) => mark.type === "code");
       let keep = 0;
-      while (keep < stack.length - 1 && keep < marks.length && sameMark(stack[keep + 1].mark!, marks[keep])) keep++;
+      while (keep < stack.length - 1 && keep < marks.length && sameMark(stack[keep + 1].mark!, marks[keep], this.names))
+        keep++;
       stack.length = keep + 1;
       for (const mark of marks.slice(keep)) {
-        const node = markNode(mark);
+        const node = writeMark(mark)!;
         stack[stack.length - 1].node.children.push(node);
         stack.push({ mark, node: node as unknown as { children: PhrasingContent[] } });
       }
       const into = stack[stack.length - 1].node.children;
+      const answer = this.host.node?.toMdast?.(own.get(item) ?? item, this.context);
+      if (answer !== undefined) {
+        into.push(...((answer === null ? [] : Array.isArray(answer) ? answer : [answer]) as PhrasingContent[]));
+        continue;
+      }
+      if (this.names.markset((own.get(item) ?? item).type) === undefined) {
+        throw new Error(`no mdast for inline editor node "${(own.get(item) ?? item).type}"`);
+      }
       const leaf = inlineLeaf(item, code);
       const last = into[into.length - 1];
       if (leaf.type === "text" && last?.type === "text") last.value += leaf.value;
@@ -612,11 +927,13 @@ function expelWhitespace(items: JSONNode[]): JSONNode[] {
 }
 
 function byRank(a: JSONMark, b: JSONMark): number {
-  return MARK_ORDER.indexOf(a.type as never) - MARK_ORDER.indexOf(b.type as never);
+  return markRank(a.type) - markRank(b.type);
 }
 
-function sameMark(a: JSONMark, b: JSONMark): boolean {
-  return keyOf({ type: "text", text: "x", marks: [a] }) === keyOf({ type: "text", text: "x", marks: [b] });
+function sameMark(a: JSONMark, b: JSONMark, names: Names = NO_NAMES): boolean {
+  return (
+    keyOf({ type: "text", text: "x", marks: [a] }, names) === keyOf({ type: "text", text: "x", marks: [b] }, names)
+  );
 }
 
 function markNode(mark: JSONMark): PhrasingContent {

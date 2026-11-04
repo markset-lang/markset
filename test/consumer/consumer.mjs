@@ -107,6 +107,16 @@ check("tiptap", () => {
   assert.ok(existsSync(require.resolve("@markset-lang/tiptap/css/editor.css")));
 });
 
+const convert = await import("@markset-lang/tiptap/convert");
+check("tiptap/convert", () => {
+  const { ast } = parser.parseDocument(source);
+  const doc = convert.mdastToJSON(ast);
+  assert.deepEqual(doc, tiptap.fromMarkset(source).doc);
+  const tree = convert.jsonToMdast(doc, {}, { original: ast });
+  assert.equal(parser.serializeDocument(tree, { original: { source, ast } }), source);
+  assert.equal(convert.constructTemplate("card").type, "card");
+});
+
 const react = await import("@markset-lang/tiptap/react");
 check("tiptap/react", () => {
   assert.equal(typeof react.reactNodeViews, "function");

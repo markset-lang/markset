@@ -21,6 +21,7 @@ import {
   ALLOWED,
   MARK_ATTRIBUTES,
   NODE_ATTRIBUTES,
+  TEMPLATES,
   type BlockAttributes,
   type ConstructName,
   type JSONNode,
@@ -467,17 +468,7 @@ const marks = [
 // ---------------------------------------------------------------------------
 // Commands
 
-/** The canonical new instance of each construct: valid on its own, and small. */
-export const TEMPLATES: Record<ConstructName, string> = {
-  callout: "> [!NOTE]\n> Text.\n",
-  card: ":::card[Title]\nText.\n:::\n",
-  grid: ":::grid\n- One\n- Two\n:::\n",
-  columns: "::::columns\nFirst column.\n\n::col\n\nSecond column.\n::::\n",
-  tabs: ":::tabs\n### First\nText.\n\n### Second\nText.\n:::\n",
-  steps: ":::steps\n1. First step.\n2. Second step.\n:::\n",
-  metrics: ":::metrics\n| Metric | Value | Δ |\n|---|---|---|\n| Revenue | $1.0M | +5% |\n:::\n",
-  figure: ":::figure[Caption]\n| Item | Value |\n|---|---|\n| A | 1 |\n:::\n",
-};
+export { TEMPLATES };
 
 /** The construct's JSON, ready for `insertContent`. */
 export function construct(name: ConstructName): JSONNode {
