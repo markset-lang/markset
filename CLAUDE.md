@@ -74,7 +74,8 @@ packages/
   cli/              `markset`: check, html, downgrade, ast, css, and guide, which prints guide.md, the authoring guide
                     for agents (shipped in the package; its tests parse every example and check every code it names)
   tiptap/           TipTap extensions for editing a document visually (D14). convert.ts is Markset <-> ProseMirror JSON
-                    and needs no DOM; extensions.ts is the schema, commands and guards; model.ts is the node and
+                    and needs no DOM, and is also the `/convert` entry (mdastToJSON, jsonToMdast with a host's names and
+                    hooks, constructTemplate), which imports no TipTap; extensions.ts is the schema, commands and guards; model.ts is the node and
                     attribute table both read; react.ts is the optional `/react` entry. A block the editor did not
                     change is recognised by its JSON on save and given back its original mdast, because marks
                     cannot say how `***a***` nested. Tests run the editor in happy-dom.

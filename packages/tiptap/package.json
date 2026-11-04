@@ -35,6 +35,11 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./convert": {
+      "markset-source": "./src/convert.ts",
+      "types": "./dist/convert.d.ts",
+      "default": "./dist/convert.js"
+    },
     "./react": {
       "markset-source": "./src/react.ts",
       "types": "./dist/react.d.ts",

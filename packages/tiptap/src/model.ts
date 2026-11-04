@@ -101,6 +101,22 @@ export const MARK_ORDER: readonly MarkName[] = ["link", "linkReference", "span",
 export const CONSTRUCTS = ["callout", "card", "grid", "columns", "tabs", "steps", "metrics", "figure"] as const;
 export type ConstructName = (typeof CONSTRUCTS)[number];
 
+/**
+ * The canonical new instance of each construct, as Markset source: valid on its
+ * own, and small. `insertConstruct` inserts it, and `constructTemplate` in
+ * `@markset-lang/tiptap/convert` hands it over as mdast.
+ */
+export const TEMPLATES: Record<ConstructName, string> = {
+  callout: "> [!NOTE]\n> Text.\n",
+  card: ":::card[Title]\nText.\n:::\n",
+  grid: ":::grid\n- One\n- Two\n:::\n",
+  columns: "::::columns\nFirst column.\n\n::col\n\nSecond column.\n::::\n",
+  tabs: ":::tabs\n### First\nText.\n\n### Second\nText.\n:::\n",
+  steps: ":::steps\n1. First step.\n2. Second step.\n:::\n",
+  metrics: ":::metrics\n| Metric | Value | Δ |\n|---|---|---|\n| Revenue | $1.0M | +5% |\n:::\n",
+  figure: ":::figure[Caption]\n| Item | Value |\n|---|---|\n| A | 1 |\n:::\n",
+};
+
 /** Values each construct attribute accepts (§4). An editor command that sets anything else is refused. */
 export const ALLOWED = {
   tone: ["neutral", "info", "success", "warn", "danger"],
@@ -132,7 +148,8 @@ export function withDefaults(json: JSONNode): JSONNode {
   return out;
 }
 
+/** Where a mark nests: Markset's in MARK_ORDER, and a host's own just outside `code`, which is always innermost. */
 export function markRank(type: string): number {
   const index = MARK_ORDER.indexOf(type as MarkName);
-  return index === -1 ? MARK_ORDER.length : index;
+  return index === -1 ? MARK_ORDER.indexOf("code") - 0.5 : index;
 }
