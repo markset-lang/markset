@@ -75,7 +75,9 @@ packages/
                     for agents (shipped in the package; its tests parse every example and check every code it names)
   tiptap/           TipTap extensions for editing a document visually (D14). convert.ts is Markset <-> ProseMirror JSON
                     and needs no DOM, and is also the `/convert` entry (mdastToJSON, jsonToMdast with a host's names and
-                    hooks, constructTemplate), which imports no TipTap; extensions.ts is the schema, commands and guards; model.ts is the node and
+                    hooks, constructTemplate), which imports no TipTap; constructs.ts is MarksetConstructs, the construct nodes,
+                    their commands, guards and title key, which a host adds beside StarterKit; extensions.ts is the kit
+                    built on it, with the CommonMark nodes, marks, keys, undo and diagnostics; model.ts is the node and
                     attribute table both read; react.ts is the optional `/react` entry. A block the editor did not
                     change is recognised by its JSON on save and given back its original mdast, because marks
                     cannot say how `***a***` nested. Tests run the editor in happy-dom.
