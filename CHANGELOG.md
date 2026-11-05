@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.5.0 — 2026-11-05
 
 **Markset can be written from a unified pipeline, beside GFM, and its constructs edited and shown inside a TipTap schema that is not the kit's.** Nothing in the grammar, the spec or the conformance suite changed, and nothing changes for Intentset's adapter: no diagnostic, node shape or `parseDocument` result moved, and `serializeDocument` writes the same bytes as before.
 
