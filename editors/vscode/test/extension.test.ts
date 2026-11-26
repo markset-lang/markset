@@ -40,16 +40,18 @@ test("a document is checked when its frontmatter declares markset, and otherwise
   // something else never opted into a closed vocabulary. The frontmatter key is
   // the trigger §6 names, and a wrong version still counts so its diagnostic
   // can be shown.
+  assert.equal(declaresMarkset("---\nmarkset: true\n---\n\n# Hi\n"), true);
+  // The original form means the same (spec §6, 2026-11-26).
   assert.equal(declaresMarkset("---\nmarkset: 0\n---\n\n# Hi\n"), true);
   assert.equal(declaresMarkset("---\ntitle: x\nmarkset: 1\n---\n"), true);
-  assert.equal(declaresMarkset("---\ntitle: x\n---\n\nmarkset: 0\n"), false, "a key in the body is prose");
+  assert.equal(declaresMarkset("---\ntitle: x\n---\n\nmarkset: true\n"), false, "a key in the body is prose");
   assert.equal(declaresMarkset("# No frontmatter\n\n:::card\nx\n:::\n"), false);
   assert.equal(shouldCheck("# plain\n", true), true, "the setting checks everything");
   assert.equal(shouldCheck("# plain\n", false), false);
 });
 
 test("diagnostics carry the parser's codes and offsets, which the editor turns into ranges", () => {
-  const source = "---\nmarkset: 0\n---\n\n:::grdi\n- a\n:::\n";
+  const source = "---\nmarkset: true\n---\n\n:::grdi\n- a\n:::\n";
   const found = check(source);
   const unknown = found.find((d) => d.code === "DIRECTIVE_UNKNOWN_NAME");
   assert.ok(unknown, `expected DIRECTIVE_UNKNOWN_NAME, got ${found.map((d) => d.code).join(", ")}`);
@@ -59,7 +61,7 @@ test("diagnostics carry the parser's codes and offsets, which the editor turns i
 
 test("the preview renders the document with no script and a policy that would block one anyway", () => {
   const page = previewDocument(
-    "---\nmarkset: 0\ntheme:\n  preset: report\n---\n\n:::card[Hi]\nx\n:::\n",
+    "---\nmarkset: true\ntheme:\n  preset: report\n---\n\n:::card[Hi]\nx\n:::\n",
     "body{}",
     "p{}",
     "dark",
@@ -346,7 +348,7 @@ test("the markdown-it plugin takes over a Markset document and leaves every othe
     content = "";
     map: [number, number] | null = null;
   }
-  const markset = { src: "---\nmarkset: 0\n---\n\n:::card[Hi]\nx\n:::\n", tokens: [] as unknown[], Token };
+  const markset = { src: "---\nmarkset: true\n---\n\n:::card[Hi]\nx\n:::\n", tokens: [] as unknown[], Token };
   assert.equal(rule(markset), true);
   assert.equal(markset.src, "", "the block parser that follows has nothing left to parse");
   assert.equal(markset.tokens.length, 1);
@@ -367,12 +369,12 @@ test("the markdown-it plugin takes over a Markset document and leaves every othe
     },
   };
   extendMarkdownIt(off, { enabled: () => false, checkAllMarkdown: () => true, scheme: () => "light" });
-  assert.equal(rule({ ...markset, src: "---\nmarkset: 0\n---\n", tokens: [] }), false, "the setting turns it off");
+  assert.equal(rule({ ...markset, src: "---\nmarkset: true\n---\n", tokens: [] }), false, "the setting turns it off");
 });
 
 test("the fragment carries the theme tokens and scheme the CLI would put on body", () => {
   const html = previewFragment(
-    '---\nmarkset: 0\ntheme:\n  preset: report\n  accent: "#14607a"\n---\n\n# Hi\n',
+    '---\nmarkset: true\ntheme:\n  preset: report\n  accent: "#14607a"\n---\n\n# Hi\n',
     "light",
   );
   assert.match(
@@ -383,7 +385,7 @@ test("the fragment carries the theme tokens and scheme the CLI would put on body
 });
 
 const MERMAID_DOC =
-  "---\nmarkset: 0\n---\n\n:::figure[Two boxes]\n```mermaid\ngraph LR\n  A --> B\n```\n:::\n\n```mermaid\ngraph LR\n  C --> D\n```\n";
+  "---\nmarkset: true\n---\n\n:::figure[Two boxes]\n```mermaid\ngraph LR\n  A --> B\n```\n:::\n\n```mermaid\ngraph LR\n  C --> D\n```\n";
 
 test("a mermaid fence in a captioned figure is handed to the Mermaid preview extension, and one outside is not", () => {
   // bierner.markdown-mermaid draws every element with class `mermaid` in the

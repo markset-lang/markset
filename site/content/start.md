@@ -1,5 +1,5 @@
 ---
-markset: 0
+markset: true
 theme:
   preset: technical
 ---
@@ -45,12 +45,12 @@ Nothing. That page is plain CommonMark, which means it is already a valid Markse
 :::
 ::::
 
-Now declare the version and turn the list into tiles. Two lines changed, and the second one is a fence:
+Now declare it Markset and turn the list into tiles. Two lines changed, and the second one is a fence:
 
 ::::columns{ratio="1:1"}
 ```markdown
 ---
-markset: 0
+markset: true
 ---
 
 ## Deployment
@@ -78,7 +78,7 @@ Rollback takes about four minutes.
 Rendered with `markset html`. Paste that same source into a pull request and the three bullets come back, in order, with the fence lines showing as text. Nothing is lost where the layout cannot follow — that is the contract, and every construct has one.
 ::::
 
-The `markset: 0` line says which version of the specification the document is written against. The parser does not require it; tools read it to decide that a `.md` file is meant to be Markset, which protects files using `:::` for something else.
+The `markset: true` line says the document is Markset; older documents say `markset: 0`, which means the same. The parser does not require it; tools read it to decide that a `.md` file is meant to be Markset, which protects files using `:::` for something else.
 
 {.tick}
 ***

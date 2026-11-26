@@ -114,7 +114,8 @@ test("every diagnostic code the guide names is one the parser reports", () => {
 });
 
 test("the values the guide lists are the ones the parser accepts", () => {
-  const frontmatter = (token: string, value: string) => `---\nmarkset: 0\ntheme:\n  ${token}: ${value}\n---\n\nText.\n`;
+  const frontmatter = (token: string, value: string) =>
+    `---\nmarkset: true\ntheme:\n  ${token}: ${value}\n---\n\nText.\n`;
   for (const [sentence, token] of [
     ["The presets are", "preset"],
     ["`density` is", "density"],

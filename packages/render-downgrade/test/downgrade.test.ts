@@ -18,7 +18,7 @@ test("plain CommonMark round-trips through the downgrade unchanged in structure"
 test("downgrade output contains no Markset syntax", () => {
   const source = `${[
     "---",
-    "markset: 0",
+    "markset: true",
     "---",
     "# Doc",
     '::::columns{ratio="2:1"}',

@@ -750,7 +750,7 @@ async function referenceIndex(): Promise<Page> {
     "{.site-list}",
     "- [Diagrams](diagrams/) — an ASCII or mermaid fence becomes a picture, why that needs no ninth construct, and what a renderer may and may not do with one.",
     "- [Charts](charts/) — a figure's table drawn as a line, bar or column chart, why the table is the source and stays on the page, and how a theme colors one.",
-    "- [Frontmatter and theme tokens](frontmatter/) — the version key, the seven theme tokens, and what each preset changes.",
+    "- [Frontmatter and theme tokens](frontmatter/) — the markset key, the seven theme tokens, and what each preset changes.",
     "",
   ].join("\n");
   const full = parseDocument(`${intro}\n${generated}`);
@@ -1066,7 +1066,7 @@ export async function vocabularyGroups(): Promise<VocabularyGroup[]> {
           id: "frontmatter",
           label: "frontmatter",
           kind: "frontmatter",
-          blurb: "The version key and the seven theme tokens, at the top of the document.",
+          blurb: "The markset key and the seven theme tokens, at the top of the document.",
           snippet: snippet("frontmatter"),
           href: "../reference/frontmatter/",
         },

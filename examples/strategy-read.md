@@ -1,5 +1,5 @@
 ---
-markset: 0
+markset: true
 title: Proof, Not Category
 theme:
   preset: editorial

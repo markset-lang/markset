@@ -18,7 +18,7 @@ import { renderHtml, defaultStylesheetPath } from "@markset-lang/render-html";
 import { scopeStylesheet } from "../src/core.ts";
 
 const source = `---
-markset: 0
+markset: true
 theme:
   preset: report
 ---

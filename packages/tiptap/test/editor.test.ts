@@ -224,16 +224,16 @@ test("diagnostics from a loaded document are shown on the blocks they are about"
 });
 
 test("frontmatter is kept verbatim and handed over as data", () => {
-  const source = "---\nmarkset: 0\ntitle: Kept\ntheme:\n  preset: report\n---\n\nBody.\n";
+  const source = "---\nmarkset: true\ntitle: Kept\ntheme:\n  preset: report\n---\n\nBody.\n";
   const loaded = fromMarkset(source);
-  assert.equal(loaded.frontmatter?.markset, 0);
+  assert.equal(loaded.frontmatter?.markset, true);
   assert.equal(loaded.frontmatter?.theme?.preset, "report");
-  assert.equal(loaded.doc.content?.[0].attrs?.value, "markset: 0\ntitle: Kept\ntheme:\n  preset: report");
+  assert.equal(loaded.doc.content?.[0].attrs?.value, "markset: true\ntitle: Kept\ntheme:\n  preset: report");
   const editor = editorFor(source);
   editor.commands.setTextSelection(editor.state.doc.content.size - 1);
   editor.commands.insertContent(" More.");
   assert.equal(
     toMarkset(editor.getJSON() as JSONNode, source),
-    "---\nmarkset: 0\ntitle: Kept\ntheme:\n  preset: report\n---\n\nBody. More.\n",
+    "---\nmarkset: true\ntitle: Kept\ntheme:\n  preset: report\n---\n\nBody. More.\n",
   );
 });

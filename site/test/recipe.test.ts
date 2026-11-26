@@ -47,7 +47,7 @@ test("the recipe in the guide actually produces a site", async () => {
     await mkdir(join(dir, "dist"), { recursive: true });
     await writeFile(
       join(dir, "docs", "guide.md"),
-      "---\nmarkset: 0\n---\n\n# Guide\n\n:::grid{cols=2}\n- A\n- B\n:::\n",
+      "---\nmarkset: true\n---\n\n# Guide\n\n:::grid{cols=2}\n- A\n- B\n:::\n",
     );
 
     // The two commands the guide's workflow runs, in the order it runs them.

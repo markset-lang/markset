@@ -1,5 +1,5 @@
 /**
- * Frontmatter (spec §6): the `markset` version key and the theme token
+ * Frontmatter (spec §6): the `markset` key that declares a document Markset, and the theme token
  * block. Everything else in the frontmatter is left to the document's owner.
  */
 import type { Yaml } from "mdast";
@@ -26,8 +26,11 @@ export interface Theme {
 }
 
 export interface Frontmatter {
-  /** The declared spec version, or null when `markset:` is absent. */
-  markset: number | null;
+  /**
+   * `true` when the document declares itself Markset, with `markset: true` or the original `markset: 0`, which means
+   * the same (spec §6, 2026-11-26); null when `markset:` is absent or its value is not one of those two.
+   */
+  markset: true | null;
   theme: Theme | null;
 }
 
@@ -60,15 +63,17 @@ export function readFrontmatter(node: Yaml, diagnostics: Diagnostic[]): Frontmat
   const data = parsed.value;
   const lineOf = (key: string): number | undefined => findKeyLine(node.value, key);
 
-  let markset: number | null = null;
+  let markset: true | null = null;
   if ("markset" in data) {
-    if (data.markset === 0) {
-      markset = 0;
+    // Only the YAML boolean true and, as the original form, the number 0. A quoted "true" or "0", false, yes and on
+    // are refused, so a document says it is Markset one way (or the one way it always could).
+    if (data.markset === true || data.markset === 0) {
+      markset = true;
     } else {
       report(
         FrontmatterCode.VERSION_UNSUPPORTED,
         "error",
-        `markset: ${JSON.stringify(data.markset)} is not a supported version; this parser implements 0`,
+        `markset: ${JSON.stringify(data.markset)} is not supported; write markset: true (the original markset: 0 means the same)`,
         lineOf("markset"),
       );
     }
