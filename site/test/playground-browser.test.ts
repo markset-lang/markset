@@ -135,7 +135,7 @@ test("the playground renders a document in a browser", { skip: unavailable }, as
     assert.doesNotMatch(seen.srcdoc, /<script/u, "a rendered Markset document carries no script");
 
     assert.match(seen.html, /^<h1 id="tidewater">/u);
-    assert.match(seen.markdown, /^---\nmarkset: 0/u, "the downgrade keeps the frontmatter");
+    assert.match(seen.markdown, /^---\nmarkset: true/u, "the downgrade keeps the frontmatter");
     assert.doesNotMatch(seen.markdown, /:::/u, "the downgrade has no directives left in it");
     assert.equal(seen.ast.type, "root");
     assert.equal(seen.status, "No problems");
@@ -264,7 +264,7 @@ test("a shared link opens the document it was made from", { skip: unavailable },
   const browser = await puppeteer!.launch({ headless: true, args: launchArgs });
   try {
     const { encodeDocument } = await import("../playground/diagnostics.ts");
-    const shared = "---\nmarkset: 0\n---\n\n# Sent to me\n\n> [!TIP]\n> Non-ASCII survives: ┌─┐ ∑ 🎛\n";
+    const shared = "---\nmarkset: true\n---\n\n# Sent to me\n\n> [!TIP]\n> Non-ASCII survives: ┌─┐ ∑ 🎛\n";
     const { page, problems } = await open(browser, `#${encodeDocument(shared)}`);
     const seen = await page.evaluate(() => ({
       source: (document.getElementById("pg-source") as HTMLTextAreaElement).value,
@@ -343,7 +343,7 @@ test("every palette button inserts something the document accepts", { skip: unav
     }));
     assert.deepEqual(problems, []);
     // Frontmatter was clicked last and still belongs at the top (§6).
-    assert.match(seen.source, /^---\nmarkset: 0\n/u, "frontmatter goes to the top whenever it is added");
+    assert.match(seen.source, /^---\nmarkset: true\n/u, "frontmatter goes to the top whenever it is added");
     for (const cls of [
       "ms-callout",
       "ms-card",

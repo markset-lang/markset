@@ -54,7 +54,7 @@ test("html writes a full page by default and a fragment on request", async () =>
   const dir = await mkdtemp(join(tmpdir(), "markset-cli-"));
   const file = join(dir, "doc.md");
   const outFile = join(dir, "doc.html");
-  await writeFile(file, "---\nmarkset: 0\ntheme:\n  preset: deck\n---\n\n# Title\n\n:::card\nx\n:::\n");
+  await writeFile(file, "---\nmarkset: true\ntheme:\n  preset: deck\n---\n\n# Title\n\n:::card\nx\n:::\n");
   const page = await run(["html", file, "-o", outFile]);
   assert.equal(page.code, 0);
   const written = await readFile(outFile, "utf8");
@@ -206,7 +206,7 @@ test("a command that fails without reading the fence still reports its status", 
   const dir = await mkdtemp(join(tmpdir(), "markset-diagram-big-"));
   const file = join(dir, "doc.md");
   const big = Array.from({ length: 20_000 }, () => "+--------+").join("\n");
-  await writeFile(file, `---\nmarkset: 0\n---\n\n:::figure[Large.]\n\`\`\`ascii\n${big}\n\`\`\`\n:::\n`);
+  await writeFile(file, `---\nmarkset: true\n---\n\n:::figure[Large.]\n\`\`\`ascii\n${big}\n\`\`\`\n:::\n`);
   const { code, out, err } = await run(["html", "--fragment", "--diagram", "ascii=exit 7", file]);
   assert.equal(code, 0, "a failed diagram is not a failed render");
   assert.match(out, /<pre><code class="language-ascii">/, "and the content stays");
@@ -246,7 +246,7 @@ test("css needs no file argument, unlike every other command", async () => {
 test("a site can link one stylesheet instead of inlining it into every page", async () => {
   const dir = await mkdtemp(join(tmpdir(), "markset-pages-"));
   const page = join(dir, "doc.md");
-  await writeFile(page, "---\nmarkset: 0\n---\n\n# Deployment\n\nText.\n");
+  await writeFile(page, "---\nmarkset: true\n---\n\n# Deployment\n\nText.\n");
 
   const inlined = await run(["html", page]);
   const linked = await run(["html", "--css", "markset.css", page]);

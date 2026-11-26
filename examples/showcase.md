@@ -1,5 +1,5 @@
 ---
-markset: 0
+markset: true
 title: Markset vocabulary tour
 theme:
   preset: technical
@@ -162,9 +162,9 @@ steps
 `steps` takes exactly one ordered list. The numbering belongs to the list rather than to the construct, so the source reads as a procedure even before anything renders it, and a step can carry whatever a real instruction needs.
 
 :::steps
-1. ### Declare the version
+1. ### Declare it Markset
 
-   Add `markset: 0` to the frontmatter. Tools use it to decide that a `.md` file is meant to be Markset; the parser itself never requires it.
+   Add `markset: true` to the frontmatter. Tools use it to decide that a `.md` file is meant to be Markset; the parser itself never requires it.
 
 2. ### Wrap something you already wrote
 

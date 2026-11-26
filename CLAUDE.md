@@ -41,7 +41,7 @@ These are non-negotiable. If a proposed feature conflicts with one, the feature 
 - HTML output uses the `ms-` class prefix throughout: `ms-card`, `ms-grid-item`, `ms-callout-title`.
 - Semantic variants go in `data-` attributes (`data-tone`, `data-cols`, `data-direction`), not class name suffixes.
 - Conformance tests are JSON, one file per spec section, mirroring the CommonMark spec test layout. Schema is in spec §7.
-- Documents name the specification version they are written against with `markset: 0` in frontmatter, and tools use that line to treat a `.md` file as Markset. It is a version, not a flag: zero means the zeroth spec, not off, and the wording everywhere should say "version" so nobody reads it as a switch (a reader did, 2026-09-17). The file extension is `.md` — deliberately, so files stay editable and renderable everywhere.
+- Documents declare that they are Markset with `markset: true` in frontmatter, and tools use that line to treat a `.md` file as Markset (Gary, 2026-11-26). The original `markset: 0` stays valid and means the same, so no document has to change; the parse result is `true` for both. It is a declaration, not a version: Markset does not make breaking changes to documents, and should one ever be unavoidable its rules will be declared with a number above 0 (spec §6). Until 2026-11-26 the line was `markset: 0`, described as a version, and readers kept taking the zero as off (the first did on 2026-09-17), which is why it changed. The file extension is `.md` — deliberately, so files stay editable and renderable everywhere.
 
 ## Layout
 
@@ -295,7 +295,7 @@ in commit order, which is the wrong order for finding the work.
 - [x] Grammar: block directive and separator fence lines (§2.3, §2.4, `packages/parser/src/directives.ts`)
 - [x] Grammar: bracketed span (§2.2, `syntax.ts` + `from-markdown.ts`, `tests/bracketed-span.json`)
 - [x] Parser: CommonMark base on micromark/mdast with directive containers, separators, spans, GFM tables; `parseDocument()` in `document.ts`. Generic `directive` nodes only; no construct normalization yet.
-- [x] Frontmatter and theme tokens (§6, `packages/parser/src/frontmatter.ts`, YAML subset reader in `yaml-subset.ts`, `tests/frontmatter.json`). The parser always parses Markset; `markset: 0` is declared, not required (§9.3 still open).
+- [x] Frontmatter and theme tokens (§6, `packages/parser/src/frontmatter.ts`, YAML subset reader in `yaml-subset.ts`, `tests/frontmatter.json`). The parser always parses Markset; `markset: true` (or the original `markset: 0`) is declared, not required (§9.3).
 - [x] Downgrade renderer (`packages/render-downgrade`, mdast-util-to-markdown; `downgrade` aspect pinned on 98 cases)
 - [x] Constructs: callout, card, grid, columns, tabs, steps, metrics, figure (`packages/parser/src/constructs.ts`, one `tests/<name>.json` each; AST aspect only until the renderers exist)
 - [x] HTML renderer (`packages/render-html`, mdast-util-to-hast + hast-util-to-html; `renderHtml` fragment and `renderPage` full page with theme tokens on `<body>`; `html` aspect pinned on 59 cases)

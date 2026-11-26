@@ -52,7 +52,7 @@ Nothing in the preview runs. A rendered Markset document never contains a script
 | `markset.diagrams` | `{}` | Commands that draw diagram fences by language, for example `{ "mermaid": "mmdc -i /dev/stdin -o /dev/stdout" }`. The fence goes to the command's standard input; the SVG comes back on its output. |
 | `markset.preview.theme` | `""` | A theme stylesheet appended after the default in the extension's own preview. Relative to the workspace folder. |
 
-A Markset document names the specification version it is written against with `markset: 0` in its frontmatter, and by default that line is what turns the extension on for a file. It is a version, not a switch: zero is the zeroth specification, not off.
+A Markset document says so with `markset: true` in its frontmatter, and by default that line is what turns the extension on for a file. The original `markset: 0` means the same and turns it on too.
 
 ## Learn more
 

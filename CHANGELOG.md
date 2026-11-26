@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+**A document declares that it is Markset with `markset: true`.** The original `markset: 0` is still valid and means exactly the same, so no document has to change (Gary, 2026-11-26). The zero kept reading as off, however often the docs said it was a version.
+
+- **The `markset:` key is a declaration, not a version (spec §6).** Markset does not make breaking changes to documents; should one ever be unavoidable, its rules will be declared with a number above 0, and a document that declares `true` or `0` is read under the rules it was written for. The change policy says the same.
+- **`true` and `0` are the only accepted values.** `false`, any other number, a quoted `"true"` or `"0"`, and YAML's other spellings of true such as `yes` are `DOCUMENT_VERSION_UNSUPPORTED`, and the message names what is accepted. Four frontmatter cases are new and four renamed for this, and the canonical theme block and its cases write `true`.
+- **The parse result's `frontmatter.markset` is `true | null`**, normalised, so a consumer never cares which form was written. It was `0 | null`, typed `number | null`. **For Intentset's adapter:** `@intentset/markset-adapter` passes the raw frontmatter through and does not read this field, so nothing there changes. Intentset's own check is its core's: `packages/core/src/artifact.ts` requires `root.markset === 0` and tells authors to write `markset: 0`, so a record that says `markset: true` fails Intentset's validation until that check, its remediation text and the documents Intentset writes (the agent guide, the publisher, the Atlas) accept and write `true`. Markset diagnostics on such a record are unchanged.
+- **Everything that writes or teaches the line writes `true`**: the authoring guide, the reference page for frontmatter, the site, the examples, the playground samples and its palette (from the canonical case), the test corpus and the VS Code extension, whose trigger still accepts either form.
+
 ## 0.5.0 — 2026-11-05
 
 **Markset can be written from a unified pipeline, beside GFM, and its constructs edited and shown inside a TipTap schema that is not the kit's.** Nothing in the grammar, the spec or the conformance suite changed, and nothing changes for Intentset's adapter: no diagnostic, node shape or `parseDocument` result moved, and `serializeDocument` writes the same bytes as before.

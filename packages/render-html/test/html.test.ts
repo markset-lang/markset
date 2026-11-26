@@ -17,7 +17,7 @@ test("tab input names restart per render, so documents do not share ids", () => 
 
 test("renderPage wraps the fragment and carries theme tokens onto body", () => {
   const source =
-    '---\nmarkset: 0\ntheme:\n  preset: deck\n  accent: "#2563eb"\n  density: compact\n  radius: lg\n  type:\n    body: "Source Serif 4"\n    heading: Inter\n    scale: 1.25\n---\n\n# Hello & World\n';
+    '---\nmarkset: true\ntheme:\n  preset: deck\n  accent: "#2563eb"\n  density: compact\n  radius: lg\n  type:\n    body: "Source Serif 4"\n    heading: Inter\n    scale: 1.25\n---\n\n# Hello & World\n';
   const { ast } = parseDocument(source);
   const page = renderPage(ast, { stylesheet: { href: "markset.css" } });
   assert.match(page, /^<!doctype html>\n<html lang="en">/);
@@ -43,7 +43,7 @@ test("renderPage emits the theme stylesheet after the default one", () => {
 
 test("body attributes are empty without a theme", () => {
   assert.equal(bodyAttributes(null), "");
-  assert.equal(bodyAttributes({ markset: 0, theme: null }), "");
+  assert.equal(bodyAttributes({ markset: true, theme: null }), "");
 });
 
 test("inline stylesheet and explicit title", () => {

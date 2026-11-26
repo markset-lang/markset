@@ -1,5 +1,5 @@
 ---
-markset: 0
+markset: true
 theme:
   preset: technical
 ---
@@ -69,7 +69,7 @@ Scope
 
 ## Which files it checks
 
-A Markset document names the specification version it is written against with `markset: 0` in its frontmatter. That is a version, not a switch. By default only files with that line are checked and rendered as Markset, because every Markdown file is already valid Markset and a reader whose `:::` means something else never opted into a closed vocabulary. The setting `markset.checkAllMarkdown` widens it to every Markdown file.
+A Markset document says so with `markset: true` in its frontmatter, or with the original `markset: 0`, which means the same. By default only files with that line are checked and rendered as Markset, because every Markdown file is already valid Markset and a reader whose `:::` means something else never opted into a closed vocabulary. The setting `markset.checkAllMarkdown` widens it to every Markdown file.
 
 {.tick}
 ***

@@ -269,7 +269,7 @@ test("editing any text changes only the lines of the block holding it, in every 
 // One structural edit per construct. Each asserts the exact lines that differ.
 
 const DOCUMENT = `---
-markset: 0
+markset: true
 title: Fixture
 ---
 

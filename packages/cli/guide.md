@@ -36,18 +36,18 @@ A construct earns its place by making the content easier to take in. Most of a g
 
 ```markdown
 ---
-markset: 0
+markset: true
 ---
 ```
 
-`markset: 0` names the version of the specification the document is written against. It is a version, not a switch.
+`markset: true` says the document is Markset. Documents written before 2026-11-26 say `markset: 0`, which means the same; write `true` in new ones.
 Keep it as the first lines of every Markset document.
 
 A `theme` block sets design intent for the whole document. Add one only when you are asked to:
 
 ```markdown
 ---
-markset: 0
+markset: true
 theme:
   preset: report
   density: comfortable

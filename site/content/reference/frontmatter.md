@@ -1,5 +1,5 @@
 ---
-markset: 0
+markset: true
 theme:
   preset: technical
 ---
@@ -25,7 +25,7 @@ A frontmatter block is a YAML map between two `---` lines, and it must be the fi
 ::::columns{ratio="1:1"}
 ```markdown
 ---
-markset: 0
+markset: true
 title: Deployment runbook
 theme:
   preset: technical
@@ -44,7 +44,7 @@ theme:
 ::col
 
 :::card[Everything here is optional]{tone=info}
-A document with no frontmatter at all is a valid Markset document. So is one with only `markset: 0`.
+A document with no frontmatter at all is a valid Markset document. So is one with only `markset: true`.
 
 Every theme token has a default, and a file that sets none of them renders on the default stylesheet's own proportions.
 :::
@@ -56,19 +56,19 @@ Every theme token has a default, and a file that sets none of them renders on th
 {.eyebrow}
 Piece one
 
-## The version key
+## The markset key
 
 ```markdown
-markset: 0
+markset: true
 ```
 
-`markset: 0` declares which version of the specification the file is written against. Two things about it are worth knowing, because both surprise people.
+`markset: true` declares that the file is Markset. Three things about it are worth knowing.
 
 **The parser does not require it.** A file without it still parses as Markset, constructs and all. The key exists so that *tools* can tell a Markset file from an ordinary Markdown file that happens to use `:::` for something else — a linter deciding whether to check a file, a generator deciding whether to run the renderer.
 
-**Any other value is an error.** `markset: 1` is `DOCUMENT_VERSION_UNSUPPORTED`, not a forward-compatible hint. A parser that implements v0 refuses to guess at a version it does not have.
+**`markset: 0` means the same.** It is how every document said it until 2026-11-26, when the line became `true`, because a zero kept reading as off. Files that say `0` never need to change, and a parser gives both the same result.
 
-**Zero is not off.** The value is a version number, the way `openapi: 3.0` is, and the current specification is the zeroth. A reader who sees `markset: 0` as a switch set to false has read it the way most keys with a zero read, which is why every page here says "version" rather than "enable". When v1 arrives the line becomes `markset: 1` and the confusion goes with it.
+**Any other value is an error.** `false`, `1`, a quoted `"true"` and YAML's other spellings of true, such as `yes`, are `DOCUMENT_VERSION_UNSUPPORTED`. The line is a declaration, not a version: Markset does not make breaking changes to documents, so a file written today reads the same under every later release. Should a breaking change ever be unavoidable, it will be declared with a number above 0.
 
 {.tick}
 ***
@@ -123,7 +123,7 @@ Keys that are not `markset` or `theme` are read and then ignored, with no diagno
 
 ```markdown
 ---
-markset: 0
+markset: true
 title: Deployment runbook      # yours
 date: 2026-09-14               # yours
 theme:
@@ -153,7 +153,7 @@ Tokens become attributes and custom properties on `<body>`, and the stylesheet r
 ::::columns{ratio="1:1"}
 ```markdown
 ---
-markset: 0
+markset: true
 theme:
   preset: report
   accent: "#b4501f"
@@ -183,11 +183,11 @@ Diagnostics
 
 ## What can go wrong
 
-:::figure[Every diagnostic frontmatter can produce. Warnings render; the error does not stop rendering either, but it means the file claims a version this parser does not implement.]
+:::figure[Every diagnostic frontmatter can produce. Warnings render; the error does not stop rendering either, but it means the file's markset line is not one this parser accepts.]
 | Code | Severity | When |
 |---|---|---|
 | `FRONTMATTER_UNPARSEABLE` | warning | The block is not readable in the supported YAML subset; `markset` and `theme` are treated as absent |
-| `DOCUMENT_VERSION_UNSUPPORTED` | error | `markset` is present with a value other than `0` |
+| `DOCUMENT_VERSION_UNSUPPORTED` | error | `markset` is present with a value other than `true` or `0` |
 | `THEME_UNKNOWN_TOKEN` | warning | A key under `theme` or `theme.type` that is not in the table; ignored |
 | `THEME_INVALID_TOKEN` | error | A token value outside its allowed set; the token is left unset |
 :::

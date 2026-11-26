@@ -1,5 +1,5 @@
 ---
-markset: 0
+markset: true
 title: Nine hours of stale search
 theme:
   preset: report
