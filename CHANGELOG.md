@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.6.0 — 2026-11-26
 
 **A document declares that it is Markset with `markset: true`.** The original `markset: 0` is still valid and means exactly the same, so no document has to change (Gary, 2026-11-26). The zero kept reading as off, however often the docs said it was a version.
 
